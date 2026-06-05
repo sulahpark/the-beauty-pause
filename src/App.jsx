@@ -536,21 +536,24 @@ export default function App() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ background:"#0d0d0d", height:60, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 40px", position:"sticky", top:0, zIndex:500 }}>
-        <div>
-          <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"17px", color:"#f5f0eb", letterSpacing:"3px", fontWeight:300 }}>THE</span>
-          <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"17px", color:"#c9a96e", letterSpacing:"3px", fontWeight:600, marginLeft:7 }}>BEAUTY PAUSE</span>
+      <nav style={{ background:"#0d0d0d", height:60, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 20px", position:"sticky", top:0, zIndex:500 }}>
+        <div style={{ flexShrink:0 }}>
+          <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"16px", color:"#f5f0eb", letterSpacing:"2px", fontWeight:300 }}>THE</span>
+          <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"16px", color:"#c9a96e", letterSpacing:"2px", fontWeight:600, marginLeft:6 }}>BEAUTY PAUSE</span>
         </div>
-        <div style={{ display:"flex", alignItems:"center", gap:28 }}>
-          {["Salons","K-Beauty","About"].map(l => (
-            <a key={l} href="#" style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", textDecoration:"none", letterSpacing:"1.5px", textTransform:"uppercase", transition:"color 0.2s" }}
-              onMouseEnter={e=>e.target.style.color="#f5f0eb"} onMouseLeave={e=>e.target.style.color="#777"}>{l}</a>
-          ))}
+        <div style={{ display:"flex", alignItems:"center", gap:16 }}>
+          {/* nav links — hide on small screens */}
+          <div style={{ display:"flex", gap:20 }} className="nav-links">
+            {["Salons","K-Beauty","About"].map(l => (
+              <a key={l} href="#" style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", textDecoration:"none", letterSpacing:"1px", textTransform:"uppercase", transition:"color 0.2s" }}
+                onMouseEnter={e=>e.target.style.color="#f5f0eb"} onMouseLeave={e=>e.target.style.color="#777"}>{l}</a>
+            ))}
+          </div>
           {/* Language toggle */}
-          <div style={{ display:"flex", border:"1px solid #333", borderRadius:"2px", overflow:"hidden" }}>
+          <div style={{ display:"flex", border:"1px solid #333", borderRadius:"2px", overflow:"hidden", flexShrink:0 }}>
             {["en","fr"].map(l => (
               <button key={l} onClick={() => setLang(l)}
-                style={{ padding:"5px 12px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:600, letterSpacing:"1px", color: lang===l?"#0d0d0d":"#777", background: lang===l?"#c9a96e":"transparent", transition:"all 0.2s", textTransform:"uppercase" }}>
+                style={{ padding:"5px 10px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:600, letterSpacing:"1px", color: lang===l?"#0d0d0d":"#777", background: lang===l?"#c9a96e":"transparent", transition:"all 0.2s", textTransform:"uppercase" }}>
                 {l}
               </button>
             ))}
@@ -559,38 +562,38 @@ export default function App() {
       </nav>
 
       {/* HERO */}
-      <section style={{ background:"#0d0d0d", padding:"64px 40px 72px", position:"relative", overflow:"hidden" }}>
+      <section style={{ background:"#0d0d0d", padding:"clamp(40px,6vw,64px) clamp(20px,5vw,40px) clamp(48px,7vw,72px)", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:-100, right:-60, width:420, height:420, borderRadius:"50%", border:"1px solid rgba(201,169,110,0.12)" }} />
         <div style={{ maxWidth:580, animation:"fadeUp 0.8s ease both" }}>
-          <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#c9a96e", letterSpacing:"4px", textTransform:"uppercase", marginBottom:16 }}>{t.tagline}</p>
-          <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(40px,5vw,62px)", fontWeight:300, color:"#f5f0eb", lineHeight:1.08, marginBottom:18 }}>
+          <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#c9a96e", letterSpacing:"3px", textTransform:"uppercase", marginBottom:14 }}>{t.tagline}</p>
+          <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(36px,6vw,62px)", fontWeight:300, color:"#f5f0eb", lineHeight:1.08, marginBottom:16 }}>
             {t.hero_title_1}<br/><em style={{ fontStyle:"italic", color:"#c9a96e" }}>{t.hero_title_2}</em>
           </h1>
-          <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"14px", color:"#777", lineHeight:1.8, marginBottom:30, maxWidth:400 }}>{t.hero_sub}</p>
+          <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"clamp(13px,1.5vw,14px)", color:"#777", lineHeight:1.8, marginBottom:28, maxWidth:400 }}>{t.hero_sub}</p>
           <div style={{ display:"flex", maxWidth:460 }}>
             <input placeholder={t.search_placeholder} value={search} onChange={e=>setSearch(e.target.value)}
-              style={{ flex:1, padding:"14px 18px", fontFamily:"'DM Sans',sans-serif", fontSize:"13px", border:"none", background:"#1a1a1a", color:"#f5f0eb", outline:"none", caretColor:"#c9a96e" }} />
-            <div style={{ padding:"14px 20px", background:"#c9a96e", display:"flex", alignItems:"center" }}>→</div>
+              style={{ flex:1, padding:"13px 16px", fontFamily:"'DM Sans',sans-serif", fontSize:"13px", border:"none", background:"#1a1a1a", color:"#f5f0eb", outline:"none", caretColor:"#c9a96e", minWidth:0 }} />
+            <div style={{ padding:"13px 18px", background:"#c9a96e", display:"flex", alignItems:"center", flexShrink:0 }}>→</div>
           </div>
         </div>
       </section>
 
       {/* CATEGORY + VIEW TOGGLE BAR */}
-      <div style={{ background:"#fff", borderBottom:"1px solid #ede8e2", padding:"0 40px", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:60, zIndex:400 }}>
-        <div style={{ display:"flex" }}>
+      <div style={{ background:"#fff", borderBottom:"1px solid #ede8e2", padding:"0 20px", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:60, zIndex:400, overflowX:"auto" }}>
+        <div style={{ display:"flex", flexShrink:0 }}>
           {CATEGORIES.map(cat => (
             <button key={cat} onClick={() => setActiveCat(cat)}
-              style={{ padding:"14px 18px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:activeCat===cat?600:400, color:activeCat===cat?"#b85c5c":"#999", background:"transparent", borderBottom:activeCat===cat?"2px solid #b85c5c":"2px solid transparent", letterSpacing:"0.5px", transition:"all 0.2s", whiteSpace:"nowrap" }}>
+              style={{ padding:"13px 14px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:activeCat===cat?600:400, color:activeCat===cat?"#b85c5c":"#999", background:"transparent", borderBottom:activeCat===cat?"2px solid #b85c5c":"2px solid transparent", letterSpacing:"0.5px", transition:"all 0.2s", whiteSpace:"nowrap" }}>
               {cat === "All" ? t.all : cat}
             </button>
           ))}
         </div>
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          {/* view toggle */}
+        <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0, marginLeft:8 }}>
           <div style={{ display:"flex", border:"1px solid #ede8e2" }}>
-            {[{id:"salons",label:`☰ ${t.list}`},{id:"products",label:`✦ ${t.by_product}`},{id:"map",label:`◎ ${t.map}`}].map(v => (
+            {[{id:"salons",label:"☰"},{id:"products",label:"✦"},{id:"map",label:"◎"}].map(v => (
               <button key={v.id} onClick={() => setView(v.id)}
-                style={{ padding:"8px 14px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:view===v.id?600:400, color:view===v.id?"#fff":"#999", background:view===v.id?"#1a1a1a":"transparent", transition:"all 0.2s", whiteSpace:"nowrap" }}>
+                title={v.id === "salons" ? t.list : v.id === "products" ? t.by_product : t.map}
+                style={{ padding:"8px 12px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"13px", fontWeight:view===v.id?600:400, color:view===v.id?"#fff":"#999", background:view===v.id?"#1a1a1a":"transparent", transition:"all 0.2s" }}>
                 {v.label}
               </button>
             ))}
@@ -600,49 +603,38 @@ export default function App() {
 
       {/* FILTER + SORT BAR */}
       {view !== "map" && (
-        <div style={{ background:"#faf7f4", borderBottom:"1px solid #ede8e2", padding:"10px 40px", display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-          {/* filter toggle */}
+        <div style={{ background:"#faf7f4", borderBottom:"1px solid #ede8e2", padding:"10px 20px", display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
           <button onClick={() => setShowFilters(f => !f)}
-            style={{ display:"flex", alignItems:"center", gap:6, padding:"6px 14px", border:`1px solid ${showFilters||activeFilterCount>0?"#b85c5c":"#ede8e2"}`, background: showFilters||activeFilterCount>0?"#fdf0f0":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:activeFilterCount>0?"#b85c5c":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
+            style={{ display:"flex", alignItems:"center", gap:6, padding:"6px 12px", border:`1px solid ${showFilters||activeFilterCount>0?"#b85c5c":"#ede8e2"}`, background: showFilters||activeFilterCount>0?"#fdf0f0":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:activeFilterCount>0?"#b85c5c":"#777", borderRadius:"20px", transition:"all 0.2s", whiteSpace:"nowrap" }}>
             ⚙ {t.filter} {activeFilterCount > 0 && <span style={{ background:"#b85c5c", color:"#fff", borderRadius:"50%", width:16, height:16, display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:"9px", fontWeight:700 }}>{activeFilterCount}</span>}
           </button>
-
-          {/* sort */}
           <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-            style={{ padding:"6px 12px", border:"1px solid #ede8e2", background:"#fff", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", cursor:"pointer", borderRadius:"20px", outline:"none" }}>
+            style={{ padding:"6px 10px", border:"1px solid #ede8e2", background:"#fff", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", cursor:"pointer", borderRadius:"20px", outline:"none" }}>
             <option value="az">{t.sort_az}</option>
             <option value="tier">{t.sort_tier}</option>
             <option value="area">{t.sort_area}</option>
           </select>
-
-          {/* K-beauty toggle */}
           <button onClick={() => setFilterKbeautyOnly(f => !f)}
-            style={{ padding:"6px 14px", border:`1px solid ${filterKbeautyOnly?"#b85c5c":"#ede8e2"}`, background:filterKbeautyOnly?"#fdf0f0":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:filterKbeautyOnly?"#b85c5c":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
+            style={{ padding:"6px 12px", border:`1px solid ${filterKbeautyOnly?"#b85c5c":"#ede8e2"}`, background:filterKbeautyOnly?"#fdf0f0":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:filterKbeautyOnly?"#b85c5c":"#777", borderRadius:"20px", transition:"all 0.2s", whiteSpace:"nowrap" }}>
             ✦ {t.filter_kbeauty}
           </button>
-
-          {/* clear */}
           {activeFilterCount > 0 && (
             <button onClick={() => { setFilterTier("All"); setFilterArea("All"); setFilterBrand("All"); setFilterKbeautyOnly(false); }}
-              style={{ padding:"6px 14px", border:"none", background:"transparent", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#aaa", textDecoration:"underline" }}>
+              style={{ padding:"6px 10px", border:"none", background:"transparent", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#aaa", textDecoration:"underline" }}>
               {t.clear}
             </button>
           )}
-
-          {/* expanded filters */}
           {showFilters && (
             <div style={{ width:"100%", display:"flex", gap:10, flexWrap:"wrap", paddingTop:8, borderTop:"1px solid #ede8e2", marginTop:4 }}>
-              {/* Tier */}
-              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
                 <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", letterSpacing:"1px", textTransform:"uppercase" }}>{t.filter_tier}:</span>
                 {["All","Gold","Silver","Bronze"].map(tier => (
                   <button key={tier} onClick={() => setFilterTier(tier)}
-                    style={{ padding:"4px 12px", border:`1px solid ${filterTier===tier?"#c9a96e":"#ede8e2"}`, background:filterTier===tier?"#fdf8ee":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:filterTier===tier?"#a07832":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
+                    style={{ padding:"4px 10px", border:`1px solid ${filterTier===tier?"#c9a96e":"#ede8e2"}`, background:filterTier===tier?"#fdf8ee":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:filterTier===tier?"#a07832":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
                     {tier === "All" ? t.all : `✦ ${tier}`}
                   </button>
                 ))}
               </div>
-              {/* Area */}
               <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", letterSpacing:"1px", textTransform:"uppercase" }}>{t.filter_area}:</span>
                 <select value={filterArea} onChange={e => setFilterArea(e.target.value)}
@@ -650,7 +642,6 @@ export default function App() {
                   {areas.map(a => <option key={a} value={a}>{a === "All" ? t.all : a}</option>)}
                 </select>
               </div>
-              {/* Brand */}
               <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", letterSpacing:"1px", textTransform:"uppercase" }}>{t.filter_brand}:</span>
                 <select value={filterBrand} onChange={e => setFilterBrand(e.target.value)}
