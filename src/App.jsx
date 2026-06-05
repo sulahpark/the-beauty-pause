@@ -284,9 +284,13 @@ function SalonCard({ salon, onClick, lang }) {
     <div onClick={() => onClick(salon)} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{ cursor:"pointer", background:"#fff", overflow:"visible", transition:"transform 0.28s, box-shadow 0.28s", transform:hov?"translateY(-5px)":"none", boxShadow:hov?"0 20px 60px rgba(0,0,0,0.12)":"0 2px 18px rgba(0,0,0,0.06)" }}>
       <div style={{ position:"relative", paddingBottom:"56%", overflow:"hidden", background:"#1a1a1a" }}>
-        <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"48px", color:"rgba(201,169,110,0.2)", fontWeight:300 }}>{salon.name?.[0]}</span>
-        </div>
+        {salon.salon_image
+          ? <img src={salon.salon_image} alt={salon.name} style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.5s", transform:hov?"scale(1.04)":"scale(1)" }} />
+          : <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"48px", color:"rgba(201,169,110,0.2)", fontWeight:300 }}>{salon.name?.[0]}</span>
+            </div>
+        }
+        <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 60%)" }} />
         {/* category */}
         <div style={{ position:"absolute", top:12, left:12, background:"rgba(0,0,0,0.6)", color:"#f5f0eb", fontSize:"10px", fontFamily:"'DM Sans',sans-serif", fontWeight:600, letterSpacing:"1.5px", textTransform:"uppercase", padding:"4px 10px" }}>{salon.category}</div>
         {/* tier badge */}
