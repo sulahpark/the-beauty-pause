@@ -37,6 +37,22 @@ const T = {
     new: "New",
     top: "Top",
     pick: "pick",
+    filter: "Filters",
+    sort: "Sort",
+    sort_az: "Name A–Z",
+    sort_tier: "Tier (Gold first)",
+    sort_recent: "Recently added",
+    sort_area: "By area",
+    filter_kbeauty: "K-Beauty only",
+    filter_tier: "Tier",
+    filter_area: "Area",
+    filter_brand: "Brand",
+    clear: "Clear all",
+    by_product: "By product",
+    by_salon: "By salon",
+    products_view: "K-Beauty Products",
+    available_at: "Available at",
+    salons_label: "salons",
   },
   fr: {
     tagline: "K-Beauty · Salons Sélectionnés · Paris",
@@ -67,6 +83,22 @@ const T = {
     new: "New",
     top: "Top",
     pick: "choix",
+    filter: "Filtres",
+    sort: "Trier",
+    sort_az: "Nom A–Z",
+    sort_tier: "Tier (Gold d'abord)",
+    sort_recent: "Ajout récent",
+    sort_area: "Par quartier",
+    filter_kbeauty: "K-Beauty uniquement",
+    filter_tier: "Tier",
+    filter_area: "Quartier",
+    filter_brand: "Marque",
+    clear: "Effacer",
+    by_product: "Par produit",
+    by_salon: "Par salon",
+    products_view: "Produits K-Beauty",
+    available_at: "Disponible chez",
+    salons_label: "salons",
   },
 };
 
@@ -327,17 +359,94 @@ function SalonCard({ salon, onClick, lang }) {
   );
 }
 
+// ── PRODUCT CATEGORY VIEW ─────────────────────────────────────────────────────
+function ProductsView({ salons, lang }) {
+  const t = T[lang];
+  // collect all products with their salons
+  const byCategory = {};
+  salons.forEach(salon => {
+    (salon._products || []).forEach(p => {
+      const cat = p.category || "Other";
+      if (!byCategory[cat]) byCategory[cat] = [];
+      if (!byCategory[cat].find(x => x.prod.id === p.id)) {
+        byCategory[cat].push({ prod: p, salon });
+      } else {
+        // add salon to existing product entry
+        const entry = byCategory[cat].find(x => x.prod.id === p.id);
+        if (entry && !entry.salons) entry.salons = [entry.salon];
+        if (entry && entry.salons && !entry.salons.find(s => s.id === salon.id)) entry.salons.push(salon);
+      }
+    });
+  });
+
+  return (
+    <main style={{ maxWidth:1200, margin:"0 auto", padding:"50px 40px 90px" }}>
+      <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"24px", fontWeight:400, color:"#1a1a1a", marginBottom:40 }}>{t.products_view}</h2>
+      {Object.entries(byCategory).map(([cat, items]) => (
+        <div key={cat} style={{ marginBottom:52 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20 }}>
+            <h3 style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:700, color:"#b85c5c", letterSpacing:"2px", textTransform:"uppercase", margin:0 }}>{cat}</h3>
+            <div style={{ height:1, flex:1, background:"#ede8e2" }} />
+            <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#ccc" }}>{items.length} products</span>
+          </div>
+          <div style={{ display:"flex", gap:16, overflowX:"auto", paddingBottom:8 }}>
+            {items.map(({ prod, salon, salons: extraSalons }) => {
+              const isNew = prod._badge === "new";
+              const color = isNew ? "#c9a96e" : "#b85c5c";
+              const border = isNew ? "#e8d9b8" : "#f0d0d0";
+              const bg = isNew ? "#fdf8ee" : "#fdf0f0";
+              const img = Array.isArray(prod.Image) ? prod.Image[0]?.url : null;
+              const allSalons = extraSalons || [salon];
+              return (
+                <div key={prod.id} style={{ background:"#fff", border:`1px solid ${border}`, overflow:"hidden", flexShrink:0, width:200 }}>
+                  <div style={{ position:"relative", paddingBottom:"80%", overflow:"hidden" }}>
+                    {img ? <img src={img} alt={prod.product_name} style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }} />
+                      : <div style={{ position:"absolute", inset:0, background:"#f5f0eb", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"32px" }}>✨</div>}
+                    <div style={{ position:"absolute", top:8, left:8, background:color, color:"#fff", fontFamily:"'DM Sans',sans-serif", fontSize:"8px", fontWeight:800, letterSpacing:"1.5px", textTransform:"uppercase", padding:"3px 9px" }}>
+                      {isNew ? t.new_in : t.popular}
+                    </div>
+                  </div>
+                  <div style={{ padding:"12px 14px 14px" }}>
+                    <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"9px", color, fontWeight:700, letterSpacing:"1.5px", textTransform:"uppercase", margin:"0 0 3px" }}>{prod.brand}</p>
+                    <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"12px", color:"#2a2a2a", margin:"0 0 8px", lineHeight:1.4 }}>{prod.product_name}</p>
+                    <div style={{ borderTop:"1px solid #f0ebe5", paddingTop:8 }}>
+                      <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"9px", color:"#bbb", letterSpacing:"1px", textTransform:"uppercase", margin:"0 0 4px" }}>{t.available_at}</p>
+                      {allSalons.slice(0,2).map(s => (
+                        <p key={s.id} style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#666", margin:"0 0 2px" }}>→ {s.name}</p>
+                      ))}
+                      {allSalons.length > 2 && <p style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#bbb", margin:0 }}>+{allSalons.length - 2} more</p>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </main>
+  );
+}
+
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 const CATEGORIES = ["All", "Nail", "Beauty", "Hair", "Spa"];
+const SORT_OPTIONS = ["az", "tier", "area"];
+const TIER_ORDER = { Gold: 0, Silver: 1, Bronze: 2 };
 
 export default function App() {
   const [lang, setLang] = useState("en");
   const t = T[lang];
   const [salons, setSalons] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [activeCat, setActiveCat] = useState("All");
   const [search, setSearch] = useState("");
-  const [view, setView] = useState("list");
+  const [view, setView] = useState("salons"); // "salons" | "map" | "products"
+  const [sortBy, setSortBy] = useState("az");
+  const [filterTier, setFilterTier] = useState("All");
+  const [filterArea, setFilterArea] = useState("All");
+  const [filterBrand, setFilterBrand] = useState("All");
+  const [filterKbeautyOnly, setFilterKbeautyOnly] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [leafletReady, setLeafletReady] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -357,44 +466,60 @@ export default function App() {
           fetchAll(TBL_PRODUCTS, ""),
           fetchAll(TBL_SLOTS, "{stage}='ACTIVE'"),
         ]);
+        // 제품 id → 제품 객체
         const productById = {};
         productRecords.forEach(p => { productById[p.id] = p; });
+
+        // 살롱 record ID → 제품 목록
         const salonProds = {};
-        slotRecords.forEach((slot, idx) => {
-          const salonName = Array.isArray(slot.retail_name) ? slot.retail_name[0] : slot.retail_name;
-          if (!salonName) return;
-          if (!salonProds[salonName]) salonProds[salonName] = [];
-          const linkedIds = Array.isArray(slot.product) ? slot.product : [];
-          for (const pid of linkedIds) {
-            if (productById[pid]) {
-              const prod = { ...productById[pid] };
-              prod._badge = salonProds[salonName].length === 0 ? "new" : "popular";
-              salonProds[salonName].push(prod);
-            }
-          }
-          if (linkedIds.length === 0) {
-            const name = Array.isArray(slot.product) ? slot.product[0] : slot.product;
-            const match = productRecords.find(p => p.product_name === name);
-            if (match) {
-              const prod = { ...match };
-              prod._badge = salonProds[salonName].length === 0 ? "new" : "popular";
-              salonProds[salonName].push(prod);
-            }
-          }
+        slotRecords.forEach(slot => {
+          // retail_name: linked record → array of salon record IDs
+          const salonIds = Array.isArray(slot.retail_name) ? slot.retail_name : [];
+          // product: linked record → array of product record IDs
+          const productIds = Array.isArray(slot.product) ? slot.product : [];
+
+          salonIds.forEach(salonId => {
+            if (!salonProds[salonId]) salonProds[salonId] = [];
+            productIds.forEach(pid => {
+              if (productById[pid]) {
+                const prod = { ...productById[pid] };
+                prod._badge = salonProds[salonId].length === 0 ? "new" : "popular";
+                salonProds[salonId].push(prod);
+              }
+            });
+          });
         });
-        const enriched = retailRecords.map(s => ({ ...s, _products: salonProds[s.name] || [] }));
-        setSalons(enriched); setFiltered(enriched);
+
+        // 살롱 record ID로 매칭
+        const enriched = retailRecords.map(s => ({ ...s, _products: salonProds[s.id] || [] }));
+        setSalons(enriched);
+        setFiltered(enriched);
+        setAllProducts(productRecords);
       } catch(e) { console.error(e); }
       setLoading(false);
     })();
   }, []);
 
+  // derived options
+  const areas = ["All", ...Array.from(new Set(salons.map(s => s.area).filter(Boolean))).sort()];
+  const brands = ["All", ...Array.from(new Set(salons.flatMap(s => (s._products||[]).map(p => p.brand)).filter(Boolean))).sort()];
+
   useEffect(() => {
-    let r = salons;
+    let r = [...salons];
     if (activeCat !== "All") r = r.filter(s => (s.category||"").toLowerCase() === activeCat.toLowerCase());
+    if (filterTier !== "All") r = r.filter(s => s.salon_tier === filterTier);
+    if (filterArea !== "All") r = r.filter(s => s.area === filterArea);
+    if (filterBrand !== "All") r = r.filter(s => (s._products||[]).some(p => p.brand === filterBrand));
+    if (filterKbeautyOnly) r = r.filter(s => (s._products||[]).length > 0);
     if (search) r = r.filter(s => s.name?.toLowerCase().includes(search.toLowerCase()) || s.address?.toLowerCase().includes(search.toLowerCase()));
+    // sort
+    if (sortBy === "az") r.sort((a,b) => (a.name||"").localeCompare(b.name||""));
+    if (sortBy === "tier") r.sort((a,b) => (TIER_ORDER[a.salon_tier]??9) - (TIER_ORDER[b.salon_tier]??9));
+    if (sortBy === "area") r.sort((a,b) => (a.area||"").localeCompare(b.area||""));
     setFiltered(r);
-  }, [activeCat, search, salons]);
+  }, [activeCat, search, salons, sortBy, filterTier, filterArea, filterBrand, filterKbeautyOnly]);
+
+  const activeFilterCount = [filterTier!=="All", filterArea!=="All", filterBrand!=="All", filterKbeautyOnly].filter(Boolean).length;
 
   return (
     <>
@@ -450,7 +575,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* FILTER + VIEW TOGGLE */}
+      {/* CATEGORY + VIEW TOGGLE BAR */}
       <div style={{ background:"#fff", borderBottom:"1px solid #ede8e2", padding:"0 40px", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:60, zIndex:400 }}>
         <div style={{ display:"flex" }}>
           {CATEGORIES.map(cat => (
@@ -460,18 +585,86 @@ export default function App() {
             </button>
           ))}
         </div>
-        <div style={{ display:"flex", border:"1px solid #ede8e2" }}>
-          {[{id:"list",label:`☰ ${t.list}`},{id:"map",label:`◎ ${t.map}`}].map(v => (
-            <button key={v.id} onClick={() => setView(v.id)}
-              style={{ padding:"8px 16px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:view===v.id?600:400, color:view===v.id?"#fff":"#999", background:view===v.id?"#1a1a1a":"transparent", transition:"all 0.2s" }}>
-              {v.label}
-            </button>
-          ))}
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          {/* view toggle */}
+          <div style={{ display:"flex", border:"1px solid #ede8e2" }}>
+            {[{id:"salons",label:`☰ ${t.list}`},{id:"products",label:`✦ ${t.by_product}`},{id:"map",label:`◎ ${t.map}`}].map(v => (
+              <button key={v.id} onClick={() => setView(v.id)}
+                style={{ padding:"8px 14px", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", fontWeight:view===v.id?600:400, color:view===v.id?"#fff":"#999", background:view===v.id?"#1a1a1a":"transparent", transition:"all 0.2s", whiteSpace:"nowrap" }}>
+                {v.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
+      {/* FILTER + SORT BAR */}
+      {view !== "map" && (
+        <div style={{ background:"#faf7f4", borderBottom:"1px solid #ede8e2", padding:"10px 40px", display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
+          {/* filter toggle */}
+          <button onClick={() => setShowFilters(f => !f)}
+            style={{ display:"flex", alignItems:"center", gap:6, padding:"6px 14px", border:`1px solid ${showFilters||activeFilterCount>0?"#b85c5c":"#ede8e2"}`, background: showFilters||activeFilterCount>0?"#fdf0f0":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:activeFilterCount>0?"#b85c5c":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
+            ⚙ {t.filter} {activeFilterCount > 0 && <span style={{ background:"#b85c5c", color:"#fff", borderRadius:"50%", width:16, height:16, display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:"9px", fontWeight:700 }}>{activeFilterCount}</span>}
+          </button>
+
+          {/* sort */}
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+            style={{ padding:"6px 12px", border:"1px solid #ede8e2", background:"#fff", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", cursor:"pointer", borderRadius:"20px", outline:"none" }}>
+            <option value="az">{t.sort_az}</option>
+            <option value="tier">{t.sort_tier}</option>
+            <option value="area">{t.sort_area}</option>
+          </select>
+
+          {/* K-beauty toggle */}
+          <button onClick={() => setFilterKbeautyOnly(f => !f)}
+            style={{ padding:"6px 14px", border:`1px solid ${filterKbeautyOnly?"#b85c5c":"#ede8e2"}`, background:filterKbeautyOnly?"#fdf0f0":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:filterKbeautyOnly?"#b85c5c":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
+            ✦ {t.filter_kbeauty}
+          </button>
+
+          {/* clear */}
+          {activeFilterCount > 0 && (
+            <button onClick={() => { setFilterTier("All"); setFilterArea("All"); setFilterBrand("All"); setFilterKbeautyOnly(false); }}
+              style={{ padding:"6px 14px", border:"none", background:"transparent", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#aaa", textDecoration:"underline" }}>
+              {t.clear}
+            </button>
+          )}
+
+          {/* expanded filters */}
+          {showFilters && (
+            <div style={{ width:"100%", display:"flex", gap:10, flexWrap:"wrap", paddingTop:8, borderTop:"1px solid #ede8e2", marginTop:4 }}>
+              {/* Tier */}
+              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", letterSpacing:"1px", textTransform:"uppercase" }}>{t.filter_tier}:</span>
+                {["All","Gold","Silver","Bronze"].map(tier => (
+                  <button key={tier} onClick={() => setFilterTier(tier)}
+                    style={{ padding:"4px 12px", border:`1px solid ${filterTier===tier?"#c9a96e":"#ede8e2"}`, background:filterTier===tier?"#fdf8ee":"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:filterTier===tier?"#a07832":"#777", borderRadius:"20px", transition:"all 0.2s" }}>
+                    {tier === "All" ? t.all : `✦ ${tier}`}
+                  </button>
+                ))}
+              </div>
+              {/* Area */}
+              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", letterSpacing:"1px", textTransform:"uppercase" }}>{t.filter_area}:</span>
+                <select value={filterArea} onChange={e => setFilterArea(e.target.value)}
+                  style={{ padding:"4px 10px", border:"1px solid #ede8e2", background:"#fff", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", cursor:"pointer", borderRadius:"20px", outline:"none" }}>
+                  {areas.map(a => <option key={a} value={a}>{a === "All" ? t.all : a}</option>)}
+                </select>
+              </div>
+              {/* Brand */}
+              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", letterSpacing:"1px", textTransform:"uppercase" }}>{t.filter_brand}:</span>
+                <select value={filterBrand} onChange={e => setFilterBrand(e.target.value)}
+                  style={{ padding:"4px 10px", border:"1px solid #ede8e2", background:"#fff", fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", cursor:"pointer", borderRadius:"20px", outline:"none" }}>
+                  {brands.map(b => <option key={b} value={b}>{b === "All" ? t.all : b}</option>)}
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* CONTENT */}
-      {view === "list" ? (
+      {view === "salons" ? (
         <main style={{ maxWidth:1200, margin:"0 auto", padding:"50px 40px 90px" }}>
           {loading ? (
             <div style={{ textAlign:"center", padding:"80px 0" }}>
@@ -499,6 +692,8 @@ export default function App() {
             </>
           )}
         </main>
+      ) : view === "products" ? (
+        <ProductsView salons={filtered} lang={lang} />
       ) : (
         leafletReady
           ? <div style={{ height:"calc(100vh - 120px)" }}><LeafletMap salons={filtered} onSalonClick={setSelectedSalon} mini={false} /></div>
