@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-
+const AT_KEY = process.env.REACT_APP_AIRTABLE_KEY;
+const AT_BASE = process.env.REACT_APP_AIRTABLE_BASE;
 const TBL_RETAIL = "tblKBJOQMOoskSVdx";
 const TBL_PRODUCTS = "tblQkdtqAA9kC0n1w";
 const TBL_SLOTS = "tblpLTlKSizL7y3W6";
