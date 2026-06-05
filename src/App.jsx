@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const AT_KEY = "patGO2b1skKPGD5CX.781255a41525ac147bfbb475816325d760979f3e76f96202d7449f0c8bdc2e4b";
-const AT_BASE = "appKFmxJ17K3yZQNk";
+
 const TBL_RETAIL = "tblKBJOQMOoskSVdx";
 const TBL_PRODUCTS = "tblQkdtqAA9kC0n1w";
 const TBL_SLOTS = "tblpLTlKSizL7y3W6";
