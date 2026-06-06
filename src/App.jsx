@@ -182,7 +182,11 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
 
         {/* Hero */}
         <div style={{ position:"relative", paddingBottom:"38%", overflow:"hidden", background:"#1a1a1a", minHeight:160 }}>
-          <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,#1a1a1a 0%,#2d2420 100%)" }} />
+          {salon.salon_image
+            ? <img src={Array.isArray(salon.salon_image) ? salon.salon_image[0]?.url : salon.salon_image} alt={salon.name} style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }} />
+            : <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,#1a1a1a 0%,#2d2420 100%)" }} />
+          }
+          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)" }} />
           <div style={{ position:"absolute", top:-60, right:-60, width:280, height:280, borderRadius:"50%", border:"1px solid rgba(201,169,110,0.15)" }} />
           <button onClick={onClose} style={{ position:"absolute", top:16, right:16, background:"rgba(255,255,255,0.12)", color:"#fff", border:"none", width:34, height:34, borderRadius:"50%", cursor:"pointer", fontSize:"18px", display:"flex", alignItems:"center", justifyContent:"center", zIndex:10 }}>×</button>
           <div style={{ position:"absolute", bottom:22, left:26 }}>
@@ -470,15 +474,21 @@ export default function App() {
         const productById = {};
         productRecords.forEach(p => { productById[p.id] = p; });
 
-        // 살롱 record ID → 제품 목록
-        const salonProds = {};
+        // 살롱 이름 → 제품 목록 (lookup 필드 대응)
+        const salonProds = {}; // key: salon record ID
+        // 살롱 이름 → record ID 맵
+        const nameToId = {};
+        retailRecords.forEach(s => { if (s.name) nameToId[s.name.trim()] = s.id; });
+
         slotRecords.forEach(slot => {
-          // retail_name: linked record → array of salon record IDs
-          const salonIds = Array.isArray(slot.retail_name) ? slot.retail_name : [];
-          // product: linked record → array of product record IDs
+          // retail_name: lookup → 텍스트 배열 또는 linked → record ID 배열
+          const rawNames = Array.isArray(slot.retail_name) ? slot.retail_name : [slot.retail_name];
           const productIds = Array.isArray(slot.product) ? slot.product : [];
 
-          salonIds.forEach(salonId => {
+          rawNames.forEach(raw => {
+            if (!raw) return;
+            // lookup이면 텍스트, linked면 record ID
+            const salonId = nameToId[raw.trim()] || raw;
             if (!salonProds[salonId]) salonProds[salonId] = [];
             productIds.forEach(pid => {
               if (productById[pid]) {
