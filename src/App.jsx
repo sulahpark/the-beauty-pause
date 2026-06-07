@@ -363,32 +363,124 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
 }
 
 // ── PRODUCT MODAL ─────────────────────────────────────────────────────────────
-function ProductModal({ prod, salonsWithProd, onClose, onSalonClick, lang }) {
+function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick, lang, user, favourites, onToggleFav }) {
   if (!prod) return null;
-  const t=T[lang]; const img=getProdImg(prod);
+  const t=T[lang];
   const isNew=prod._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c";
+
+  // photo slider — main Image + more_image
+  const allImgs=(()=>{
+    const main=Array.isArray(prod.Image)?prod.Image.map(a=>a.url||a).filter(Boolean):(prod.Image?[prod.Image]:[]);
+    const more=Array.isArray(prod.more_image)?prod.more_image.map(a=>a.url||a).filter(Boolean):[];
+    return [...new Set([...main,...more])];
+  })();
+  const [imgIdx,setImgIdx]=useState(0);
+  const [showIngr,setShowIngr]=useState(false);
+
+  // brand — use brand_name lookup if available, else brand
+  const brandDisplay = prod.brand_name||(Array.isArray(prod.brand)?null:(!prod.brand?.startsWith?.("rec")?prod.brand:null))||"—";
+
+  // product detail fields
+  const details=[
+    {key:"product_1type",label:lang==="fr"?"Type":"Type"},
+    {key:"product_2usage",label:lang==="fr"?"Utilisation":"Usage"},
+    {key:"product_3texture",label:lang==="fr"?"Texture":"Texture"},
+    {key:"test_reason",label:lang==="fr"?"Pour qui ?":"Who is it for?"},
+    {key:"product_4target",label:lang==="fr"?"Peau cible":"Target skin"},
+    {key:"product_5function",label:lang==="fr"?"Fonction":"Function"},
+    {key:"product_6formula",label:lang==="fr"?"Formule":"Formula"},
+    {key:"product_7key_ingredient",label:lang==="fr"?"Ingrédient clé":"Key ingredient"},
+    {key:"product_8organic_certification",label:lang==="fr"?"Certification bio":"Organic certification"},
+    {key:"description",label:lang==="fr"?"Description":"Description"},
+  ].filter(d=>prod[d.key]);
+
+  // related products — same category, exclude current
+  const related=(allProducts||[]).filter(p=>p.id!==prod.id&&p.category===prod.category).slice(0,4);
+
   return (
-    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.82)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",maxWidth:480,width:"100%",borderRadius:16,overflow:"hidden",boxShadow:"0 48px 120px rgba(0,0,0,0.4)",maxHeight:"90vh",overflowY:"auto"}}>
-        <div style={{position:"relative",paddingBottom:"65%",overflow:"hidden"}}>
-          {img?<img src={img} alt={prod.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"48px"}}>✨</div>}
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 50%)"}} />
-          <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"rgba(0,0,0,0.4)",color:"#fff",border:"none",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",maxWidth:640,width:"100%",borderRadius:16,overflow:"hidden",boxShadow:"0 48px 120px rgba(0,0,0,0.4)",maxHeight:"92vh",overflowY:"auto",display:"flex",flexDirection:"column"}}>
+
+        {/* PHOTO SLIDER */}
+        <div style={{position:"relative",paddingBottom:"60%",overflow:"hidden",background:"#f5f0eb",flexShrink:0}}>
+          {allImgs.length>0
+            ? <img src={allImgs[imgIdx]} alt={prod.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"opacity 0.3s"}} />
+            : <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"48px"}}>✨</div>
+          }
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.4) 0%,transparent 50%)"}} />
+          <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"rgba(0,0,0,0.4)",color:"#fff",border:"none",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
+          {/* badge */}
           <div style={{position:"absolute",bottom:14,left:14,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"4px 12px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-        </div>
-        <div style={{padding:"24px 26px 28px"}}>
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 4px"}}>{prod.brand}</p>
-          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:600,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.2}}>{prod.product_name}</h2>
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:"0 0 14px"}}>{prod.category}</p>
-          {prod.description&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#666",lineHeight:1.75,margin:"0 0 20px"}}>{prod.description}</p>}
-          {/* price */}
-          {prod.price_customer&&<div style={{background:"#fff",border:"1px solid #ede8e2",padding:"12px 16px",borderRadius:8,marginBottom:20,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#888"}}>Price</span>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#1a1a1a",fontWeight:600}}>€{prod.price_customer}</span>
+          {/* fav btn */}
+          {onToggleFav&&<div style={{position:"absolute",top:14,left:14,zIndex:2}}>
+            <FavBtn type="product" item={prod} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={22}/>
           </div>}
-          {/* salons */}
+          {/* arrows */}
+          {allImgs.length>1&&<>
+            <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i-1+allImgs.length)%allImgs.length);}} style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>‹</button>
+            <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i+1)%allImgs.length);}} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>›</button>
+            {/* dots */}
+            <div style={{position:"absolute",bottom:14,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5,zIndex:2}}>
+              {allImgs.map((_,i)=><div key={i} onClick={e=>{e.stopPropagation();setImgIdx(i);}} style={{width:i===imgIdx?18:6,height:6,borderRadius:3,background:i===imgIdx?"#fff":"rgba(255,255,255,0.5)",transition:"all 0.2s",cursor:"pointer"}} />)}
+            </div>
+          </>}
+          {/* thumbnail strip */}
+          {allImgs.length>1&&(
+            <div style={{position:"absolute",bottom:0,right:0,display:"flex",gap:4,padding:"0 14px 36px 0"}}>
+              {allImgs.slice(0,5).map((url,i)=>(
+                <div key={i} onClick={e=>{e.stopPropagation();setImgIdx(i);}} style={{width:36,height:36,borderRadius:6,overflow:"hidden",border:i===imgIdx?"2px solid #fff":"2px solid rgba(255,255,255,0.3)",cursor:"pointer",flexShrink:0,transition:"all 0.2s"}}>
+                  <img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div style={{padding:"22px 24px 28px"}}>
+          {/* name + brand */}
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 4px"}}>{brandDisplay}</p>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:600,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.2}}>{prod.product_name}</h2>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+            <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>{prod.category}</p>
+            {prod.price_customer&&<>
+              <span style={{color:"#ede8e2"}}>·</span>
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:0,fontWeight:600}}>€{prod.price_customer}</p>
+            </>}
+          </div>
+
+          {/* detail fields */}
+          {details.length>0&&(
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
+              {details.map(({key,label})=>(
+                <div key={key} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(key)?"1/-1":"auto"}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{label}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{prod[key]}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ingredients — collapsible */}
+          {prod.ingredients&&(
+            <div style={{marginBottom:16,border:"1px solid #ede8e2",borderRadius:8,overflow:"hidden"}}>
+              <button onClick={()=>setShowIngr(v=>!v)}
+                style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 14px",background:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500}}>
+                <span style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700}}>{lang==="fr"?"Ingrédients":"Ingredients"}</span>
+                </span>
+                <span style={{color:"#aaa",fontSize:"16px",transition:"transform 0.2s",transform:showIngr?"rotate(180deg)":"none"}}>▾</span>
+              </button>
+              {showIngr&&(
+                <div style={{padding:"0 14px 14px",background:"#fff",borderTop:"1px solid #f5f0f0"}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#777",lineHeight:1.7,margin:"10px 0 0"}}>{prod.ingredients}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* find in salon */}
           {salonsWithProd.length>0&&(
-            <div>
+            <div style={{marginBottom:20}}>
               <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ {t.find_in_salon}</p>
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {salonsWithProd.map(s=>{
@@ -402,10 +494,40 @@ function ProductModal({ prod, salonsWithProd, onClose, onSalonClick, lang }) {
                         {sImg?<img src={sImg} alt={s.name} style={{width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"rgba(201,169,110,0.4)"}}>{s.name?.[0]}</span></div>}
                       </div>
                       <div style={{flex:1,minWidth:0}}>
-                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.address}</p>
+                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.address}</p>
                       </div>
                       <span style={{color:"#ccc",fontSize:"16px",flexShrink:0}}>›</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* related products */}
+          {related.length>0&&(
+            <div>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+                <div style={{height:1,flex:1,background:"#ede8e2"}} />
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#aaa",letterSpacing:"2px",textTransform:"uppercase",margin:0,whiteSpace:"nowrap"}}>You might also like</p>
+                <div style={{height:1,flex:1,background:"#ede8e2"}} />
+              </div>
+              <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:4}}>
+                {related.map(p=>{
+                  const img=getProdImg(p); const c=p._badge==="new"?"#c9a96e":"#b85c5c";
+                  return (
+                    <div key={p.id} onClick={e=>{e.stopPropagation();onClose();setTimeout(()=>{},100);}}
+                      style={{flexShrink:0,width:110,background:"#fff",border:"1px solid #ede8e2",borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
+                      onMouseEnter={e=>{e.currentTarget.style.borderColor=c;e.currentTarget.style.transform="translateY(-2px)";}}
+                      onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.transform="none";}}>
+                      <div style={{paddingBottom:"80%",position:"relative",overflow:"hidden",background:"#f5f0eb"}}>
+                        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"20px"}}>✨</div>}
+                      </div>
+                      <div style={{padding:"7px 8px 9px"}}>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:c,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{p.brand}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#1a1a1a",margin:0,lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
+                      </div>
                     </div>
                   );
                 })}
@@ -594,9 +716,36 @@ function AuthModal({ onClose, lang, salons, initialMode="signup" }) {
   };
 
   const L={
-    signup:{title:"Create your account",sub:"Save your favourite salons and products.",btn:"Create account",alt:"Already have an account?",altBtn:"Log in"},
-    login:{title:"Welcome back",sub:"Log in to see your favourites.",btn:"Log in",alt:"New here?",altBtn:"Create account"},
-    reset:{title:"Reset password",sub:"We'll send you a link to reset your password.",btn:"Send reset link",alt:"Back to",altBtn:"Log in"},
+    signup:{
+      title: lang==="fr"?"Créer un compte":"Create your account",
+      sub: lang==="fr"?"Sauvegardez vos salons et produits préférés.":"Save your favourite salons and products.",
+      btn: lang==="fr"?"Créer un compte":"Create account",
+      alt: lang==="fr"?"Déjà un compte ?":"Already have an account?",
+      altBtn: lang==="fr"?"Se connecter":"Log in",
+      fname: lang==="fr"?"Prénom":"First name",
+      email:"Email",
+      password: lang==="fr"?"Mot de passe":"Password",
+      forgot: lang==="fr"?"Mot de passe oublié ?":"Forgot password?",
+    },
+    login:{
+      title: lang==="fr"?"Bon retour":"Welcome back",
+      sub: lang==="fr"?"Connectez-vous pour voir vos favoris.":"Log in to see your favourites.",
+      btn: lang==="fr"?"Se connecter":"Log in",
+      alt: lang==="fr"?"Nouveau ici ?":"New here?",
+      altBtn: lang==="fr"?"Créer un compte":"Create account",
+      fname: lang==="fr"?"Prénom":"First name",
+      email:"Email",
+      password: lang==="fr"?"Mot de passe":"Password",
+      forgot: lang==="fr"?"Mot de passe oublié ?":"Forgot password?",
+    },
+    reset:{
+      title: lang==="fr"?"Réinitialiser le mot de passe":"Reset password",
+      sub: lang==="fr"?"Nous vous enverrons un lien de réinitialisation.":"We'll send you a link to reset your password.",
+      btn: lang==="fr"?"Envoyer le lien":"Send reset link",
+      alt: lang==="fr"?"Retour à":"Back to",
+      altBtn: lang==="fr"?"Se connecter":"Log in",
+      fname:"First name", email:"Email", password:"Password", forgot:"",
+    },
   }[mode];
 
   return (
@@ -621,19 +770,19 @@ function AuthModal({ onClose, lang, salons, initialMode="signup" }) {
             <>
               {mode==="signup"&&(
                 <div style={{marginBottom:14}}>
-                  <label style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>First name</label>
+                  <label style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{L.fname}</label>
                   <input value={fn} onChange={e=>setFn(e.target.value)} style={{width:"100%",padding:"11px 14px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}} onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"} />
                 </div>
               )}
               <div style={{marginBottom:14}}>
-                <label style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>Email</label>
+                <label style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{L.email}</label>
                 <input type="email" value={em} onChange={e=>setEm(e.target.value)} style={{width:"100%",padding:"11px 14px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}} onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"} />
               </div>
               {mode!=="reset"&&(
                 <div style={{marginBottom:20}}>
-                  <label style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>Password</label>
+                  <label style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{L.password}</label>
                   <input type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&submit()} style={{width:"100%",padding:"11px 14px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}} onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"} />
-                  {mode==="login"&&<button onClick={()=>{setMode("reset");setMsg("");setSt("idle");}} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",marginTop:6,padding:0,textDecoration:"underline"}}>Forgot password?</button>}
+                  {mode==="login"&&<button onClick={()=>{setMode("reset");setMsg("");setSt("idle");}} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",marginTop:6,padding:0,textDecoration:"underline"}}>{L.forgot}</button>}
                 </div>
               )}
               {msg&&st==="error"&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#b85c5c",margin:"0 0 12px",lineHeight:1.4}}>{msg}</p>}
@@ -653,16 +802,16 @@ function AuthModal({ onClose, lang, salons, initialMode="signup" }) {
 }
 
 // ── HEART / FAVOURITE BUTTON ──────────────────────────────────────────────────
-function FavBtn({ type, item, user, favourites, onToggle, size=20 }) {
+function FavBtn({ type, item, user, favourites, onToggle, size=22 }) {
   const isFav = favourites.some(f=>f.type===type&&f.item_id===item.id);
   const [hov,setHov]=useState(false);
   return (
     <button
       onClick={e=>{e.stopPropagation();onToggle(type,item);}}
       onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",width:size+10,height:size+10,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 8px rgba(0,0,0,0.15)",transition:"all 0.2s",transform:hov?"scale(1.1)":"scale(1)"}}
-      title={isFav?"Remove from favourites":"Add to favourites"}>
-      <svg width={size-2} height={size-2} viewBox="0 0 24 24" fill={isFav?"#b85c5c":"none"} stroke={isFav?"#b85c5c":"#aaa"} strokeWidth="2">
+      style={{background:"none",border:"none",cursor:"pointer",padding:2,display:"flex",alignItems:"center",justifyContent:"center",transition:"transform 0.2s",transform:hov?"scale(1.2)":"scale(1)",filter:`drop-shadow(0 1px 3px rgba(0,0,0,0.3))`}}
+      title={isFav?"Remove from favourites":"Save to favourites"}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={isFav?"#e05c7a":"none"} stroke={isFav?"#e05c7a":"rgba(255,255,255,0.9)"} strokeWidth="2.5">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
       </svg>
     </button>
@@ -882,18 +1031,18 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
                 {previewSalons.map(s=>{
                   const img=getSalonImg(s); const prods=s._products||[];
                   return (
-                    <div key={s.id} onClick={()=>navigate("/salons")} style={{flexShrink:0,width:190,background:"#fff",border:"1px solid #f0ebe5",borderRadius:10,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.04)",transition:"all 0.2s"}}
+                    <div key={s.id} onClick={()=>navigate("/salons")} style={{flexShrink:0,width:285,background:"#fff",border:"1px solid #f0ebe5",borderRadius:12,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.04)",transition:"all 0.2s"}}
                       onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.1)";e.currentTarget.style.borderColor="#e8c9a0";}}
                       onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.04)";e.currentTarget.style.borderColor="#f0ebe5";}}>
-                      <div style={{paddingBottom:"52%",position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
-                        {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
-                        <div style={{position:"absolute",top:7,left:7,background:"rgba(0,0,0,0.55)",color:"#f5f0eb",fontSize:"9px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"2px 7px",borderRadius:20}}>{s.category}</div>
-                        {s.salon_tier&&<div style={{position:"absolute",top:6,right:6}}><TierBadge tier={s.salon_tier} size={11}/></div>}
+                      <div style={{paddingBottom:"60%",position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
+                        {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"44px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
+                        <div style={{position:"absolute",top:9,left:9,background:"rgba(0,0,0,0.55)",color:"#f5f0eb",fontSize:"10px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 9px",borderRadius:20}}>{s.category}</div>
+                        {s.salon_tier&&<div style={{position:"absolute",top:8,right:8}}><TierBadge tier={s.salon_tier} size={13}/></div>}
                       </div>
-                      <div style={{padding:"9px 11px 11px"}}>
-                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:"0 0 5px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.area||"Paris"}</p>
-                        {prods.length>0&&<div style={{display:"flex",gap:4}}>{prods.slice(0,2).map(p=>{const isNew=p._badge==="new";return<span key={p.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#a07832":"#b85c5c",background:isNew?"#fdf8ee":"#fdf0f0",padding:"2px 6px",borderRadius:10,fontWeight:600}}>{p.brand}</span>;})}</div>}
+                      <div style={{padding:"12px 14px 14px"}}>
+                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontWeight:600,color:"#1a1a1a",margin:"0 0 3px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 6px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.area||"Paris"}</p>
+                        {prods.length>0&&<div style={{display:"flex",gap:5}}>{prods.slice(0,2).map(p=>{const isNew=p._badge==="new";return<span key={p.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:isNew?"#a07832":"#b85c5c",background:isNew?"#fdf8ee":"#fdf0f0",padding:"2px 8px",borderRadius:12,fontWeight:600}}>{p.brand}</span>;})}</div>}
                       </div>
                     </div>
                   );
@@ -915,16 +1064,16 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
                 {previewProds.map(p=>{
                   const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
                   return (
-                    <div key={p.id} onClick={()=>navigate("/products")} style={{flexShrink:0,width:130,background:"#fff",border:`1px solid ${border}`,borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
+                    <div key={p.id} onClick={()=>navigate("/products")} style={{flexShrink:0,width:195,background:"#fff",border:`1px solid ${border}`,borderRadius:12,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
                       onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.08)";}}
                       onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
-                      <div style={{paddingBottom:"85%",position:"relative",overflow:"hidden",background:"#f5f0eb"}}>
-                        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px"}}>✨</div>}
-                        <div style={{position:"absolute",top:6,left:6,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"7px",fontWeight:800,letterSpacing:"1px",textTransform:"uppercase",padding:"2px 7px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
+                      <div style={{paddingBottom:"100%",position:"relative",overflow:"hidden",background:"#f5f0eb"}}>
+                        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px"}}>✨</div>}
+                        <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
                       </div>
-                      <div style={{padding:"8px 9px 10px"}}>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{p.brand}</p>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#1a1a1a",margin:0,lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
+                      <div style={{padding:"10px 12px 12px"}}>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#1a1a1a",margin:0,lineHeight:1.35,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
                       </div>
                     </div>
                   );
@@ -936,22 +1085,19 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
         )}
       </section>
 
-      {/* ② WHAT IS THIS */}
-      <section style={{background:"#faf7f4",padding:`clamp(56px,7vw,96px) ${px}`}}>
-        <div style={{maxWidth:640,animation:"fadeUp 0.8s ease both"}}>
-          <Label>{L.what_title}</Label>
-          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,3vw,36px)",fontWeight:300,color:"#1a1a1a",lineHeight:1.45}}>{L.what_body}</p>
-        </div>
-      </section>
-
-      {/* ③ HOW IT WORKS */}
+      {/* ② WHAT IS THIS + HOW IT WORKS — merged dark section */}
       <section style={{background:"#0d0d0d",padding:`clamp(56px,7vw,96px) ${px}`}}>
+        <div style={{maxWidth:640,marginBottom:56}}>
+          <Label>{L.what_title}</Label>
+          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,3vw,34px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.5}}>{L.what_body}</p>
+        </div>
+        <div style={{height:1,background:"rgba(255,255,255,0.08)",marginBottom:48}} />
         <Label>{L.how_title}</Label>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:32,maxWidth:900}}>
           {L.steps.map((step,i)=>(
             <div key={i} style={{display:"flex",gap:20,alignItems:"flex-start",animation:`fadeUp 0.7s ease ${i*0.12}s both`}}>
               <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:"rgba(201,169,110,0.2)",fontWeight:300,lineHeight:1,flexShrink:0,marginTop:-6}}>0{i+1}</span>
-              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"15px",color:"#f5f0eb",fontWeight:400,lineHeight:1.6,margin:"8px 0 0"}}>{step}</p>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"15px",color:"#aaa",fontWeight:400,lineHeight:1.6,margin:"8px 0 0"}}>{step}</p>
             </div>
           ))}
         </div>
@@ -1053,67 +1199,173 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
   const t=T[lang]; const isMobile=window.innerWidth<768;
   const [prodSearch,setProdSearch]=useState("");
   const [prodCat,setProdCat]=useState("All");
-  const [prodBrand,setProdBrand]=useState("All");
+  const [inSalonOnly,setInSalonOnly]=useState(false);
+  const [showFilterModal,setShowFilterModal]=useState(false);
   const [fp,setFp]=useState(allProducts);
   const [showJoin,setShowJoin]=useState(false);
   const [selProd,setSelProd]=useState(null);
   const [selSalon,setSelSalon]=useState(null);
+  const [mapSalons,setMapSalons]=useState([]); // salons shown on map
   const [lr,setLr]=useState(!!window.L);
+
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
-  useEffect(()=>{let r=[...allProducts];if(prodCat!=="All")r=r.filter(p=>p.category===prodCat);if(prodBrand!=="All")r=r.filter(p=>p.brand===prodBrand);if(prodSearch)r=r.filter(p=>p.product_name?.toLowerCase().includes(prodSearch.toLowerCase())||p.brand?.toLowerCase().includes(prodSearch.toLowerCase()));setFp(r);},[allProducts,prodCat,prodBrand,prodSearch]);
+
+  useEffect(()=>{
+    let r=[...allProducts];
+    if (prodCat!=="All") r=r.filter(p=>p.category===prodCat);
+    if (inSalonOnly) r=r.filter(p=>(p._salons||[]).length>0);
+    if (prodSearch) r=r.filter(p=>p.product_name?.toLowerCase().includes(prodSearch.toLowerCase())||p.brand?.toLowerCase().includes(prodSearch.toLowerCase()));
+    setFp(r);
+  },[allProducts,prodCat,inSalonOnly,prodSearch]);
+
+  // when product selected, update map to show its salons
+  const handleProdClick=(p)=>{
+    setSelProd(p);
+    setMapSalons(p._salons||[]);
+  };
+
   const cats=["All",...Array.from(new Set(allProducts.map(p=>p.category).filter(Boolean))).sort()];
-  const brands=["All",...Array.from(new Set(allProducts.map(p=>p.brand).filter(Boolean))).sort()];
+  const activeFilterCount=[prodCat!=="All",inSalonOnly].filter(Boolean).length;
+
+  const SS={fontFamily:"'DM Sans',sans-serif"};
+
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
       <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
       {isMobile&&<MobileTabBar lang={lang} active="/products" user={user} />}
-      {/* filter */}
-      <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px clamp(12px,3vw,20px)",display:"flex",gap:8,alignItems:"center",overflowX:"auto",flexWrap:"nowrap",position:"sticky",top:isMobile?100:56,zIndex:399}}>
-        <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,minWidth:130,flexShrink:0}}/>
+
+      {/* FILTER BAR */}
+      <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:isMobile?100:56,zIndex:399,flexWrap:"nowrap"}}>
+        {/* filter modal button */}
+        <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:"12px",fontWeight:500,borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          {t.filter}
+          {activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
+        </button>
         <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-        {cats.map(cat=>{const a=prodCat===cat;return<button key={cat} onClick={()=>setProdCat(cat)} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;})}
-        <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-        <select value={prodBrand} onChange={e=>setProdBrand(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#666",outline:"none",borderRadius:20,cursor:"pointer",flexShrink:0}}>
-          {brands.map(b=><option key={b} value={b}>{b}</option>)}
-        </select>
+        {/* in salon button */}
+        <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"7px 13px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:"12px",fontWeight:inSalonOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>
+          📍 In salon
+        </button>
+        {/* category chips */}
+        {cats.filter(c=>c!=="All").map(cat=>{
+          const a=prodCat===cat;
+          return <button key={cat} onClick={()=>setProdCat(c=>c===cat?"All":cat)} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
+        })}
+        {/* search */}
+        <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:isMobile?130:200,marginLeft:"auto",flexShrink:0}}/>
       </div>
-      <main style={{maxWidth:1200,margin:"0 auto",padding:"24px clamp(12px,3vw,24px) 80px"}}>
-        {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
-        :<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:20}}>
-          {fp.map((p,i)=>{
-            const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
-            return (
-              <div key={p.id} onClick={()=>setSelProd(p)} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",borderRadius:12,cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative"}}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 30px rgba(0,0,0,0.1)";}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
-                {onToggleFav&&<div style={{position:"absolute",top:8,right:8,zIndex:2}}>
-                  <FavBtn type="product" item={p} user={user} favourites={favourites} onToggle={onToggleFav} size={16}/>
-                </div>}
-                <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
-                  {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
-                  <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-                </div>
-                <div style={{padding:"12px 14px 14px"}}>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.4,fontWeight:500}}>{p.product_name}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:"0 0 6px"}}>{p.category}</p>
-                  {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:"0 0 8px",fontWeight:600}}>€{p.price_customer}</p>}
-                  <div style={{borderTop:"1px solid #f0ebe5",paddingTop:8}}>
-                    <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 4px"}}>📍 {t.available_at}</p>
-                    {(p._salons||[]).slice(0,2).map(s=><p key={s.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#666",margin:"0 0 1px"}}>→ {s.name}</p>)}
-                    {(p._salons||[]).length>2&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:0}}>+{p._salons.length-2} more</p>}
+
+      {/* SPLIT LAYOUT */}
+      {isMobile ? (
+        /* mobile: simple grid */
+        <main style={{padding:"16px clamp(12px,3vw,20px) 80px"}}>
+          {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
+          :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:14}}>
+            {fp.map((p,i)=><ProductCard key={p.id} p={p} i={i} t={t} onClick={()=>handleProdClick(p)} user={user} favourites={favourites} onToggleFav={onToggleFav} />)}
+          </div>}
+        </main>
+      ) : (
+        <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
+          {/* LEFT: product list */}
+          <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
+            {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
+            :<>
+              <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:16}}>{fp.length} products{selProd?` · Showing ${(selProd._salons||[]).length} salon${(selProd._salons||[]).length!==1?"s":""} on map`:""}</p>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
+                {fp.map((p,i)=>(
+                  <div key={p.id} onClick={()=>handleProdClick(p)}
+                    style={{background:"#fff",border:`1.5px solid ${selProd?.id===p.id?"#c9a96e":"#f0ebe5"}`,borderRadius:12,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative",boxShadow:selProd?.id===p.id?"0 4px 20px rgba(201,169,110,0.2)":"none"}}
+                    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.09)";}}
+                    onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=selProd?.id===p.id?"0 4px 20px rgba(201,169,110,0.2)":"none";}}>
+                    {onToggleFav&&<div style={{position:"absolute",top:8,right:8,zIndex:2}}><FavBtn type="product" item={p} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={16}/></div>}
+                    <ProductCard p={p} i={i} t={t} onClick={()=>handleProdClick(p)} user={user} favourites={favourites} onToggleFav={onToggleFav} noWrapper />
                   </div>
+                ))}
+              </div>
+            </>}
+          </div>
+          {/* RIGHT: map */}
+          <div style={{flex:1,position:"sticky",top:0,height:"100%",display:"flex",flexDirection:"column"}}>
+            {/* map hint */}
+            <div style={{background:"#f5f0eb",borderBottom:"1px solid #ede8e2",padding:"10px 16px",display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+              {selProd
+                ? <><span style={{fontSize:"14px"}}>📍</span><span style={{...SS,fontSize:"12px",color:"#888"}}><strong style={{color:"#1a1a1a"}}>{selProd.product_name}</strong> — {(selProd._salons||[]).length} salon{(selProd._salons||[]).length!==1?"s":""}</span></>
+                : <><span style={{fontSize:"14px"}}>💡</span><span style={{...SS,fontSize:"12px",color:"#aaa"}}>Click a product to see where it's available</span></>
+              }
+              {selProd&&<button onClick={()=>{setSelProd(null);setMapSalons([]);}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"18px",lineHeight:1}}>×</button>}
+            </div>
+            {lr
+              ? <SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} />
+              : <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>
+            }
+          </div>
+        </div>
+      )}
+
+      {/* product filter modal */}
+      {showFilterModal&&(
+        <div onClick={()=>setShowFilterModal(false)} style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",width:"100%",maxWidth:500,borderRadius:"16px 16px 0 0",maxHeight:"80vh",overflow:"auto",boxShadow:"0 -8px 40px rgba(0,0,0,0.15)"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 22px 12px",borderBottom:"1px solid #ede8e2",position:"sticky",top:0,background:"#faf7f4"}}>
+              <button onClick={()=>setShowFilterModal(false)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"20px",color:"#999",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+              <h3 style={{...SS,fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:0}}>{t.filter}</h3>
+              <button onClick={()=>{setProdCat("All");setInSalonOnly(false);}} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:"12px",color:"#aaa",textDecoration:"underline"}}>{t.clear}</button>
+            </div>
+            <div style={{padding:"18px 22px 28px"}}>
+              {/* In salon */}
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingBottom:18,borderBottom:"1px solid #ede8e2",marginBottom:18}}>
+                <span style={{...SS,fontSize:"13px",color:"#333",fontWeight:500}}>📍 In salon only</span>
+                <div onClick={()=>setInSalonOnly(v=>!v)} style={{width:46,height:26,borderRadius:13,background:inSalonOnly?"#c9a96e":"#ddd",cursor:"pointer",position:"relative",transition:"background 0.2s",flexShrink:0}}>
+                  <div style={{width:22,height:22,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:inSalonOnly?22:2,transition:"left 0.2s",boxShadow:"0 1px 4px rgba(0,0,0,0.2)"}} />
                 </div>
               </div>
-            );
-          })}
-        </div>}
-      </main>
+              {/* Category */}
+              <p style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 10px"}}>Category</p>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:20}}>
+                {cats.map(cat=>{const a=prodCat===cat;return<button key={cat} onClick={()=>setProdCat(cat)} style={{padding:"8px 16px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#777",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,transition:"all 0.2s"}}>{cat}</button>;})}
+              </div>
+              <button onClick={()=>setShowFilterModal(false)} style={{width:"100%",padding:"14px",background:"#1a1a1a",color:"#fff",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Apply</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showJoin&&<AuthModal onClose={()=>setShowJoin(false)} lang={lang} initialMode="signup" />}
-      {selProd&&<ProductModal prod={selProd} salonsWithProd={selProd._salons||[]} onClose={()=>setSelProd(null)} onSalonClick={s=>setSelSalon(s)} lang={lang} />}
+      {selProd&&<ProductModal prod={selProd} salonsWithProd={selProd._salons||[]} allProducts={allProducts} onClose={()=>setSelProd(null)} onSalonClick={s=>setSelSalon(s)} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} />}
       {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={lr} lang={lang} />}
     </>
+  );
+}
+
+// ── PRODUCT CARD (shared) ──────────────────────────────────────────────────────
+function ProductCard({ p, i, t, onClick, user, favourites, onToggleFav, noWrapper }) {
+  const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
+  const brandDisplay=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"—";
+  const inner = (
+    <>
+      {onToggleFav&&!noWrapper&&<div style={{position:"absolute",top:8,right:8,zIndex:2}}><FavBtn type="product" item={p} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={16}/></div>}
+      <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
+        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
+        <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
+      </div>
+      <div style={{padding:"11px 13px 13px"}}>
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{brandDisplay}</p>
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",margin:"0 0 3px",lineHeight:1.35,fontWeight:500}}>{p.product_name}</p>
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px"}}>{p.category}</p>
+        {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:"#1a1a1a",margin:"0 0 6px",fontWeight:600}}>€{p.price_customer}</p>}
+        {(p._salons||[]).length>0&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",margin:0}}>📍 {(p._salons||[]).length} salon{(p._salons||[]).length!==1?"s":""}</p>}
+      </div>
+    </>
+  );
+  if (noWrapper) return inner;
+  return (
+    <div onClick={onClick} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",borderRadius:12,cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative"}}
+      onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 30px rgba(0,0,0,0.1)";}}
+      onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
+      {inner}
+    </div>
   );
 }
 
@@ -1281,13 +1533,17 @@ export default function App() {
 
   const toggleFavourite=async(type,item)=>{
     if (!user){setAuthMode("login");setShowAuth(true);return;}
+    if (!supabase) return;
     const existing=favourites.find(f=>f.type===type&&f.item_id===item.id);
     if (existing){
-      await supabase.from("favourites").delete().eq("id",existing.id);
-      setFavourites(f=>f.filter(x=>x.id!==existing.id));
+      const {error}=await supabase.from("favourites").delete().eq("id",existing.id);
+      if (error) console.error("Delete fav error:",error);
+      else setFavourites(f=>f.filter(x=>x.id!==existing.id));
     } else {
-      const {data}=await supabase.from("favourites").insert({user_id:user.id,type,item_id:item.id,item_name:item.name||item.product_name}).select().single();
-      if (data) setFavourites(f=>[...f,data]);
+      const itemName = item.name||item.product_name||"";
+      const {data,error}=await supabase.from("favourites").insert({user_id:user.id,type,item_id:item.id,item_name:itemName}).select().single();
+      if (error) console.error("Insert fav error:",error);
+      else if (data) setFavourites(f=>[...f,data]);
     }
   };
 
