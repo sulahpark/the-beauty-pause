@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPABASE_ANON_KEY
-);
+const SUPA_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPA_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabase = (SUPA_URL && SUPA_KEY)
+  ? createClient(SUPA_URL, SUPA_KEY)
+  : null;
 
 const AT_KEY = process.env.REACT_APP_AIRTABLE_KEY;
 const AT_BASE = process.env.REACT_APP_AIRTABLE_BASE;
