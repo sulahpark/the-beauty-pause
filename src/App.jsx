@@ -597,18 +597,32 @@ function useData() {
           fetchAll(TBL_SLOTS,"{stage}='ACTIVE'"),
         ]);
         const pById={}; products.forEach(p=>{pById[p.id]=p;});
+
+        // helper: extract text brand, ignore record IDs (strings starting with 'rec')
+        const cleanBrand=(val)=>{
+          if (!val) return null;
+          if (Array.isArray(val)) {
+            const txt = val.find(v=>typeof v==="string"&&!v.startsWith("rec"));
+            return txt||null;
+          }
+          if (typeof val==="string"&&val.startsWith("rec")) return null;
+          return val;
+        };
+
         const sProds={};
         slots.forEach(slot=>{
           const sIds=Array.isArray(slot.retail_name)?slot.retail_name:[];
           const pIds=Array.isArray(slot.product)?slot.product:[];
-          const brand=Array.isArray(slot.brand)?slot.brand[0]:slot.brand;
+          const slotBrand=cleanBrand(slot.brand);
           const img=slot["Image (from product)"];
           sIds.forEach(sid=>{
             if (!sProds[sid]) sProds[sid]=[];
             pIds.forEach(pid=>{
               if (!pById[pid]) return;
               const p={...pById[pid]};
-              if (!p.brand||Array.isArray(p.brand)) p.brand=brand||"—";
+              // resolve brand: product brand first, then slot brand
+              const prodBrand=cleanBrand(p.brand);
+              p.brand = prodBrand||slotBrand||"—";
               if ((!p.Image||(Array.isArray(p.Image)&&p.Image.length===0))&&img) p.Image=img;
               p._badge=sProds[sid].length===0?"new":"popular";
               sProds[sid].push(p);
@@ -713,12 +727,14 @@ function LandingPage({lang,setLang,salons,allProducts}) {
     <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:20}}>{children}</p>
   );
 
-  const previewSalons = salons.filter(s=>(s._products||[]).length>0).slice(0,4);
-  const previewProds = allProducts.slice(0,4);
+  // shuffle helper
+  const shuffle=(arr)=>[...arr].sort(()=>Math.random()-0.5);
+  const previewSalons = shuffle(salons.filter(s=>(s._products||[]).length>0));
+  const previewProds  = shuffle(allProducts);
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d;overflow-x:hidden}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d;overflow-x:hidden}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.hide-scrollbar::-webkit-scrollbar{display:none}`}</style>
 
       {/* NAV */}
       <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:`0 ${px}`,position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
@@ -731,28 +747,73 @@ function LandingPage({lang,setLang,salons,allProducts}) {
         </div>
       </nav>
 
-      {/* ① HERO */}
-      <section style={{background:"#0d0d0d",minHeight:"88vh",display:"flex",flexDirection:"column",justifyContent:"center",padding:`clamp(48px,8vw,96px) ${px}`,position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",top:-200,right:-100,width:700,height:700,borderRadius:"50%",border:"1px solid rgba(201,169,110,0.06)",pointerEvents:"none"}} />
-        <div style={{position:"absolute",top:-100,right:0,width:500,height:500,borderRadius:"50%",border:"1px solid rgba(201,169,110,0.04)",pointerEvents:"none"}} />
-        <div style={{maxWidth:700,animation:"fadeUp 1s ease both"}}>
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:24}}>{t.tagline}</p>
-          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(44px,7vw,92px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.05,marginBottom:24,whiteSpace:"pre-line"}}>{L.hero}</h1>
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"clamp(15px,1.8vw,18px)",color:"#666",lineHeight:1.75,marginBottom:44,maxWidth:480}}>{L.sub}</p>
-          <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
-            <button onClick={()=>navigate("/salons")} style={{padding:"15px 32px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:700,letterSpacing:"1.5px",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>e.target.style.background="#c9a96e"} onMouseLeave={e=>e.target.style.background="#f5f0eb"}>{L.cta1}</button>
-            <button onClick={()=>navigate("/products")} style={{padding:"15px 32px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.18)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:500,letterSpacing:"1.5px",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.color="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.18)";e.currentTarget.style.color="#f5f0eb";}}>{L.cta2}</button>
+      {/* ① HERO — left text, right scrolling previews */}
+      <section style={{background:"#0d0d0d",minHeight:"92vh",display:"flex",alignItems:"center",padding:`clamp(40px,6vw,80px) ${px}`,position:"relative",overflow:"hidden",gap:"clamp(32px,5vw,80px)"}}>
+        <div style={{position:"absolute",top:-200,right:-100,width:700,height:700,borderRadius:"50%",border:"1px solid rgba(201,169,110,0.05)",pointerEvents:"none"}} />
+
+        {/* LEFT: text */}
+        <div style={{flexShrink:0,maxWidth:isMobile?"100%":"480px",width:isMobile?"100%":"45%",animation:"fadeUp 1s ease both"}}>
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:20}}>{t.tagline}</p>
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,5.5vw,76px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.05,marginBottom:20,whiteSpace:"pre-line"}}>{L.hero}</h1>
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"clamp(14px,1.6vw,17px)",color:"#666",lineHeight:1.8,marginBottom:36}}>{L.sub}</p>
+          <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+            <button onClick={()=>navigate("/salons")} style={{padding:"14px 28px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:"1.5px",borderRadius:8,transition:"all 0.2s",whiteSpace:"nowrap"}} onMouseEnter={e=>e.target.style.background="#c9a96e"} onMouseLeave={e=>e.target.style.background="#f5f0eb"}>{L.cta1}</button>
+            <button onClick={()=>navigate("/products")} style={{padding:"14px 28px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.18)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:500,letterSpacing:"1.5px",borderRadius:8,transition:"all 0.2s",whiteSpace:"nowrap"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.color="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.18)";e.currentTarget.style.color="#f5f0eb";}}>{L.cta2}</button>
           </div>
         </div>
-        {/* stats */}
-        <div style={{display:"flex",marginTop:64,flexWrap:"wrap",gap:40}}>
-          {[{n:salons.length||"—",l:lang==="en"?"Salons in Paris":"Salons à Paris"},{n:allProducts.length||"—",l:lang==="en"?"K-Beauty products":"Produits K-Beauty"},{n:"6",l:lang==="en"?"Brands":"Marques"}].map(({n,l})=>(
-            <div key={l} style={{animation:"fadeUp 1s ease 0.1s both"}}>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(36px,5vw,56px)",fontWeight:300,color:"#f5f0eb",lineHeight:1}}>{n}</div>
-              <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#555",letterSpacing:"1px",textTransform:"uppercase",marginTop:6}}>{l}</div>
+
+        {/* RIGHT: scrolling salon + product rows (hidden on mobile) */}
+        {!isMobile&&(
+          <div style={{flex:1,display:"flex",flexDirection:"column",gap:16,overflow:"hidden",minWidth:0,animation:"fadeUp 1s ease 0.15s both"}}>
+            {/* salon row */}
+            <div>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",letterSpacing:"2px",textTransform:"uppercase",marginBottom:10}}>✦ {L.salon_title}</p>
+              <div className="hide-scrollbar" style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:4}}>
+                {previewSalons.map(s=>{
+                  const img=getSalonImg(s);
+                  return (
+                    <div key={s.id} onClick={()=>navigate("/salons")} style={{flexShrink:0,width:200,background:"#151515",border:"1px solid #2a2520",borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
+                      onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.transform="translateY(-2px)";}}
+                      onMouseLeave={e=>{e.currentTarget.style.borderColor="#2a2520";e.currentTarget.style.transform="none";}}>
+                      <div style={{paddingBottom:"55%",position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
+                        {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
+                        <div style={{position:"absolute",top:7,left:7,background:"rgba(0,0,0,0.6)",color:"#f5f0eb",fontSize:"9px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"2px 7px",borderRadius:20}}>{s.category}</div>
+                        {s.salon_tier&&<div style={{position:"absolute",top:6,right:6}}><TierBadge tier={s.salon_tier} size={12}/></div>}
+                      </div>
+                      <div style={{padding:"9px 11px 10px"}}>
+                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontWeight:600,color:"#f5f0eb",margin:"0 0 3px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.area||"Paris"}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          ))}
-        </div>
+            {/* product row */}
+            <div>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",letterSpacing:"2px",textTransform:"uppercase",marginBottom:10}}>✦ {L.prod_title}</p>
+              <div className="hide-scrollbar" style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:4}}>
+                {previewProds.map(p=>{
+                  const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const img=getProdImg(p);
+                  return (
+                    <div key={p.id} onClick={()=>navigate("/products")} style={{flexShrink:0,width:140,background:"#151515",border:"1px solid #2a2520",borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
+                      onMouseEnter={e=>{e.currentTarget.style.borderColor=color;e.currentTarget.style.transform="translateY(-2px)";}}
+                      onMouseLeave={e=>{e.currentTarget.style.borderColor="#2a2520";e.currentTarget.style.transform="none";}}>
+                      <div style={{paddingBottom:"90%",position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
+                        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px"}}>✨</div>}
+                        <div style={{position:"absolute",top:6,left:6,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"7px",fontWeight:800,letterSpacing:"1px",textTransform:"uppercase",padding:"2px 7px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
+                      </div>
+                      <div style={{padding:"8px 10px 10px"}}>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{p.brand}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#e8e0d8",margin:0,lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ② WHAT IS THIS */}
@@ -778,80 +839,64 @@ function LandingPage({lang,setLang,salons,allProducts}) {
 
       {/* ④ SALON PREVIEW */}
       <section style={{background:"#faf7f4",padding:`clamp(56px,7vw,96px) ${px}`}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:32,flexWrap:"wrap",gap:12}}>
-          <div><Label>{L.salon_title}</Label></div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:28,flexWrap:"wrap",gap:12}}>
+          <Label>{L.salon_title}</Label>
           <button onClick={()=>navigate("/salons")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",letterSpacing:"0.5px",fontWeight:600}}>{L.salon_cta}</button>
         </div>
-        {previewSalons.length===0?(
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#ccc"}}>Loading…</p>
-        ):(
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:20}}>
-            {previewSalons.map((s,i)=>{
-              const img=getSalonImg(s); const prods=s._products||[];
-              return (
-                <div key={s.id} onClick={()=>navigate("/salons")}
-                  style={{background:"#fff",borderRadius:12,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",transition:"all 0.25s",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}
-                  onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 36px rgba(0,0,0,0.12)";}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 2px 12px rgba(0,0,0,0.06)";}}>
-                  <div style={{position:"relative",paddingBottom:"56%",overflow:"hidden",background:"#1a1a1a"}}>
-                    {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"44px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
-                    <div style={{position:"absolute",top:10,left:10,background:"rgba(0,0,0,0.6)",color:"#f5f0eb",fontSize:"10px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 9px",borderRadius:20}}>{s.category}</div>
-                    {s.salon_tier&&<div style={{position:"absolute",top:10,right:10}}><TierBadge tier={s.salon_tier}/></div>}
-                  </div>
-                  <div style={{padding:"12px 14px 14px"}}>
-                    <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",fontWeight:600,color:"#1a1a1a",margin:"0 0 4px"}}>{s.name}</h3>
-                    <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 8px"}}>{s.address}</p>
-                    {prods.length>0&&<div style={{display:"flex",gap:5}}>{prods.slice(0,2).map(p=>{const isNew=p._badge==="new";return<span key={p.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:isNew?"#a07832":"#b85c5c",background:isNew?"#fdf8ee":"#fdf0f0",padding:"2px 8px",borderRadius:12,fontWeight:600}}>{p.brand}</span>;})}
-                    </div>}
-                  </div>
+        <div className="hide-scrollbar" style={{display:"flex",gap:18,overflowX:"auto",paddingBottom:4}}>
+          {previewSalons.slice(0,6).map((s,i)=>{
+            const img=getSalonImg(s); const prods=s._products||[];
+            return (
+              <div key={s.id} onClick={()=>navigate("/salons")}
+                style={{flexShrink:0,width:260,background:"#fff",borderRadius:12,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",transition:"all 0.25s",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 36px rgba(0,0,0,0.12)";}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 2px 12px rgba(0,0,0,0.06)";}}>
+                <div style={{position:"relative",paddingBottom:"56%",overflow:"hidden",background:"#1a1a1a"}}>
+                  {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"44px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
+                  <div style={{position:"absolute",top:10,left:10,background:"rgba(0,0,0,0.6)",color:"#f5f0eb",fontSize:"10px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 9px",borderRadius:20}}>{s.category}</div>
+                  {s.salon_tier&&<div style={{position:"absolute",top:10,right:10}}><TierBadge tier={s.salon_tier}/></div>}
                 </div>
-              );
-            })}
-          </div>
-        )}
-        <div style={{marginTop:28,textAlign:"center"}}>
-          <button onClick={()=>navigate("/salons")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>e.target.style.background="#b85c5c"} onMouseLeave={e=>e.target.style.background="#1a1a1a"}>{L.salon_cta}</button>
+                <div style={{padding:"12px 14px 14px"}}>
+                  <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",fontWeight:600,color:"#1a1a1a",margin:"0 0 4px"}}>{s.name}</h3>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 8px"}}>{s.address}</p>
+                  {prods.length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{prods.slice(0,2).map(p=>{const isNew=p._badge==="new";return<span key={p.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:isNew?"#a07832":"#b85c5c",background:isNew?"#fdf8ee":"#fdf0f0",padding:"2px 8px",borderRadius:12,fontWeight:600}}>{p.brand}</span>;})}</div>}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
       {/* ⑤ PRODUCT PREVIEW */}
       <section style={{background:"#0d0d0d",padding:`clamp(56px,7vw,96px) ${px}`}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:32,flexWrap:"wrap",gap:12}}>
-          <div><Label>{L.prod_title}</Label></div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:16,flexWrap:"wrap",gap:12}}>
+          <Label>{L.prod_title}</Label>
           <button onClick={()=>navigate("/products")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#c9a96e",background:"none",border:"none",cursor:"pointer",letterSpacing:"0.5px",fontWeight:600}}>{L.prod_cta}</button>
         </div>
-        {/* QR note */}
-        <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:8,padding:"12px 16px",marginBottom:28,display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:"18px"}}>📱</span>
+        <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:8,padding:"10px 14px",marginBottom:20,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:"16px"}}>📱</span>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#888",margin:0,lineHeight:1.5}}>{L.prod_note}</p>
         </div>
-        {previewProds.length===0?(
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#555"}}>Loading…</p>
-        ):(
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:16}}>
-            {previewProds.map((p,i)=>{
-              const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#2a2520":"#2a1f1f"; const img=getProdImg(p);
-              return (
-                <div key={p.id} onClick={()=>navigate("/products")}
-                  style={{background:"#151515",border:`1px solid ${border}`,borderRadius:12,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}
-                  onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.borderColor=color;}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.borderColor=border;}}>
-                  <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
-                    {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#222",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px"}}>✨</div>}
-                    <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-                  </div>
-                  <div style={{padding:"11px 13px 13px"}}>
-                    <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
-                    <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#e8e0d8",margin:"0 0 3px",lineHeight:1.4}}>{p.product_name}</p>
-                    <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",margin:0}}>{p.category}</p>
-                  </div>
+        <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",paddingBottom:4}}>
+          {previewProds.slice(0,8).map((p,i)=>{
+            const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#2a2520":"#2a1f1f"; const img=getProdImg(p);
+            return (
+              <div key={p.id} onClick={()=>navigate("/products")}
+                style={{flexShrink:0,width:180,background:"#151515",border:`1px solid ${border}`,borderRadius:12,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.5s ease ${i*0.05}s both`}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.borderColor=color;}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.borderColor=border;}}>
+                <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
+                  {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#222",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px"}}>✨</div>}
+                  <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-        <div style={{marginTop:28,textAlign:"center"}}>
-          <button onClick={()=>navigate("/products")} style={{padding:"12px 28px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.15)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.color="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.15)";e.currentTarget.style.color="#f5f0eb";}}>{L.prod_cta}</button>
+                <div style={{padding:"11px 13px 13px"}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#e8e0d8",margin:"0 0 3px",lineHeight:1.4}}>{p.product_name}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",margin:0}}>{p.category}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
