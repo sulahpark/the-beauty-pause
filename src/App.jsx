@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 const AT_KEY = process.env.REACT_APP_AIRTABLE_KEY;
 const AT_BASE = process.env.REACT_APP_AIRTABLE_BASE;
@@ -580,38 +581,12 @@ function JoinModal({ onClose, lang, salons }) {
   );
 }
 
-// ── MAIN APP ──────────────────────────────────────────────────────────────────
-export default function App() {
-  const [lang,setLang]=useState("en"); const t=T[lang];
-  const [page,setPage]=useState("landing");   // landing | app
-  const [tab,setTab]=useState("salons");       // salons | products
+
+// ── SHARED DATA HOOK ──────────────────────────────────────────────────────────
+function useData() {
   const [salons,setSalons]=useState([]);
   const [allProducts,setAllProducts]=useState([]);
-  const [filtered,setFiltered]=useState([]);
-  const [filteredProds,setFilteredProds]=useState([]);
-  const [salonFilters,setSalonFilters]=useState({tier:[],area:"All",brand:"All",categories:[],kbeautyOnly:true});
-  const [prodSearch,setProdSearch]=useState("");
-  const [prodCategory,setProdCategory]=useState("All");
-  const [prodBrand,setProdBrand]=useState("All");
-  const [sortBy,setSortBy]=useState("az");
-  const [salonSearch,setSalonSearch]=useState("");
-  const [visibleIds,setVisibleIds]=useState(null);
-  const [showFilter,setShowFilter]=useState(false);
-  const [showJoin,setShowJoin]=useState(false);
-  const [selSalon,setSelSalon]=useState(null);
-  const [selProd,setSelProd]=useState(null);
-  const [leafletReady,setLeafletReady]=useState(false);
   const [loading,setLoading]=useState(true);
-  const [isMobile,setIsMobile]=useState(window.innerWidth<768);
-
-  useEffect(()=>{ const h=()=>setIsMobile(window.innerWidth<768); window.addEventListener("resize",h); return ()=>window.removeEventListener("resize",h); },[]);
-
-  useEffect(()=>{
-    if (window.L){setLeafletReady(true);return;}
-    const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);
-    const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLeafletReady(true);document.head.appendChild(s);
-  },[]);
-
   useEffect(()=>{
     (async()=>{
       setLoading(true);
@@ -641,61 +616,68 @@ export default function App() {
           });
         });
         const enriched=retail.map(s=>({...s,_products:sProds[s.id]||[]}));
-        setSalons(enriched); setFiltered(enriched);
-        // build unique products list
+        setSalons(enriched);
         const seen=new Set(); const uProds=[];
-        enriched.forEach(s=>(s._products||[]).forEach(p=>{ if(!seen.has(p.id)){seen.add(p.id);uProds.push({...p,_salons:[s]});}else{const ex=uProds.find(x=>x.id===p.id);if(ex&&!ex._salons.find(x=>x.id===s.id))ex._salons.push(s);} }));
-        setAllProducts(uProds); setFilteredProds(uProds);
+        enriched.forEach(s=>(s._products||[]).forEach(p=>{
+          if(!seen.has(p.id)){seen.add(p.id);uProds.push({...p,_salons:[s]});}
+          else{const ex=uProds.find(x=>x.id===p.id);if(ex&&!ex._salons.find(x=>x.id===s.id))ex._salons.push(s);}
+        }));
+        setAllProducts(uProds);
       } catch(e){console.error(e);}
       setLoading(false);
     })();
   },[]);
+  return {salons,allProducts,loading};
+}
 
-  const areas=["All",...Array.from(new Set(salons.map(s=>s.area).filter(Boolean))).sort()];
-  const brands=["All",...Array.from(new Set(salons.flatMap(s=>(s._products||[]).map(p=>p.brand)).filter(Boolean))).sort()];
-  const prodCategories=["All",...Array.from(new Set(allProducts.map(p=>p.category).filter(Boolean))).sort()];
-  const prodBrands=["All",...Array.from(new Set(allProducts.map(p=>p.brand).filter(Boolean))).sort()];
+// ── SHARED NAV ────────────────────────────────────────────────────────────────
+function Nav({lang,setLang,onJoin}) {
+  const navigate=useNavigate(); const location=useLocation();
+  const isMobile=window.innerWidth<768; const t=T[lang];
+  return (
+    <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",position:"sticky",top:0,zIndex:500}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",lineHeight:1,padding:"4px 6px",transition:"color 0.2s"}} onMouseEnter={e=>e.currentTarget.style.color="#f5f0eb"} onMouseLeave={e=>e.currentTarget.style.color="#777"}>←</button>
+        <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+        </div>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        {!isMobile&&<button onClick={onJoin} style={{padding:"6px 14px",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:20}}>✦ {t.join}</button>}
+        <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+          {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",transition:"all 0.2s",textTransform:"uppercase"}}>{l}</button>)}
+        </div>
+      </div>
+    </nav>
+  );
+}
 
-  // salon filter
-  useEffect(()=>{
-    let r=[...salons];
-    if (salonFilters.categories.length>0) r=r.filter(s=>salonFilters.categories.map(c=>c.toLowerCase()).includes((s.category||"").toLowerCase()));
-    if (salonFilters.tier.length>0) r=r.filter(s=>salonFilters.tier.includes(s.salon_tier));
-    if (salonFilters.area!=="All") r=r.filter(s=>s.area===salonFilters.area);
-    if (salonFilters.brand!=="All") r=r.filter(s=>(s._products||[]).some(p=>p.brand===salonFilters.brand));
-    if (salonFilters.kbeautyOnly) r=r.filter(s=>(s._products||[]).length>0);
-    if (salonSearch) r=r.filter(s=>s.name?.toLowerCase().includes(salonSearch.toLowerCase())||s.address?.toLowerCase().includes(salonSearch.toLowerCase()));
-    if (sortBy==="az") r.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
-    if (sortBy==="tier") r.sort((a,b)=>(TIER_ORDER[a.salon_tier]??9)-(TIER_ORDER[b.salon_tier]??9));
-    if (sortBy==="area") r.sort((a,b)=>(a.area||"").localeCompare(b.area||""));
-    if (visibleIds) r=r.filter(s=>visibleIds.includes(s.id));
-    setFiltered(r);
-  },[salons,salonFilters,salonSearch,sortBy,visibleIds]);
+function MobileTabBar({lang,active}) {
+  const navigate=useNavigate(); const t=T[lang];
+  return (
+    <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",display:"flex",position:"sticky",top:56,zIndex:450}}>
+      {[{path:"/salons",label:t.salons,icon:"🏪"},{path:"/products",label:t.products,icon:"✨"}].map(({path,label,icon})=>(
+        <button key={path} onClick={()=>navigate(path)} style={{flex:1,padding:"9px 0",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:active===path?600:400,color:active===path?"#b85c5c":"#aaa",background:"transparent",borderBottom:active===path?"2px solid #b85c5c":"2px solid transparent",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+          <span style={{fontSize:"15px"}}>{icon}</span>{label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
-  // product filter
-  useEffect(()=>{
-    let r=[...allProducts];
-    if (prodCategory!=="All") r=r.filter(p=>p.category===prodCategory);
-    if (prodBrand!=="All") r=r.filter(p=>p.brand===prodBrand);
-    if (prodSearch) r=r.filter(p=>p.product_name?.toLowerCase().includes(prodSearch.toLowerCase())||p.brand?.toLowerCase().includes(prodSearch.toLowerCase()));
-    setFilteredProds(r);
-  },[allProducts,prodCategory,prodBrand,prodSearch]);
-
-  const activeFilterCount=[salonFilters.tier.length>0,salonFilters.area!=="All",salonFilters.brand!=="All",salonFilters.categories.length>0,salonFilters.kbeautyOnly].filter(Boolean).length;
-
-  // ── LANDING ──
-  if (page==="landing") return (
+// ── LANDING PAGE ──────────────────────────────────────────────────────────────
+function LandingPage({lang,setLang,salons}) {
+  const t=T[lang]; const navigate=useNavigate();
+  const [showJoin,setShowJoin]=useState(false);
+  return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
       <div style={{minHeight:"100vh",background:"#0d0d0d",display:"flex",flexDirection:"column",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",top:-200,right:-200,width:600,height:600,borderRadius:"50%",border:"1px solid rgba(201,169,110,0.07)",pointerEvents:"none"}} />
         <div style={{position:"absolute",bottom:-150,left:-150,width:500,height:500,borderRadius:"50%",border:"1px solid rgba(201,169,110,0.05)",pointerEvents:"none"}} />
-        {/* nav */}
         <nav style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,48px)",height:60,flexShrink:0}}>
-          <div>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
-          </div>
+          <div><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span></div>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <button onClick={()=>setShowJoin(true)} style={{padding:"7px 16px",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:20}}>✦ {t.join}</button>
             <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
@@ -703,37 +685,27 @@ export default function App() {
             </div>
           </div>
         </nav>
-        {/* hero */}
         <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",padding:"0 clamp(20px,5vw,48px)",maxWidth:760,animation:"fadeUp 0.9s ease both"}}>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:20}}>{t.tagline}</p>
-          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,7vw,88px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.0,marginBottom:22}}>
-            {t.hero_1}<br/><em style={{fontStyle:"italic",color:"#c9a96e"}}>{t.hero_2}</em>
-          </h1>
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,7vw,88px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.0,marginBottom:22}}>{t.hero_1}<br/><em style={{fontStyle:"italic",color:"#c9a96e"}}>{t.hero_2}</em></h1>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"clamp(14px,1.6vw,16px)",color:"#777",lineHeight:1.8,marginBottom:36,maxWidth:480}}>{t.hero_sub}</p>
           <div style={{display:"flex",gap:32,marginBottom:44,flexWrap:"wrap"}}>
             {[{n:salons.length||"18",l:lang==="en"?"curated salons":"salons sélectionnés"},{n:"6",l:lang==="en"?"K-beauty brands":"marques K-beauty"},{n:"Paris",l:lang==="en"?"city":"ville"}].map(({n,l})=>(
-              <div key={l}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,4vw,42px)",fontWeight:400,color:"#f5f0eb",lineHeight:1}}>{n}</div>
-                <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#555",letterSpacing:"1px",textTransform:"uppercase",marginTop:4}}>{l}</div>
-              </div>
+              <div key={l}><div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,4vw,42px)",fontWeight:400,color:"#f5f0eb",lineHeight:1}}>{n}</div><div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#555",letterSpacing:"1px",textTransform:"uppercase",marginTop:4}}>{l}</div></div>
             ))}
           </div>
           <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-            <button onClick={()=>{setPage("app");setTab("salons");}} style={{padding:"14px 32px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>e.target.style.background="#c9a96e"} onMouseLeave={e=>e.target.style.background="#f5f0eb"}>{t.find_salon} →</button>
-            <button onClick={()=>{setPage("app");setTab("products");}} style={{padding:"14px 32px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.2)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:500,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.color="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.2)";e.currentTarget.style.color="#f5f0eb";}}>✦ {t.discover}</button>
+            <button onClick={()=>navigate("/salons")} style={{padding:"14px 32px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>e.target.style.background="#c9a96e"} onMouseLeave={e=>e.target.style.background="#f5f0eb"}>{t.find_salon} →</button>
+            <button onClick={()=>navigate("/products")} style={{padding:"14px 32px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.2)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:500,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.color="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.2)";e.currentTarget.style.color="#f5f0eb";}}>✦ {t.discover}</button>
           </div>
         </div>
-        {/* how it works */}
         <div style={{padding:"clamp(28px,5vw,52px) clamp(20px,5vw,48px)",borderTop:"1px solid rgba(255,255,255,0.06)",animation:"fadeUp 0.9s ease 0.15s both"}}>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#444",letterSpacing:"3px",textTransform:"uppercase",marginBottom:24}}>{t.how}</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:20,maxWidth:760}}>
             {[{n:"01",t_:t.step1_t,s:t.step1_s},{n:"02",t_:t.step2_t,s:t.step2_s},{n:"03",t_:t.step3_t,s:t.step3_s}].map(step=>(
               <div key={step.n} style={{display:"flex",gap:14,alignItems:"flex-start"}}>
                 <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"30px",color:"rgba(201,169,110,0.3)",fontWeight:300,lineHeight:1,flexShrink:0}}>{step.n}</span>
-                <div>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#f5f0eb",fontWeight:500,margin:"4px 0 3px"}}>{step.t_}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",lineHeight:1.6,margin:0}}>{step.s}</p>
-                </div>
+                <div><p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#f5f0eb",fontWeight:500,margin:"4px 0 3px"}}>{step.t_}</p><p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",lineHeight:1.6,margin:0}}>{step.s}</p></div>
               </div>
             ))}
           </div>
@@ -742,162 +714,157 @@ export default function App() {
       {showJoin&&<JoinModal onClose={()=>setShowJoin(false)} lang={lang} salons={salons} />}
     </>
   );
+}
 
-  // ── APP PAGE ──
+// ── SALONS PAGE ───────────────────────────────────────────────────────────────
+function SalonsPage({lang,setLang,salons,loading}) {
+  const t=T[lang]; const isMobile=window.innerWidth<768;
+  const [sf,setSf]=useState({tier:[],area:"All",brand:"All",categories:[],kbeautyOnly:true});
+  const [sortBy,setSortBy]=useState("az");
+  const [search,setSearch]=useState("");
+  const [visibleIds,setVisibleIds]=useState(null);
+  const [filtered,setFiltered]=useState(salons);
+  const [showFilter,setShowFilter]=useState(false);
+  const [showJoin,setShowJoin]=useState(false);
+  const [selSalon,setSelSalon]=useState(null);
+  const [lr,setLr]=useState(!!window.L);
+  useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
+  useEffect(()=>{
+    let r=[...salons];
+    if(sf.categories.length>0)r=r.filter(s=>sf.categories.map(c=>c.toLowerCase()).includes((s.category||"").toLowerCase()));
+    if(sf.tier.length>0)r=r.filter(s=>sf.tier.includes(s.salon_tier));
+    if(sf.area!=="All")r=r.filter(s=>s.area===sf.area);
+    if(sf.brand!=="All")r=r.filter(s=>(s._products||[]).some(p=>p.brand===sf.brand));
+    if(sf.kbeautyOnly)r=r.filter(s=>(s._products||[]).length>0);
+    if(search)r=r.filter(s=>s.name?.toLowerCase().includes(search.toLowerCase())||s.address?.toLowerCase().includes(search.toLowerCase()));
+    if(sortBy==="az")r.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+    if(sortBy==="tier")r.sort((a,b)=>(TIER_ORDER[a.salon_tier]??9)-(TIER_ORDER[b.salon_tier]??9));
+    if(sortBy==="area")r.sort((a,b)=>(a.area||"").localeCompare(b.area||""));
+    if(visibleIds)r=r.filter(s=>visibleIds.includes(s.id));
+    setFiltered(r);
+  },[salons,sf,search,sortBy,visibleIds]);
+  const areas=["All",...Array.from(new Set(salons.map(s=>s.area).filter(Boolean))).sort()];
+  const brands=["All",...Array.from(new Set(salons.flatMap(s=>(s._products||[]).map(p=>p.brand)).filter(Boolean))).sort()];
+  const afc=[sf.tier.length>0,sf.area!=="All",sf.brand!=="All",sf.categories.length>0,sf.kbeautyOnly].filter(Boolean).length;
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
-
-      {/* TOP NAV */}
-      <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",position:"sticky",top:0,zIndex:500}}>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <button onClick={()=>setPage("landing")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",lineHeight:1,padding:"4px 6px",transition:"color 0.2s"}} onMouseEnter={e=>e.currentTarget.style.color="#f5f0eb"} onMouseLeave={e=>e.currentTarget.style.color="#777"}>←</button>
-          <div onClick={()=>setPage("landing")} style={{cursor:"pointer"}}>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
-          </div>
+      <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} />
+      {isMobile&&<MobileTabBar lang={lang} active="/salons" />}
+      {/* filter */}
+      <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:isMobile?100:56,zIndex:399,flexWrap:"nowrap"}}>
+        <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${afc>0?"#1a1a1a":"#ede8e2"}`,background:afc>0?"#1a1a1a":"#fff",color:afc>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          {t.filter}{afc>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{afc}</span>}
+        </button>
+        <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
+        <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${sf.kbeautyOnly?"#b85c5c":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf0f0":"#fff",color:sf.kbeautyOnly?"#b85c5c":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>✦ K-Beauty</button>
+        {["Nail","Beauty","Hair","Spa"].map(cat=>{const a=sf.categories.includes(cat);return<button key={cat} onClick={()=>setSf(f=>({...f,categories:toggleArr(f.categories,cat)}))} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;})}
+        <input placeholder={t.search_salon} value={search} onChange={e=>setSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:isMobile?130:200,marginLeft:"auto",flexShrink:0}}/>
+      </div>
+      {/* content */}
+      {isMobile?(
+        <div style={{position:"relative",height:`calc(100vh - 56px - 44px - 44px)`,overflow:"hidden"}}>
+          <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={salons} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
+          <BottomSheet salons={filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} />
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          {!isMobile&&<button onClick={()=>setShowJoin(true)} style={{padding:"6px 14px",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:20}}>✦ {t.join}</button>}
-          <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
-            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",transition:"all 0.2s",textTransform:"uppercase"}}>{l}</button>)}
+      ):(
+        <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
+          <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
+            {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>:<>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>{filtered.length} {t.salons_count}</p>
+              {filtered.length===0?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
+              :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
+                {filtered.map((s,i)=><div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}><SalonCard salon={s} onClick={setSelSalon} lang={lang} /></div>)}
+              </div>}
+            </>}
           </div>
-        </div>
-      </nav>
-
-      {/* DESKTOP TABS / MOBILE TAB BAR */}
-      {!isMobile&&(
-        <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",display:"flex",padding:"0 24px",position:"sticky",top:56,zIndex:400}}>
-          {[{id:"salons",label:t.salons},{id:"products",label:t.products}].map(tb=>(
-            <button key={tb.id} onClick={()=>setTab(tb.id)} style={{padding:"14px 20px",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:tab===tb.id?600:400,color:tab===tb.id?"#b85c5c":"#999",background:"transparent",borderBottom:tab===tb.id?"2px solid #b85c5c":"2px solid transparent",letterSpacing:"0.5px",transition:"all 0.2s"}}>{tb.label}</button>
-          ))}
-        </div>
-      )}
-
-      {/* ── SALONS TAB ── */}
-      {tab==="salons"&&(
-        <>
-          {/* filter bar */}
-          <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:isMobile?56:96,zIndex:399,flexWrap:"nowrap"}}>
-            <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:500,borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-              {t.filter}
-              {activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
-            </button>
-            <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-            <button onClick={()=>setSalonFilters(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${salonFilters.kbeautyOnly?"#b85c5c":"#ede8e2"}`,background:salonFilters.kbeautyOnly?"#fdf0f0":"#fff",color:salonFilters.kbeautyOnly?"#b85c5c":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:salonFilters.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>✦ K-Beauty</button>
-            {["Nail","Beauty","Hair","Spa"].map(cat=>{
-              const a=salonFilters.categories.includes(cat);
-              return <button key={cat} onClick={()=>setSalonFilters(f=>({...f,categories:toggleArr(f.categories,cat)}))} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
-            })}
-            {/* search inline */}
-            <div style={{display:"flex",marginLeft:"auto",flexShrink:0}}>
-              <input placeholder={t.search_salon} value={salonSearch} onChange={e=>setSalonSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:isMobile?140:220}}/>
-            </div>
-          </div>
-
-          {/* content */}
-          {isMobile?(
-            /* MOBILE: fullscreen map + bottom sheet */
-            <div style={{position:"relative",height:"calc(100vh - 56px - 50px - 44px)",overflow:"hidden"}}>
-              <div style={{position:"absolute",inset:0}}>
-                {leafletReady
-                  ? <SalonMap salons={salons} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />
-                  : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}
-              </div>
-              <BottomSheet salons={filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} />
-            </div>
-          ):(
-            /* DESKTOP: split */
-            <div style={{display:"flex",height:"calc(100vh - 56px - 40px - 44px)",overflow:"hidden"}}>
-              <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
-                {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
-                :<>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>{filtered.length} {t.salons_count}</p>
-                  {filtered.length===0?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
-                  :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
-                    {filtered.map((s,i)=><div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}><SalonCard salon={s} onClick={setSelSalon} lang={lang} /></div>)}
-                  </div>}
-                </>}
-              </div>
-              <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>
-                {leafletReady?<SalonMap salons={salons} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}
-              </div>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* ── PRODUCTS TAB ── */}
-      {tab==="products"&&(
-        <main style={{maxWidth:1200,margin:"0 auto",padding:"0 0 80px"}}>
-          {/* product filter bar */}
-          <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px clamp(12px,3vw,20px)",display:"flex",gap:8,alignItems:"center",overflowX:"auto",flexWrap:"nowrap",position:"sticky",top:isMobile?56:96,zIndex:399}}>
-            {/* search */}
-            <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,minWidth:160,flexShrink:0}}/>
-            <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-            {/* category chips */}
-            {prodCategories.map(cat=>{
-              const a=prodCategory===cat;
-              return <button key={cat} onClick={()=>setProdCategory(cat)} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
-            })}
-            <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-            {/* brand */}
-            <select value={prodBrand} onChange={e=>setProdBrand(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#666",outline:"none",borderRadius:20,cursor:"pointer",flexShrink:0}}>
-              {prodBrands.map(b=><option key={b} value={b}>{b}</option>)}
-            </select>
-          </div>
-
-          {/* product grid */}
-          <div style={{padding:"24px clamp(12px,3vw,24px)"}}>
-            {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
-            :<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:20}}>
-              {filteredProds.map((p,i)=>{
-                const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const bg=isNew?"#fdf8ee":"#fdf0f0"; const img=getProdImg(p);
-                return (
-                  <div key={p.id} onClick={()=>setSelProd(p)} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",borderRadius:12,cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`}}
-                    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 30px rgba(0,0,0,0.1)";}}
-                    onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
-                    <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
-                      {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
-                      <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-                    </div>
-                    <div style={{padding:"12px 14px 14px"}}>
-                      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
-                      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.4,fontWeight:500}}>{p.product_name}</p>
-                      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:"0 0 8px"}}>{p.category}</p>
-                      {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:"0 0 8px",fontWeight:600}}>€{p.price_customer}</p>}
-                      <div style={{borderTop:"1px solid #f0ebe5",paddingTop:8}}>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 4px"}}>📍 {t.available_at}</p>
-                        {(p._salons||[]).slice(0,2).map(s=><p key={s.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#666",margin:"0 0 1px"}}>→ {s.name}</p>)}
-                        {(p._salons||[]).length>2&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:0}}>+{p._salons.length-2} more</p>}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>}
-          </div>
-        </main>
-      )}
-
-      {/* MOBILE TAB BAR */}
-      {isMobile&&(
-        <div style={{position:"fixed",bottom:0,left:0,right:0,height:52,background:"#fff",borderTop:"1px solid #ede8e2",display:"flex",zIndex:600,boxShadow:"0 -2px 12px rgba(0,0,0,0.08)"}}>
-          {[{id:"salons",icon:"🏪",label:t.salons},{id:"products",icon:"✨",label:t.products}].map(tb=>(
-            <button key={tb.id} onClick={()=>setTab(tb.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"10px",fontWeight:tab===tb.id?600:400,color:tab===tb.id?"#b85c5c":"#aaa",letterSpacing:"0.5px",textTransform:"uppercase",transition:"all 0.2s"}}>
-              <span style={{fontSize:"18px"}}>{tb.icon}</span>
-              {tb.label}
-            </button>
-          ))}
+          <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={salons} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
         </div>
       )}
-
-      {/* MODALS */}
-      {showFilter&&<FilterModal onClose={()=>setShowFilter(false)} lang={lang} filters={salonFilters} setFilters={setSalonFilters} areas={areas} brands={brands} sortBy={sortBy} setSortBy={setSortBy} />}
+      {showFilter&&<FilterModal onClose={()=>setShowFilter(false)} lang={lang} filters={sf} setFilters={setSf} areas={areas} brands={brands} sortBy={sortBy} setSortBy={setSortBy} />}
       {showJoin&&<JoinModal onClose={()=>setShowJoin(false)} lang={lang} salons={salons} />}
-      {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={leafletReady} lang={lang} />}
-      {selProd&&<ProductModal prod={selProd} salonsWithProd={selProd._salons||[]} onClose={()=>setSelProd(null)} onSalonClick={s=>{setSelSalon(s);setTab("salons");}} lang={lang} />}
+      {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={lr} lang={lang} />}
     </>
+  );
+}
+
+// ── PRODUCTS PAGE ─────────────────────────────────────────────────────────────
+function ProductsPage({lang,setLang,allProducts,salons,loading}) {
+  const t=T[lang]; const isMobile=window.innerWidth<768;
+  const [prodSearch,setProdSearch]=useState("");
+  const [prodCat,setProdCat]=useState("All");
+  const [prodBrand,setProdBrand]=useState("All");
+  const [fp,setFp]=useState(allProducts);
+  const [showJoin,setShowJoin]=useState(false);
+  const [selProd,setSelProd]=useState(null);
+  const [selSalon,setSelSalon]=useState(null);
+  const [lr,setLr]=useState(!!window.L);
+  useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
+  useEffect(()=>{let r=[...allProducts];if(prodCat!=="All")r=r.filter(p=>p.category===prodCat);if(prodBrand!=="All")r=r.filter(p=>p.brand===prodBrand);if(prodSearch)r=r.filter(p=>p.product_name?.toLowerCase().includes(prodSearch.toLowerCase())||p.brand?.toLowerCase().includes(prodSearch.toLowerCase()));setFp(r);},[allProducts,prodCat,prodBrand,prodSearch]);
+  const cats=["All",...Array.from(new Set(allProducts.map(p=>p.category).filter(Boolean))).sort()];
+  const brands=["All",...Array.from(new Set(allProducts.map(p=>p.brand).filter(Boolean))).sort()];
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}`}</style>
+      <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} />
+      {isMobile&&<MobileTabBar lang={lang} active="/products" />}
+      {/* filter */}
+      <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px clamp(12px,3vw,20px)",display:"flex",gap:8,alignItems:"center",overflowX:"auto",flexWrap:"nowrap",position:"sticky",top:isMobile?100:56,zIndex:399}}>
+        <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,minWidth:130,flexShrink:0}}/>
+        <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
+        {cats.map(cat=>{const a=prodCat===cat;return<button key={cat} onClick={()=>setProdCat(cat)} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;})}
+        <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
+        <select value={prodBrand} onChange={e=>setProdBrand(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#666",outline:"none",borderRadius:20,cursor:"pointer",flexShrink:0}}>
+          {brands.map(b=><option key={b} value={b}>{b}</option>)}
+        </select>
+      </div>
+      <main style={{maxWidth:1200,margin:"0 auto",padding:"24px clamp(12px,3vw,24px) 80px"}}>
+        {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
+        :<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:20}}>
+          {fp.map((p,i)=>{
+            const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
+            return (
+              <div key={p.id} onClick={()=>setSelProd(p)} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",borderRadius:12,cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 30px rgba(0,0,0,0.1)";}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
+                <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
+                  {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
+                  <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
+                </div>
+                <div style={{padding:"12px 14px 14px"}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.4,fontWeight:500}}>{p.product_name}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:"0 0 6px"}}>{p.category}</p>
+                  {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:"0 0 8px",fontWeight:600}}>€{p.price_customer}</p>}
+                  <div style={{borderTop:"1px solid #f0ebe5",paddingTop:8}}>
+                    <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 4px"}}>📍 {t.available_at}</p>
+                    {(p._salons||[]).slice(0,2).map(s=><p key={s.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#666",margin:"0 0 1px"}}>→ {s.name}</p>)}
+                    {(p._salons||[]).length>2&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:0}}>+{p._salons.length-2} more</p>}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>}
+      </main>
+      {showJoin&&<JoinModal onClose={()=>setShowJoin(false)} lang={lang} salons={salons} />}
+      {selProd&&<ProductModal prod={selProd} salonsWithProd={selProd._salons||[]} onClose={()=>setSelProd(null)} onSalonClick={s=>setSelSalon(s)} lang={lang} />}
+      {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={lr} lang={lang} />}
+    </>
+  );
+}
+
+// ── MAIN APP ──────────────────────────────────────────────────────────────────
+export default function App() {
+  const [lang,setLang]=useState("en");
+  const {salons,allProducts,loading}=useData();
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage lang={lang} setLang={setLang} salons={salons} />} />
+      <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} />} />
+      <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} />} />
+      <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} />} />
+    </Routes>
   );
 }
