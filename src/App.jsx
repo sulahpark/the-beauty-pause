@@ -190,7 +190,10 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini }) {
         iconSize:[hl?36:28,hl?36:28],iconAnchor:[hl?18:14,hl?18:14]});
       const mk=L.marker([lat,lng],{icon}).addTo(map.current);
       if (!mini) {
-        mk.bindTooltip(`<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600">${s.name}</div>`,{direction:"top",offset:[0,-10]});
+        const tooltip = hasKbeauty
+          ? `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a">${s.name}<span style="margin-left:6px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c9a96e;background:#fdf8ee;padding:2px 6px;border-radius:10px;border:1px solid #e8d9b8">✦ K-Beauty</span></div>`
+          : `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a">${s.name}</div>`;
+        mk.bindTooltip(tooltip,{direction:"top",offset:[0,-10],className:"tbp-tooltip"});
         mk.on("click",()=>onPinClick?.(s));
       }
       marks.current.push(mk);
@@ -965,7 +968,7 @@ function LandingPage({lang,setLang,salons,allProducts}) {
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444"}}>{t.footer}</p>
       </footer>
 
-      {showJoin&&<JoinModal onClose={()=>setShowJoin(false)} lang={lang} salons={salons} />}
+      {showJoin&&<AuthModal onClose={()=>setShowJoin(false)} lang={lang} initialMode="signup" />}
     </>
   );
 }
@@ -994,7 +997,6 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
     if(sortBy==="az")r.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
     if(sortBy==="tier")r.sort((a,b)=>(TIER_ORDER[a.salon_tier]??9)-(TIER_ORDER[b.salon_tier]??9));
     if(sortBy==="area")r.sort((a,b)=>(a.area||"").localeCompare(b.area||""));
-    if(visibleIds)r=r.filter(s=>visibleIds.includes(s.id));
     setFiltered(r);
   },[salons,sf,search,sortBy,visibleIds]);
   const areas=["All",...Array.from(new Set(salons.map(s=>s.area).filter(Boolean))).sort()];
@@ -1012,14 +1014,14 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
           {t.filter}{afc>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{afc}</span>}
         </button>
         <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-        <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${sf.kbeautyOnly?"#b85c5c":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf0f0":"#fff",color:sf.kbeautyOnly?"#b85c5c":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>✦ K-Beauty</button>
+        <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${sf.kbeautyOnly?"#c9a96e":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf8ee":"#fff",color:sf.kbeautyOnly?"#c9a96e":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>✦ K-Beauty</button>
         {["Nail","Beauty","Hair","Spa"].map(cat=>{const a=sf.categories.includes(cat);return<button key={cat} onClick={()=>setSf(f=>({...f,categories:toggleArr(f.categories,cat)}))} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;})}
         <input placeholder={t.search_salon} value={search} onChange={e=>setSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:isMobile?130:200,marginLeft:"auto",flexShrink:0}}/>
       </div>
       {/* content */}
       {isMobile?(
         <div style={{position:"relative",height:`calc(100vh - 56px - 44px - 44px)`,overflow:"hidden"}}>
-          <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={salons} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
+          <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
           <BottomSheet salons={filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} />
         </div>
       ):(
@@ -1033,11 +1035,11 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
               </div>}
             </>}
           </div>
-          <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={salons} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
+          <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={filtered} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
         </div>
       )}
       {showFilter&&<FilterModal onClose={()=>setShowFilter(false)} lang={lang} filters={sf} setFilters={setSf} areas={areas} brands={brands} sortBy={sortBy} setSortBy={setSortBy} />}
-      {showJoin&&<JoinModal onClose={()=>setShowJoin(false)} lang={lang} salons={salons} />}
+      {showJoin&&<AuthModal onClose={()=>setShowJoin(false)} lang={lang} initialMode="signup" />}
       {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={lr} lang={lang} />}
     </>
   );
@@ -1105,7 +1107,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
           })}
         </div>}
       </main>
-      {showJoin&&<JoinModal onClose={()=>setShowJoin(false)} lang={lang} salons={salons} />}
+      {showJoin&&<AuthModal onClose={()=>setShowJoin(false)} lang={lang} initialMode="signup" />}
       {selProd&&<ProductModal prod={selProd} salonsWithProd={selProd._salons||[]} onClose={()=>setSelProd(null)} onSalonClick={s=>setSelSalon(s)} lang={lang} />}
       {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={lr} lang={lang} />}
     </>
