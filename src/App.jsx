@@ -1,12 +1,34 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Component } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
-const SUPA_URL = process.env.REACT_APP_SUPABASE_URL;
-const SUPA_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
-const supabase = (SUPA_URL && SUPA_KEY)
-  ? createClient(SUPA_URL, SUPA_KEY)
+const SUPA_URL = (process.env.REACT_APP_SUPABASE_URL||"").trim();
+const SUPA_KEY = (process.env.REACT_APP_SUPABASE_ANON_KEY||"").trim();
+
+// normalize: if someone pasted just the project ref, add https:// and .supabase.co
+const normalizedUrl = SUPA_URL.startsWith("http")
+  ? SUPA_URL
+  : SUPA_URL.length > 0 ? `https://${SUPA_URL}.supabase.co` : "";
+
+const supabase = (normalizedUrl && SUPA_KEY)
+  ? createClient(normalizedUrl, SUPA_KEY)
   : null;
+
+// Error boundary to catch render errors
+class ErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { error: null }; }
+  static getDerivedStateFromError(e) { return { error: e }; }
+  render() {
+    if (this.state.error) return (
+      <div style={{padding:40,fontFamily:"monospace",background:"#fff",color:"#333",minHeight:"100vh"}}>
+        <h2 style={{color:"#b85c5c",marginBottom:16}}>Something went wrong</h2>
+        <pre style={{background:"#f5f5f5",padding:16,borderRadius:8,fontSize:12,overflow:"auto",whiteSpace:"pre-wrap"}}>{String(this.state.error)}</pre>
+        <p style={{marginTop:16,fontSize:13,color:"#888"}}>Please share this error message.</p>
+      </div>
+    );
+    return this.props.children;
+  }
+}
 
 const AT_KEY = process.env.REACT_APP_AIRTABLE_KEY;
 const AT_BASE = process.env.REACT_APP_AIRTABLE_BASE;
@@ -1265,7 +1287,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <ErrorBoundary>
       <Routes>
         <Route path="/" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
@@ -1274,6 +1296,6 @@ export default function App() {
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
-    </>
+    </ErrorBoundary>
   );
 }
