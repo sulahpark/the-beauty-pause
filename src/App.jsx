@@ -1034,6 +1034,30 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
             <button onClick={()=>navigate("/salons")} style={{padding:"13px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:"1.5px",borderRadius:8,transition:"all 0.2s",whiteSpace:"nowrap"}} onMouseEnter={e=>e.target.style.background="#c9a96e"} onMouseLeave={e=>e.target.style.background="#f5f0eb"}>{L.cta1}</button>
             <button onClick={()=>navigate("/products")} style={{padding:"13px 24px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.18)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:500,letterSpacing:"1.5px",borderRadius:8,transition:"all 0.2s",whiteSpace:"nowrap"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";e.currentTarget.style.color="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.18)";e.currentTarget.style.color="#f5f0eb";}}>{L.cta2}</button>
           </div>
+          {/* mobile: horizontal salon preview below CTA */}
+          {isMobile&&previewSalons.length>0&&(
+            <div style={{marginTop:28}}>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:12,fontWeight:700}}>✦ K-Beauty Salons</p>
+              <div className="hide-scrollbar" style={{display:"flex",gap:12,overflowX:"auto",marginLeft:`calc(-1 * ${px})`,marginRight:`calc(-1 * ${px})`,paddingLeft:px,paddingRight:px,paddingBottom:4}}>
+                {previewSalons.slice(0,8).map(s=>{
+                  const img=getSalonImg(s); const prods=s._products||[];
+                  return (
+                    <div key={s.id} onClick={()=>navigate("/salons")} style={{flexShrink:0,width:160,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,overflow:"hidden",cursor:"pointer"}}>
+                      <div style={{paddingBottom:"55%",position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
+                        {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
+                        <div style={{position:"absolute",top:7,left:7,background:"rgba(0,0,0,0.55)",color:"#f5f0eb",fontSize:"9px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"2px 7px",borderRadius:20}}>{s.category}</div>
+                      </div>
+                      <div style={{padding:"9px 11px 10px"}}>
+                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontWeight:600,color:"#f5f0eb",margin:"0 0 3px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
+                        {prods.length>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
+                          {prods.slice(0,2).map(p=>{const isNew=p._badge==="new";const bd=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";return<span key={p.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#c9a96e":"#b85c5c",background:"rgba(255,255,255,0.08)",padding:"2px 6px",borderRadius:10,fontWeight:600}}>{bd}</span>;})}</div>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* RIGHT 60%: white panel — tall salon cards only */}
@@ -1041,18 +1065,17 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
           <div style={{flex:1,background:"#faf7f4",display:"flex",flexDirection:"column",justifyContent:"center",padding:"clamp(32px,4vw,56px) clamp(24px,3vw,40px)",overflow:"hidden",animation:"fadeUp 1s ease 0.15s both"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
               <div>
-                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#b85c5c",letterSpacing:"3px",textTransform:"uppercase",margin:"0 0 2px",fontWeight:700}}>✦ K-Beauty Salons</p>
-                <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#1a1a1a",margin:0,fontWeight:400}}>{L.salon_title}</p>
+                <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#1a1a1a",margin:0,fontWeight:400}}>Featured Salons <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#c9a96e",fontWeight:700,letterSpacing:"1px"}}>✦ K-Beauty</span></p>
               </div>
               <button onClick={()=>navigate("/salons")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#b85c5c",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",fontWeight:600,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",transition:"all 0.2s",flexShrink:0}} onMouseEnter={e=>{e.currentTarget.style.background="#b85c5c";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#b85c5c";}}>{L.salon_cta}</button>
             </div>
-            {/* horizontal scroll of tall cards */}
+            {/* horizontal scroll of tall cards — 1.2x bigger: 200→240 */}
             <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",paddingBottom:4}}>
               {previewSalons.map(s=>{
                 const img=getSalonImg(s); const prods=s._products||[];
                 return (
                   <div key={s.id} onClick={()=>navigate("/salons")}
-                    style={{flexShrink:0,width:200,background:"#fff",border:"1px solid #f0ebe5",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.05)",transition:"all 0.2s",display:"flex",flexDirection:"column"}}
+                    style={{flexShrink:0,width:240,background:"#fff",border:"1px solid #f0ebe5",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.05)",transition:"all 0.2s",display:"flex",flexDirection:"column"}}
                     onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 28px rgba(0,0,0,0.1)";e.currentTarget.style.borderColor="#e8c9a0";}}
                     onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.05)";e.currentTarget.style.borderColor="#f0ebe5";}}>
                     {/* salon image — 45% height */}
@@ -1093,6 +1116,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
           </div>
         )}
       </section>
+      <div style={{height:"1px",background:"rgba(255,255,255,0.08)"}} />
 
       {/* ② WHAT IS THIS + HOW IT WORKS — merged dark section, centered */}
       <section style={{background:"#0d0d0d",padding:`clamp(56px,7vw,96px) ${px}`,textAlign:"center"}}>
@@ -1282,13 +1306,29 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
       {/* SPLIT LAYOUT */}
       {isMobile ? (
-        /* mobile: simple grid */
-        <main style={{padding:"16px clamp(12px,3vw,20px) 80px"}}>
-          {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
-          :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:14}}>
-            {fp.map((p,i)=><ProductCard key={p.id} p={p} i={i} t={t} onClick={()=>handleProdClick(p)} onDetail={handleProdDetail} user={user} favourites={favourites} onToggleFav={onToggleFav} />)}
-          </div>}
-        </main>
+        /* mobile: fullscreen map + bottom sheet with product cards */
+        <div style={{position:"relative",height:`calc(100vh - 56px - 44px - 44px)`,overflow:"hidden"}}>
+          <div style={{position:"absolute",inset:0}}>
+            {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} />
+              :<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>}
+          </div>
+          {/* bottom sheet */}
+          <div style={{position:"absolute",bottom:0,left:0,right:0,background:"#faf7f4",borderRadius:"16px 16px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.12)",zIndex:100,maxHeight:"65vh",display:"flex",flexDirection:"column"}}>
+            <div style={{padding:"12px 0 8px",display:"flex",justifyContent:"center",flexShrink:0}}>
+              <div style={{width:36,height:4,borderRadius:2,background:"#ddd"}} />
+            </div>
+            <div style={{padding:"0 14px 8px",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <p style={{...SS,fontSize:"12px",color:"#aaa",margin:0}}>{fp.length} products</p>
+              {selProd&&<button onClick={()=>{setSelProd(null);setMapSalons([]);}} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer"}}>× Clear selection</button>}
+            </div>
+            <div style={{overflowY:"auto",padding:"0 14px 80px",flex:1}}>
+              {loading?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
+              :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12}}>
+                {fp.map((p,i)=><ProductCard key={p.id} p={p} i={i} t={t} onClick={()=>handleProdClick(p)} onDetail={handleProdDetail} user={user} favourites={favourites} onToggleFav={onToggleFav} isSelected={selProd?.id===p.id}/>)}
+              </div>}
+            </div>
+          </div>
+        </div>
       ) : (
         <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
           {/* LEFT: product list */}
@@ -1311,12 +1351,20 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
           {/* RIGHT: map */}
           <div style={{flex:1,position:"sticky",top:0,height:"100%",display:"flex",flexDirection:"column"}}>
             {/* map hint */}
-            <div style={{background:"#f5f0eb",borderBottom:"1px solid #ede8e2",padding:"10px 16px",display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-              {selProd
-                ? <><span style={{fontSize:"14px"}}>📍</span><span style={{...SS,fontSize:"12px",color:"#888"}}><strong style={{color:"#1a1a1a"}}>{selProd.product_name}</strong> — {(selProd._salons||[]).length} salon{(selProd._salons||[]).length!==1?"s":""}</span></>
-                : <><span style={{fontSize:"14px"}}>💡</span><span style={{...SS,fontSize:"12px",color:"#aaa"}}>Click a product to see where it's available</span></>
-              }
-              {selProd&&<button onClick={()=>{setSelProd(null);setMapSalons([]);}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"18px",lineHeight:1}}>×</button>}
+            <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px 16px",display:"flex",alignItems:"center",gap:10,flexShrink:0,minHeight:60}}>
+              {selProd ? (
+                <>
+                  {/* product thumbnail */}
+                  {(()=>{const img=getProdImg(selProd);return img&&<div style={{width:40,height:40,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>;})()}
+                  <div style={{flex:1,minWidth:0}}>
+                    <p style={{...SS,fontSize:"12px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{selProd.product_name}</p>
+                    <p style={{...SS,fontSize:"11px",color:"#c9a96e",margin:0}}>📍 Salons where you can discover this product ({(selProd._salons||[]).length})</p>
+                  </div>
+                  <button onClick={()=>{setSelProd(null);setMapSalons([]);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:"18px",lineHeight:1,flexShrink:0}}>×</button>
+                </>
+              ) : (
+                <><span style={{fontSize:"14px"}}>💡</span><span style={{...SS,fontSize:"12px",color:"#aaa"}}>Click a product to see where it's available</span></>
+              )}
             </div>
             {lr
               ? <SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} />
@@ -1382,8 +1430,8 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px"}}>{p.category}</p>
         {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:"#1a1a1a",margin:"0 0 6px",fontWeight:600}}>€{p.price_customer}</p>}
         {(p._salons||[]).length>0&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",margin:"0 0 8px"}}>📍 {(p._salons||[]).length} salon{(p._salons||[]).length!==1?"s":""}</p>}
-        {onDetail&&<button onClick={e=>onDetail(e,p)} style={{width:"100%",padding:"7px 0",background:"#0d0d0d",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"10px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:6,transition:"background 0.2s"}} onMouseEnter={e=>e.target.style.background="#b85c5c"} onMouseLeave={e=>e.target.style.background="#0d0d0d"}>
-          View details →
+        {onDetail&&<button onClick={e=>{e.stopPropagation();onDetail(e,p);}} style={{width:"100%",padding:"5px 0",background:"transparent",color:"#c9a96e",border:"1px solid #e8d9b8",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:6,transition:"all 0.2s",marginTop:4}} onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#c9a96e";}}>
+          ✦ View details
         </button>}
       </div>
     </>
