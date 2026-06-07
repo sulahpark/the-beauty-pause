@@ -308,34 +308,7 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
             </div>}
           </div>
           {services.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:20}}>{services.map(s=><span key={s} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#666",background:"#fff",border:"1px solid #ede8e2",padding:"4px 12px",borderRadius:20}}>{s}</span>)}</div>}
-          {prods.length>0&&(
-            <div style={{marginBottom:24}}>
-              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-                <div style={{height:1,flex:1,background:"#ede8e2"}} />
-                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{t.kbeauty_here}</p>
-                <div style={{height:1,flex:1,background:"#ede8e2"}} />
-              </div>
-              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",margin:"0 0 14px",lineHeight:1.6}}>{t.kbeauty_desc}</p>
-              <div style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:6}}>
-                {prods.map(p=>{
-                  const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
-                  return (
-                    <div key={p.id} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",flexShrink:0,width:170,borderRadius:8}}>
-                      <div style={{position:"relative",paddingBottom:"75%",overflow:"hidden"}}>
-                        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"30px"}}>✨</div>}
-                        <div style={{position:"absolute",top:7,left:7,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 8px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-                      </div>
-                      <div style={{padding:"10px 12px 12px"}}>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 2px"}}>{p.brand}</p>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#2a2a2a",margin:"0 0 4px",lineHeight:1.4}}>{p.product_name}</p>
-                        {p.description&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#999",margin:0,lineHeight:1.5}}>{p.description}</p>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <SalonModalProducts prods={prods} t={t} onClose={onClose} lang={lang} />
           {salon.bookingUrl&&(
             <div style={{borderTop:"1px solid #ede8e2",paddingTop:18,marginBottom:18}}>
               <a href={salon.bookingUrl} target="_blank" rel="noopener noreferrer"
@@ -362,6 +335,64 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
   );
 }
 
+// ── SALON MODAL PRODUCTS (with 2 action buttons) ──────────────────────────────
+function SalonModalProducts({ prods, t, onClose, lang }) {
+  const navigate = useNavigate();
+  const [modalProd, setModalProd] = useState(null);
+  if (!prods || prods.length === 0) return null;
+
+  const goToProductPage = (p) => {
+    onClose();
+    // navigate to products page with this product pre-selected via state
+    setTimeout(() => navigate("/products", { state: { selectProductId: p.id } }), 200);
+  };
+
+  return (
+    <div style={{marginBottom:24}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+        <div style={{height:1,flex:1,background:"#ede8e2"}} />
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{t.kbeauty_here}</p>
+        <div style={{height:1,flex:1,background:"#ede8e2"}} />
+      </div>
+      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",margin:"0 0 14px",lineHeight:1.6}}>{t.kbeauty_desc}</p>
+      <div style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:6}}>
+        {prods.map(p=>{
+          const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
+          const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
+          return (
+            <div key={p.id} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",flexShrink:0,width:180,borderRadius:10}}>
+              <div style={{position:"relative",paddingBottom:"70%",overflow:"hidden"}}>
+                {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"28px"}}>✨</div>}
+                <div style={{position:"absolute",top:7,left:7,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 8px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
+              </div>
+              <div style={{padding:"10px 11px 12px"}}>
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 2px"}}>{brandD}</p>
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4,fontWeight:500}}>{p.product_name}</p>
+                {/* 2 action buttons */}
+                <div style={{display:"flex",flexDirection:"column",gap:5}}>
+                  <button onClick={()=>goToProductPage(p)}
+                    style={{width:"100%",padding:"6px 8px",background:"#faf7f4",color:"#555",border:"1px solid #ede8e2",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:6,transition:"all 0.2s",textAlign:"center"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#fff";e.currentTarget.style.borderColor="#c9a96e";}}
+                    onMouseLeave={e=>{e.currentTarget.style.background="#faf7f4";e.currentTarget.style.color="#555";e.currentTarget.style.borderColor="#ede8e2";}}>
+                    📍 {lang==="fr"?"Autres salons":"Other salons"}
+                  </button>
+                  <button onClick={()=>setModalProd(p)}
+                    style={{width:"100%",padding:"6px 8px",background:"#0d0d0d",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:6,transition:"background 0.2s"}}
+                    onMouseEnter={e=>e.target.style.background="#b85c5c"}
+                    onMouseLeave={e=>e.target.style.background="#0d0d0d"}>
+                    ✦ {lang==="fr"?"Voir le produit":"Product details"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {modalProd&&<ProductModal prod={modalProd} salonsWithProd={modalProd._salons||[]} allProducts={[]} onClose={()=>setModalProd(null)} onSalonClick={()=>{}} lang={lang} />}
+    </div>
+  );
+}
+
 // ── PRODUCT MODAL ─────────────────────────────────────────────────────────────
 function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick, lang, user, favourites, onToggleFav }) {
   if (!prod) return null;
@@ -375,115 +406,62 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
     return [...new Set([...main,...more])];
   })();
   const [imgIdx,setImgIdx]=useState(0);
-  const [showIngr,setShowIngr]=useState(false);
-
-  // brand — use brand_name lookup if available, else brand
-  const brandDisplay = prod.brand_name||(Array.isArray(prod.brand)?null:(!prod.brand?.startsWith?.("rec")?prod.brand:null))||"—";
-
-  // product detail fields
-  const details=[
-    {key:"product_1type",label:lang==="fr"?"Type":"Type"},
-    {key:"product_2usage",label:lang==="fr"?"Utilisation":"Usage"},
-    {key:"product_3texture",label:lang==="fr"?"Texture":"Texture"},
-    {key:"test_reason",label:lang==="fr"?"Pour qui ?":"Who is it for?"},
-    {key:"product_4target",label:lang==="fr"?"Peau cible":"Target skin"},
-    {key:"product_5function",label:lang==="fr"?"Fonction":"Function"},
-    {key:"product_6formula",label:lang==="fr"?"Formule":"Formula"},
-    {key:"product_7key_ingredient",label:lang==="fr"?"Ingrédient clé":"Key ingredient"},
-    {key:"product_8organic_certification",label:lang==="fr"?"Certification bio":"Organic certification"},
-    {key:"description",label:lang==="fr"?"Description":"Description"},
-  ].filter(d=>prod[d.key]);
-
-  // related products — same category, exclude current
-  const related=(allProducts||[]).filter(p=>p.id!==prod.id&&p.category===prod.category).slice(0,4);
+  const [showAllSalons,setShowAllSalons]=useState(false);
+  const [lightbox,setLightbox]=useState(null); // full-screen image url
 
   return (
+    <>
+    {/* LIGHTBOX */}
+    {lightbox&&(
+      <div onClick={()=>setLightbox(null)} style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(0,0,0,0.95)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"zoom-out"}}>
+        <img src={lightbox} alt="" style={{maxWidth:"95vw",maxHeight:"95vh",objectFit:"contain",borderRadius:4}} />
+        <button onClick={()=>setLightbox(null)} style={{position:"absolute",top:16,right:16,background:"rgba(255,255,255,0.1)",color:"#fff",border:"none",width:36,height:36,borderRadius:"50%",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+      </div>
+    )}
     <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",maxWidth:640,width:"100%",borderRadius:16,overflow:"hidden",boxShadow:"0 48px 120px rgba(0,0,0,0.4)",maxHeight:"92vh",overflowY:"auto",display:"flex",flexDirection:"column"}}>
 
         {/* PHOTO SLIDER */}
         <div style={{position:"relative",paddingBottom:"60%",overflow:"hidden",background:"#f5f0eb",flexShrink:0}}>
           {allImgs.length>0
-            ? <img src={allImgs[imgIdx]} alt={prod.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"opacity 0.3s"}} />
+            ? <img src={allImgs[imgIdx]} alt={prod.product_name}
+                onClick={e=>{e.stopPropagation();setLightbox(allImgs[imgIdx]);}}
+                style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"opacity 0.3s",cursor:"zoom-in"}} />
             : <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"48px"}}>✨</div>
           }
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.4) 0%,transparent 50%)"}} />
+          {allImgs.length>0&&<div style={{position:"absolute",bottom:8,right:10,background:"rgba(0,0,0,0.45)",color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",padding:"3px 8px",borderRadius:20,pointerEvents:"none"}}>🔍 click to expand</div>}
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.4) 0%,transparent 50%)",pointerEvents:"none"}} />
           <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"rgba(0,0,0,0.4)",color:"#fff",border:"none",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
-          {/* badge */}
           <div style={{position:"absolute",bottom:14,left:14,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"4px 12px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-          {/* fav btn */}
           {onToggleFav&&<div style={{position:"absolute",top:14,left:14,zIndex:2}}>
             <FavBtn type="product" item={prod} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={22}/>
           </div>}
-          {/* arrows */}
           {allImgs.length>1&&<>
             <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i-1+allImgs.length)%allImgs.length);}} style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>‹</button>
             <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i+1)%allImgs.length);}} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>›</button>
-            {/* dots */}
             <div style={{position:"absolute",bottom:14,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5,zIndex:2}}>
               {allImgs.map((_,i)=><div key={i} onClick={e=>{e.stopPropagation();setImgIdx(i);}} style={{width:i===imgIdx?18:6,height:6,borderRadius:3,background:i===imgIdx?"#fff":"rgba(255,255,255,0.5)",transition:"all 0.2s",cursor:"pointer"}} />)}
             </div>
           </>}
-          {/* thumbnail strip */}
-          {allImgs.length>1&&(
-            <div style={{position:"absolute",bottom:0,right:0,display:"flex",gap:4,padding:"0 14px 36px 0"}}>
-              {allImgs.slice(0,5).map((url,i)=>(
-                <div key={i} onClick={e=>{e.stopPropagation();setImgIdx(i);}} style={{width:36,height:36,borderRadius:6,overflow:"hidden",border:i===imgIdx?"2px solid #fff":"2px solid rgba(255,255,255,0.3)",cursor:"pointer",flexShrink:0,transition:"all 0.2s"}}>
-                  <img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} />
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div style={{padding:"22px 24px 28px"}}>
-          {/* name + brand */}
+          {/* brand + name */}
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 4px"}}>{brandDisplay}</p>
           <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:600,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.2}}>{prod.product_name}</h2>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
             <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>{prod.category}</p>
-            {prod.price_customer&&<>
-              <span style={{color:"#ede8e2"}}>·</span>
+            {prod.price_customer&&<><span style={{color:"#ede8e2"}}>·</span>
               <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:0,fontWeight:600}}>€{prod.price_customer}</p>
             </>}
           </div>
 
-          {/* detail fields */}
-          {details.length>0&&(
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
-              {details.map(({key,label})=>(
-                <div key={key} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(key)?"1/-1":"auto"}}>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{label}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{prod[key]}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ingredients — collapsible */}
-          {prod.ingredients&&(
-            <div style={{marginBottom:16,border:"1px solid #ede8e2",borderRadius:8,overflow:"hidden"}}>
-              <button onClick={()=>setShowIngr(v=>!v)}
-                style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 14px",background:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500}}>
-                <span style={{display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700}}>{lang==="fr"?"Ingrédients":"Ingredients"}</span>
-                </span>
-                <span style={{color:"#aaa",fontSize:"16px",transition:"transform 0.2s",transform:showIngr?"rotate(180deg)":"none"}}>▾</span>
-              </button>
-              {showIngr&&(
-                <div style={{padding:"0 14px 14px",background:"#fff",borderTop:"1px solid #f5f0f0"}}>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#777",lineHeight:1.7,margin:"10px 0 0"}}>{prod.ingredients}</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* find in salon */}
+          {/* ✦ FIND IN SALON — first, max 3 + view more */}
           {salonsWithProd.length>0&&(
             <div style={{marginBottom:20}}>
               <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ {t.find_in_salon}</p>
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                {salonsWithProd.map(s=>{
+                {(showAllSalons?salonsWithProd:salonsWithProd.slice(0,3)).map(s=>{
                   const sImg=getSalonImg(s);
                   return (
                     <div key={s.id} onClick={()=>{onClose();setTimeout(()=>onSalonClick(s),200);}}
@@ -501,7 +479,39 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
                     </div>
                   );
                 })}
+                {salonsWithProd.length>3&&!showAllSalons&&(
+                  <button onClick={()=>setShowAllSalons(true)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#b85c5c",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"8px 0",borderRadius:8,textAlign:"center",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#fdf0f0";}} onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
+                    + {salonsWithProd.length-3} more salon{salonsWithProd.length-3>1?"s":""}
+                  </button>
+                )}
               </div>
+            </div>
+          )}
+
+          {/* product detail fields */}
+          {details.length>0&&(
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
+              {details.map(({key,label})=>(
+                <div key={key} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(key)?"1/-1":"auto"}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{label}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{prod[key]}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ingredients — collapsible */}
+          {prod.ingredients&&(
+            <div style={{marginBottom:16,border:"1px solid #ede8e2",borderRadius:8,overflow:"hidden"}}>
+              <button onClick={()=>setShowIngr(v=>!v)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 14px",background:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500}}>
+                <span style={{fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700}}>{lang==="fr"?"Ingrédients":"Ingredients"}</span>
+                <span style={{color:"#aaa",fontSize:"16px",transition:"transform 0.2s",display:"inline-block",transform:showIngr?"rotate(180deg)":"none"}}>▾</span>
+              </button>
+              {showIngr&&(
+                <div style={{padding:"0 14px 14px",background:"#fff",borderTop:"1px solid #f5f0f0"}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#777",lineHeight:1.7,margin:"10px 0 0"}}>{prod.ingredients}</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -516,16 +526,16 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
               <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:4}}>
                 {related.map(p=>{
                   const img=getProdImg(p); const c=p._badge==="new"?"#c9a96e":"#b85c5c";
+                  const bd=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                   return (
-                    <div key={p.id} onClick={e=>{e.stopPropagation();onClose();setTimeout(()=>{},100);}}
-                      style={{flexShrink:0,width:110,background:"#fff",border:"1px solid #ede8e2",borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
+                    <div key={p.id} style={{flexShrink:0,width:110,background:"#fff",border:"1px solid #ede8e2",borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
                       onMouseEnter={e=>{e.currentTarget.style.borderColor=c;e.currentTarget.style.transform="translateY(-2px)";}}
                       onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.transform="none";}}>
                       <div style={{paddingBottom:"80%",position:"relative",overflow:"hidden",background:"#f5f0eb"}}>
                         {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"20px"}}>✨</div>}
                       </div>
                       <div style={{padding:"7px 8px 9px"}}>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:c,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{p.brand}</p>
+                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:c,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{bd}</p>
                         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#1a1a1a",margin:0,lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
                       </div>
                     </div>
@@ -537,8 +547,10 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
         </div>
       </div>
     </div>
+    </>
   );
 }
+
 
 // ── FILTER MODAL ──────────────────────────────────────────────────────────────
 function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy, setSortBy }) {
@@ -804,14 +816,24 @@ function AuthModal({ onClose, lang, salons, initialMode="signup" }) {
 // ── HEART / FAVOURITE BUTTON ──────────────────────────────────────────────────
 function FavBtn({ type, item, user, favourites, onToggle, size=22 }) {
   const isFav = favourites.some(f=>f.type===type&&f.item_id===item.id);
+  const [optimistic, setOptimistic] = useState(null); // null | true | false
+  const active = optimistic !== null ? optimistic : isFav;
   const [hov,setHov]=useState(false);
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    setOptimistic(!active); // instant visual feedback
+    onToggle(type, item);
+  };
+
+  // sync back when real state updates
+  useEffect(()=>{ setOptimistic(null); },[isFav]);
+
   return (
-    <button
-      onClick={e=>{e.stopPropagation();onToggle(type,item);}}
-      onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+    <button onClick={handleClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       style={{background:"none",border:"none",cursor:"pointer",padding:2,display:"flex",alignItems:"center",justifyContent:"center",transition:"transform 0.2s",transform:hov?"scale(1.2)":"scale(1)",filter:`drop-shadow(0 1px 3px rgba(0,0,0,0.3))`}}
-      title={isFav?"Remove from favourites":"Save to favourites"}>
-      <svg width={size} height={size} viewBox="0 0 24 24" fill={isFav?"#e05c7a":"none"} stroke={isFav?"#e05c7a":"rgba(255,255,255,0.9)"} strokeWidth="2.5">
+      title={active?"Remove from favourites":"Save to favourites"}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={active?"#e05c7a":"none"} stroke={active?"#e05c7a":"rgba(255,255,255,0.9)"} strokeWidth="2.5">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
       </svg>
     </button>
@@ -1014,86 +1036,73 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
           </div>
         </div>
 
-        {/* RIGHT 60%: white panel with scrolling lists (desktop only) */}
+        {/* RIGHT 60%: white panel — tall salon cards only */}
         {!isMobile&&(
-          <div style={{flex:1,background:"#faf7f4",display:"flex",flexDirection:"column",justifyContent:"center",padding:"clamp(32px,4vw,56px) clamp(24px,3vw,48px)",gap:32,overflow:"hidden",animation:"fadeUp 1s ease 0.15s both"}}>
-
-            {/* SALON ROW — scrolls left (normal) */}
-            <div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-                <div>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#b85c5c",letterSpacing:"3px",textTransform:"uppercase",margin:"0 0 2px",fontWeight:700}}>✦ Salons</p>
-                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:0,fontWeight:400}}>{L.salon_title}</p>
-                </div>
-                <button onClick={()=>navigate("/salons")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#b85c5c",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",fontWeight:600,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#b85c5c";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#b85c5c";}}>{L.salon_cta}</button>
+          <div style={{flex:1,background:"#faf7f4",display:"flex",flexDirection:"column",justifyContent:"center",padding:"clamp(32px,4vw,56px) clamp(24px,3vw,40px)",overflow:"hidden",animation:"fadeUp 1s ease 0.15s both"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+              <div>
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#b85c5c",letterSpacing:"3px",textTransform:"uppercase",margin:"0 0 2px",fontWeight:700}}>✦ K-Beauty Salons</p>
+                <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#1a1a1a",margin:0,fontWeight:400}}>{L.salon_title}</p>
               </div>
-              <div className="hide-scrollbar" style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:4}}>
-                {previewSalons.map(s=>{
-                  const img=getSalonImg(s); const prods=s._products||[];
-                  return (
-                    <div key={s.id} onClick={()=>navigate("/salons")} style={{flexShrink:0,width:285,background:"#fff",border:"1px solid #f0ebe5",borderRadius:12,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.04)",transition:"all 0.2s"}}
-                      onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.1)";e.currentTarget.style.borderColor="#e8c9a0";}}
-                      onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.04)";e.currentTarget.style.borderColor="#f0ebe5";}}>
-                      <div style={{paddingBottom:"60%",position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
-                        {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"44px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
-                        <div style={{position:"absolute",top:9,left:9,background:"rgba(0,0,0,0.55)",color:"#f5f0eb",fontSize:"10px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 9px",borderRadius:20}}>{s.category}</div>
-                        {s.salon_tier&&<div style={{position:"absolute",top:8,right:8}}><TierBadge tier={s.salon_tier} size={13}/></div>}
-                      </div>
-                      <div style={{padding:"12px 14px 14px"}}>
-                        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontWeight:600,color:"#1a1a1a",margin:"0 0 3px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 6px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.area||"Paris"}</p>
-                        {prods.length>0&&<div style={{display:"flex",gap:5}}>{prods.slice(0,2).map(p=>{const isNew=p._badge==="new";return<span key={p.id} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:isNew?"#a07832":"#b85c5c",background:isNew?"#fdf8ee":"#fdf0f0",padding:"2px 8px",borderRadius:12,fontWeight:600}}>{p.brand}</span>;})}</div>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <button onClick={()=>navigate("/salons")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#b85c5c",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",fontWeight:600,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",transition:"all 0.2s",flexShrink:0}} onMouseEnter={e=>{e.currentTarget.style.background="#b85c5c";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#b85c5c";}}>{L.salon_cta}</button>
             </div>
-
-            {/* PRODUCT ROW — scrolls right (reversed flex direction) */}
-            <div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-                <div>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",margin:"0 0 2px",fontWeight:700}}>✦ K-Beauty</p>
-                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:0,fontWeight:400}}>{L.prod_title}</p>
-                </div>
-                <button onClick={()=>navigate("/products")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",fontWeight:600,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#c9a96e";}}>{L.prod_cta}</button>
-              </div>
-              {/* reversed row — items flow from right */}
-              <div className="hide-scrollbar" style={{display:"flex",flexDirection:"row-reverse",gap:12,overflowX:"auto",paddingBottom:4}}>
-                {previewProds.map(p=>{
-                  const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
-                  return (
-                    <div key={p.id} onClick={()=>navigate("/products")} style={{flexShrink:0,width:195,background:"#fff",border:`1px solid ${border}`,borderRadius:12,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
-                      onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.08)";}}
-                      onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
-                      <div style={{paddingBottom:"100%",position:"relative",overflow:"hidden",background:"#f5f0eb"}}>
-                        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px"}}>✨</div>}
-                        <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
-                      </div>
-                      <div style={{padding:"10px 12px 12px"}}>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 3px"}}>{p.brand}</p>
-                        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#1a1a1a",margin:0,lineHeight:1.35,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
-                      </div>
+            {/* horizontal scroll of tall cards */}
+            <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",paddingBottom:4}}>
+              {previewSalons.map(s=>{
+                const img=getSalonImg(s); const prods=s._products||[];
+                return (
+                  <div key={s.id} onClick={()=>navigate("/salons")}
+                    style={{flexShrink:0,width:200,background:"#fff",border:"1px solid #f0ebe5",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.05)",transition:"all 0.2s",display:"flex",flexDirection:"column"}}
+                    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 28px rgba(0,0,0,0.1)";e.currentTarget.style.borderColor="#e8c9a0";}}
+                    onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.05)";e.currentTarget.style.borderColor="#f0ebe5";}}>
+                    {/* salon image — 45% height */}
+                    <div style={{paddingBottom:"55%",position:"relative",overflow:"hidden",background:"#1a1a1a",flexShrink:0}}>
+                      {img?<img src={img} alt={s.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />
+                        :<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,#2a2a2a,#1a1a1a)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"36px",color:"rgba(201,169,110,0.2)"}}>{s.name?.[0]}</span></div>}
+                      <div style={{position:"absolute",top:8,left:8,background:"rgba(0,0,0,0.55)",color:"#f5f0eb",fontSize:"9px",fontFamily:"'DM Sans',sans-serif",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",padding:"2px 8px",borderRadius:20}}>{s.category}</div>
+                      {s.salon_tier&&<div style={{position:"absolute",top:7,right:7}}><TierBadge tier={s.salon_tier} size={12}/></div>}
                     </div>
-                  );
-                })}
-              </div>
+                    {/* salon info */}
+                    <div style={{padding:"10px 12px 8px",borderBottom:prods.length>0?"1px solid #f5f0f0":"none"}}>
+                      <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
+                      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.area||"Paris"}</p>
+                    </div>
+                    {/* product chips — stacked vertically */}
+                    {prods.length>0&&(
+                      <div style={{padding:"8px 12px 10px",display:"flex",flexDirection:"column",gap:5,flex:1}}>
+                        {prods.slice(0,3).map(p=>{
+                          const isNew=p._badge==="new"; const prodImg=getProdImg(p);
+                          const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
+                          return (
+                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:7,background:isNew?"#fdf8ee":"#fdf0f0",padding:"4px 8px",borderRadius:8,border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
+                              {prodImg&&<img src={prodImg} alt="" style={{width:24,height:24,borderRadius:4,objectFit:"cover",flexShrink:0}}/>}
+                              <div style={{minWidth:0}}>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#555",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.product_name}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {prods.length>3&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",margin:0,textAlign:"center"}}>+{prods.length-3} more</p>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-
           </div>
         )}
       </section>
 
-      {/* ② WHAT IS THIS + HOW IT WORKS — merged dark section */}
-      <section style={{background:"#0d0d0d",padding:`clamp(56px,7vw,96px) ${px}`}}>
-        <div style={{maxWidth:640,marginBottom:56}}>
+      {/* ② WHAT IS THIS + HOW IT WORKS — merged dark section, centered */}
+      <section style={{background:"#0d0d0d",padding:`clamp(56px,7vw,96px) ${px}`,textAlign:"center"}}>
+        <div style={{maxWidth:640,margin:"0 auto",marginBottom:56}}>
           <Label>{L.what_title}</Label>
           <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,3vw,34px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.5}}>{L.what_body}</p>
         </div>
-        <div style={{height:1,background:"rgba(255,255,255,0.08)",marginBottom:48}} />
+        <div style={{height:1,background:"rgba(255,255,255,0.08)",marginBottom:48,maxWidth:560,margin:"0 auto 48px"}} />
         <Label>{L.how_title}</Label>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:32,maxWidth:900}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:32,maxWidth:820,margin:"0 auto",textAlign:"left"}}>
           {L.steps.map((step,i)=>(
             <div key={i} style={{display:"flex",gap:20,alignItems:"flex-start",animation:`fadeUp 0.7s ease ${i*0.12}s both`}}>
               <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:"rgba(201,169,110,0.2)",fontWeight:300,lineHeight:1,flexShrink:0,marginTop:-6}}>0{i+1}</span>
@@ -1198,34 +1207,48 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
 function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,onToggleFav,onAuthClick}) {
   const t=T[lang]; const isMobile=window.innerWidth<768;
   const [prodSearch,setProdSearch]=useState("");
-  const [prodCat,setProdCat]=useState("All");
+  const [prodCats,setProdCats]=useState([]); // multi-select array
   const [inSalonOnly,setInSalonOnly]=useState(false);
   const [showFilterModal,setShowFilterModal]=useState(false);
   const [fp,setFp]=useState(allProducts);
   const [showJoin,setShowJoin]=useState(false);
-  const [selProd,setSelProd]=useState(null);
+  const [selProd,setSelProd]=useState(null);   // selected on map
+  const [modalProd,setModalProd]=useState(null); // opened in modal
   const [selSalon,setSelSalon]=useState(null);
   const [mapSalons,setMapSalons]=useState([]); // salons shown on map
   const [lr,setLr]=useState(!!window.L);
 
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
+  const location = useLocation();
   useEffect(()=>{
     let r=[...allProducts];
-    if (prodCat!=="All") r=r.filter(p=>p.category===prodCat);
+    if (prodCats.length>0) r=r.filter(p=>prodCats.includes(p.category));
     if (inSalonOnly) r=r.filter(p=>(p._salons||[]).length>0);
     if (prodSearch) r=r.filter(p=>p.product_name?.toLowerCase().includes(prodSearch.toLowerCase())||p.brand?.toLowerCase().includes(prodSearch.toLowerCase()));
     setFp(r);
-  },[allProducts,prodCat,inSalonOnly,prodSearch]);
+  },[allProducts,prodCats,inSalonOnly,prodSearch]);
 
-  // when product selected, update map to show its salons
+  // handle navigation from SalonModal "other salons" button
+  useEffect(()=>{
+    if (location.state?.selectProductId) {
+      const p = allProducts.find(x=>x.id===location.state.selectProductId);
+      if (p) { setSelProd(p); setMapSalons(p._salons||[]); }
+    }
+  },[location.state,allProducts]);
+
+  // when product selected, update map to show its salons (no modal)
   const handleProdClick=(p)=>{
     setSelProd(p);
     setMapSalons(p._salons||[]);
   };
+  const handleProdDetail=(e,p)=>{
+    e.stopPropagation();
+    setModalProd(p);
+  };
 
   const cats=["All",...Array.from(new Set(allProducts.map(p=>p.category).filter(Boolean))).sort()];
-  const activeFilterCount=[prodCat!=="All",inSalonOnly].filter(Boolean).length;
+  const activeFilterCount=[prodCats.length>0,inSalonOnly].filter(Boolean).length;
 
   const SS={fontFamily:"'DM Sans',sans-serif"};
 
@@ -1250,8 +1273,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
         </button>
         {/* category chips */}
         {cats.filter(c=>c!=="All").map(cat=>{
-          const a=prodCat===cat;
-          return <button key={cat} onClick={()=>setProdCat(c=>c===cat?"All":cat)} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
+          const a=prodCats.includes(cat);
+          return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
         })}
         {/* search */}
         <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:isMobile?130:200,marginLeft:"auto",flexShrink:0}}/>
@@ -1263,7 +1286,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
         <main style={{padding:"16px clamp(12px,3vw,20px) 80px"}}>
           {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
           :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:14}}>
-            {fp.map((p,i)=><ProductCard key={p.id} p={p} i={i} t={t} onClick={()=>handleProdClick(p)} user={user} favourites={favourites} onToggleFav={onToggleFav} />)}
+            {fp.map((p,i)=><ProductCard key={p.id} p={p} i={i} t={t} onClick={()=>handleProdClick(p)} onDetail={handleProdDetail} user={user} favourites={favourites} onToggleFav={onToggleFav} />)}
           </div>}
         </main>
       ) : (
@@ -1275,13 +1298,12 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
               <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:16}}>{fp.length} products{selProd?` · Showing ${(selProd._salons||[]).length} salon${(selProd._salons||[]).length!==1?"s":""} on map`:""}</p>
               <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
                 {fp.map((p,i)=>(
-                  <div key={p.id} onClick={()=>handleProdClick(p)}
-                    style={{background:"#fff",border:`1.5px solid ${selProd?.id===p.id?"#c9a96e":"#f0ebe5"}`,borderRadius:12,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative",boxShadow:selProd?.id===p.id?"0 4px 20px rgba(201,169,110,0.2)":"none"}}
-                    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.09)";}}
-                    onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=selProd?.id===p.id?"0 4px 20px rgba(201,169,110,0.2)":"none";}}>
-                    {onToggleFav&&<div style={{position:"absolute",top:8,right:8,zIndex:2}}><FavBtn type="product" item={p} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={16}/></div>}
-                    <ProductCard p={p} i={i} t={t} onClick={()=>handleProdClick(p)} user={user} favourites={favourites} onToggleFav={onToggleFav} noWrapper />
-                  </div>
+                  <ProductCard key={p.id} p={p} i={i} t={t}
+                    onClick={()=>handleProdClick(p)}
+                    onDetail={handleProdDetail}
+                    user={user} favourites={favourites} onToggleFav={onToggleFav}
+                    isSelected={selProd?.id===p.id}
+                  />
                 ))}
               </div>
             </>}
@@ -1311,7 +1333,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 22px 12px",borderBottom:"1px solid #ede8e2",position:"sticky",top:0,background:"#faf7f4"}}>
               <button onClick={()=>setShowFilterModal(false)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"20px",color:"#999",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
               <h3 style={{...SS,fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:0}}>{t.filter}</h3>
-              <button onClick={()=>{setProdCat("All");setInSalonOnly(false);}} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:"12px",color:"#aaa",textDecoration:"underline"}}>{t.clear}</button>
+              <button onClick={()=>{setProdCats([]);setInSalonOnly(false);}} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:"12px",color:"#aaa",textDecoration:"underline"}}>{t.clear}</button>
             </div>
             <div style={{padding:"18px 22px 28px"}}>
               {/* In salon */}
@@ -1324,7 +1346,11 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
               {/* Category */}
               <p style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 10px"}}>Category</p>
               <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:20}}>
-                {cats.map(cat=>{const a=prodCat===cat;return<button key={cat} onClick={()=>setProdCat(cat)} style={{padding:"8px 16px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#777",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,transition:"all 0.2s"}}>{cat}</button>;})}
+                {cats.map(cat=>{
+                if(cat==="All") return null;
+                const a=prodCats.includes(cat);
+                return<button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"8px 16px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#777",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,transition:"all 0.2s"}}>{cat}</button>;
+              })}
               </div>
               <button onClick={()=>setShowFilterModal(false)} style={{width:"100%",padding:"14px",background:"#1a1a1a",color:"#fff",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Apply</button>
             </div>
@@ -1333,14 +1359,14 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
       )}
 
       {showJoin&&<AuthModal onClose={()=>setShowJoin(false)} lang={lang} initialMode="signup" />}
-      {selProd&&<ProductModal prod={selProd} salonsWithProd={selProd._salons||[]} allProducts={allProducts} onClose={()=>setSelProd(null)} onSalonClick={s=>setSelSalon(s)} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} />}
+      {modalProd&&<ProductModal prod={modalProd} salonsWithProd={modalProd._salons||[]} allProducts={allProducts} onClose={()=>setModalProd(null)} onSalonClick={s=>setSelSalon(s)} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} />}
       {selSalon&&<SalonModal salon={selSalon} onClose={()=>setSelSalon(null)} leafletReady={lr} lang={lang} />}
     </>
   );
 }
 
 // ── PRODUCT CARD (shared) ──────────────────────────────────────────────────────
-function ProductCard({ p, i, t, onClick, user, favourites, onToggleFav, noWrapper }) {
+function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav, noWrapper, isSelected }) {
   const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
   const brandDisplay=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"—";
   const inner = (
@@ -1355,15 +1381,18 @@ function ProductCard({ p, i, t, onClick, user, favourites, onToggleFav, noWrappe
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",margin:"0 0 3px",lineHeight:1.35,fontWeight:500}}>{p.product_name}</p>
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px"}}>{p.category}</p>
         {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:"#1a1a1a",margin:"0 0 6px",fontWeight:600}}>€{p.price_customer}</p>}
-        {(p._salons||[]).length>0&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",margin:0}}>📍 {(p._salons||[]).length} salon{(p._salons||[]).length!==1?"s":""}</p>}
+        {(p._salons||[]).length>0&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",margin:"0 0 8px"}}>📍 {(p._salons||[]).length} salon{(p._salons||[]).length!==1?"s":""}</p>}
+        {onDetail&&<button onClick={e=>onDetail(e,p)} style={{width:"100%",padding:"7px 0",background:"#0d0d0d",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"10px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:6,transition:"background 0.2s"}} onMouseEnter={e=>e.target.style.background="#b85c5c"} onMouseLeave={e=>e.target.style.background="#0d0d0d"}>
+          View details →
+        </button>}
       </div>
     </>
   );
   if (noWrapper) return inner;
   return (
-    <div onClick={onClick} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",borderRadius:12,cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative"}}
-      onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 10px 30px rgba(0,0,0,0.1)";}}
-      onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";}}>
+    <div onClick={onClick} style={{background:"#fff",border:`1.5px solid ${isSelected?"#c9a96e":border}`,overflow:"hidden",borderRadius:12,cursor:"pointer",transition:"all 0.2s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative",boxShadow:isSelected?"0 4px 20px rgba(201,169,110,0.2)":"none"}}
+      onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=isSelected?"0 4px 20px rgba(201,169,110,0.2)":"0 10px 30px rgba(0,0,0,0.1)";}}
+      onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=isSelected?"0 4px 20px rgba(201,169,110,0.2)":"none";}}>
       {inner}
     </div>
   );
