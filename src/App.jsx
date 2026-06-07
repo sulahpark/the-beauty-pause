@@ -745,7 +745,7 @@ function LandingPage({lang,setLang,salons,allProducts}) {
           </div>
         </div>
         {/* stats */}
-        <div style={{display:"flex",gap:clamp||40,marginTop:64,flexWrap:"wrap",gap:40}}>
+        <div style={{display:"flex",marginTop:64,flexWrap:"wrap",gap:40}}>
           {[{n:salons.length||"—",l:lang==="en"?"Salons in Paris":"Salons à Paris"},{n:allProducts.length||"—",l:lang==="en"?"K-Beauty products":"Produits K-Beauty"},{n:"6",l:lang==="en"?"Brands":"Marques"}].map(({n,l})=>(
             <div key={l} style={{animation:"fadeUp 1s ease 0.1s both"}}>
               <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(36px,5vw,56px)",fontWeight:300,color:"#f5f0eb",lineHeight:1}}>{n}</div>
