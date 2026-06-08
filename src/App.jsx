@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, Component } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPA_URL = (process.env.REACT_APP_SUPABASE_URL||"").trim();
@@ -36,6 +36,7 @@ const TBL_RETAIL   = "tblKBJOQMOoskSVdx";
 const TBL_PRODUCTS = "tblQkdtqAA9kC0n1w";
 const TBL_SLOTS    = "tblpLTlKSizL7y3W6";
 const TBL_MEMBERS  = "tbl6qPdK6BcW6t4ji";
+const TBL_SPOTS    = "tblszhTyIaNUyDClw";
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 const T = {
@@ -1581,6 +1582,178 @@ function AccountPage({lang,setLang,salons,allProducts}) {
   );
 }
 
+
+// ── SPOT PAGE (QR scan landing) ───────────────────────────────────────────────
+function SpotPage({ lang, setLang }) {
+  const { spotId } = useParams();
+  const navigate = useNavigate();
+  const t = T[lang];
+  const [spot, setSpot] = useState(null);
+  const [product, setProduct] = useState(null);
+  const [salon, setSalon] = useState(null);
+  const [status, setStatus] = useState("loading");
+  const [imgIdx, setImgIdx] = useState(0);
+
+  useEffect(() => {
+    if (!spotId) { setStatus("not_found"); return; }
+    (async () => {
+      try {
+        const spots = await fetchAll(TBL_SPOTS, `{spot_id}="${spotId}"`);
+        if (!spots.length) { setStatus("not_found"); return; }
+        const s = spots[0];
+        setSpot(s);
+        const prodIds = Array.isArray(s.current_product) ? s.current_product : [];
+        if (prodIds.length > 0) {
+          const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_PRODUCTS}/${prodIds[0]}`, { headers: { Authorization: `Bearer ${AT_KEY}` } });
+          if (res.ok) { const d = await res.json(); setProduct({ id: d.id, ...d.fields }); }
+        }
+        const salonIds = Array.isArray(s.salon) ? s.salon : [];
+        if (salonIds.length > 0) {
+          const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_RETAIL}/${salonIds[0]}`, { headers: { Authorization: `Bearer ${AT_KEY}` } });
+          if (res.ok) { const d = await res.json(); setSalon({ id: d.id, ...d.fields }); }
+        }
+        setStatus("found");
+      } catch(e) { console.error(e); setStatus("not_found"); }
+    })();
+  }, [spotId]);
+
+  const img = product ? getProdImg(product) : null;
+  const moreImgs = product && Array.isArray(product.more_image) ? product.more_image.map(a=>a.url||a).filter(Boolean) : [];
+  const allImgs = img ? [img, ...moreImgs] : moreImgs;
+  const brandDisplay = product ? (product.brand_name || (Array.isArray(product.brand) ? null : (!product.brand?.startsWith?.("rec") ? product.brand : null)) || "") : "";
+  const salonImg = salon ? getSalonImg(salon) : null;
+  const details = product ? [
+    {key:"product_1type",label:"Type"},
+    {key:"product_2usage",label:"Usage"},
+    {key:"product_3texture",label:"Texture"},
+    {key:"test_reason",label:"Who is it for?"},
+    {key:"product_4target",label:"Target skin"},
+    {key:"product_5function",label:"Function"},
+    {key:"product_7key_ingredient",label:"Key ingredient"},
+    {key:"description",label:"Description"},
+  ].filter(d=>product[d.key]) : [];
+
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}`}</style>
+      <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
+        <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+        </div>
+        <div style={{display:"flex",gap:16,alignItems:"center"}}>
+          {[{path:"/salons",label:t.salons},{path:"/products",label:t.products}].map(({path,label})=>(
+            <button key={path} onClick={()=>navigate(path)} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:"12px",color:"#777",letterSpacing:"0.5px"}} onMouseEnter={e=>e.target.style.color="#f5f0eb"} onMouseLeave={e=>e.target.style.color="#777"}>{label}</button>
+          ))}
+          <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",transition:"all 0.2s",textTransform:"uppercase"}}>{l}</button>)}
+          </div>
+        </div>
+      </nav>
+
+      {status==="loading"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"80vh"}}><p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#ccc"}}>Loading…</p></div>}
+
+      {status==="not_found"&&(
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"80vh",padding:"40px 24px",textAlign:"center"}}>
+          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:12}}>✦ Discovery Spot</p>
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:300,color:"#1a1a1a",marginBottom:12}}>Spot not found</h1>
+          <p style={{...SS,fontSize:"14px",color:"#aaa",marginBottom:28}}>This QR code may be outdated or invalid.</p>
+          <button onClick={()=>navigate("/")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Go to homepage</button>
+        </div>
+      )}
+
+      {status==="found"&&!product&&(
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",padding:"40px 24px",textAlign:"center"}}>
+          {salon&&<p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",marginBottom:8}}>✦ {salon.name}</p>}
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",fontWeight:300,color:"#1a1a1a",marginBottom:12}}>No product here yet</h1>
+          <p style={{...SS,fontSize:"14px",color:"#aaa",marginBottom:28}}>This spot is being refreshed — check back soon!</p>
+          <button onClick={()=>navigate("/products")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Browse all products</button>
+        </div>
+      )}
+
+      {status==="found"&&product&&(
+        <main style={{maxWidth:560,margin:"0 auto",padding:"32px 20px 80px",animation:"fadeUp 0.6s ease both"}}>
+          {salon&&(
+            <div onClick={()=>navigate("/salons")} style={{display:"flex",alignItems:"center",gap:12,background:"#fff",border:"1px solid #ede8e2",borderRadius:12,padding:"12px 16px",marginBottom:24,cursor:"pointer",transition:"all 0.2s"}} onMouseEnter={e=>e.currentTarget.style.borderColor="#c9a96e"} onMouseLeave={e=>e.currentTarget.style.borderColor="#ede8e2"}>
+              {salonImg&&<div style={{width:44,height:44,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={salonImg} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>}
+              <div style={{flex:1,minWidth:0}}>
+                <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 2px"}}>✦ Discovery Spot · {salon.name}</p>
+                <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.address}</p>
+              </div>
+              <span style={{color:"#ccc",fontSize:"16px"}}>›</span>
+            </div>
+          )}
+          <div style={{borderRadius:16,overflow:"hidden",marginBottom:24,background:"#f5f0eb"}}>
+            <div style={{paddingBottom:"75%",position:"relative",overflow:"hidden"}}>
+              {allImgs.length>0
+                ? <img src={allImgs[imgIdx]} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",background:"#f5f0eb"}} />
+                : <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"64px"}}>✨</div>
+              }
+              {allImgs.length>1&&<>
+                <button onClick={()=>setImgIdx(i=>(i-1+allImgs.length)%allImgs.length)} style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center"}}>‹</button>
+                <button onClick={()=>setImgIdx(i=>(i+1)%allImgs.length)} style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center"}}>›</button>
+                <div style={{position:"absolute",bottom:12,left:"50%",transform:"translateX(-50%)",display:"flex",gap:6}}>
+                  {allImgs.map((_,i)=><div key={i} onClick={()=>setImgIdx(i)} style={{width:i===imgIdx?20:7,height:7,borderRadius:4,background:i===imgIdx?"#1a1a1a":"rgba(0,0,0,0.25)",transition:"all 0.2s",cursor:"pointer"}} />)}
+                </div>
+              </>}
+            </div>
+            {allImgs.length>1&&(
+              <div style={{display:"flex",gap:6,padding:"10px 12px",background:"#f5f0eb",borderTop:"1px solid #ede8e2"}}>
+                {allImgs.slice(0,6).map((url,i)=>(
+                  <div key={i} onClick={()=>setImgIdx(i)} style={{width:48,height:48,borderRadius:6,overflow:"hidden",border:i===imgIdx?"2px solid #1a1a1a":"2px solid transparent",cursor:"pointer",flexShrink:0}}>
+                    <img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{brandDisplay}</p>
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,5vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.2}}>{product.product_name}</h1>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+            {product.category&&<span style={{...SS,fontSize:"12px",color:"#aaa"}}>{product.category}</span>}
+            {product.price_customer&&<><span style={{color:"#ede8e2"}}>·</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#1a1a1a",fontWeight:600}}>€{product.price_customer}</span></>}
+          </div>
+          {product.description&&<p style={{...SS,fontSize:"14px",color:"#666",lineHeight:1.75,marginBottom:20}}>{product.description}</p>}
+
+          {/* PURCHASE — only on QR page */}
+          <div style={{background:"#0d0d0d",borderRadius:12,padding:"20px 22px",marginBottom:24}}>
+            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>✦ Purchase</p>
+            <p style={{...SS,fontSize:"13px",color:"#aaa",lineHeight:1.6,margin:"0 0 16px"}}>{lang==="fr"?"Vous avez découvert ce produit en salon. Commandez-le maintenant.":"You discovered this product in the salon. Order it now."}</p>
+            {product.price_customer&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+              <span style={{...SS,fontSize:"13px",color:"#777"}}>Price</span>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",color:"#f5f0eb",fontWeight:400}}>€{product.price_customer}</span>
+            </div>}
+            {product.purchase_url
+              ? <a href={product.purchase_url} target="_blank" rel="noopener noreferrer" style={{display:"block",textAlign:"center",padding:"15px",background:"#c9a96e",color:"#0d0d0d",textDecoration:"none",...SS,fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>{lang==="fr"?"Acheter maintenant":"Buy now"} →</a>
+              : <div style={{textAlign:"center",padding:"14px",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.3)",borderRadius:8}}><p style={{...SS,fontSize:"12px",color:"#c9a96e",margin:0}}>Purchase link coming soon</p></div>
+            }
+          </div>
+
+          {details.length>0&&(
+            <div style={{marginBottom:20}}>
+              <p style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 12px"}}>Product details</p>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {details.map(({key,label})=>(
+                  <div key={key} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(key)?"1/-1":"auto"}}>
+                    <p style={{...SS,fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{label}</p>
+                    <p style={{...SS,fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{product[key]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div style={{borderTop:"1px solid #ede8e2",paddingTop:20,display:"flex",gap:12,flexWrap:"wrap"}}>
+            <button onClick={()=>navigate("/products")} style={{flex:1,padding:"12px",background:"#fff",color:"#1a1a1a",border:"1px solid #ede8e2",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:8,minWidth:120}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";}}>{lang==="fr"?"Voir les produits":"Browse products"}</button>
+            {salon&&<button onClick={()=>navigate("/salons")} style={{flex:1,padding:"12px",background:"#fff",color:"#1a1a1a",border:"1px solid #ede8e2",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:8,minWidth:120}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#b85c5c";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";}}>{lang==="fr"?"Voir les salons":"Browse salons"}</button>}
+          </div>
+        </main>
+      )}
+    </>
+  );
+}
+
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang,setLang]=useState("en");
@@ -1631,6 +1804,7 @@ export default function App() {
         <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} />} />
+        <Route path="/spot/:spotId" element={<SpotPage lang={lang} setLang={setLang} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
