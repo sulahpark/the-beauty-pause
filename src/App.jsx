@@ -656,120 +656,111 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 }
 
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
-function BottomSheet({ salons, loading, onSalonClick, lang }) {
+function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
   const t=T[lang];
-  const [sheetH, setSheetH] = useState(64); // height in px
+  const [sheetH, setSheetH] = useState(88);
   const [pinned, setPinned] = useState(null);
   const startY = useRef(null);
   const startH = useRef(null);
   const sheetRef = useRef(null);
   const VH = window.innerHeight;
-  const TABBAR = 52;
-  const SNAP_COLLAPSED = 64;
-  const SNAP_MID = Math.round(VH * 0.42);
-  const SNAP_FULL = VH - 56 - 44 - TABBAR; // full minus nav, filter, tabbar
+  const SNAP_COLLAPSED = 88;   // handle + count only
+  const SNAP_FULL = VH;        // pushes everything up (nav+filter hidden via parent)
 
-  BottomSheet._setPinned = (s) => { setPinned(s); setSheetH(SNAP_MID); };
-  BottomSheet._clearPinned = () => setPinned(null);
+  BottomSheet._setPinned = (s) => { setPinned(s); setSheetH(SNAP_COLLAPSED); };  // just show card, don't expand
 
-  const snapTo = (h) => setSheetH(h);
+  const snapTo = (h) => {
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.35s cubic-bezier(0.32,0.72,0,1)";
+    setSheetH(h);
+  };
 
   const onTouchStart = (e) => {
     startY.current = e.touches[0].clientY;
     startH.current = sheetH;
-    e.currentTarget.style.transition = "none";
+    if (sheetRef.current) sheetRef.current.style.transition = "none";
   };
   const onTouchMove = (e) => {
+    e.stopPropagation();
     const dy = startY.current - e.touches[0].clientY;
     const newH = Math.max(SNAP_COLLAPSED, Math.min(SNAP_FULL, startH.current + dy));
     setSheetH(newH);
   };
   const onTouchEnd = (e) => {
-    if (sheetRef.current) sheetRef.current.style.transition = "";
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.35s cubic-bezier(0.32,0.72,0,1)";
     const dy = startY.current - e.changedTouches[0].clientY;
-    const vel = dy; // positive = up
-    const cur = startH.current;
-    // snap logic
-    if (vel > 60 || sheetH > (SNAP_MID + SNAP_FULL) / 2) snapTo(SNAP_FULL);
-    else if (vel < -60 || sheetH < (SNAP_COLLAPSED + SNAP_MID) / 2) snapTo(SNAP_COLLAPSED);
-    else snapTo(SNAP_MID);
+    if (dy > 50 || sheetH > (SNAP_COLLAPSED + SNAP_FULL) / 2) snapTo(SNAP_FULL);
+    else snapTo(SNAP_COLLAPSED);
   };
 
-  const isCollapsed = sheetH <= SNAP_COLLAPSED + 20;
-  const isFull = sheetH >= SNAP_FULL - 20;
+  const isFull = sheetH >= SNAP_FULL - 40;
 
   return (
     <div ref={sheetRef}
-      style={{
-        position:"absolute", bottom:TABBAR, left:0, right:0,
-        height:sheetH, background:"#faf7f4",
-        borderRadius:"16px 16px 0 0",
-        boxShadow:"0 -4px 28px rgba(0,0,0,0.14)",
-        transition:"height 0.3s cubic-bezier(0.32,0.72,0,1)",
+      style={{position:"absolute", bottom:0, left:0, right:0, height:sheetH,
+        background:"#faf7f4", borderRadius:"16px 16px 0 0",
+        boxShadow:"0 -4px 28px rgba(0,0,0,0.18)",
         zIndex:100, display:"flex", flexDirection:"column",
-        overflow:"hidden"
-      }}
-      onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+        overflow:"hidden", touchAction:"none"
+      }}>
 
-      {/* DRAG HANDLE + COUNT ROW */}
-      <div style={{flexShrink:0, paddingTop:10, paddingBottom:8, cursor:"grab", userSelect:"none"}}>
-        <div style={{width:36, height:4, borderRadius:2, background:"#ddd", margin:"0 auto 8px"}} />
+      {/* DRAG HANDLE — always visible */}
+      <div onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+        style={{flexShrink:0, paddingTop:10, paddingBottom:6, cursor:"grab", userSelect:"none", touchAction:"none"}}>
+        <div style={{width:36, height:4, borderRadius:2, background:"#ccc", margin:"0 auto 8px"}} />
         <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 16px"}}>
-          <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"13px", color:"#1a1a1a", fontWeight:600, margin:0}}>
-            {salons.length} {t.salons_count}
+          <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"13px", fontWeight:600, color:"#1a1a1a", margin:0}}>
+            {visibleCount??salons.length} {t.salons_count}
           </p>
-          {!isCollapsed && isFull && (
-            <button onClick={()=>snapTo(SNAP_COLLAPSED)}
-              style={{fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", background:"none", border:"1px solid #ede8e2", cursor:"pointer", padding:"4px 12px", borderRadius:20}}>
-              🗺 Map
-            </button>
-          )}
+          {isFull&&<button onClick={()=>snapTo(SNAP_COLLAPSED)}
+            style={{display:"flex",alignItems:"center",gap:5,padding:"7px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:24,boxShadow:"0 2px 10px rgba(0,0,0,0.25)"}}>
+            🗺 Map view
+          </button>}
         </div>
       </div>
 
-      {/* PINNED CARD */}
+      {/* PINNED CARD — floating above collapsed sheet */}
       {pinned && !isFull && (
-        <div style={{flexShrink:0, margin:"0 12px 8px"}}>
-          <div style={{background:"#fff", borderRadius:14, overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.12)", position:"relative"}}>
-            <button onClick={e=>{e.stopPropagation();setPinned(null);setSheetH(SNAP_COLLAPSED);}}
+        <div style={{flexShrink:0, margin:"4px 12px 8px"}}>
+          <div style={{background:"#fff", borderRadius:14, overflow:"hidden", boxShadow:"0 6px 24px rgba(0,0,0,0.14)", position:"relative"}}>
+            <button onClick={e=>{e.stopPropagation();setPinned(null);}}
               style={{position:"absolute", top:8, right:8, width:26, height:26, borderRadius:"50%", background:"rgba(0,0,0,0.5)", color:"#fff", border:"none", cursor:"pointer", fontSize:"13px", display:"flex", alignItems:"center", justifyContent:"center", zIndex:2}}>×</button>
-            <div onClick={()=>onSalonClick(pinned)} style={{display:"flex", cursor:"pointer"}}>
-              <div style={{width:96, flexShrink:0, overflow:"hidden", background:"#1a1a1a"}}>
+            <div onClick={()=>onSalonClick(pinned)} style={{display:"flex", cursor:"pointer", minHeight:80}}>
+              <div style={{width:90, flexShrink:0, overflow:"hidden", background:"#1a1a1a"}}>
                 {(()=>{const img=getSalonImg(pinned); return img
-                  ? <img src={img} alt="" style={{width:"100%", height:"100%", objectFit:"cover"}}/>
-                  : <div style={{width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif", fontSize:"26px", color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
+                  ?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                  :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
                 })()}
               </div>
-              <div style={{padding:"10px 12px", flex:1, minWidth:0}}>
-                <div style={{display:"flex", alignItems:"center", gap:5, marginBottom:2}}>
+              <div style={{padding:"10px 12px", flex:1, minWidth:0, display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                <div style={{display:"flex", alignItems:"center", gap:4, marginBottom:2}}>
                   <p style={{fontFamily:"'Cormorant Garamond',serif", fontSize:"15px", fontWeight:600, color:"#1a1a1a", margin:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{pinned.name}</p>
                   {pinned.salon_tier&&<TierBadge tier={pinned.salon_tier} size={11}/>}
                 </div>
                 <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", margin:"0 0 5px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{pinned.area||"Paris"}</p>
                 {(pinned._products||[]).length>0&&(
                   <div style={{display:"flex", gap:3, alignItems:"center"}}>
-                    {(pinned._products||[]).slice(0,3).map(p=>{const img=getProdImg(p); return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
-                    <span style={{fontFamily:"'DM Sans',sans-serif", fontSize:"9px", color:"#c9a96e", fontWeight:700, marginLeft:3}}>✦ K-Beauty</span>
+                    {(pinned._products||[]).slice(0,4).map(p=>{const img=getProdImg(p); return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden",border:"1px solid #f0d0d0"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
+                    <span style={{fontFamily:"'DM Sans',sans-serif", fontSize:"9px", color:"#c9a96e", fontWeight:700, marginLeft:2}}>✦ K-Beauty</span>
                   </div>
                 )}
               </div>
-              <div style={{display:"flex", alignItems:"center", paddingRight:10}}><span style={{color:"#ddd", fontSize:"16px"}}>›</span></div>
+              <div style={{display:"flex",alignItems:"center",paddingRight:10,flexShrink:0}}><span style={{color:"#ddd",fontSize:"18px"}}>›</span></div>
             </div>
           </div>
         </div>
       )}
 
-      {/* SALON LIST — visible when mid or full */}
-      {!isCollapsed && (
-        <div style={{flex:1, overflowY:"auto", padding:"0 12px 8px"}}>
+      {/* SALON LIST — shown when expanded */}
+      {isFull && (
+        <div style={{flex:1, overflowY:"auto", WebkitOverflowScrolling:"touch", padding:"4px 12px 24px"}}>
           {loading
-            ? <div style={{textAlign:"center", padding:"32px 0", fontFamily:"'Cormorant Garamond',serif", fontSize:"18px", color:"#ccc"}}>{t.loading}</div>
+            ? <div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
             : salons.length===0
-              ? <div style={{textAlign:"center", padding:"32px 0", fontFamily:"'Cormorant Garamond',serif", fontSize:"18px", color:"#ccc"}}>{t.no_salons}</div>
-              : <div style={{display:"flex", flexDirection:"column", gap:12}}>
+              ? <div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.no_salons}</div>
+              : <div style={{display:"flex",flexDirection:"column",gap:12}}>
                   {salons.map((s,i)=>(
-                    <div key={s.id} style={{animation:`fadeUp 0.3s ease ${i*0.02}s both`}}>
-                      <SalonCard salon={s} onClick={onSalonClick} lang={lang} />
+                    <div key={s.id} style={{animation:`fadeUp 0.25s ease ${i*0.02}s both`}}>
+                      <SalonCard salon={s} onClick={onSalonClick} lang={lang}/>
                     </div>
                   ))}
                 </div>
@@ -994,49 +985,60 @@ function useData() {
 function Nav({lang,setLang,onJoin,user,onAuthClick}) {
   const navigate=useNavigate(); const location=useLocation();
   const isMobile=window.innerWidth<768; const t=T[lang];
+  const [menuOpen,setMenuOpen]=useState(false);
   return (
-    <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",position:"sticky",top:0,zIndex:500}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
-        <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",lineHeight:1,padding:"4px 6px",transition:"color 0.2s"}} onMouseEnter={e=>e.currentTarget.style.color="#f5f0eb"} onMouseLeave={e=>e.currentTarget.style.color="#777"}>←</button>
-        <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
-          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+    <>
+      <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",position:"sticky",top:0,zIndex:500}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+          <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",lineHeight:1,padding:"4px 6px"}} >←</button>
+          <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+          </div>
         </div>
-      </div>
-      {!isMobile&&(
-        <div style={{display:"flex",gap:4,position:"absolute",left:"50%",transform:"translateX(-50%)"}}>
-          {[{path:"/salons",label:t.salons},{path:"/products",label:t.products}].map(({path,label})=>{
-            const active=location.pathname===path;
-            return <button key={path} onClick={()=>navigate(path)} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:active?"#f5f0eb":"#666",padding:"6px 16px",fontWeight:active?600:400,letterSpacing:"0.5px",transition:"color 0.2s",borderBottom:active?"1px solid #c9a96e":"1px solid transparent"}} onMouseEnter={e=>e.currentTarget.style.color="#f5f0eb"} onMouseLeave={e=>e.currentTarget.style.color=active?"#f5f0eb":"#666"}>{label}</button>;
-          })}
+        {!isMobile&&(
+          <div style={{display:"flex",gap:4,position:"absolute",left:"50%",transform:"translateX(-50%)"}}>
+            {[{path:"/salons",label:t.salons},{path:"/products",label:t.products}].map(({path,label})=>{
+              const active=location.pathname===path;
+              return <button key={path} onClick={()=>navigate(path)} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:active?"#f5f0eb":"#666",padding:"6px 16px",fontWeight:active?600:400,borderBottom:active?"1px solid #c9a96e":"1px solid transparent"}}>{label}</button>;
+            })}
+          </div>
+        )}
+        <div style={{display:"flex",alignItems:"center",gap:8,flex:1,justifyContent:"flex-end"}}>
+          {!isMobile&&(user
+            ?<button onClick={()=>navigate("/account")} style={{padding:"6px 14px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:20}}>✦ Account</button>
+            :<button onClick={()=>onAuthClick("login")} style={{padding:"6px 14px",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:20}}>Sign in</button>
+          )}
+          <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+          </div>
+          {isMobile&&(
+            <button onClick={()=>setMenuOpen(v=>!v)} style={{background:"none",border:"1px solid #444",cursor:"pointer",width:34,height:34,borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,padding:6}}>
+              <span style={{display:"block",width:16,height:2,background:"#f5f0eb",borderRadius:1}}/>
+              <span style={{display:"block",width:16,height:2,background:"#f5f0eb",borderRadius:1}}/>
+              <span style={{display:"block",width:16,height:2,background:"#f5f0eb",borderRadius:1}}/>
+            </button>
+          )}
+        </div>
+      </nav>
+      {isMobile&&menuOpen&&(
+        <div onClick={()=>setMenuOpen(false)} style={{position:"fixed",inset:0,zIndex:1000,background:"rgba(0,0,0,0.6)"}}>
+          <div onClick={e=>e.stopPropagation()} style={{position:"absolute",top:56,right:12,background:"#0d0d0d",border:"1px solid #333",borderRadius:12,overflow:"hidden",width:200,boxShadow:"0 8px 32px rgba(0,0,0,0.4)"}}>
+            {[{path:"/salons",label:"🏪 "+t.salons},{path:"/products",label:"✨ "+t.products},{path:"/account",label:"👤 Account"}].map(({path,label})=>(
+              <button key={path} onClick={()=>{navigate(path);setMenuOpen(false);}} style={{display:"block",width:"100%",padding:"14px 18px",background:location.pathname===path?"#1a1a1a":"transparent",border:"none",borderBottom:"1px solid #222",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:location.pathname===path?"#c9a96e":"#f5f0eb",textAlign:"left",fontWeight:location.pathname===path?600:400}}>{label}</button>
+            ))}
+            {!user
+              ?<button onClick={()=>{onAuthClick("login");setMenuOpen(false);}} style={{display:"block",width:"100%",padding:"14px 18px",background:"transparent",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#c9a96e",textAlign:"left",fontWeight:600}}>Sign in ✦</button>
+              :<button onClick={()=>{navigate("/account");setMenuOpen(false);}} style={{display:"block",width:"100%",padding:"14px 18px",background:"transparent",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#c9a96e",textAlign:"left",fontWeight:600}}>My account ✦</button>
+            }
+          </div>
         </div>
       )}
-      <div style={{display:"flex",alignItems:"center",gap:8,flex:1,justifyContent:"flex-end"}}>
-        {!isMobile&&(user
-          ? <button onClick={()=>navigate("/account")} style={{padding:"6px 14px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:20,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#0d0d0d";}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#c9a96e";}}>✦ Account</button>
-          : <button onClick={()=>onAuthClick("login")} style={{padding:"6px 14px",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:20}}>Sign in</button>
-        )}
-        <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
-          {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",transition:"all 0.2s",textTransform:"uppercase"}}>{l}</button>)}
-        </div>
-      </div>
-    </nav>
+    </>
   );
 }
 
-function MobileTabBar({lang,active,user}) {
-  const navigate=useNavigate(); const t=T[lang];
-  const tabs=[{path:"/salons",label:t.salons,icon:"🏪"},{path:"/products",label:t.products,icon:"✨"},{path:"/account",label:"Account",icon:"👤"}];
-  return (
-    <div style={{position:"fixed",bottom:0,left:0,right:0,height:52,background:"#fff",borderTop:"1px solid #ede8e2",display:"flex",zIndex:600,boxShadow:"0 -2px 12px rgba(0,0,0,0.08)"}}>
-      {tabs.map(({path,label,icon})=>(
-        <button key={path} onClick={()=>navigate(path)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"10px",fontWeight:active===path?600:400,color:active===path?"#b85c5c":"#aaa",letterSpacing:"0.5px",textTransform:"uppercase",transition:"all 0.2s"}}>
-          <span style={{fontSize:"16px"}}>{icon}</span>{label}
-        </button>
-      ))}
-    </div>
-  );
-}
+function MobileTabBar({lang,active,user}) { return null; }
 
 // ── LANDING PAGE ──────────────────────────────────────────────────────────────
 function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
@@ -1278,7 +1280,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   const afc=[sf.tier.length>0,sf.area!=="All",sf.brand!=="All",sf.categories.length>0,sf.kbeautyOnly].filter(Boolean).length;
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
       <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
       {isMobile&&<MobileTabBar lang={lang} active="/salons" user={user} />}
       {/* filter */}
@@ -1294,9 +1296,9 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
       </div>
       {/* content */}
       {isMobile?(
-        <div style={{position:"relative",height:`calc(100vh - 56px - 44px - 52px)`,overflow:"hidden"}}>
+        <div style={{position:"relative",height:`calc(100vh - 56px - 44px)`,overflow:"hidden",touchAction:"pan-x pan-y"}}>
           <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
-          <BottomSheet salons={filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} />
+          <BottomSheet salons={filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.length:salons.length} />
         </div>
       ):(
         <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
@@ -1370,7 +1372,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
       <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
       {isMobile&&<MobileTabBar lang={lang} active="/products" user={user} />}
 
