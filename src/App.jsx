@@ -658,116 +658,126 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
 function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
   const t=T[lang];
-  const [sheetH, setSheetH] = useState(88);
+  const [expanded, setExpanded] = useState(false);
   const [pinned, setPinned] = useState(null);
-  const startY = useRef(null);
-  const startH = useRef(null);
-  const sheetRef = useRef(null);
-  const VH = window.innerHeight;
-  const SNAP_COLLAPSED = 88;   // handle + count only
-  const SNAP_FULL = VH;        // pushes everything up (nav+filter hidden via parent)
+  const listRef = useRef(null);
+  const handleStartY = useRef(null);
 
-  BottomSheet._setPinned = (s) => { setPinned(s); setSheetH(SNAP_COLLAPSED); };  // just show card, don't expand
+  BottomSheet._setPinned = (s) => { setPinned(s); };
+  BottomSheet._clearPinned = () => setPinned(null);
 
-  const snapTo = (h) => {
-    if (sheetRef.current) sheetRef.current.style.transition = "height 0.35s cubic-bezier(0.32,0.72,0,1)";
-    setSheetH(h);
+  // Only handle touches on the drag handle bar
+  const onHandleTouchStart = (e) => {
+    handleStartY.current = e.touches[0].clientY;
+  };
+  const onHandleTouchEnd = (e) => {
+    const dy = handleStartY.current - e.changedTouches[0].clientY;
+    if (dy > 30) setExpanded(true);
+    else if (dy < -30) setExpanded(false);
   };
 
-  const onTouchStart = (e) => {
-    startY.current = e.touches[0].clientY;
-    startH.current = sheetH;
-    if (sheetRef.current) sheetRef.current.style.transition = "none";
+  // List: only collapse when at very top + dragging down
+  const listStartY = useRef(null);
+  const onListTouchStart = (e) => {
+    listStartY.current = e.touches[0].clientY;
   };
-  const onTouchMove = (e) => {
-    e.stopPropagation();
-    const dy = startY.current - e.touches[0].clientY;
-    const newH = Math.max(SNAP_COLLAPSED, Math.min(SNAP_FULL, startH.current + dy));
-    setSheetH(newH);
-  };
-  const onTouchEnd = (e) => {
-    if (sheetRef.current) sheetRef.current.style.transition = "height 0.35s cubic-bezier(0.32,0.72,0,1)";
-    const dy = startY.current - e.changedTouches[0].clientY;
-    if (dy > 50 || sheetH > (SNAP_COLLAPSED + SNAP_FULL) / 2) snapTo(SNAP_FULL);
-    else snapTo(SNAP_COLLAPSED);
+  const onListTouchEnd = (e) => {
+    if (!listRef.current) return;
+    const scrollTop = listRef.current.scrollTop;
+    const dy = listStartY.current - e.changedTouches[0].clientY;
+    // only collapse if at top AND dragging down
+    if (scrollTop <= 2 && dy < -40) {
+      setExpanded(false);
+    }
   };
 
-  const isFull = sheetH >= SNAP_FULL - 40;
+  const count = visibleCount ?? salons.length;
 
   return (
-    <div ref={sheetRef}
-      style={{position:"absolute", bottom:0, left:0, right:0, height:sheetH,
-        background:"#faf7f4", borderRadius:"16px 16px 0 0",
-        boxShadow:"0 -4px 28px rgba(0,0,0,0.18)",
-        zIndex:100, display:"flex", flexDirection:"column",
-        overflow:"hidden", touchAction:"none"
-      }}>
-
-      {/* DRAG HANDLE — always visible */}
-      <div onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
-        style={{flexShrink:0, paddingTop:10, paddingBottom:6, cursor:"grab", userSelect:"none", touchAction:"none"}}>
-        <div style={{width:36, height:4, borderRadius:2, background:"#ccc", margin:"0 auto 8px"}} />
-        <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 16px"}}>
-          <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"13px", fontWeight:600, color:"#1a1a1a", margin:0}}>
-            {visibleCount??salons.length} {t.salons_count}
-          </p>
-          {isFull&&<button onClick={()=>snapTo(SNAP_COLLAPSED)}
-            style={{display:"flex",alignItems:"center",gap:5,padding:"7px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:24,boxShadow:"0 2px 10px rgba(0,0,0,0.25)"}}>
-            🗺 Map view
-          </button>}
-        </div>
-      </div>
-
-      {/* PINNED CARD — floating above collapsed sheet */}
-      {pinned && !isFull && (
-        <div style={{flexShrink:0, margin:"4px 12px 8px"}}>
-          <div style={{background:"#fff", borderRadius:14, overflow:"hidden", boxShadow:"0 6px 24px rgba(0,0,0,0.14)", position:"relative"}}>
+    <>
+      {/* PINNED FLOATING CARD — sits above sheet, not part of sheet */}
+      {pinned && !expanded && (
+        <div style={{position:"absolute",bottom:92,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
+          <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative"}}>
             <button onClick={e=>{e.stopPropagation();setPinned(null);}}
-              style={{position:"absolute", top:8, right:8, width:26, height:26, borderRadius:"50%", background:"rgba(0,0,0,0.5)", color:"#fff", border:"none", cursor:"pointer", fontSize:"13px", display:"flex", alignItems:"center", justifyContent:"center", zIndex:2}}>×</button>
-            <div onClick={()=>onSalonClick(pinned)} style={{display:"flex", cursor:"pointer", minHeight:80}}>
-              <div style={{width:90, flexShrink:0, overflow:"hidden", background:"#1a1a1a"}}>
-                {(()=>{const img=getSalonImg(pinned); return img
+              style={{position:"absolute",top:8,right:8,width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.5)",color:"#fff",border:"none",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
+            <div onClick={()=>{onSalonClick(pinned);setPinned(null);}} style={{display:"flex",cursor:"pointer",minHeight:84}}>
+              <div style={{width:88,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
+                {(()=>{const img=getSalonImg(pinned);return img
                   ?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                   :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
                 })()}
               </div>
-              <div style={{padding:"10px 12px", flex:1, minWidth:0, display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                <div style={{display:"flex", alignItems:"center", gap:4, marginBottom:2}}>
-                  <p style={{fontFamily:"'Cormorant Garamond',serif", fontSize:"15px", fontWeight:600, color:"#1a1a1a", margin:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{pinned.name}</p>
+              <div style={{padding:"10px 12px",flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"center"}}>
+                <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
+                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.name}</p>
                   {pinned.salon_tier&&<TierBadge tier={pinned.salon_tier} size={11}/>}
                 </div>
-                <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", margin:"0 0 5px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{pinned.area||"Paris"}</p>
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.area||"Paris"}</p>
                 {(pinned._products||[]).length>0&&(
-                  <div style={{display:"flex", gap:3, alignItems:"center"}}>
-                    {(pinned._products||[]).slice(0,4).map(p=>{const img=getProdImg(p); return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden",border:"1px solid #f0d0d0"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
-                    <span style={{fontFamily:"'DM Sans',sans-serif", fontSize:"9px", color:"#c9a96e", fontWeight:700, marginLeft:2}}>✦ K-Beauty</span>
+                  <div style={{display:"flex",gap:3,alignItems:"center"}}>
+                    {(pinned._products||[]).slice(0,4).map(p=>{const img=getProdImg(p);return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
+                    <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",fontWeight:700,marginLeft:3}}>✦ K-Beauty</span>
                   </div>
                 )}
               </div>
-              <div style={{display:"flex",alignItems:"center",paddingRight:10,flexShrink:0}}><span style={{color:"#ddd",fontSize:"18px"}}>›</span></div>
+              <div style={{display:"flex",alignItems:"center",paddingRight:10}}><span style={{color:"#ddd",fontSize:"18px"}}>›</span></div>
             </div>
           </div>
         </div>
       )}
 
-      {/* SALON LIST — shown when expanded */}
-      {isFull && (
-        <div style={{flex:1, overflowY:"auto", WebkitOverflowScrolling:"touch", padding:"4px 12px 24px"}}>
-          {loading
-            ? <div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
-            : salons.length===0
-              ? <div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.no_salons}</div>
-              : <div style={{display:"flex",flexDirection:"column",gap:12}}>
+      {/* BOTTOM SHEET */}
+      <div style={{
+        position:"absolute",bottom:0,left:0,right:0,
+        height:expanded?"100%":"88px",
+        background:"#faf7f4",
+        borderRadius:expanded?"0":"16px 16px 0 0",
+        boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
+        transition:"height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s",
+        zIndex:100,display:"flex",flexDirection:"column",overflow:"hidden"
+      }}>
+        {/* HANDLE — drag target ONLY */}
+        <div
+          onTouchStart={onHandleTouchStart} onTouchEnd={onHandleTouchEnd}
+          style={{flexShrink:0,paddingTop:10,paddingBottom:8,touchAction:"none",userSelect:"none",cursor:"pointer"}}
+          onClick={()=>!expanded&&setExpanded(true)}>
+          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 8px"}}/>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
+            <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:600,color:"#1a1a1a",margin:0}}>
+              {count} {t.salons_count}
+            </p>
+            {expanded&&(
+              <button onClick={e=>{e.stopPropagation();setExpanded(false);setPinned(null);}}
+                style={{display:"flex",alignItems:"center",gap:5,padding:"7px 14px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:22}}>
+                🗺 Map
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* LIST — only touchAction pan-y so native scroll works, collapse only at top */}
+        {expanded&&(
+          <div ref={listRef}
+            onTouchStart={onListTouchStart}
+            onTouchEnd={onListTouchEnd}
+            style={{flex:1,overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"4px 12px 32px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
+            {loading
+              ?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
+              :salons.length===0
+                ?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.no_salons}</div>
+                :<div style={{display:"flex",flexDirection:"column",gap:12}}>
                   {salons.map((s,i)=>(
                     <div key={s.id} style={{animation:`fadeUp 0.25s ease ${i*0.02}s both`}}>
-                      <SalonCard salon={s} onClick={onSalonClick} lang={lang}/>
+                      <SalonCard salon={s} onClick={()=>{onSalonClick(s);setExpanded(false);}} lang={lang}/>
                     </div>
                   ))}
                 </div>
-          }
-        </div>
-      )}
-    </div>
+            }
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -1115,7 +1125,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
         <div style={{position:"absolute",top:-200,left:-100,width:600,height:600,borderRadius:"50%",border:"1px solid rgba(201,169,110,0.05)",pointerEvents:"none"}} />
 
         {/* LEFT 40%: text */}
-        <div style={{width:isMobile?"100%":"40%",flexShrink:0,display:"flex",flexDirection:"column",justifyContent:"center",padding:`clamp(40px,6vw,80px) ${px}`,animation:"fadeUp 1s ease both"}}>
+        <div style={{width:isMobile?"100%":"40%",flexShrink:0,display:"flex",flexDirection:"column",justifyContent:"flex-start",paddingTop:"clamp(40px,8vh,96px)",padding:`clamp(40px,8vh,96px) ${px} clamp(32px,4vw,56px)`,animation:"fadeUp 1s ease both"}}>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:20}}>{t.tagline}</p>
           <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(36px,4.5vw,68px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.05,marginBottom:20,whiteSpace:"pre-line"}}>{L.hero}</h1>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"clamp(13px,1.4vw,16px)",color:"#666",lineHeight:1.8,marginBottom:36}}>{L.sub}</p>
@@ -1191,11 +1201,11 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
                           const isNew=p._badge==="new"; const prodImg=getProdImg(p);
                           const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                           return (
-                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:7,background:isNew?"#fdf8ee":"#fdf0f0",padding:"4px 8px",borderRadius:8,border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
-                              {prodImg&&<img src={prodImg} alt="" style={{width:24,height:24,borderRadius:4,objectFit:"cover",flexShrink:0}}/>}
+                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:7,background:isNew?"#fdf8ee":"#fdf0f0",padding:"5px 9px",borderRadius:8,border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
+                              {prodImg&&<img src={prodImg} alt="" style={{width:34,height:34,borderRadius:6,objectFit:"cover",flexShrink:0}}/>}
                               <div style={{minWidth:0}}>
-                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
-                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#555",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.product_name}</p>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.product_name}</p>
                               </div>
                             </div>
                           );
