@@ -658,83 +658,122 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
 function BottomSheet({ salons, loading, onSalonClick, lang }) {
   const t=T[lang];
-  const [state,setState]=useState("map"); // map | list
-  const [pinned,setPinned]=useState(null);
-  const startY=useRef(null);
-  const VH=window.innerHeight;
+  const [sheetH, setSheetH] = useState(64); // height in px
+  const [pinned, setPinned] = useState(null);
+  const startY = useRef(null);
+  const startH = useRef(null);
+  const sheetRef = useRef(null);
+  const VH = window.innerHeight;
+  const TABBAR = 52;
+  const SNAP_COLLAPSED = 64;
+  const SNAP_MID = Math.round(VH * 0.42);
+  const SNAP_FULL = VH - 56 - 44 - TABBAR; // full minus nav, filter, tabbar
 
-  BottomSheet._setPinned = (s) => { setPinned(s); };
+  BottomSheet._setPinned = (s) => { setPinned(s); setSheetH(SNAP_MID); };
   BottomSheet._clearPinned = () => setPinned(null);
 
-  const onTouchStart=e=>{ startY.current=e.touches[0].clientY; };
-  const onTouchEnd=e=>{
-    const dy=startY.current-e.changedTouches[0].clientY;
-    if (dy>60) setState("list");
-    else if (dy<-60) setState("map");
+  const snapTo = (h) => setSheetH(h);
+
+  const onTouchStart = (e) => {
+    startY.current = e.touches[0].clientY;
+    startH.current = sheetH;
+    e.currentTarget.style.transition = "none";
+  };
+  const onTouchMove = (e) => {
+    const dy = startY.current - e.touches[0].clientY;
+    const newH = Math.max(SNAP_COLLAPSED, Math.min(SNAP_FULL, startH.current + dy));
+    setSheetH(newH);
+  };
+  const onTouchEnd = (e) => {
+    if (sheetRef.current) sheetRef.current.style.transition = "";
+    const dy = startY.current - e.changedTouches[0].clientY;
+    const vel = dy; // positive = up
+    const cur = startH.current;
+    // snap logic
+    if (vel > 60 || sheetH > (SNAP_MID + SNAP_FULL) / 2) snapTo(SNAP_FULL);
+    else if (vel < -60 || sheetH < (SNAP_COLLAPSED + SNAP_MID) / 2) snapTo(SNAP_COLLAPSED);
+    else snapTo(SNAP_MID);
   };
 
-  if (state==="list") return (
-    /* FULL LIST VIEW */
-    <div style={{position:"absolute",inset:0,background:"#faf7f4",zIndex:200,display:"flex",flexDirection:"column",overflowY:"auto"}}>
-      {/* sticky header */}
-      <div style={{position:"sticky",top:0,background:"#faf7f4",zIndex:10,padding:"14px 16px 10px",borderBottom:"1px solid #ede8e2",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#1a1a1a",margin:0,fontWeight:500}}>{salons.length} {t.salons_count}</p>
-        <button onClick={()=>setState("map")}
-          style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:20,boxShadow:"0 2px 12px rgba(0,0,0,0.2)"}}>
-          🗺 Map
-        </button>
-      </div>
-      <div style={{padding:"12px 14px 80px",display:"flex",flexDirection:"column",gap:14}}>
-        {loading?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
-         :salons.length===0?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.no_salons}</div>
-         :salons.map((s,i)=><div key={s.id} style={{animation:`fadeUp 0.3s ease ${i*0.02}s both`}}><SalonCard salon={s} onClick={onSalonClick} lang={lang} /></div>)}
-      </div>
-    </div>
-  );
+  const isCollapsed = sheetH <= SNAP_COLLAPSED + 20;
+  const isFull = sheetH >= SNAP_FULL - 20;
 
-  /* MAP VIEW — floating elements only */
   return (
-    <div style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:100}}
-      onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+    <div ref={sheetRef}
+      style={{
+        position:"absolute", bottom:TABBAR, left:0, right:0,
+        height:sheetH, background:"#faf7f4",
+        borderRadius:"16px 16px 0 0",
+        boxShadow:"0 -4px 28px rgba(0,0,0,0.14)",
+        transition:"height 0.3s cubic-bezier(0.32,0.72,0,1)",
+        zIndex:100, display:"flex", flexDirection:"column",
+        overflow:"hidden"
+      }}
+      onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
 
-      {/* Pinned salon card — bottom center */}
-      {pinned&&(
-        <div style={{position:"absolute",bottom:80,left:12,right:12,pointerEvents:"all",animation:"fadeUp 0.25s ease both"}}>
-          <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative"}}>
-            <button onClick={e=>{e.stopPropagation();setPinned(null);}}
-              style={{position:"absolute",top:10,right:10,width:28,height:28,borderRadius:"50%",background:"rgba(0,0,0,0.55)",color:"#fff",border:"none",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
-            <div onClick={()=>onSalonClick(pinned)} style={{display:"flex",gap:0,cursor:"pointer"}}>
-              {/* image */}
-              <div style={{width:100,height:90,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
-                {(()=>{const img=getSalonImg(pinned);return img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;})()}
+      {/* DRAG HANDLE + COUNT ROW */}
+      <div style={{flexShrink:0, paddingTop:10, paddingBottom:8, cursor:"grab", userSelect:"none"}}>
+        <div style={{width:36, height:4, borderRadius:2, background:"#ddd", margin:"0 auto 8px"}} />
+        <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 16px"}}>
+          <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"13px", color:"#1a1a1a", fontWeight:600, margin:0}}>
+            {salons.length} {t.salons_count}
+          </p>
+          {!isCollapsed && isFull && (
+            <button onClick={()=>snapTo(SNAP_COLLAPSED)}
+              style={{fontFamily:"'DM Sans',sans-serif", fontSize:"11px", color:"#777", background:"none", border:"1px solid #ede8e2", cursor:"pointer", padding:"4px 12px", borderRadius:20}}>
+              🗺 Map
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* PINNED CARD */}
+      {pinned && !isFull && (
+        <div style={{flexShrink:0, margin:"0 12px 8px"}}>
+          <div style={{background:"#fff", borderRadius:14, overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.12)", position:"relative"}}>
+            <button onClick={e=>{e.stopPropagation();setPinned(null);setSheetH(SNAP_COLLAPSED);}}
+              style={{position:"absolute", top:8, right:8, width:26, height:26, borderRadius:"50%", background:"rgba(0,0,0,0.5)", color:"#fff", border:"none", cursor:"pointer", fontSize:"13px", display:"flex", alignItems:"center", justifyContent:"center", zIndex:2}}>×</button>
+            <div onClick={()=>onSalonClick(pinned)} style={{display:"flex", cursor:"pointer"}}>
+              <div style={{width:96, flexShrink:0, overflow:"hidden", background:"#1a1a1a"}}>
+                {(()=>{const img=getSalonImg(pinned); return img
+                  ? <img src={img} alt="" style={{width:"100%", height:"100%", objectFit:"cover"}}/>
+                  : <div style={{width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif", fontSize:"26px", color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
+                })()}
               </div>
-              {/* info */}
-              <div style={{padding:"10px 12px 10px",flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"center"}}>
-                <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:2}}>
-                  <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.name}</h3>
+              <div style={{padding:"10px 12px", flex:1, minWidth:0}}>
+                <div style={{display:"flex", alignItems:"center", gap:5, marginBottom:2}}>
+                  <p style={{fontFamily:"'Cormorant Garamond',serif", fontSize:"15px", fontWeight:600, color:"#1a1a1a", margin:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{pinned.name}</p>
                   {pinned.salon_tier&&<TierBadge tier={pinned.salon_tier} size={11}/>}
                 </div>
-                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.area||"Paris"}</p>
+                <p style={{fontFamily:"'DM Sans',sans-serif", fontSize:"10px", color:"#aaa", margin:"0 0 5px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{pinned.area||"Paris"}</p>
                 {(pinned._products||[]).length>0&&(
-                  <div style={{display:"flex",gap:3}}>
-                    {(pinned._products||[]).slice(0,3).map(p=>{const img=getProdImg(p);return img?<div key={p.id} style={{width:18,height:18,borderRadius:4,overflow:"hidden",border:"1px solid #f0d0d0"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
-                    {(pinned._products||[]).length>0&&<span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",fontWeight:600,marginLeft:3,alignSelf:"center"}}>✦ K-Beauty</span>}
+                  <div style={{display:"flex", gap:3, alignItems:"center"}}>
+                    {(pinned._products||[]).slice(0,3).map(p=>{const img=getProdImg(p); return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
+                    <span style={{fontFamily:"'DM Sans',sans-serif", fontSize:"9px", color:"#c9a96e", fontWeight:700, marginLeft:3}}>✦ K-Beauty</span>
                   </div>
                 )}
               </div>
-              <div style={{display:"flex",alignItems:"center",paddingRight:10}}><span style={{color:"#ccc",fontSize:"18px"}}>›</span></div>
+              <div style={{display:"flex", alignItems:"center", paddingRight:10}}><span style={{color:"#ddd", fontSize:"16px"}}>›</span></div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Show list button — bottom center pill (Airbnb style) */}
-      {!pinned&&(
-        <div style={{position:"absolute",bottom:24,left:"50%",transform:"translateX(-50%)",pointerEvents:"all"}}>
-          <button onClick={()=>setState("list")}
-            style={{display:"flex",alignItems:"center",gap:8,padding:"12px 22px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:600,borderRadius:30,boxShadow:"0 4px 20px rgba(0,0,0,0.3)",whiteSpace:"nowrap"}}>
-            ☰ {salons.length} {t.salons_count}
-          </button>
+      {/* SALON LIST — visible when mid or full */}
+      {!isCollapsed && (
+        <div style={{flex:1, overflowY:"auto", padding:"0 12px 8px"}}>
+          {loading
+            ? <div style={{textAlign:"center", padding:"32px 0", fontFamily:"'Cormorant Garamond',serif", fontSize:"18px", color:"#ccc"}}>{t.loading}</div>
+            : salons.length===0
+              ? <div style={{textAlign:"center", padding:"32px 0", fontFamily:"'Cormorant Garamond',serif", fontSize:"18px", color:"#ccc"}}>{t.no_salons}</div>
+              : <div style={{display:"flex", flexDirection:"column", gap:12}}>
+                  {salons.map((s,i)=>(
+                    <div key={s.id} style={{animation:`fadeUp 0.3s ease ${i*0.02}s both`}}>
+                      <SalonCard salon={s} onClick={onSalonClick} lang={lang} />
+                    </div>
+                  ))}
+                </div>
+          }
         </div>
       )}
     </div>
