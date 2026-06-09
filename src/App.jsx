@@ -263,7 +263,7 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
                     <div style={{position:"absolute",top:2,right:2,width:7,height:7,borderRadius:"50%",background:isNew?"#c9a96e":"#b85c5c",border:"1.5px solid #fff"}} />
                   </div>
                   <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,textTransform:"uppercase",margin:"0 0 1px",letterSpacing:"0.5px"}}>{isNew?t.new_in:t.top_pick}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:"#888",margin:0,lineHeight:1.2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.brand}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:"#888",margin:0,lineHeight:1.2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||""}</p>
                 </div>
               );
             })}
@@ -296,32 +296,38 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
           </div>
         </div>
         <div style={{padding:"22px 24px 32px"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
-            {[{label:"Address",val:`📍 ${salon.address}`},{label:"Contact",val:salon.instagram?<a href={`https://instagram.com/${salon.instagram.replace("@","")}`} target="_blank" rel="noopener noreferrer" style={{color:"#b85c5c",textDecoration:"none"}}>📸 {salon.instagram}</a>:(salon.google_maps_url?<a href={salon.google_maps_url} target="_blank" rel="noopener noreferrer" style={{color:"#b85c5c",textDecoration:"none"}}>🗺 Maps</a>:"—")}].map(({label,val})=>(
-              <div key={label} style={{background:"#fff",border:"1px solid #ede8e2",padding:"11px 14px",borderRadius:8}}>
-                <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:3}}>{label}</div>
-                <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444"}}>{val}</div>
-              </div>
-            ))}
-            {salon.salon_bio&&<div style={{background:"#fff",border:"1px solid #ede8e2",padding:"11px 14px",borderRadius:8,gridColumn:"1/-1"}}>
-              <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:3}}>About</div>
-              <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",lineHeight:1.5}}>✦ {salon.salon_bio}</div>
-            </div>}
+          {/* K-Beauty first */}
+          {prods.length>0&&<div style={{background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:8,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:"16px"}}>✦</span>
+            <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#a07832",fontWeight:600}}>K-Beauty products available in this salon</span>
+          </div>}
+          {/* action links */}
+          <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
+            {salon.google_maps_url&&<a href={salon.google_maps_url} target="_blank" rel="noopener noreferrer"
+              style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#fff",border:"1px solid #ede8e2",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500,transition:"all 0.2s",flex:1,justifyContent:"center"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="#4285f4";e.currentTarget.style.color="#4285f4";}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#444";}}>
+              🗺 Google Maps
+            </a>}
+            {salon.bookingUrl&&<a href={salon.bookingUrl} target="_blank" rel="noopener noreferrer"
+              style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#1a1a1a",border:"none",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#f5f0eb",fontWeight:600,transition:"all 0.2s",flex:1,justifyContent:"center"}}
+              onMouseEnter={e=>e.currentTarget.style.background="#b85c5c"}
+              onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>
+              📅 {t.book}{salon.bookingPlatform?` · ${salon.bookingPlatform}`:""}
+            </a>}
+            {salon.instagram&&<a href={`https://instagram.com/${salon.instagram.replace("@","")}`} target="_blank" rel="noopener noreferrer"
+              style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#fff",border:"1px solid #ede8e2",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500,transition:"all 0.2s",flex:1,justifyContent:"center"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="#b85c5c";e.currentTarget.style.color="#b85c5c";}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#444";}}>
+              📸 Instagram
+            </a>}
           </div>
+          {salon.salon_bio&&<div style={{background:"#fff",border:"1px solid #ede8e2",padding:"11px 14px",borderRadius:8,marginBottom:14}}>
+            <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#bbb",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:3}}>About</div>
+            <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",lineHeight:1.5}}>✦ {salon.salon_bio}</div>
+          </div>}
           {services.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:20}}>{services.map(s=><span key={s} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#666",background:"#fff",border:"1px solid #ede8e2",padding:"4px 12px",borderRadius:20}}>{s}</span>)}</div>}
           <SalonModalProducts prods={prods} t={t} onClose={onClose} lang={lang} />
-          {salon.bookingUrl&&(
-            <div style={{borderTop:"1px solid #ede8e2",paddingTop:18,marginBottom:18}}>
-              <a href={salon.bookingUrl} target="_blank" rel="noopener noreferrer"
-                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,background:"#1a1a1a",color:"#f5f0eb",textDecoration:"none",padding:"14px 24px",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",width:"100%",borderRadius:8,transition:"background 0.2s"}}
-                onMouseEnter={e=>e.currentTarget.style.background="#b85c5c"}
-                onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>
-                <span>{t.book}</span>
-                {salon.bookingPlatform&&<span style={{fontSize:"10px",color:"#888",fontWeight:400}}>{t.via} {salon.bookingPlatform}</span>}
-                <span style={{marginLeft:"auto"}}>→</span>
-              </a>
-            </div>
-          )}
           {leafletReady&&salon.latitude&&salon.longitude&&(
             <div style={{overflow:"hidden",border:"1px solid #ede8e2",borderRadius:8}}>
               <div style={{background:"#fff",padding:"10px 14px",borderBottom:"1px solid #ede8e2",display:"flex",alignItems:"center",gap:6}}>
@@ -378,9 +384,9 @@ function SalonModalProducts({ prods, t, onClose, lang }) {
                     📍 {lang==="fr"?"Autres salons":"Other salons"}
                   </button>
                   <button onClick={()=>setModalProd(p)}
-                    style={{width:"100%",padding:"6px 8px",background:"#0d0d0d",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:6,transition:"background 0.2s"}}
-                    onMouseEnter={e=>e.target.style.background="#b85c5c"}
-                    onMouseLeave={e=>e.target.style.background="#0d0d0d"}>
+                    style={{width:"100%",padding:"6px 8px",background:"transparent",color:"#c9a96e",border:"1px solid #e8d9b8",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:6,transition:"all 0.2s"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#fff";e.currentTarget.style.borderColor="#c9a96e";}}
+                    onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#c9a96e";e.currentTarget.style.borderColor="#e8d9b8";}}>
                     ✦ {lang==="fr"?"Voir le produit":"Product details"}
                   </button>
                 </div>
@@ -561,8 +567,8 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
   const tog=(k,v)=>setLoc(f=>({...f,[k]:toggleArr(f[k],v)}));
   const cnt=[loc.tier.length>0,loc.area!=="All",loc.brand!=="All",loc.categories.length>0,loc.kbeautyOnly].filter(Boolean).length;
   return (
-    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",width:"100%",maxWidth:600,borderRadius:"16px 16px 0 0",maxHeight:"88vh",overflow:"auto",boxShadow:"0 -8px 40px rgba(0,0,0,0.15)"}}>
+    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",width:"100%",maxWidth:560,borderRadius:16,maxHeight:"88vh",overflow:"auto",boxShadow:"0 24px 80px rgba(0,0,0,0.25)"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 22px 12px",borderBottom:"1px solid #ede8e2",position:"sticky",top:0,background:"#faf7f4",zIndex:1}}>
           <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:"20px",color:"#999",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
           <h3 style={{fontFamily:"'DM Sans',sans-serif",fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:0}}>{t.filter}</h3>
@@ -1377,8 +1383,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
       {/* product filter modal */}
       {showFilterModal&&(
-        <div onClick={()=>setShowFilterModal(false)} style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-          <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",width:"100%",maxWidth:500,borderRadius:"16px 16px 0 0",maxHeight:"80vh",overflow:"auto",boxShadow:"0 -8px 40px rgba(0,0,0,0.15)"}}>
+        <div onClick={()=>setShowFilterModal(false)} style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",width:"100%",maxWidth:480,borderRadius:16,maxHeight:"85vh",overflow:"auto",boxShadow:"0 24px 80px rgba(0,0,0,0.25)"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 22px 12px",borderBottom:"1px solid #ede8e2",position:"sticky",top:0,background:"#faf7f4"}}>
               <button onClick={()=>setShowFilterModal(false)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"20px",color:"#999",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
               <h3 style={{...SS,fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:0}}>{t.filter}</h3>
@@ -1462,19 +1468,35 @@ function AccountPage({lang,setLang,salons,allProducts}) {
   const inputStyle={width:"100%",padding:"11px 14px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"};
 
   useEffect(()=>{
+    if (!supabase) return;
     supabase.auth.getUser().then(({data:{user}})=>{
       if (!user){navigate("/");return;}
       setUserId(user.id);
+      // load profile
       supabase.from("profiles").select("*").eq("id",user.id).single()
-        .then(({data})=>{if(data)setProfile({first_name:data.first_name||"",email:data.email||user.email,area:data.area||""}); else setProfile(p=>({...p,email:user.email}));});
+        .then(({data,error})=>{
+          console.log("Profile loaded:",data,error);
+          if(data) setProfile({first_name:data.first_name||"",email:data.email||user.email,area:data.area||""});
+          else setProfile(p=>({...p,email:user.email}));
+        });
+      // load favourites
       supabase.from("favourites").select("*").eq("user_id",user.id)
-        .then(({data})=>{if(data)setFavs(data);});
+        .then(({data,error})=>{
+          console.log("Favs loaded:",data,error);
+          if(data) setFavs(data);
+        });
     });
   },[]);
 
   const save=async()=>{
     if (!userId) return; setSaving(true);
-    await supabase.from("profiles").update({first_name:profile.first_name,area:profile.area}).eq("id",userId);
+    const {error}=await supabase.from("profiles").upsert({
+      id:userId,
+      first_name:profile.first_name,
+      area:profile.area,
+      email:profile.email
+    });
+    console.log("Save result:",error);
     setSaving(false); setSaved(true); setTimeout(()=>setSaved(false),2000);
   };
   const removeFav=async(fav)=>{ await supabase.from("favourites").delete().eq("id",fav.id); setFavs(f=>f.filter(x=>x.id!==fav.id)); };
