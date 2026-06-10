@@ -199,7 +199,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini }) {
       const mk=L.marker([lat,lng],{icon}).addTo(map.current);
       if (!mini) {
         const tooltip = hasKbeauty
-          ? `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a">${s.name}<span style="margin-left:6px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c9a96e;background:#fdf8ee;padding:2px 6px;border-radius:10px;border:1px solid #e8d9b8">✦ K-Beauty</span></div>`
+          ? `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a;line-height:1.4">${s.name}<br/><span style="font-size:10px;font-weight:700;letter-spacing:0.5px;color:#c9a96e;background:#fdf8ee;padding:2px 8px;border-radius:10px;border:1px solid #e8d9b8;display:inline-block;margin-top:3px">✦ K-Beauty</span></div>`
           : `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a">${s.name}</div>`;
         mk.bindTooltip(tooltip,{direction:"top",offset:[0,-10],className:"tbp-tooltip"});
         mk.on("click",()=>onPinClick?.(s));
@@ -662,6 +662,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
   const [pinned, setPinned] = useState(null);
   const listRef = useRef(null);
   const handleStartY = useRef(null);
+  const COLLAPSED_H = 130;
 
   BottomSheet._setPinned = (s) => { setPinned(s); };
   BottomSheet._clearPinned = () => setPinned(null);
@@ -697,12 +698,12 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
     <>
       {/* PINNED FLOATING CARD — sits above sheet, not part of sheet */}
       {pinned && !expanded && (
-        <div style={{position:"absolute",bottom:92,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
+        <div style={{position:"absolute",bottom:COLLAPSED_H+8,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
           <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative"}}>
             <button onClick={e=>{e.stopPropagation();setPinned(null);}}
               style={{position:"absolute",top:8,right:8,width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.5)",color:"#fff",border:"none",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
-            <div onClick={()=>{onSalonClick(pinned);setPinned(null);}} style={{display:"flex",cursor:"pointer",minHeight:84}}>
-              <div style={{width:88,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
+            <div onClick={()=>{onSalonClick(pinned);setPinned(null);}} style={{display:"flex",cursor:"pointer",height:88}}>
+              <div style={{width:88,height:88,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
                 {(()=>{const img=getSalonImg(pinned);return img
                   ?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                   :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
@@ -730,29 +731,36 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
       {/* BOTTOM SHEET */}
       <div style={{
         position:"absolute",bottom:0,left:0,right:0,
-        height:expanded?"100%":"88px",
+        height:expanded?"100%":`${COLLAPSED_H}px`,
         background:"#faf7f4",
         borderRadius:expanded?"0":"16px 16px 0 0",
         boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
         transition:"height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s",
         zIndex:100,display:"flex",flexDirection:"column",overflow:"hidden"
       }}>
-        {/* HANDLE — drag target ONLY */}
+        {/* HANDLE — drag ONLY, no tap */}
         <div
           onTouchStart={onHandleTouchStart} onTouchEnd={onHandleTouchEnd}
-          style={{flexShrink:0,paddingTop:10,paddingBottom:8,touchAction:"none",userSelect:"none",cursor:"pointer"}}
-          onClick={()=>!expanded&&setExpanded(true)}>
-          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 8px"}}/>
+          style={{flexShrink:0,paddingTop:10,paddingBottom:10,touchAction:"none",userSelect:"none",cursor:"grab"}}>
+          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
-            <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:600,color:"#1a1a1a",margin:0}}>
-              {count} {t.salons_count}
-            </p>
-            {expanded&&(
-              <button onClick={e=>{e.stopPropagation();setExpanded(false);setPinned(null);}}
-                style={{display:"flex",alignItems:"center",gap:5,padding:"7px 14px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:22}}>
-                🗺 Map
-              </button>
-            )}
+            <div>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 2px",letterSpacing:"0.5px",textTransform:"uppercase"}}>
+                {lang==="fr"?"Voir":"View"}
+              </p>
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>
+                {count} {t.salons_count}
+              </p>
+            </div>
+            {expanded
+              ? <button onClick={e=>{e.stopPropagation();setExpanded(false);setPinned(null);}}
+                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:22}}>
+                  🗺 Map
+                </button>
+              : <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",display:"flex",alignItems:"center",gap:4}}>
+                  <span>↑ swipe up</span>
+                </div>
+            }
           </div>
         </div>
 
@@ -1135,7 +1143,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
           </div>
         {/* mobile: horizontal salon preview below CTA */}
           {isMobile&&previewSalons.length>0&&(
-            <div style={{marginTop:36}}>
+            <div style={{marginTop:56}}>
               <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:14,fontWeight:700}}>✦ K-Beauty Salons</p>
               <div className="hide-scrollbar" style={{display:"flex",gap:12,overflowX:"auto",marginLeft:`calc(-1 * ${px})`,marginRight:`calc(-1 * ${px})`,paddingLeft:px,paddingRight:px,paddingBottom:4}}>
                 {previewSalons.slice(0,8).map(s=>{
@@ -1194,18 +1202,18 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
                       <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.name}</p>
                       <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.area||"Paris"}</p>
                     </div>
-                    {/* product chips — stacked vertically */}
+                    {/* product chips — stacked vertically, 1.7x bigger */}
                     {prods.length>0&&(
-                      <div style={{padding:"8px 12px 10px",display:"flex",flexDirection:"column",gap:5,flex:1}}>
+                      <div style={{padding:"10px 12px 12px",display:"flex",flexDirection:"column",gap:7,flex:1}}>
                         {prods.slice(0,3).map(p=>{
                           const isNew=p._badge==="new"; const prodImg=getProdImg(p);
                           const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                           return (
-                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:7,background:isNew?"#fdf8ee":"#fdf0f0",padding:"5px 9px",borderRadius:8,border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
-                              {prodImg&&<img src={prodImg} alt="" style={{width:34,height:34,borderRadius:6,objectFit:"cover",flexShrink:0}}/>}
+                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:9,background:isNew?"#fdf8ee":"#fdf0f0",padding:"7px 10px",borderRadius:10,border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
+                              {prodImg&&<img src={prodImg} alt="" style={{width:48,height:48,borderRadius:8,objectFit:"cover",flexShrink:0}}/>}
                               <div style={{minWidth:0}}>
-                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
-                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#555",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.product_name}</p>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",margin:0,lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
                               </div>
                             </div>
                           );
