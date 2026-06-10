@@ -696,20 +696,20 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
 
   return (
     <>
-      {/* PINNED FLOATING CARD — sits above sheet, not part of sheet */}
+      {/* PINNED FLOATING CARD — X on left (Airbnb style), image right */}
       {pinned && !expanded && (
         <div style={{position:"absolute",bottom:COLLAPSED_H+8,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
-          <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative"}}>
-            <button onClick={e=>{e.stopPropagation();setPinned(null);}}
-              style={{position:"absolute",top:8,right:8,width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.5)",color:"#fff",border:"none",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
-            <div onClick={()=>{onSalonClick(pinned);setPinned(null);}} style={{display:"flex",cursor:"pointer",height:88}}>
-              <div style={{width:88,height:88,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
-                {(()=>{const img=getSalonImg(pinned);return img
-                  ?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-                  :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
-                })()}
+          <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)"}}>
+            <div onTouchStart={e=>e.currentTarget.style.opacity="0.85"} onTouchEnd={e=>e.currentTarget.style.opacity="1"}
+              onClick={()=>{onSalonClick(pinned);setPinned(null);}}
+              style={{display:"flex",cursor:"pointer",height:92,transition:"opacity 0.15s"}}>
+              {/* X left */}
+              <div style={{width:44,flexShrink:0,display:"flex",alignItems:"flex-start",justifyContent:"center",paddingTop:8}}>
+                <button onClick={e=>{e.stopPropagation();setPinned(null);}}
+                  style={{width:28,height:28,borderRadius:"50%",background:"rgba(0,0,0,0.06)",color:"#555",border:"1px solid #ddd",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>×</button>
               </div>
-              <div style={{padding:"10px 12px",flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"center"}}>
+              {/* info center */}
+              <div style={{flex:1,padding:"10px 8px 10px 0",display:"flex",flexDirection:"column",justifyContent:"center",minWidth:0}}>
                 <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
                   <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.name}</p>
                   {pinned.salon_tier&&<TierBadge tier={pinned.salon_tier} size={11}/>}
@@ -722,21 +722,30 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
                   </div>
                 )}
               </div>
-              <div style={{display:"flex",alignItems:"center",paddingRight:10}}><span style={{color:"#ddd",fontSize:"18px"}}>›</span></div>
+              {/* image right */}
+              <div style={{width:92,height:92,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
+                {(()=>{const img=getSalonImg(pinned);return img
+                  ?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                  :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(201,169,110,0.3)"}}>{pinned.name?.[0]}</span></div>;
+                })()}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* BOTTOM SHEET */}
+      {/* BOTTOM SHEET — fades out when pinned card shows */}
       <div style={{
         position:"absolute",bottom:0,left:0,right:0,
         height:expanded?"100%":`${COLLAPSED_H}px`,
         background:"#faf7f4",
         borderRadius:expanded?"0":"16px 16px 0 0",
         boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
-        transition:"height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s",
-        zIndex:100,display:"flex",flexDirection:"column",overflow:"hidden"
+        transition:"height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s, opacity 0.25s",
+        zIndex:100,
+        opacity:pinned&&!expanded?0:1,
+        pointerEvents:pinned&&!expanded?"none":"auto",
+        display:"flex",flexDirection:"column",overflow:"hidden"
       }}>
         {/* HANDLE — drag ONLY, no tap */}
         <div
@@ -975,9 +984,14 @@ function useData() {
             pIds.forEach(pid=>{
               if (!pById[pid]) return;
               const p={...pById[pid]};
-              // resolve brand: product brand first, then slot brand
+              // resolve brand
               const prodBrand=cleanBrand(p.brand);
               p.brand = prodBrand||slotBrand||"—";
+              // category from product_1type (lookup from slot or direct field)
+              if (!p.category) {
+                const raw = slot["product_1type (from product)"] || p.product_1type;
+                p.category = Array.isArray(raw) ? raw[0] : (raw||null);
+              }
               if ((!p.Image||(Array.isArray(p.Image)&&p.Image.length===0))&&img) p.Image=img;
               p._badge=sProds[sid].length===0?"new":"popular";
               sProds[sid].push(p);
@@ -1340,6 +1354,121 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
 }
 
 // ── PRODUCTS PAGE ─────────────────────────────────────────────────────────────
+// ── PRODUCT BOTTOM SHEET (mobile) ────────────────────────────────────────────
+function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear }) {
+  const [expanded, setExpanded] = useState(false);
+  const listRef = useRef(null);
+  const handleStartY = useRef(null);
+  const COLLAPSED_H = 130;
+
+  const onHandleTouchStart = (e) => { handleStartY.current = e.touches[0].clientY; };
+  const onHandleTouchEnd = (e) => {
+    const dy = handleStartY.current - e.changedTouches[0].clientY;
+    if (dy > 30) setExpanded(true);
+    else if (dy < -30) setExpanded(false);
+  };
+  const listStartY = useRef(null);
+  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
+  const onListTouchEnd = (e) => {
+    if (!listRef.current) return;
+    const dy = listStartY.current - e.changedTouches[0].clientY;
+    if (listRef.current.scrollTop <= 2 && dy < -40) setExpanded(false);
+  };
+
+  return (
+    <div style={{
+      position:"absolute",bottom:0,left:0,right:0,
+      height:expanded?"100%":`${COLLAPSED_H}px`,
+      background:"#faf7f4",
+      borderRadius:expanded?"0":"16px 16px 0 0",
+      boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
+      transition:"height 0.34s cubic-bezier(0.32,0.72,0,1),border-radius 0.34s",
+      zIndex:100,display:"flex",flexDirection:"column",overflow:"hidden"
+    }}>
+      {/* handle */}
+      <div onTouchStart={onHandleTouchStart} onTouchEnd={onHandleTouchEnd}
+        style={{flexShrink:0,paddingTop:10,paddingBottom:10,touchAction:"none",cursor:"grab"}}>
+        <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
+          <div>
+            <p style={{...SS,fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 1px",textTransform:"uppercase",letterSpacing:"0.5px"}}>View</p>
+            <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>
+              {selProd ? `${(selProd._salons||[]).length} salons` : `${fp.length} products`}
+            </p>
+          </div>
+          {expanded
+            ? <button onClick={e=>{e.stopPropagation();setExpanded(false);}}
+                style={{...SS,fontSize:"12px",fontWeight:600,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",borderRadius:22}}>
+                🗺 Map
+              </button>
+            : <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>
+          }
+        </div>
+        {selProd&&<div style={{padding:"4px 16px 0"}}>
+          <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
+        </div>}
+      </div>
+      {/* list */}
+      {expanded&&(
+        <div ref={listRef} onTouchStart={onListTouchStart} onTouchEnd={onListTouchEnd}
+          style={{flex:1,overflowY:"auto",padding:"4px 12px 32px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
+          {loading
+            ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
+            : <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {fp.map((p,i)=>(
+                  <ProductCardSlim key={p.id} p={p} t={t} SS={SS}
+                    onClick={()=>onProdClick(p)}
+                    onDetail={(e)=>onDetail(e,p)}
+                    user={user} favourites={favourites} onToggleFav={onToggleFav}
+                    isSelected={selProd?.id===p.id} />
+                ))}
+              </div>
+          }
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── PRODUCT CARD SLIM (mobile list) ──────────────────────────────────────────
+function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onToggleFav, isSelected }) {
+  const img = getProdImg(p);
+  const isNew = p._badge==="new"; const color = isNew?"#c9a96e":"#b85c5c";
+  const brandD = p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"—";
+  const [pressed, setPressed] = useState(false);
+  return (
+    <div onClick={onClick}
+      onTouchStart={()=>setPressed(true)} onTouchEnd={()=>setPressed(false)}
+      style={{display:"flex",gap:12,alignItems:"center",background:isSelected?"#fdf8ee":"#fff",
+        border:`1.5px solid ${isSelected?"#c9a96e":"#ede8e2"}`,borderRadius:12,padding:"10px 12px",
+        cursor:"pointer",transform:pressed?"scale(0.98)":"scale(1)",transition:"all 0.15s",
+        boxShadow:isSelected?"0 2px 12px rgba(201,169,110,0.15)":"0 1px 4px rgba(0,0,0,0.05)"}}>
+      {/* image */}
+      <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f5f0eb"}}>
+        {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+          :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px"}}>✨</div>}
+      </div>
+      {/* info */}
+      <div style={{flex:1,minWidth:0}}>
+        <p style={{...SS,fontSize:"9px",color,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",margin:"0 0 2px"}}>{brandD}</p>
+        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:"0 0 3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.product_name}</p>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          {p.category&&<span style={{...SS,fontSize:"10px",color:"#aaa"}}>{p.category}</span>}
+          {(p._salons||[]).length>0&&<span style={{...SS,fontSize:"10px",color:"#c9a96e",fontWeight:600}}>📍 {(p._salons||[]).length}</span>}
+        </div>
+      </div>
+      {/* detail button */}
+      <button onClick={e=>{e.stopPropagation();onDetail(e);}}
+        style={{...SS,fontSize:"9px",fontWeight:600,color:"#c9a96e",border:"1px solid #e8d9b8",background:"transparent",cursor:"pointer",padding:"5px 9px",borderRadius:8,flexShrink:0,whiteSpace:"nowrap"}}
+        onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#fff";}}
+        onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#c9a96e";}}>
+        ✦ Details
+      </button>
+    </div>
+  );
+}
+
+
 function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,onToggleFav,onAuthClick}) {
   const t=T[lang]; const isMobile=window.innerWidth<768;
   const [prodSearch,setProdSearch]=useState("");
@@ -1418,28 +1547,13 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
       {/* SPLIT LAYOUT */}
       {isMobile ? (
-        /* mobile: fullscreen map + bottom sheet with product cards */
-        <div style={{position:"relative",height:`calc(100vh - 56px - 44px - 52px)`,overflow:"hidden"}}>
+        /* mobile: fullscreen map + swipe bottom sheet */
+        <div style={{position:"relative",height:`calc(100vh - 56px - 44px)`,overflow:"hidden"}}>
           <div style={{position:"absolute",inset:0}}>
             {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} />
               :<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>}
           </div>
-          {/* bottom sheet */}
-          <div style={{position:"absolute",bottom:0,left:0,right:0,background:"#faf7f4",borderRadius:"16px 16px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.12)",zIndex:100,maxHeight:"65vh",display:"flex",flexDirection:"column"}}>
-            <div style={{padding:"12px 0 8px",display:"flex",justifyContent:"center",flexShrink:0}}>
-              <div style={{width:36,height:4,borderRadius:2,background:"#ddd"}} />
-            </div>
-            <div style={{padding:"0 14px 8px",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-              <p style={{...SS,fontSize:"12px",color:"#aaa",margin:0}}>{fp.length} products</p>
-              {selProd&&<button onClick={()=>{setSelProd(null);setMapSalons([]);}} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer"}}>× Clear selection</button>}
-            </div>
-            <div style={{overflowY:"auto",padding:"0 14px 80px",flex:1}}>
-              {loading?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
-              :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12}}>
-                {fp.map((p,i)=><ProductCard key={p.id} p={p} i={i} t={t} onClick={()=>handleProdClick(p)} onDetail={handleProdDetail} user={user} favourites={favourites} onToggleFav={onToggleFav} isSelected={selProd?.id===p.id}/>)}
-              </div>}
-            </div>
-          </div>
+          <ProductBottomSheet fp={fp} loading={loading} t={t} SS={SS} selProd={selProd} onProdClick={handleProdClick} onDetail={handleProdDetail} user={user} favourites={favourites} onToggleFav={onToggleFav} onClear={()=>{setSelProd(null);setMapSalons([]);}} />
         </div>
       ) : (
         <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
