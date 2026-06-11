@@ -260,8 +260,8 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 8px"}}>{salon.address}</p>
         {salon.salon_bio&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#888",margin:"0 0 8px",fontStyle:"italic",lineHeight:1.5}}>"{salon.salon_bio}"</p>}
         {prods.length>0&&(
-          <div style={{display:"flex",gap:6,borderTop:"1px solid #f5f0f0",paddingTop:8,overflowX:"auto"}}>
-            {prods.map(p=>{
+          <div style={{display:"flex",gap:6,borderTop:"1px solid #f5f0f0",paddingTop:8,alignItems:"center"}}>
+            {prods.slice(0,3).map(p=>{
               const isNew=p._badge==="new"; const img=getProdImg(p);
               return (
                 <div key={p.id} style={{flexShrink:0,width:60}}>
@@ -274,6 +274,11 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
                 </div>
               );
             })}
+            {prods.length>3&&(
+              <div style={{flexShrink:0,width:44,height:60,borderRadius:8,background:"#f5f0eb",border:"1px solid #ede8e2",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:0,textAlign:"center",fontWeight:600}}>+{prods.length-3}</p>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -525,13 +530,13 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
             </div>
           )}
 
-          {/* product detail fields */}
+          {/* product detail fields — clean, no boxes */}
           {details.length>0&&(
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
+            <div style={{display:"flex",flexDirection:"column",gap:14,marginBottom:16}}>
               {details.map(({key,label})=>(
-                <div key={key} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(key)?"1/-1":"auto"}}>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{label}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{prod[key]}</p>
+                <div key={key} style={{borderBottom:"1px solid #f0ebe5",paddingBottom:12}}>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{label}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#333",margin:0,lineHeight:1.6}}>{Array.isArray(prod[key])?prod[key].join(" · "):prod[key]}</p>
                 </div>
               ))}
             </div>
@@ -656,13 +661,13 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 }
 
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
-function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpandChange }) {
+function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpandChange, user, favourites, onToggleFav }) {
   const t=T[lang];
   const [expanded, setExpanded] = useState(false);
   const [pinned, setPinned] = useState(null);
   const listRef = useRef(null);
   const handleStartY = useRef(null);
-  const COLLAPSED_H = 130;
+  const COLLAPSED_H = 88;
 
   const setExpandedWithCb = (v) => { setExpanded(v); onExpandChange?.(v); };
 
@@ -700,8 +705,12 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
     <>
       {/* PINNED FLOATING CARD — X on left (Airbnb style), image right */}
       {pinned && !expanded && (
-        <div style={{position:"absolute",bottom:COLLAPSED_H+8,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
-          <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)"}}>
+        <div style={{position:"absolute",bottom:16,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
+          <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative"}}>
+            {/* fav button top-right */}
+            {onToggleFav&&<div style={{position:"absolute",top:8,right:8,zIndex:3}} onClick={e=>e.stopPropagation()}>
+              <FavBtn type="salon" item={pinned} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={18}/>
+            </div>}
             <div onTouchStart={e=>e.currentTarget.style.opacity="0.85"} onTouchEnd={e=>e.currentTarget.style.opacity="1"}
               onClick={()=>{onSalonClick(pinned);setPinned(null);}}
               style={{display:"flex",cursor:"pointer",height:92,transition:"opacity 0.15s"}}>
@@ -788,7 +797,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
                 :<div style={{display:"flex",flexDirection:"column",gap:12}}>
                   {salons.map((s,i)=>(
                     <div key={s.id} style={{animation:`fadeUp 0.25s ease ${i*0.02}s both`}}>
-                      <SalonCard salon={s} onClick={()=>{onSalonClick(s);setExpanded(false);}} lang={lang}/>
+                      <SalonCard salon={s} onClick={()=>{onSalonClick(s);setExpandedWithCb(false);}} lang={lang} user={user} favourites={favourites||[]} onToggleFav={onToggleFav}/>
                     </div>
                   ))}
                 </div>
@@ -1361,7 +1370,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
           {/* map */}
           <div style={{flex:1,position:"relative",overflow:"hidden",touchAction:"pan-x pan-y"}}>
             <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
-            <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} />
+            <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} user={user} favourites={favourites} onToggleFav={onToggleFav} />
           </div>
         </div>
       ):(
@@ -1391,7 +1400,7 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
   const [expanded, setExpanded] = useState(false);
   const listRef = useRef(null);
   const handleStartY = useRef(null);
-  const COLLAPSED_H = 130;
+  const COLLAPSED_H = 88;
 
   const onHandleTouchStart = (e) => { handleStartY.current = e.touches[0].clientY; };
   const onHandleTouchEnd = (e) => {
@@ -2033,11 +2042,11 @@ function SpotPage({ lang, setLang }) {
           </a>}
           {/* details */}
           {[{k:"description",l:"Description"},{k:"product_2usage",l:"Usage"},{k:"product_3texture",l:"Texture"},{k:"test_reason",l:"Who is it for?"},{k:"product_5function",l:"Function"},{k:"product_7key_ingredient",l:"Key ingredient"}].filter(d=>product[d.k]).length>0&&(
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}>
+            <div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:16}}>
               {[{k:"description",l:"Description"},{k:"product_2usage",l:"Usage"},{k:"product_3texture",l:"Texture"},{k:"test_reason",l:"Who is it for?"},{k:"product_5function",l:"Function"},{k:"product_7key_ingredient",l:"Key ingredient"}].filter(d=>product[d.k]).map(({k,l})=>(
-                <div key={k} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(k)?"1/-1":"auto"}}>
+                <div key={k} style={{borderBottom:"1px solid #f0ebe5",paddingBottom:10}}>
                   <p style={{...SS,fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{l}</p>
-                  <p style={{...SS,fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{product[k]}</p>
+                  <p style={{...SS,fontSize:"13px",color:"#333",margin:0,lineHeight:1.6}}>{Array.isArray(product[k])?product[k].join(" · "):product[k]}</p>
                 </div>
               ))}
             </div>
