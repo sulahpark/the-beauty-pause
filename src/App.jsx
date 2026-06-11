@@ -966,6 +966,9 @@ function useData() {
         console.log("sample slot fields:", slots[0] ? Object.keys(slots[0]) : "no slots");
         console.log("sample slot:", JSON.stringify(slots[0]));
         const pById={}; products.forEach(p=>{pById[p.id]=p;});
+        // salon lookup by name (retail_name is now text string, not linked record)
+        const sByName={};
+        retail.forEach(s=>{ if(s.name) sByName[s.name.trim()]=s.id; });
 
         // helper: extract text brand, ignore record IDs (strings starting with 'rec')
         const cleanBrand=(val)=>{
@@ -980,7 +983,14 @@ function useData() {
 
         const sProds={};
         slots.forEach(slot=>{
-          const sIds=Array.isArray(slot.retail_name)?slot.retail_name:[];
+          // retail_name: text string (new) or linked record array (old)
+          let sIds=[];
+          if (Array.isArray(slot.retail_name)) {
+            sIds = slot.retail_name;
+          } else if (typeof slot.retail_name === "string") {
+            const sid = sByName[slot.retail_name.trim()];
+            if (sid) sIds = [sid];
+          }
           const pIds=Array.isArray(slot.product)?slot.product:[];
           const slotBrand=cleanBrand(slot.brand);
           const img=slot["Image (from product)"];
