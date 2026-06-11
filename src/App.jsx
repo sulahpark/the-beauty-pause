@@ -962,6 +962,8 @@ function useData() {
           fetchAll(TBL_PRODUCTS,""),
           fetchAll(TBL_SLOTS,"{slot_status}='ACTIVE'"),
         ]);
+        console.log("retail:",retail.length,"products:",products.length,"slots:",slots.length);
+        console.log("sample slot:",slots[0]);
         const pById={}; products.forEach(p=>{pById[p.id]=p;});
 
         // helper: extract text brand, ignore record IDs (strings starting with 'rec')
