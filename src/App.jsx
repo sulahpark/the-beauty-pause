@@ -526,6 +526,11 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
                     + {salonsWithProd.length-3} more salon{salonsWithProd.length-3>1?"s":""}
                   </button>
                 )}
+                {showAllSalons&&salonsWithProd.length>3&&(
+                  <button onClick={()=>setShowAllSalons(false)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",background:"none",border:"1px solid #ede8e2",cursor:"pointer",padding:"8px 0",borderRadius:8,textAlign:"center"}}>
+                    ↑ View less
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -1396,11 +1401,172 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
 
 // ── PRODUCTS PAGE ─────────────────────────────────────────────────────────────
 // ── PRODUCT BOTTOM SHEET (mobile) ────────────────────────────────────────────
-function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick }) {
+function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick, onExpandChange, onModalProd }) {
   const VH = window.innerHeight;
-  const SNAP_COLLAPSED = 72;
-  const SNAP_MID = Math.round(VH * 0.48);
+  const SNAP_COLLAPSED = 88;
+  const SNAP_MID = Math.round(VH * 0.46);
   const SNAP_FULL = VH;
+
+  const [sheetH, setSheetH] = useState(SNAP_MID);
+  const [pinnedSalon, setPinnedSalon] = useState(null);
+  const [inlineModal, setInlineModal] = useState(null); // product shown in modal from pinned card
+  const listRef = useRef(null);
+  const handleStartY = useRef(null);
+  const startSheetH = useRef(SNAP_MID);
+  const sheetRef = useRef(null);
+
+  ProductBottomSheet._setPinned = (s) => { setPinnedSalon(s); snapTo(SNAP_COLLAPSED); };
+
+  const snapTo = (h) => {
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1)";
+    setSheetH(h);
+    onExpandChange?.(h >= SNAP_FULL - 40);
+  };
+
+  const onHandleTouchStart = (e) => {
+    handleStartY.current = e.touches[0].clientY;
+    startSheetH.current = sheetH;
+    if (sheetRef.current) sheetRef.current.style.transition = "none";
+  };
+  const onHandleTouchMove = (e) => {
+    const dy = handleStartY.current - e.touches[0].clientY;
+    setSheetH(Math.max(SNAP_COLLAPSED, Math.min(SNAP_FULL, startSheetH.current + dy)));
+  };
+  const onHandleTouchEnd = (e) => {
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1)";
+    const dy = handleStartY.current - e.changedTouches[0].clientY; // positive = up
+    // 3-way snap based on velocity + position
+    if (dy > 60 || sheetH > (SNAP_MID + SNAP_FULL) / 2) snapTo(SNAP_FULL);
+    else if (dy < -60 || sheetH < (SNAP_COLLAPSED + SNAP_MID) / 2) snapTo(SNAP_COLLAPSED);
+    else snapTo(SNAP_MID);
+  };
+
+  const listStartY = useRef(null);
+  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
+  const onListTouchEnd = (e) => {
+    if (!listRef.current) return;
+    const dy = listStartY.current - e.changedTouches[0].clientY;
+    if (listRef.current.scrollTop <= 2 && dy < -40) snapTo(SNAP_MID);
+  };
+
+  const isFull = sheetH >= SNAP_FULL - 40;
+  const isMid = sheetH >= SNAP_MID - 40 && !isFull;
+  const isCollapsed = sheetH <= SNAP_COLLAPSED + 10;
+
+  const displayProds = pinnedSalon ? (pinnedSalon._products || []) : fp;
+  const count = pinnedSalon ? `${pinnedSalon.name}` : `${fp.length} products`;
+
+  return (
+    <>
+      {/* INLINE MODAL from pinned card product click */}
+      {inlineModal&&(
+        <ProductModal
+          prod={inlineModal}
+          salonsWithProd={inlineModal._salons||[]}
+          allProducts={fp}
+          onClose={()=>setInlineModal(null)}
+          onSalonClick={()=>{}}
+          lang={t.loading?'en':'en'}
+          user={user} favourites={favourites} onToggleFav={onToggleFav}
+        />
+      )}
+
+      {/* PINNED SALON CARD */}
+      {pinnedSalon && isCollapsed && (
+        <div style={{position:"absolute",bottom:SNAP_COLLAPSED+8,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
+          <div style={{background:"#fff",borderRadius:14,boxShadow:"0 8px 28px rgba(0,0,0,0.16)"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px 6px"}}>
+              <div style={{minWidth:0}}>
+                <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 1px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinnedSalon.name}</p>
+                <p style={{...SS,fontSize:"10px",color:"#aaa",margin:0}}>{pinnedSalon.area||"Paris"} · {(pinnedSalon._products||[]).length} products</p>
+              </div>
+              <button onClick={e=>{e.stopPropagation();setPinnedSalon(null);snapTo(SNAP_MID);}}
+                style={{width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.06)",color:"#555",border:"1px solid #ddd",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginLeft:8}}>×</button>
+            </div>
+            <div style={{display:"flex",gap:8,overflowX:"auto",padding:"0 12px 12px"}}>
+              {(pinnedSalon._products||[]).slice(0,6).map(p=>{
+                const img=getProdImg(p); const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c";
+                const bd=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
+                return (
+                  <div key={p.id} onClick={()=>setInlineModal(p)} style={{flexShrink:0,width:60,cursor:"pointer"}}
+                    onTouchStart={e=>e.currentTarget.style.opacity="0.7"} onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
+                    <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",background:"#f5f0eb",border:`1.5px solid ${isNew?"#e8d9b8":"#f0d0d0"}`,marginBottom:3}}>
+                      {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px"}}>✨</div>}
+                    </div>
+                    <p style={{...SS,fontSize:"8px",color,fontWeight:700,textTransform:"uppercase",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{bd}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* BOTTOM SHEET */}
+      <div ref={sheetRef}
+        style={{
+          position:"absolute",bottom:0,left:0,right:0,
+          height:sheetH,
+          background:"#faf7f4",
+          borderRadius:isFull?"0":"16px 16px 0 0",
+          boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
+          transition:"height 0.34s cubic-bezier(0.32,0.72,0,1)",
+          zIndex:pinnedSalon&&isCollapsed?50:100,
+          opacity:pinnedSalon&&isCollapsed?0:1,
+          pointerEvents:pinnedSalon&&isCollapsed?"none":"auto",
+          display:"flex",flexDirection:"column",overflow:"hidden"
+        }}>
+
+        {/* HANDLE */}
+        <div onTouchStart={onHandleTouchStart} onTouchMove={onHandleTouchMove} onTouchEnd={onHandleTouchEnd}
+          style={{flexShrink:0,paddingTop:10,paddingBottom:8,touchAction:"none",cursor:"grab"}}>
+          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
+            <div>
+              <p style={{...SS,fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 1px",textTransform:"uppercase",letterSpacing:"0.5px"}}>View</p>
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>{count}</p>
+            </div>
+            {isFull
+              ? <button onClick={()=>snapTo(SNAP_MID)}
+                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,borderRadius:22}}>
+                  🗺 Map
+                </button>
+              : isCollapsed
+                ? <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>
+                : null
+            }
+          </div>
+          {selProd&&!pinnedSalon&&!isCollapsed&&<div style={{padding:"4px 16px 0"}}>
+            <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
+          </div>}
+        </div>
+
+        {/* LIST — mid and full */}
+        {!isCollapsed&&(
+          <div ref={listRef} onTouchStart={onListTouchStart} onTouchEnd={onListTouchEnd}
+            style={{flex:1,overflowY:"auto",padding:"4px 12px 32px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
+            {loading
+              ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
+              : displayProds.length===0
+                ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>No products</div>
+                : <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {displayProds.map((p,i)=>(
+                      <ProductCardSlim key={p.id} p={p} t={t} SS={SS}
+                        onClick={isFull ? ()=>onDetail(null,p) : ()=>onProdClick(p)}
+                        onDetail={(e)=>onDetail(e,p)}
+                        user={user} favourites={favourites} onToggleFav={onToggleFav}
+                        isSelected={!isFull && selProd?.id===p.id}
+                        hideHover={isFull}
+                      />
+                    ))}
+                  </div>
+            }
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
 
   const [sheetH, setSheetH] = useState(SNAP_MID);
   const [pinnedSalon, setPinnedSalon] = useState(null);
@@ -1443,117 +1609,19 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
 
   const isFull = sheetH >= SNAP_FULL - 40;
   const isCollapsed = sheetH <= SNAP_COLLAPSED + 10;
-
-  // products to show: if a salon is pinned on map, show its products
-  const displayProds = pinnedSalon ? (pinnedSalon._products || []) : fp;
-  const headerText = pinnedSalon
-    ? pinnedSalon.name
-    : selProd ? `${(selProd._salons||[]).length} salons` : `${fp.length} products`;
-
-  return (
-    <>
-      {/* PINNED SALON CARD — above sheet */}
-      {pinnedSalon && !isFull && (
-        <div style={{position:"absolute",bottom:SNAP_COLLAPSED+8,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
-          <div style={{background:"#fff",borderRadius:14,overflow:"hidden",boxShadow:"0 8px 28px rgba(0,0,0,0.16)",position:"relative"}}>
-            <button onClick={e=>{e.stopPropagation();setPinnedSalon(null);setSheetH(SNAP_MID);}}
-              style={{position:"absolute",top:8,left:8,width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.06)",color:"#555",border:"1px solid #ddd",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
-            <div style={{padding:"10px 12px 10px 42px"}}>
-              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px"}}>{pinnedSalon.name}</p>
-              <p style={{...SS,fontSize:"10px",color:"#aaa",margin:"0 0 8px"}}>{pinnedSalon.area||"Paris"}</p>
-              <div style={{display:"flex",gap:8,overflowX:"auto"}}>
-                {(pinnedSalon._products||[]).slice(0,4).map(p=>{
-                  const img=getProdImg(p); const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c";
-                  const bd=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
-                  return (
-                    <div key={p.id} onClick={()=>{onProdClick(p);setPinnedSalon(null);setSheetH(SNAP_MID);}}
-                      style={{flexShrink:0,width:64,cursor:"pointer"}}>
-                      <div style={{width:64,height:64,borderRadius:10,overflow:"hidden",background:"#f5f0eb",border:`1.5px solid ${isNew?"#e8d9b8":"#f0d0d0"}`,marginBottom:4}}>
-                        {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"20px"}}>✨</div>}
-                      </div>
-                      <p style={{...SS,fontSize:"8px",color,fontWeight:700,textTransform:"uppercase",margin:"0 0 1px",letterSpacing:"0.5px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{bd}</p>
-                      <p style={{...SS,fontSize:"9px",color:"#555",margin:0,lineHeight:1.2,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* BOTTOM SHEET */}
-      <div ref={sheetRef}
-        style={{
-          position:"absolute",bottom:0,left:0,right:0,
-          height:sheetH,
-          background:"#faf7f4",
-          borderRadius:isFull?"0":"16px 16px 0 0",
-          boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
-          transition:"height 0.34s cubic-bezier(0.32,0.72,0,1)",
-          zIndex:pinnedSalon&&!isFull?50:100,
-          opacity:pinnedSalon&&!isFull?0:1,
-          pointerEvents:pinnedSalon&&!isFull?"none":"auto",
-          display:"flex",flexDirection:"column",overflow:"hidden"
-        }}>
-        {/* HANDLE */}
-        <div onTouchStart={onHandleTouchStart} onTouchMove={onHandleTouchMove} onTouchEnd={onHandleTouchEnd}
-          style={{flexShrink:0,paddingTop:10,paddingBottom:8,touchAction:"none",cursor:"grab"}}>
-          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
-            <div>
-              <p style={{...SS,fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 1px",textTransform:"uppercase",letterSpacing:"0.5px"}}>View</p>
-              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>{headerText}</p>
-            </div>
-            {isFull
-              ? <button onClick={()=>snapTo(SNAP_MID)}
-                  style={{...SS,fontSize:"12px",fontWeight:600,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",borderRadius:22}}>
-                  🗺 Map
-                </button>
-              : !isCollapsed && <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>
-            }
-          </div>
-          {selProd&&!pinnedSalon&&<div style={{padding:"4px 16px 0"}}>
-            <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
-          </div>}
-        </div>
-
-        {/* LIST — show from mid state */}
-        {!isCollapsed&&(
-          <div ref={listRef} onTouchStart={onListTouchStart} onTouchEnd={onListTouchEnd}
-            style={{flex:1,overflowY:"auto",padding:"4px 12px 32px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
-            {loading
-              ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
-              : displayProds.length===0
-                ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>No products</div>
-                : <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                    {displayProds.map((p,i)=>(
-                      <ProductCardSlim key={p.id} p={p} t={t} SS={SS}
-                        onClick={()=>onProdClick(p)}
-                        onDetail={(e)=>onDetail(e,p)}
-                        user={user} favourites={favourites} onToggleFav={onToggleFav}
-                        isSelected={selProd?.id===p.id} />
-                    ))}
-                  </div>
-            }
-          </div>
-        )}
-      </div>
-    </>
-  );
-}
-
-function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onToggleFav, isSelected }) {
+function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onToggleFav, isSelected, hideHover }) {
   const img = getProdImg(p);
   const isNew = p._badge==="new"; const color = isNew?"#c9a96e":"#b85c5c";
   const brandD = p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"—";
   const [pressed, setPressed] = useState(false);
   return (
-    <div onClick={onClick}
-      onTouchStart={()=>setPressed(true)} onTouchEnd={()=>setPressed(false)}
+    <div onClick={hideHover ? onClick : onClick}
+      onTouchStart={()=>!hideHover&&setPressed(true)} onTouchEnd={()=>setPressed(false)}
       style={{display:"flex",gap:12,alignItems:"center",background:isSelected?"#fdf8ee":"#fff",
         border:`1.5px solid ${isSelected?"#c9a96e":"#ede8e2"}`,borderRadius:12,padding:"10px 12px",
-        cursor:"pointer",transform:pressed?"scale(0.98)":"scale(1)",transition:"all 0.15s",
+        cursor:"pointer",
+        transform:(!hideHover&&pressed)?"scale(0.98)":"scale(1)",
+        transition:"all 0.15s",
         boxShadow:isSelected?"0 2px 12px rgba(201,169,110,0.15)":"0 1px 4px rgba(0,0,0,0.05)"}}>
       {/* image */}
       <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f5f0eb"}}>
@@ -1648,8 +1716,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
         <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"7px 13px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:"12px",fontWeight:inSalonOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>
           📍 In salon
         </button>
-        {/* category chips */}
-        {cats.filter(c=>c!=="All").map(cat=>{
+        {/* category chips — top 4 only */}
+        {cats.filter(c=>c!=="All").slice(0,4).map(cat=>{
           const a=prodCats.includes(cat);
           return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
         })}
@@ -1659,13 +1727,46 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
       {/* SPLIT LAYOUT */}
       {isMobile ? (
-        /* mobile: fullscreen map + swipe bottom sheet */
-        <div style={{position:"relative",height:`calc(100vh - 56px - 44px)`,overflow:"hidden"}}>
-          <div style={{position:"absolute",inset:0}}>
-            {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={s=>{if(ProductBottomSheet._setPinned)ProductBottomSheet._setPinned(s);}} />
-              :<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>}
+        /* mobile: fixed fullscreen container */
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column"}}>
+          {/* nav + filter — slide up when sheet is full */}
+          <div id="prod-topbar" style={{flexShrink:0,overflow:"hidden",background:"#0d0d0d",transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",maxHeight:200}}>
+            <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
+            <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px 14px",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap"}}>
+              <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0}}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                {t.filter}{activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
+              </button>
+              <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}}/>
+              <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"7px 13px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:"12px",fontWeight:inSalonOnly?600:400,borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>
+                📍 In salon
+              </button>
+              {cats.filter(c=>c!=="All").slice(0,4).map(cat=>{
+                const a=prodCats.includes(cat);
+                return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>{cat}</button>;
+              })}
+            </div>
           </div>
-          <ProductBottomSheet fp={fp} loading={loading} t={t} SS={SS} selProd={selProd} onProdClick={handleProdClick} onDetail={handleProdDetail} user={user} favourites={favourites} onToggleFav={onToggleFav} onClear={()=>{setSelProd(null);setMapSalons([]);}} salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon} />
+          {/* map */}
+          <div style={{flex:1,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",inset:0}}>
+              {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={s=>{if(ProductBottomSheet._setPinned)ProductBottomSheet._setPinned(s);}} />
+                :<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>}
+            </div>
+            <ProductBottomSheet
+              fp={fp} loading={loading} t={t} SS={SS}
+              selProd={selProd} onProdClick={handleProdClick}
+              onDetail={handleProdDetail}
+              user={user} favourites={favourites} onToggleFav={onToggleFav}
+              onClear={()=>{setSelProd(null);setMapSalons([]);}}
+              salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon}
+              onExpandChange={(full)=>{
+                const el=document.getElementById("prod-topbar");
+                if(el) el.style.maxHeight=full?"0":"200px";
+              }}
+              onModalProd={setModalProd}
+            />
+          </div>
         </div>
       ) : (
         <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
