@@ -1871,7 +1871,9 @@ function SpotPage({ lang, setLang }) {
     if (!spotId) { setStatus("not_found"); return; }
     (async () => {
       try {
-        const spots = await fetchAll(TBL_SPOTS, `{spot_id}="${spotId}"`);
+        // spot_id may be a formula field — fetch all and filter in JS
+        const allSpots = await fetchAll(TBL_SPOTS, "");
+        const spots = allSpots.filter(s => s.spot_id === spotId);
         if (!spots.length) { setStatus("not_found"); return; }
         const s = spots[0];
         setSpot(s);
@@ -2074,23 +2076,30 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
     if (!screenshot) { setError("Please upload your review screenshot."); return; }
     setSubmitting(true); setError("");
     try {
-      // convert screenshot to base64 for Airtable attachment
-      const base64 = await new Promise((res, rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result.split(",")[1]);
-        r.onerror = rej;
-        r.readAsDataURL(screenshot);
-      });
+      // 1. Upload to Supabase Storage → get public URL
+      let screenshotUrl = null;
+      if (supabase) {
+        const ext = screenshot.name.split('.').pop();
+        const filename = `lucky-draw/${spotId}-${Date.now()}.${ext}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('screenshots')
+          .upload(filename, screenshot, { contentType: screenshot.type, upsert: true });
+        if (uploadError) throw new Error("Upload failed: " + uploadError.message);
+        const { data: { publicUrl } } = supabase.storage.from('screenshots').getPublicUrl(filename);
+        console.log("Screenshot public URL:", publicUrl);
+        screenshotUrl = publicUrl;
+      }
 
+      // 2. Submit to Airtable with public URL
       const fields = {
         spot_id: spotId,
         name: name.trim(),
         email: email.trim(),
-        phone: phone.trim()||undefined,
         status: "pending",
-        screenshot: [{ filename: screenshot.name, url: `data:${screenshot.type};base64,${base64}` }],
       };
+      if (phone.trim()) fields.phone = phone.trim();
       if (salon?.id) fields.salon = [salon.id];
+      if (screenshotUrl) fields.screenshot = [{ url: screenshotUrl, filename: screenshot.name }];
 
       const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_LUCKY_DRAW}`, {
         method: "POST",
@@ -2100,7 +2109,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       const data = await res.json();
       if (res.ok) { setStep("success"); }
       else { console.error("Lucky draw error:", data); setError(data?.error?.message || "Something went wrong."); }
-    } catch(e) { setError(e.message); }
+    } catch(e) { console.error(e); setError(e.message); }
     setSubmitting(false);
   };
 
