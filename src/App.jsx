@@ -958,9 +958,9 @@ function useData() {
       setLoading(true);
       try {
         const [retail,products,slots]=await Promise.all([
-          fetchAll(TBL_RETAIL,"{current_status}='YES'"),
+          fetchAll(TBL_RETAIL,"{tbp}=1"),
           fetchAll(TBL_PRODUCTS,""),
-          fetchAll(TBL_SLOTS,"{stage}='ACTIVE'"),
+          fetchAll(TBL_SLOTS,"{slot_status}='ACTIVE'"),
         ]);
         const pById={}; products.forEach(p=>{pById[p.id]=p;});
 
