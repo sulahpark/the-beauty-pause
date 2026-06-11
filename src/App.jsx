@@ -1691,7 +1691,6 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
   );
 }
 
-// ── MAIN APP ──────────────────────────────────────────────────────────────────
 // ── ACCOUNT PAGE ─────────────────────────────────────────────────────────────
 function AccountPage({lang,setLang,salons,allProducts}) {
   const navigate=useNavigate();
@@ -1843,6 +1842,8 @@ function AccountPage({lang,setLang,salons,allProducts}) {
 }
 
 
+const TBL_LUCKY_DRAW = "tbloBydPZIIzx321q";
+
 // ── SPOT PAGE (QR scan landing) ───────────────────────────────────────────────
 function SpotPage({ lang, setLang }) {
   const { spotId } = useParams();
@@ -1852,7 +1853,19 @@ function SpotPage({ lang, setLang }) {
   const [product, setProduct] = useState(null);
   const [salon, setSalon] = useState(null);
   const [status, setStatus] = useState("loading");
+  const [screen, setScreen] = useState("landing"); // landing | product | lucky
   const [imgIdx, setImgIdx] = useState(0);
+
+  // increment scan count
+  const incrementScan = async (spotRecordId) => {
+    try {
+      const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_SPOTS}/${spotRecordId}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ fields: {} }) // scan_count is a formula or count field — just log visit
+      });
+    } catch(e) { console.log("scan count skip", e); }
+  };
 
   useEffect(() => {
     if (!spotId) { setStatus("not_found"); return; }
@@ -1882,138 +1895,395 @@ function SpotPage({ lang, setLang }) {
   const allImgs = img ? [img, ...moreImgs] : moreImgs;
   const brandDisplay = product ? (product.brand_name || (Array.isArray(product.brand) ? null : (!product.brand?.startsWith?.("rec") ? product.brand : null)) || "") : "";
   const salonImg = salon ? getSalonImg(salon) : null;
-  const details = product ? [
-    {key:"product_1type",label:"Type"},
-    {key:"product_2usage",label:"Usage"},
-    {key:"product_3texture",label:"Texture"},
-    {key:"test_reason",label:"Who is it for?"},
-    {key:"product_4target",label:"Target skin"},
-    {key:"product_5function",label:"Function"},
-    {key:"product_7key_ingredient",label:"Key ingredient"},
-    {key:"description",label:"Description"},
-  ].filter(d=>product[d.key]) : [];
-
   const SS = {fontFamily:"'DM Sans',sans-serif"};
 
-  return (
-    <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}`}</style>
-      <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
+  const SpotNav = () => (
+    <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        {screen!=="landing"&&<button onClick={()=>setScreen("landing")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",padding:"4px 6px"}}>←</button>}
         <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
         </div>
-        <div style={{display:"flex",gap:16,alignItems:"center"}}>
-          {[{path:"/salons",label:t.salons},{path:"/products",label:t.products}].map(({path,label})=>(
-            <button key={path} onClick={()=>navigate(path)} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:"12px",color:"#777",letterSpacing:"0.5px"}} onMouseEnter={e=>e.target.style.color="#f5f0eb"} onMouseLeave={e=>e.target.style.color="#777"}>{label}</button>
-          ))}
-          <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
-            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",transition:"all 0.2s",textTransform:"uppercase"}}>{l}</button>)}
+      </div>
+      <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+        {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+      </div>
+    </nav>
+  );
+
+  if (status==="loading") return (
+    <><SpotNav/><div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"80vh"}}><p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#ccc"}}>Loading…</p></div></>
+  );
+  if (status==="not_found") return (
+    <><SpotNav/><div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"80vh",padding:"40px 24px",textAlign:"center"}}>
+      <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:12}}>✦ Discovery Spot</p>
+      <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:300,color:"#1a1a1a",marginBottom:12}}>Spot not found</h1>
+      <p style={{...SS,fontSize:"14px",color:"#aaa",marginBottom:28}}>This QR code may be outdated.</p>
+      <button onClick={()=>navigate("/")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Go to homepage</button>
+    </div></>
+  );
+
+  // ── SCREEN: LANDING (2 big buttons) ─────────────────────────────────────────
+  if (screen==="landing") return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <SpotNav/>
+      <div style={{minHeight:"calc(100vh - 56px)",background:"#0d0d0d",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 20px",animation:"fadeUp 0.6s ease both"}}>
+        {/* salon context */}
+        {salon&&<div style={{display:"flex",alignItems:"center",gap:10,marginBottom:32,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"10px 16px",width:"100%",maxWidth:420}}>
+          {salonImg&&<div style={{width:40,height:40,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={salonImg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>}
+          <div style={{minWidth:0}}>
+            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 2px"}}>✦ Discovery Spot</p>
+            <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#f5f0eb",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</p>
           </div>
-        </div>
-      </nav>
+        </div>}
 
-      {status==="loading"&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"80vh"}}><p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#ccc"}}>Loading…</p></div>}
-
-      {status==="not_found"&&(
-        <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"80vh",padding:"40px 24px",textAlign:"center"}}>
-          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:12}}>✦ Discovery Spot</p>
-          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:300,color:"#1a1a1a",marginBottom:12}}>Spot not found</h1>
-          <p style={{...SS,fontSize:"14px",color:"#aaa",marginBottom:28}}>This QR code may be outdated or invalid.</p>
-          <button onClick={()=>navigate("/")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Go to homepage</button>
-        </div>
-      )}
-
-      {status==="found"&&!product&&(
-        <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",padding:"40px 24px",textAlign:"center"}}>
-          {salon&&<p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",marginBottom:8}}>✦ {salon.name}</p>}
-          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",fontWeight:300,color:"#1a1a1a",marginBottom:12}}>No product here yet</h1>
-          <p style={{...SS,fontSize:"14px",color:"#aaa",marginBottom:28}}>This spot is being refreshed — check back soon!</p>
-          <button onClick={()=>navigate("/products")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Browse all products</button>
-        </div>
-      )}
-
-      {status==="found"&&product&&(
-        <main style={{maxWidth:560,margin:"0 auto",padding:"32px 20px 80px",animation:"fadeUp 0.6s ease both"}}>
-          {salon&&(
-            <div onClick={()=>navigate("/salons")} style={{display:"flex",alignItems:"center",gap:12,background:"#fff",border:"1px solid #ede8e2",borderRadius:12,padding:"12px 16px",marginBottom:24,cursor:"pointer",transition:"all 0.2s"}} onMouseEnter={e=>e.currentTarget.style.borderColor="#c9a96e"} onMouseLeave={e=>e.currentTarget.style.borderColor="#ede8e2"}>
-              {salonImg&&<div style={{width:44,height:44,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={salonImg} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>}
-              <div style={{flex:1,minWidth:0}}>
-                <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 2px"}}>✦ Discovery Spot · {salon.name}</p>
-                <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.address}</p>
-              </div>
-              <span style={{color:"#ccc",fontSize:"16px"}}>›</span>
-            </div>
-          )}
-          <div style={{borderRadius:16,overflow:"hidden",marginBottom:24,background:"#f5f0eb"}}>
-            <div style={{paddingBottom:"75%",position:"relative",overflow:"hidden"}}>
-              {allImgs.length>0
-                ? <img src={allImgs[imgIdx]} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",background:"#f5f0eb"}} />
-                : <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"64px"}}>✨</div>
-              }
-              {allImgs.length>1&&<>
-                <button onClick={()=>setImgIdx(i=>(i-1+allImgs.length)%allImgs.length)} style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center"}}>‹</button>
-                <button onClick={()=>setImgIdx(i=>(i+1)%allImgs.length)} style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center"}}>›</button>
-                <div style={{position:"absolute",bottom:12,left:"50%",transform:"translateX(-50%)",display:"flex",gap:6}}>
-                  {allImgs.map((_,i)=><div key={i} onClick={()=>setImgIdx(i)} style={{width:i===imgIdx?20:7,height:7,borderRadius:4,background:i===imgIdx?"#1a1a1a":"rgba(0,0,0,0.25)",transition:"all 0.2s",cursor:"pointer"}} />)}
-                </div>
-              </>}
-            </div>
-            {allImgs.length>1&&(
-              <div style={{display:"flex",gap:6,padding:"10px 12px",background:"#f5f0eb",borderTop:"1px solid #ede8e2"}}>
-                {allImgs.slice(0,6).map((url,i)=>(
-                  <div key={i} onClick={()=>setImgIdx(i)} style={{width:48,height:48,borderRadius:6,overflow:"hidden",border:i===imgIdx?"2px solid #1a1a1a":"2px solid transparent",cursor:"pointer",flexShrink:0}}>
-                    <img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* product preview */}
+        {product&&<div style={{width:"100%",maxWidth:420,marginBottom:36,textAlign:"center"}}>
+          {img&&<div style={{width:120,height:120,borderRadius:16,overflow:"hidden",margin:"0 auto 16px",background:"#f5f0eb"}}>
+            <img src={img} alt={product.product_name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+          </div>}
           <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{brandDisplay}</p>
-          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,5vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.2}}>{product.product_name}</h1>
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,5vw,32px)",fontWeight:400,color:"#f5f0eb",lineHeight:1.2,margin:0}}>{product.product_name}</h1>
+        </div>}
+
+        {/* 2 big buttons */}
+        <div style={{display:"flex",flexDirection:"column",gap:14,width:"100%",maxWidth:420}}>
+          <button onClick={()=>setScreen("product")}
+            style={{padding:"18px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"1px",borderRadius:14,transition:"all 0.2s",textAlign:"center"}}
+            onMouseEnter={e=>e.currentTarget.style.background="#c9a96e"}
+            onMouseLeave={e=>e.currentTarget.style.background="#f5f0eb"}>
+            {lang==="fr"?"📦 Voir le produit":"📦 View product info"}
+          </button>
+          <button onClick={()=>setScreen("lucky")}
+            style={{padding:"18px 24px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"1px",borderRadius:14,transition:"all 0.2s",textAlign:"center",boxShadow:"0 4px 20px rgba(201,169,110,0.3)"}}
+            onMouseEnter={e=>e.currentTarget.style.opacity="0.9"}
+            onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
+            🎁 Lucky Draw
+          </button>
+        </div>
+
+        {/* discover more */}
+        <div style={{marginTop:40,display:"flex",gap:16}}>
+          <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:"12px",color:"#555",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>Salons</button>
+          <button onClick={()=>navigate("/products")} style={{...SS,fontSize:"12px",color:"#555",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>Products</button>
+        </div>
+      </div>
+    </>
+  );
+
+  // ── SCREEN: PRODUCT INFO ──────────────────────────────────────────────────────
+  if (screen==="product") return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}`}</style>
+      <SpotNav/>
+      <main style={{maxWidth:560,margin:"0 auto",padding:"24px 20px 80px",animation:"fadeUp 0.5s ease both"}}>
+        {/* salon banner */}
+        {salon&&<div onClick={()=>navigate("/salons")} style={{display:"flex",alignItems:"center",gap:12,background:"#fff",border:"1px solid #ede8e2",borderRadius:12,padding:"12px 16px",marginBottom:20,cursor:"pointer"}}>
+          {salonImg&&<div style={{width:44,height:44,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={salonImg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>}
+          <div style={{flex:1,minWidth:0}}>
+            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 2px"}}>✦ Discovery Spot · {salon.name}</p>
+            <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.address}</p>
+          </div>
+          <span style={{color:"#ccc",fontSize:"16px"}}>›</span>
+        </div>}
+
+        {/* photo slider */}
+        {allImgs.length>0&&<div style={{borderRadius:16,overflow:"hidden",marginBottom:20,background:"#f5f0eb",position:"relative"}}>
+          <div style={{paddingBottom:"75%",position:"relative"}}>
+            <img src={allImgs[imgIdx]} alt={product?.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",background:"#f5f0eb"}}/>
+          </div>
+          {allImgs.length>1&&<>
+            <button onClick={()=>setImgIdx(i=>(i-1+allImgs.length)%allImgs.length)} style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center"}}>‹</button>
+            <button onClick={()=>setImgIdx(i=>(i+1)%allImgs.length)} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center"}}>›</button>
+            <div style={{position:"absolute",bottom:10,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5}}>
+              {allImgs.map((_,i)=><div key={i} onClick={()=>setImgIdx(i)} style={{width:i===imgIdx?18:6,height:6,borderRadius:3,background:i===imgIdx?"#1a1a1a":"rgba(0,0,0,0.25)",transition:"all 0.2s",cursor:"pointer"}}/>)}
+            </div>
+          </>}
+        </div>}
+
+        {/* product info */}
+        {product&&<>
+          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{brandDisplay}</p>
+          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,5vw,34px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.2}}>{product.product_name}</h1>
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
             {product.category&&<span style={{...SS,fontSize:"12px",color:"#aaa"}}>{product.category}</span>}
             {product.price_customer&&<><span style={{color:"#ede8e2"}}>·</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#1a1a1a",fontWeight:600}}>€{product.price_customer}</span></>}
           </div>
-          {product.description&&<p style={{...SS,fontSize:"14px",color:"#666",lineHeight:1.75,marginBottom:20}}>{product.description}</p>}
+          {/* PURCHASE */}
+          {product.purchase_url&&<a href={product.purchase_url} target="_blank" rel="noopener noreferrer"
+            style={{display:"block",textAlign:"center",padding:"15px",background:"#0d0d0d",color:"#f5f0eb",textDecoration:"none",...SS,fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:10,marginBottom:20}}>
+            {lang==="fr"?"Acheter maintenant":"Buy now"} →
+          </a>}
+          {/* details */}
+          {[{k:"description",l:"Description"},{k:"product_2usage",l:"Usage"},{k:"product_3texture",l:"Texture"},{k:"test_reason",l:"Who is it for?"},{k:"product_5function",l:"Function"},{k:"product_7key_ingredient",l:"Key ingredient"}].filter(d=>product[d.k]).length>0&&(
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}>
+              {[{k:"description",l:"Description"},{k:"product_2usage",l:"Usage"},{k:"product_3texture",l:"Texture"},{k:"test_reason",l:"Who is it for?"},{k:"product_5function",l:"Function"},{k:"product_7key_ingredient",l:"Key ingredient"}].filter(d=>product[d.k]).map(({k,l})=>(
+                <div key={k} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(k)?"1/-1":"auto"}}>
+                  <p style={{...SS,fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{l}</p>
+                  <p style={{...SS,fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{product[k]}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </>}
 
-          {/* PURCHASE — only on QR page */}
-          <div style={{background:"#0d0d0d",borderRadius:12,padding:"20px 22px",marginBottom:24}}>
-            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>✦ Purchase</p>
-            <p style={{...SS,fontSize:"13px",color:"#aaa",lineHeight:1.6,margin:"0 0 16px"}}>{lang==="fr"?"Vous avez découvert ce produit en salon. Commandez-le maintenant.":"You discovered this product in the salon. Order it now."}</p>
-            {product.price_customer&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-              <span style={{...SS,fontSize:"13px",color:"#777"}}>Price</span>
-              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",color:"#f5f0eb",fontWeight:400}}>€{product.price_customer}</span>
+        {/* CTA to lucky draw */}
+        <button onClick={()=>setScreen("lucky")}
+          style={{width:"100%",padding:"16px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"13px",fontWeight:700,letterSpacing:"1px",borderRadius:12,marginTop:8}}>
+          🎁 Enter Lucky Draw
+        </button>
+      </main>
+    </>
+  );
+
+  // ── SCREEN: LUCKY DRAW ────────────────────────────────────────────────────────
+  if (screen==="lucky") return (
+    <LuckyDrawScreen spot={spot} salon={salon} product={product} lang={lang} setLang={setLang} spotId={spotId} onBack={()=>setScreen("landing")} SS={SS} />
+  );
+
+  return null;
+}
+
+// ── LUCKY DRAW SCREEN ─────────────────────────────────────────────────────────
+function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, SS }) {
+  const navigate = useNavigate();
+  const [step, setStep] = useState("intro"); // intro | form | success
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [screenshot, setScreenshot] = useState(null);
+  const [screenshotPreview, setScreenshotPreview] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const googleReviewUrl = salon?.google_review_url || salon?.google_maps_url;
+
+  const handleScreenshot = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setScreenshot(file);
+    const reader = new FileReader();
+    reader.onload = ev => setScreenshotPreview(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const submit = async () => {
+    if (!name.trim() || !email.trim()) { setError("Please fill in your name and email."); return; }
+    if (!screenshot) { setError("Please upload your review screenshot."); return; }
+    setSubmitting(true); setError("");
+    try {
+      // convert screenshot to base64 for Airtable attachment
+      const base64 = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result.split(",")[1]);
+        r.onerror = rej;
+        r.readAsDataURL(screenshot);
+      });
+
+      const fields = {
+        spot_id: spotId,
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim()||undefined,
+        status: "pending",
+        screenshot: [{ filename: screenshot.name, url: `data:${screenshot.type};base64,${base64}` }],
+      };
+      if (salon?.id) fields.salon = [salon.id];
+
+      const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_LUCKY_DRAW}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ records: [{ fields }] })
+      });
+      const data = await res.json();
+      if (res.ok) { setStep("success"); }
+      else { console.error("Lucky draw error:", data); setError(data?.error?.message || "Something went wrong."); }
+    } catch(e) { setError(e.message); }
+    setSubmitting(false);
+  };
+
+  const SpotNav = () => (
+    <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",padding:"4px 6px"}}>←</button>
+        <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",fontWeight:600,letterSpacing:"2px"}}>🎁 Lucky Draw</span>
+      </div>
+      <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+        {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+      </div>
+    </nav>
+  );
+
+  if (step==="success") return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}`}</style>
+      <SpotNav/>
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 56px)",padding:"40px 24px",textAlign:"center"}}>
+        <div style={{fontSize:"48px",marginBottom:16}}>🎉</div>
+        <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:400,color:"#f5f0eb",marginBottom:12}}>You're in!</h2>
+        <p style={{...SS,fontSize:"14px",color:"#777",lineHeight:1.7,marginBottom:8,maxWidth:360}}>
+          {lang==="fr"
+            ? "Votre participation est enregistrée. Résultats envoyés par email chaque semaine."
+            : "Your entry has been recorded. Winners are announced weekly by email."}
+        </p>
+        {salon&&<p style={{...SS,fontSize:"12px",color:"#555",marginBottom:32}}>Spot: {salon.name}</p>}
+        <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
+          <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
+            {lang==="fr"?"Accueil":"Homepage"}
+          </button>
+          <button onClick={()=>navigate("/products")} style={{padding:"12px 24px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
+            {lang==="fr"?"Voir les produits":"Browse products"}
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}`}</style>
+      <SpotNav/>
+      <main style={{maxWidth:480,margin:"0 auto",padding:"28px 20px 80px",animation:"fadeUp 0.5s ease both"}}>
+
+        {step==="intro" && <>
+          {/* product context */}
+          {product&&<div style={{display:"flex",gap:12,alignItems:"center",background:"#fff",border:"1px solid #ede8e2",borderRadius:12,padding:"12px 14px",marginBottom:24}}>
+            {getProdImg(product)&&<div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f5f0eb"}}>
+              <img src={getProdImg(product)} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
             </div>}
-            {product.purchase_url
-              ? <a href={product.purchase_url} target="_blank" rel="noopener noreferrer" style={{display:"block",textAlign:"center",padding:"15px",background:"#c9a96e",color:"#0d0d0d",textDecoration:"none",...SS,fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>{lang==="fr"?"Acheter maintenant":"Buy now"} →</a>
-              : <div style={{textAlign:"center",padding:"14px",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.3)",borderRadius:8}}><p style={{...SS,fontSize:"12px",color:"#c9a96e",margin:0}}>Purchase link coming soon</p></div>
+            <div>
+              <p style={{...SS,fontSize:"11px",color:"#c9a96e",fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{product.brand_name||""}</p>
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#1a1a1a",margin:0,fontWeight:600}}>{product.product_name}</p>
+            </div>
+          </div>}
+
+          {/* how it works */}
+          <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px",marginBottom:24,color:"#f5f0eb"}}>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",fontWeight:400,margin:"0 0 6px"}}>🎁 Lucky Draw</h2>
+            <p style={{...SS,fontSize:"13px",color:"#c9a96e",margin:"0 0 20px"}}>
+              {lang==="fr"?"Gagnez des produits K-Beauty exclusifs":"Win exclusive K-Beauty products"}
+            </p>
+            {[
+              {n:"1", text:lang==="fr"?"Laissez un avis Google sur ce salon":"Leave a Google review for this salon"},
+              {n:"2", text:lang==="fr"?"Prenez une capture d'écran de votre avis":"Screenshot your review"},
+              {n:"3", text:lang==="fr"?"Revenez et soumettez la capture d'écran":"Come back and submit the screenshot"},
+              {n:"4", text:lang==="fr"?"X gagnants par semaine, résultat par email":"X winners per week, notified by email"},
+            ].map(({n,text})=>(
+              <div key={n} style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:14}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",color:"rgba(201,169,110,0.4)",fontWeight:300,flexShrink:0,lineHeight:1}}>{n}</span>
+                <p style={{...SS,fontSize:"13px",color:"#ccc",lineHeight:1.5,margin:"4px 0 0"}}>{text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Google review button */}
+          {googleReviewUrl&&<a href={googleReviewUrl} target="_blank" rel="noopener noreferrer"
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"16px",background:"#4285f4",color:"#fff",textDecoration:"none",borderRadius:12,marginBottom:14,...SS,fontSize:"14px",fontWeight:700}}>
+            ⭐ {lang==="fr"?"Laisser un avis Google":"Leave a Google Review"}
+            <span style={{fontSize:"12px",opacity:0.8}}>↗</span>
+          </a>}
+
+          <button onClick={()=>setStep("form")}
+            style={{width:"100%",padding:"16px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"13px",fontWeight:700,letterSpacing:"1px",borderRadius:12}}>
+            {lang==="fr"?"J'ai laissé mon avis → Continuer":"I left my review → Continue"}
+          </button>
+        </>}
+
+        {step==="form" && <>
+          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px"}}>
+            {lang==="fr"?"Votre participation":"Your entry"}
+          </h2>
+          <p style={{...SS,fontSize:"13px",color:"#aaa",margin:"0 0 24px",lineHeight:1.5}}>
+            {lang==="fr"?"Soumettez votre capture d'écran et vos coordonnées.":"Submit your screenshot and contact details."}
+          </p>
+
+          {/* screenshot upload */}
+          <div style={{marginBottom:18}}>
+            <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:8}}>
+              {lang==="fr"?"Capture d'écran de l'avis *":"Review screenshot *"}
+            </label>
+            {screenshotPreview
+              ? <div style={{position:"relative",borderRadius:12,overflow:"hidden",marginBottom:8}}>
+                  <img src={screenshotPreview} alt="screenshot" style={{width:"100%",borderRadius:12,maxHeight:280,objectFit:"contain",background:"#f5f0eb"}}/>
+                  <button onClick={()=>{setScreenshot(null);setScreenshotPreview(null);}}
+                    style={{position:"absolute",top:8,right:8,background:"rgba(0,0,0,0.5)",color:"#fff",border:"none",cursor:"pointer",width:28,height:28,borderRadius:"50%",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+                </div>
+              : <label style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"2px dashed #ede8e2",borderRadius:12,padding:"32px 20px",cursor:"pointer",background:"#fff",transition:"border 0.2s"}}
+                  onMouseEnter={e=>e.currentTarget.style.borderColor="#c9a96e"}
+                  onMouseLeave={e=>e.currentTarget.style.borderColor="#ede8e2"}>
+                  <span style={{fontSize:"32px"}}>📸</span>
+                  <p style={{...SS,fontSize:"13px",color:"#aaa",margin:0,textAlign:"center"}}>
+                    {lang==="fr"?"Appuyez pour ajouter la capture":"Tap to upload screenshot"}
+                  </p>
+                  <input type="file" accept="image/*" onChange={handleScreenshot} style={{display:"none"}}/>
+                </label>
             }
           </div>
 
-          {details.length>0&&(
-            <div style={{marginBottom:20}}>
-              <p style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 12px"}}>Product details</p>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {details.map(({key,label})=>(
-                  <div key={key} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:8,padding:"10px 13px",gridColumn:["description","test_reason"].includes(key)?"1/-1":"auto"}}>
-                    <p style={{...SS,fontSize:"9px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{label}</p>
-                    <p style={{...SS,fontSize:"12px",color:"#444",margin:0,lineHeight:1.5}}>{product[key]}</p>
-                  </div>
-                ))}
-              </div>
+          {/* form fields */}
+          {[
+            {label:lang==="fr"?"Prénom *":"First name *", val:name, set:setName, type:"text"},
+            {label:"Email *", val:email, set:setEmail, type:"email"},
+            {label:lang==="fr"?"Téléphone (optionnel)":"Phone (optional)", val:phone, set:setPhone, type:"tel"},
+          ].map(({label,val,set,type})=>(
+            <div key={label} style={{marginBottom:14}}>
+              <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{label}</label>
+              <input type={type} value={val} onChange={e=>set(e.target.value)}
+                style={{width:"100%",padding:"12px 14px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}}
+                onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"}/>
             </div>
-          )}
-          <div style={{borderTop:"1px solid #ede8e2",paddingTop:20,display:"flex",gap:12,flexWrap:"wrap"}}>
-            <button onClick={()=>navigate("/products")} style={{flex:1,padding:"12px",background:"#fff",color:"#1a1a1a",border:"1px solid #ede8e2",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:8,minWidth:120}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#c9a96e";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";}}>{lang==="fr"?"Voir les produits":"Browse products"}</button>
-            {salon&&<button onClick={()=>navigate("/salons")} style={{flex:1,padding:"12px",background:"#fff",color:"#1a1a1a",border:"1px solid #ede8e2",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:8,minWidth:120}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#b85c5c";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";}}>{lang==="fr"?"Voir les salons":"Browse salons"}</button>}
-          </div>
-        </main>
-      )}
+          ))}
+
+          {/* terms */}
+          <p style={{...SS,fontSize:"11px",color:"#bbb",lineHeight:1.6,marginBottom:18}}>
+            {lang==="fr"
+              ? "En participant, vous acceptez que vos coordonnées soient utilisées pour ce tirage au sort uniquement."
+              : "By entering, you agree your details will be used for this draw only. Winners notified weekly by email."}
+          </p>
+
+          {error&&<p style={{...SS,fontSize:"12px",color:"#b85c5c",marginBottom:14}}>{error}</p>}
+
+          <button onClick={submit} disabled={submitting}
+            style={{width:"100%",padding:"16px",background:submitting?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:submitting?"not-allowed":"pointer",...SS,fontSize:"13px",fontWeight:700,letterSpacing:"1px",borderRadius:12,transition:"opacity 0.2s"}}>
+            {submitting?"Submitting…":lang==="fr"?"Participer au tirage":"Submit my entry 🎁"}
+          </button>
+        </>}
+      </main>
     </>
   );
 }
 
+
+
+  useEffect(() => {
+    if (!spotId) { setStatus("not_found"); return; }
+    (async () => {
+      try {
+        const spots = await fetchAll(TBL_SPOTS, `{spot_id}="${spotId}"`);
+        if (!spots.length) { setStatus("not_found"); return; }
+        const s = spots[0];
+        setSpot(s);
+        const prodIds = Array.isArray(s.current_product) ? s.current_product : [];
+        if (prodIds.length > 0) {
+          const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_PRODUCTS}/${prodIds[0]}`, { headers: { Authorization: `Bearer ${AT_KEY}` } });
+          if (res.ok) { const d = await res.json(); setProduct({ id: d.id, ...d.fields }); }
+        }
+        const salonIds = Array.isArray(s.salon) ? s.salon : [];
+        if (salonIds.length > 0) {
+          const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_RETAIL}/${salonIds[0]}`, { headers: { Authorization: `Bearer ${AT_KEY}` } });
+          if (res.ok) { const d = await res.json(); setSalon({ id: d.id, ...d.fields }); }
+        }
+        setStatus("found");
+      } catch(e) { console.error(e); setStatus("not_found"); }
+    })();
+  }, [spotId]);
+
+  const img = product ? getProdImg(product) : null;
+  const moreImgs = product && Array.isArray(product.more_image) ? product.more_image.map(a=>a.url||a).filter(Boolean) : [];
+  const allImgs = img ? [img, ...moreImgs] : moreImgs;
+  const brandDisplay = product ? (product.brand_name || (Array.isArray(product.brand) ? null : (!product.brand?.startsWith?.("rec") ? product.brand : null)) || "") : "";
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang,setLang]=useState("en");
