@@ -1568,47 +1568,6 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
   );
 }
 
-  const [sheetH, setSheetH] = useState(SNAP_MID);
-  const [pinnedSalon, setPinnedSalon] = useState(null);
-  const listRef = useRef(null);
-  const handleStartY = useRef(null);
-  const sheetRef = useRef(null);
-
-  // expose for map pin clicks
-  ProductBottomSheet._setPinned = (s) => { setPinnedSalon(s); setSheetH(SNAP_COLLAPSED); };
-
-  const snapTo = (h) => {
-    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1)";
-    setSheetH(h);
-  };
-
-  const onHandleTouchStart = (e) => {
-    handleStartY.current = e.touches[0].clientY;
-    if (sheetRef.current) sheetRef.current.style.transition = "none";
-  };
-  const onHandleTouchMove = (e) => {
-    const dy = handleStartY.current - e.touches[0].clientY;
-    const newH = Math.max(SNAP_COLLAPSED, Math.min(SNAP_FULL, sheetH + dy));
-    setSheetH(newH);
-  };
-  const onHandleTouchEnd = (e) => {
-    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1)";
-    const dy = handleStartY.current - e.changedTouches[0].clientY;
-    if (dy > 50 || sheetH > (SNAP_MID + SNAP_FULL) / 2) snapTo(SNAP_FULL);
-    else if (dy < -50 || sheetH < (SNAP_COLLAPSED + SNAP_MID) / 2) snapTo(SNAP_COLLAPSED);
-    else snapTo(SNAP_MID);
-  };
-
-  const listStartY = useRef(null);
-  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
-  const onListTouchEnd = (e) => {
-    if (!listRef.current) return;
-    const dy = listStartY.current - e.changedTouches[0].clientY;
-    if (listRef.current.scrollTop <= 2 && dy < -40) snapTo(SNAP_COLLAPSED);
-  };
-
-  const isFull = sheetH >= SNAP_FULL - 40;
-  const isCollapsed = sheetH <= SNAP_COLLAPSED + 10;
 function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onToggleFav, isSelected, hideHover }) {
   const img = getProdImg(p);
   const isNew = p._badge==="new"; const color = isNew?"#c9a96e":"#b85c5c";
