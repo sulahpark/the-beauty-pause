@@ -64,8 +64,8 @@ const T = {
     sort_az:"A–Z", sort_tier:"Tier first", sort_area:"By area",
     no_salons:"No salons found",
     loading:"Loading…",
-    kbeauty_here:"K-Beauty available here",
-    kbeauty_desc:"Ask your stylist to try these during your visit.",
+    kbeauty_here:"✦ Discover K-Beauty here",
+    kbeauty_desc:"",
     book:"Book an appointment", via:"via",
     salons_count:"salons",
     new_in:"New In", top_pick:"Top Pick",
@@ -100,8 +100,8 @@ const T = {
     sort_az:"A–Z", sort_tier:"Tier d'abord", sort_area:"Par quartier",
     no_salons:"Aucun salon trouvé",
     loading:"Chargement…",
-    kbeauty_here:"K-Beauty disponible ici",
-    kbeauty_desc:"Demandez à votre styliste d'essayer ces produits.",
+    kbeauty_here:"✦ Découvrez K-Beauty ici",
+    kbeauty_desc:"",
     book:"Prendre rendez-vous", via:"via",
     salons_count:"salons",
     new_in:"Nouveau", top_pick:"Top Pick",
@@ -308,20 +308,16 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
           </div>
         </div>
         <div style={{padding:"22px 24px 32px"}}>
-          {/* K-Beauty first */}
-          {prods.length>0&&<div style={{background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:8,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:"16px"}}>✦</span>
-            <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#a07832",fontWeight:600}}>K-Beauty products available in this salon</span>
-          </div>}
+
           {/* action links */}
           <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
-            {salon.google_maps_url&&<a href={salon.google_maps_url} target="_blank" rel="noopener noreferrer"
+            {salon.google&&<a href={salon.google} target="_blank" rel="noopener noreferrer"
               style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#fff",border:"1px solid #ede8e2",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500,transition:"all 0.2s",flex:1,justifyContent:"center"}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor="#4285f4";e.currentTarget.style.color="#4285f4";}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#444";}}>
               🗺 Google Maps
             </a>}
-            {salon.bookingUrl&&<a href={salon.bookingUrl} target="_blank" rel="noopener noreferrer"
+            {salon.rdv&&<a href={salon.rdv} target="_blank" rel="noopener noreferrer"
               style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#1a1a1a",border:"none",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#f5f0eb",fontWeight:600,transition:"all 0.2s",flex:1,justifyContent:"center"}}
               onMouseEnter={e=>e.currentTarget.style.background="#b85c5c"}
               onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>
@@ -370,10 +366,10 @@ function SalonModalProducts({ prods, t, onClose, lang }) {
     <div style={{marginBottom:24}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
         <div style={{height:1,flex:1,background:"#ede8e2"}} />
-        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{t.kbeauty_here}</p>
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{"✦ Discover K-Beauty here"}</p>
         <div style={{height:1,flex:1,background:"#ede8e2"}} />
       </div>
-      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",margin:"0 0 14px",lineHeight:1.6}}>{t.kbeauty_desc}</p>
+      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",margin:"0 0 14px",lineHeight:1.6}}>""</p>
       <div style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:6}}>
         {prods.map(p=>{
           const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
@@ -460,7 +456,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
         <button onClick={()=>setLightbox(null)} style={{position:"absolute",top:16,right:16,background:"rgba(255,255,255,0.1)",color:"#fff",border:"none",width:36,height:36,borderRadius:"50%",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
       </div>
     )}
-    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
+    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:5000,background:"rgba(8,6,4,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",maxWidth:640,width:"100%",borderRadius:16,overflow:"hidden",boxShadow:"0 48px 120px rgba(0,0,0,0.4)",maxHeight:"92vh",overflowY:"auto",display:"flex",flexDirection:"column"}}>
 
         {/* PHOTO SLIDER */}
@@ -668,63 +664,75 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
 function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpandChange, user, favourites, onToggleFav }) {
   const t=T[lang];
-  const [expanded, setExpanded] = useState(false);
+  const VH = window.innerHeight;
+  const SNAP_COLLAPSED = 88;
+  const SNAP_MID = Math.round(VH * 0.44);
+  const SNAP_FULL = VH;
+
+  const [sheetH, setSheetH] = useState(SNAP_COLLAPSED);
   const [pinned, setPinned] = useState(null);
   const listRef = useRef(null);
   const handleStartY = useRef(null);
-  const COLLAPSED_H = 88;
+  const startH = useRef(SNAP_COLLAPSED);
+  const sheetRef = useRef(null);
 
-  const setExpandedWithCb = (v) => { setExpanded(v); onExpandChange?.(v); };
+  const snapTo = (h) => {
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s";
+    setSheetH(h);
+    onExpandChange?.(h >= SNAP_FULL - 40);
+  };
 
   BottomSheet._setPinned = (s) => { setPinned(s); };
   BottomSheet._clearPinned = () => setPinned(null);
 
-  // Only handle touches on the drag handle bar
   const onHandleTouchStart = (e) => {
     handleStartY.current = e.touches[0].clientY;
+    startH.current = sheetH;
+    if (sheetRef.current) sheetRef.current.style.transition = "none";
+  };
+  const onHandleTouchMove = (e) => {
+    const dy = handleStartY.current - e.touches[0].clientY;
+    setSheetH(Math.max(SNAP_COLLAPSED, Math.min(SNAP_FULL, startH.current + dy)));
   };
   const onHandleTouchEnd = (e) => {
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s";
     const dy = handleStartY.current - e.changedTouches[0].clientY;
-    if (dy > 30) setExpandedWithCb(true);
-    else if (dy < -30) setExpandedWithCb(false);
+    if (dy > 60 || sheetH > (SNAP_MID + SNAP_FULL) / 2) snapTo(SNAP_FULL);
+    else if (dy < -60 || sheetH < (SNAP_COLLAPSED + SNAP_MID) / 2) snapTo(SNAP_COLLAPSED);
+    else snapTo(SNAP_MID);
   };
 
-  // List: only collapse when at very top + dragging down
   const listStartY = useRef(null);
-  const onListTouchStart = (e) => {
-    listStartY.current = e.touches[0].clientY;
-  };
+  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
   const onListTouchEnd = (e) => {
     if (!listRef.current) return;
-    const scrollTop = listRef.current.scrollTop;
     const dy = listStartY.current - e.changedTouches[0].clientY;
-    // only collapse if at top AND dragging down
-    if (scrollTop <= 2 && dy < -40) {
-      setExpanded(false);
-    }
+    if (listRef.current.scrollTop <= 2 && dy < -40) snapTo(SNAP_MID);
   };
 
+  const isFull = sheetH >= SNAP_FULL - 40;
+  const isCollapsed = sheetH <= SNAP_COLLAPSED + 10;
   const count = visibleCount ?? salons.length;
 
   return (
     <>
-      {/* PINNED FLOATING CARD — X on left (Airbnb style), image right */}
-      {pinned && !expanded && (
-        <div style={{position:"absolute",bottom:16,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both"}}>
+      {/* PINNED FLOATING CARD */}
+      {pinned && !isFull && (
+        <div style={{position:"absolute",bottom:isCollapsed?SNAP_COLLAPSED+8:16,left:12,right:12,zIndex:200,animation:"fadeUp 0.22s ease both",
+          opacity:!isCollapsed&&sheetH>SNAP_COLLAPSED+20?0:1,
+          pointerEvents:!isCollapsed&&sheetH>SNAP_COLLAPSED+20?"none":"auto",
+          transition:"opacity 0.2s,bottom 0.3s"}}>
           <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative"}}>
-            {/* fav button top-right */}
             {onToggleFav&&<div style={{position:"absolute",top:8,right:8,zIndex:3}} onClick={e=>e.stopPropagation()}>
               <FavBtn type="salon" item={pinned} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={18}/>
             </div>}
             <div onTouchStart={e=>e.currentTarget.style.opacity="0.85"} onTouchEnd={e=>e.currentTarget.style.opacity="1"}
               onClick={()=>{onSalonClick(pinned);setPinned(null);}}
               style={{display:"flex",cursor:"pointer",height:92,transition:"opacity 0.15s"}}>
-              {/* X left */}
               <div style={{width:44,flexShrink:0,display:"flex",alignItems:"flex-start",justifyContent:"center",paddingTop:8}}>
                 <button onClick={e=>{e.stopPropagation();setPinned(null);}}
                   style={{width:28,height:28,borderRadius:"50%",background:"rgba(0,0,0,0.06)",color:"#555",border:"1px solid #ddd",cursor:"pointer",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>×</button>
               </div>
-              {/* info center */}
               <div style={{flex:1,padding:"10px 8px 10px 0",display:"flex",flexDirection:"column",justifyContent:"center",minWidth:0}}>
                 <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
                   <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.name}</p>
@@ -733,12 +741,11 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
                 <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{pinned.area||"Paris"}</p>
                 {(pinned._products||[]).length>0&&(
                   <div style={{display:"flex",gap:3,alignItems:"center"}}>
-                    {(pinned._products||[]).slice(0,4).map(p=>{const img=getProdImg(p);return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
+                    {(pinned._products||[]).slice(0,4).map(p=>{const img=getProdImg(p);return img?<div key={p.id} style={{width:18,height:18,borderRadius:3,overflow:"hidden",border:"1px solid #f0d0d0"}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;})}
                     <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",fontWeight:700,marginLeft:3}}>✦ K-Beauty</span>
                   </div>
                 )}
               </div>
-              {/* image right */}
               <div style={{width:92,height:92,flexShrink:0,overflow:"hidden",background:"#1a1a1a"}}>
                 {(()=>{const img=getSalonImg(pinned);return img
                   ?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
@@ -750,50 +757,45 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
         </div>
       )}
 
-      {/* BOTTOM SHEET — fades out when pinned card shows */}
-      <div style={{
-        position:"absolute",bottom:0,left:0,right:0,
-        height:expanded?"100%":`${COLLAPSED_H}px`,
-        background:"#faf7f4",
-        borderRadius:expanded?"0":"16px 16px 0 0",
-        boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
-        transition:"height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s, opacity 0.25s",
-        zIndex:100,
-        opacity:pinned&&!expanded?0:1,
-        pointerEvents:pinned&&!expanded?"none":"auto",
-        display:"flex",flexDirection:"column",overflow:"hidden"
-      }}>
-        {/* HANDLE — drag ONLY, no tap */}
-        <div
-          onTouchStart={onHandleTouchStart} onTouchEnd={onHandleTouchEnd}
-          style={{flexShrink:0,paddingTop:10,paddingBottom:10,touchAction:"none",userSelect:"none",cursor:"grab"}}>
+      {/* BOTTOM SHEET */}
+      <div ref={sheetRef}
+        style={{
+          position:"absolute",bottom:0,left:0,right:0,
+          height:sheetH,
+          background:"#faf7f4",
+          borderRadius:isFull?"0":"16px 16px 0 0",
+          boxShadow:"0 -4px 24px rgba(0,0,0,0.14)",
+          transition:"height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s",
+          zIndex:pinned&&isCollapsed?50:100,
+          opacity:pinned&&isCollapsed?0:1,
+          pointerEvents:pinned&&isCollapsed?"none":"auto",
+          display:"flex",flexDirection:"column",overflow:"hidden"
+        }}>
+        {/* HANDLE */}
+        <div onTouchStart={onHandleTouchStart} onTouchMove={onHandleTouchMove} onTouchEnd={onHandleTouchEnd}
+          style={{flexShrink:0,paddingTop:10,paddingBottom:8,touchAction:"none",cursor:"grab"}}>
           <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
             <div>
-              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 2px",letterSpacing:"0.5px",textTransform:"uppercase"}}>
-                {lang==="fr"?"Voir":"View"}
-              </p>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 1px",textTransform:"uppercase",letterSpacing:"0.5px"}}>View</p>
               <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>
                 {count} {t.salons_count}
               </p>
             </div>
-            {expanded
-              ? <button onClick={e=>{e.stopPropagation();setExpanded(false);setPinned(null);}}
-                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:22}}>
+            {isFull
+              ? <button onClick={e=>{e.stopPropagation();snapTo(SNAP_COLLAPSED);setPinned(null);}}
+                  style={{display:"flex",alignItems:"center",gap:5,padding:"7px 14px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:22}}>
                   🗺 Map
                 </button>
-              : <div style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",display:"flex",alignItems:"center",gap:4}}>
-                  <span>↑ swipe up</span>
-                </div>
+              : isCollapsed
+                ? <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>
+                : null
             }
           </div>
         </div>
-
-        {/* LIST — only touchAction pan-y so native scroll works, collapse only at top */}
-        {expanded&&(
-          <div ref={listRef}
-            onTouchStart={onListTouchStart}
-            onTouchEnd={onListTouchEnd}
+        {/* LIST */}
+        {!isCollapsed&&(
+          <div ref={listRef} onTouchStart={onListTouchStart} onTouchEnd={onListTouchEnd}
             style={{flex:1,overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"4px 12px 32px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
             {loading
               ?<div style={{textAlign:"center",padding:"40px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
@@ -802,7 +804,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
                 :<div style={{display:"flex",flexDirection:"column",gap:12}}>
                   {salons.map((s,i)=>(
                     <div key={s.id} style={{animation:`fadeUp 0.25s ease ${i*0.02}s both`}}>
-                      <SalonCard salon={s} onClick={()=>{onSalonClick(s);setExpandedWithCb(false);}} lang={lang} user={user} favourites={favourites||[]} onToggleFav={onToggleFav}/>
+                      <SalonCard salon={s} onClick={()=>{onSalonClick(s);snapTo(SNAP_COLLAPSED);}} lang={lang} user={user} favourites={favourites||[]} onToggleFav={onToggleFav}/>
                     </div>
                   ))}
                 </div>
@@ -1721,7 +1723,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
               salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon}
               onExpandChange={(full)=>{
                 const el=document.getElementById("prod-topbar");
-                if(el) el.style.maxHeight=full?"0":"200px";
+                if(el) el.style.maxHeight=full?"0px":"200px";
+                if(el) el.style.overflow="hidden";
               }}
               onModalProd={setModalProd}
             />
