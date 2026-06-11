@@ -2078,16 +2078,21 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
     try {
       // 1. Upload to Supabase Storage → get public URL
       let screenshotUrl = null;
+      console.log("Supabase client:", supabase ? "OK" : "NULL");
       if (supabase) {
         const ext = screenshot.name.split('.').pop();
         const filename = `lucky-draw/${spotId}-${Date.now()}.${ext}`;
+        console.log("Uploading to:", filename);
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('screenshots')
           .upload(filename, screenshot, { contentType: screenshot.type, upsert: true });
+        console.log("Upload result:", uploadData, uploadError);
         if (uploadError) throw new Error("Upload failed: " + uploadError.message);
         const { data: { publicUrl } } = supabase.storage.from('screenshots').getPublicUrl(filename);
         console.log("Screenshot public URL:", publicUrl);
         screenshotUrl = publicUrl;
+      } else {
+        throw new Error("Supabase not configured - cannot upload screenshot");
       }
 
       // 2. Submit to Airtable with public URL
@@ -2100,7 +2105,6 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       if (phone.trim()) fields.phone = phone.trim();
       if (salon?.id) fields.salon = [salon.id];
       if (screenshotUrl) fields.screenshot = [{ url: screenshotUrl, filename: screenshot.name }];
-
       const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_LUCKY_DRAW}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
