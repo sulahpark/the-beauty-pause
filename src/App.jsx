@@ -656,13 +656,15 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 }
 
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
-function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
+function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpandChange }) {
   const t=T[lang];
   const [expanded, setExpanded] = useState(false);
   const [pinned, setPinned] = useState(null);
   const listRef = useRef(null);
   const handleStartY = useRef(null);
   const COLLAPSED_H = 130;
+
+  const setExpandedWithCb = (v) => { setExpanded(v); onExpandChange?.(v); };
 
   BottomSheet._setPinned = (s) => { setPinned(s); };
   BottomSheet._clearPinned = () => setPinned(null);
@@ -673,8 +675,8 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount }) {
   };
   const onHandleTouchEnd = (e) => {
     const dy = handleStartY.current - e.changedTouches[0].clientY;
-    if (dy > 30) setExpanded(true);
-    else if (dy < -30) setExpanded(false);
+    if (dy > 30) setExpandedWithCb(true);
+    else if (dy < -30) setExpandedWithCb(false);
   };
 
   // List: only collapse when at very top + dragging down
@@ -1288,6 +1290,8 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   const [sortBy,setSortBy]=useState("az");
   const [search,setSearch]=useState("");
   const [visibleIds,setVisibleIds]=useState(null);
+  const [sheetExpanded,setSheetExpanded]=useState(false);
+  const activeFilters=[sf.kbeautyOnly,(sf.categories||[]).length>0,sf.area,search].filter(Boolean).length;
   const [filtered,setFiltered]=useState(salons);
   const [showFilter,setShowFilter]=useState(false);
   const [showJoin,setShowJoin]=useState(false);
@@ -1313,10 +1317,9 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
-      <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
-      {isMobile&&<MobileTabBar lang={lang} active="/salons" user={user} />}
-      {/* filter */}
-      <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:56,zIndex:399,flexWrap:"nowrap"}}>
+      {!isMobile&&<Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />}
+      {/* filter — desktop only (mobile has it inside fixed container) */}
+      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:56,zIndex:399,flexWrap:"nowrap"}}>
         <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${afc>0?"#1a1a1a":"#ede8e2"}`,background:afc>0?"#1a1a1a":"#fff",color:afc>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
           {t.filter}{afc>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{afc}</span>}
@@ -1324,13 +1327,29 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
         <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
         <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${sf.kbeautyOnly?"#c9a96e":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf8ee":"#fff",color:sf.kbeautyOnly?"#c9a96e":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>✦ K-Beauty</button>
         {["Nail","Beauty","Hair","Spa"].map(cat=>{const a=sf.categories.includes(cat);return<button key={cat} onClick={()=>setSf(f=>({...f,categories:toggleArr(f.categories,cat)}))} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;})}
-        <input placeholder={t.search_salon} value={search} onChange={e=>setSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:isMobile?130:200,marginLeft:"auto",flexShrink:0}}/>
-      </div>
+        <input placeholder={t.search_salon} value={search} onChange={e=>setSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:200,marginLeft:"auto",flexShrink:0}}/>
+      </div>}
       {/* content */}
       {isMobile?(
-        <div style={{position:"relative",height:`calc(100vh - 56px - 44px)`,overflow:"hidden",touchAction:"pan-x pan-y"}}>
-          <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
-          <BottomSheet salons={filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.length:salons.length} />
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column",transition:"all 0.34s cubic-bezier(0.32,0.72,0,1)"}}>
+          {/* nav + filter — slide up when expanded */}
+          <div style={{flexShrink:0,overflow:"hidden",maxHeight:sheetExpanded?0:200,transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",background:"#0d0d0d"}}>
+            <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
+            <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap"}}>
+              <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilters>0?"#1a1a1a":"#ede8e2"}`,background:activeFilters>0?"#1a1a1a":"#fff",color:activeFilters>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:500,borderRadius:20,flexShrink:0}}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                {t.filter}{activeFilters>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilters}</span>}
+              </button>
+              <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
+              <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${sf.kbeautyOnly?"#c9a96e":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf8ee":"#fff",color:sf.kbeautyOnly?"#c9a96e":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>✦ K-Beauty</button>
+              {["Nail","Beauty","Hair","Spa"].map(cat=>{const a=sf.categories?.includes(cat);return<button key={cat} onClick={()=>setSf(f=>({...f,categories:f.categories?.includes(cat)?f.categories.filter(x=>x!==cat):[...(f.categories||[]),cat]}))} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>{cat}</button>;})}
+            </div>
+          </div>
+          {/* map */}
+          <div style={{flex:1,position:"relative",overflow:"hidden",touchAction:"pan-x pan-y"}}>
+            <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
+            <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} />
+          </div>
         </div>
       ):(
         <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
@@ -1364,15 +1383,15 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
   const onHandleTouchStart = (e) => { handleStartY.current = e.touches[0].clientY; };
   const onHandleTouchEnd = (e) => {
     const dy = handleStartY.current - e.changedTouches[0].clientY;
-    if (dy > 30) setExpanded(true);
-    else if (dy < -30) setExpanded(false);
+    if (dy > 30) setExpandedWithCb(true);
+    else if (dy < -30) setExpandedWithCb(false);
   };
   const listStartY = useRef(null);
   const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
   const onListTouchEnd = (e) => {
     if (!listRef.current) return;
     const dy = listStartY.current - e.changedTouches[0].clientY;
-    if (listRef.current.scrollTop <= 2 && dy < -40) setExpanded(false);
+    if (listRef.current.scrollTop <= 2 && dy < -40) setExpandedWithCb(false);
   };
 
   return (
