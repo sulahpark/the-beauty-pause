@@ -2256,34 +2256,6 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
 }
 
 
-
-  useEffect(() => {
-    if (!spotId) { setStatus("not_found"); return; }
-    (async () => {
-      try {
-        const spots = await fetchAll(TBL_SPOTS, `{spot_id}="${spotId}"`);
-        if (!spots.length) { setStatus("not_found"); return; }
-        const s = spots[0];
-        setSpot(s);
-        const prodIds = Array.isArray(s.current_product) ? s.current_product : [];
-        if (prodIds.length > 0) {
-          const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_PRODUCTS}/${prodIds[0]}`, { headers: { Authorization: `Bearer ${AT_KEY}` } });
-          if (res.ok) { const d = await res.json(); setProduct({ id: d.id, ...d.fields }); }
-        }
-        const salonIds = Array.isArray(s.salon) ? s.salon : [];
-        if (salonIds.length > 0) {
-          const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_RETAIL}/${salonIds[0]}`, { headers: { Authorization: `Bearer ${AT_KEY}` } });
-          if (res.ok) { const d = await res.json(); setSalon({ id: d.id, ...d.fields }); }
-        }
-        setStatus("found");
-      } catch(e) { console.error(e); setStatus("not_found"); }
-    })();
-  }, [spotId]);
-
-  const img = product ? getProdImg(product) : null;
-  const moreImgs = product && Array.isArray(product.more_image) ? product.more_image.map(a=>a.url||a).filter(Boolean) : [];
-  const allImgs = img ? [img, ...moreImgs] : moreImgs;
-  const brandDisplay = product ? (product.brand_name || (Array.isArray(product.brand) ? null : (!product.brand?.startsWith?.("rec") ? product.brand : null)) || "") : "";
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang,setLang]=useState("en");
