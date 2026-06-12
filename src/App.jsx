@@ -688,15 +688,21 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
   const snapTo = (h) => {
     if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s";
     setSheetH(h);
-    const isFull = h >= SNAP_FULL - 40;
-    onExpandChange?.(isFull);
-    // also update salon-nav element directly
-    const salonNav = document.getElementById("salon-nav");
-    if (salonNav) salonNav.style.maxHeight = isFull ? "0px" : "56px";
   };
 
   BottomSheet._setPinned = (s) => { setPinned(s); };
   BottomSheet._clearPinned = () => setPinned(null);
+
+  // watch sheetH → update salon-nav visibility
+  useEffect(() => {
+    const full = sheetH >= SNAP_FULL - 40;
+    const navEl = document.getElementById("salon-nav");
+    if (navEl) {
+      navEl.style.transition = "max-height 0.34s cubic-bezier(0.32,0.72,0,1)";
+      navEl.style.maxHeight = full ? "0px" : "56px";
+    }
+    onExpandChange?.(full);
+  }, [sheetH]);
 
   const onHandleTouchStart = (e) => {
     handleStartY.current = e.touches[0].clientY;
@@ -1434,14 +1440,21 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
 
   ProductBottomSheet._setPinned = (s) => { setPinnedSalon(s); snapTo(SNAP_COLLAPSED); };
 
+  // watch sheetH and hide/show nav accordingly
+  useEffect(() => {
+    const full = sheetH >= SNAP_FULL - 40;
+    const navEl = document.getElementById("prod-nav");
+    if (navEl) {
+      navEl.style.transition = "max-height 0.34s cubic-bezier(0.32,0.72,0,1)";
+      navEl.style.maxHeight = full ? "0px" : "56px";
+      navEl.style.overflow = "hidden";
+    }
+    onExpandChange?.(full);
+  }, [sheetH]);
+
   const snapTo = (h) => {
     if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s";
     setSheetH(h);
-    const full = h >= SNAP_FULL - 40;
-    onExpandChange?.(full);
-    // directly update prod-nav DOM
-    const navEl = document.getElementById("prod-nav");
-    if (navEl) { navEl.style.maxHeight = full ? "0px" : "56px"; navEl.style.overflow = "hidden"; }
   };
 
   const onHandleTouchStart = (e) => {
