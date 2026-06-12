@@ -1435,9 +1435,13 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
   ProductBottomSheet._setPinned = (s) => { setPinnedSalon(s); snapTo(SNAP_COLLAPSED); };
 
   const snapTo = (h) => {
-    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1)";
+    if (sheetRef.current) sheetRef.current.style.transition = "height 0.34s cubic-bezier(0.32,0.72,0,1), border-radius 0.34s";
     setSheetH(h);
-    onExpandChange?.(h >= SNAP_FULL - 40);
+    const full = h >= SNAP_FULL - 40;
+    onExpandChange?.(full);
+    // directly update prod-nav DOM
+    const navEl = document.getElementById("prod-nav");
+    if (navEl) { navEl.style.maxHeight = full ? "0px" : "56px"; navEl.style.overflow = "hidden"; }
   };
 
   const onHandleTouchStart = (e) => {
