@@ -179,7 +179,13 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     // fit to salon markers on first load
     if (!focusSalon && !mini) {
       const pts = salRef.current.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
-      if (pts.length>0) setTimeout(()=>{ try{m.fitBounds(pts,{padding:[40,40],maxZoom:14});}catch(e){} },300);
+      if (pts.length>0) setTimeout(()=>{
+        try{
+          const VH = window.innerHeight;
+          const bottomPad = window.innerWidth < 768 ? Math.round(VH * 0.12) : 40;
+          m.fitBounds(pts,{paddingTopLeft:[40,40],paddingBottomRight:[40,bottomPad+40],maxZoom:14});
+        }catch(e){}
+      },300);
     }
     if (onBoundsChange) {
       m.on("moveend zoomend",()=>{
@@ -195,7 +201,10 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     if (!fitToSalons || !map.current || !window.L) return;
     const pts = fitToSalons.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
     if (pts.length>0) {
-      try { map.current.fitBounds(pts, {padding:[60,60],maxZoom:14}); } catch(e){}
+      // paddingBottom accounts for bottom sheet covering ~46% of screen
+      const VH = window.innerHeight;
+      const sheetH = Math.round(VH * 0.46);
+      try { map.current.fitBounds(pts, {paddingTopLeft:[40,40], paddingBottomRight:[40, sheetH + 40], maxZoom:14}); } catch(e){}
     }
   },[fitToSalons]);
 
@@ -699,8 +708,8 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
     setSheetH(h);
   };
 
-  BottomSheet._setPinned = (s) => { setPinned(s); };
-  BottomSheet._clearPinned = () => setPinned(null);
+  BottomSheet._setPinned = (s) => { setPinned(s); snapTo(SNAP_COLLAPSED); };
+  BottomSheet._clearPinned = () => { setPinned(null); };
 
   // watch sheetH → update salon-nav visibility
   useEffect(() => {
@@ -1562,26 +1571,8 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
 
         {/* HANDLE */}
         <div onTouchStart={onHandleTouchStart} onTouchMove={onHandleTouchMove} onTouchEnd={onHandleTouchEnd}
-          style={{flexShrink:0,paddingTop:10,paddingBottom:8,touchAction:"none",cursor:"grab"}}>
-          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
-            <div>
-              <p style={{...SS,fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 1px",textTransform:"uppercase",letterSpacing:"0.5px"}}>View</p>
-              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>{count}</p>
-            </div>
-            {isFull
-              ? <button onClick={()=>snapTo(SNAP_MID)}
-                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 16px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,borderRadius:22}}>
-                  🗺 Map
-                </button>
-              : isCollapsed
-                ? <p style={{...SS,fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>
-                : null
-            }
-          </div>
-          {selProd&&!pinnedSalon&&!isCollapsed&&<div style={{padding:"4px 16px 0"}}>
-            <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
-          </div>}
+          style={{flexShrink:0,paddingTop:10,paddingBottom:6,touchAction:"none",cursor:"grab"}}>
+          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto"}}/>
         </div>
 
         {/* LIST — mid and full */}
