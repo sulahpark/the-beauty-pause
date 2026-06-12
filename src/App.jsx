@@ -176,6 +176,11 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini }) {
     const m = L.map(uid.current,{zoomControl:!mini,scrollWheelZoom:!mini,dragging:!mini||true}).setView(center, focusSalon?15:13);
     map.current = m;
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:"© OpenStreetMap © CARTO",maxZoom:19}).addTo(m);
+    // fit to salon markers on first load
+    if (!focusSalon && !mini) {
+      const pts = salRef.current.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
+      if (pts.length>0) setTimeout(()=>{ try{m.fitBounds(pts,{padding:[40,40],maxZoom:14});}catch(e){} },300);
+    }
     if (onBoundsChange) {
       m.on("moveend zoomend",()=>{
         const b=m.getBounds();
@@ -309,14 +314,8 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
         </div>
         <div style={{padding:"22px 24px 32px"}}>
 
-          {/* action links */}
+          {/* action links — booking + instagram only at top */}
           <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
-            {salon.google&&<a href={salon.google} target="_blank" rel="noopener noreferrer"
-              style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#fff",border:"1px solid #ede8e2",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500,transition:"all 0.2s",flex:1,justifyContent:"center"}}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor="#4285f4";e.currentTarget.style.color="#4285f4";}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#444";}}>
-              🗺 Google Maps
-            </a>}
             {salon.rdv&&<a href={salon.rdv} target="_blank" rel="noopener noreferrer"
               style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#1a1a1a",border:"none",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#f5f0eb",fontWeight:600,transition:"all 0.2s",flex:1,justifyContent:"center"}}
               onMouseEnter={e=>e.currentTarget.style.background="#b85c5c"}
@@ -338,8 +337,16 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
           <SalonModalProducts prods={prods} t={t} onClose={onClose} lang={lang} />
           {leafletReady&&salon.latitude&&salon.longitude&&(
             <div style={{overflow:"hidden",border:"1px solid #ede8e2",borderRadius:8}}>
-              <div style={{background:"#fff",padding:"10px 14px",borderBottom:"1px solid #ede8e2",display:"flex",alignItems:"center",gap:6}}>
-                <span>📍</span><span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#888"}}>{salon.address}</span>
+              <div style={{background:"#fff",padding:"10px 14px",borderBottom:"1px solid #ede8e2",display:"flex",alignItems:"center",justifyContent:"space-between",gap:6}}>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  <span>📍</span><span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#888"}}>{salon.address}</span>
+                </div>
+                {salon.google&&<a href={salon.google} target="_blank" rel="noopener noreferrer"
+                  style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#4285f4",fontWeight:600,textDecoration:"none",flexShrink:0,whiteSpace:"nowrap"}}
+                  onMouseEnter={e=>e.currentTarget.style.textDecoration="underline"}
+                  onMouseLeave={e=>e.currentTarget.style.textDecoration="none"}>
+                  🗺 View on Google
+                </a>}
               </div>
               <SalonMap salons={[salon]} focusSalon={salon} mini={true} />
             </div>
@@ -467,7 +474,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
                 style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"opacity 0.3s",cursor:"zoom-in"}} />
             : <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"48px"}}>✨</div>
           }
-          {allImgs.length>0&&<div style={{position:"absolute",bottom:8,right:10,background:"rgba(0,0,0,0.45)",color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",padding:"3px 8px",borderRadius:20,pointerEvents:"none"}}>🔍 click to expand</div>}
+
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.4) 0%,transparent 50%)",pointerEvents:"none"}} />
           <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"rgba(0,0,0,0.4)",color:"#fff",border:"none",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
           <div style={{position:"absolute",bottom:14,left:14,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"4px 12px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
@@ -484,7 +491,10 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
         </div>
 
         <div style={{padding:"22px 24px 28px"}}>
-          {/* brand + name */}
+          {/* badge + brand + name */}
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <span style={{background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</span>
+          </div>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 4px"}}>{brandDisplay}</p>
           <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:600,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.2}}>{prod.product_name}</h2>
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
@@ -782,15 +792,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
                 {count} {t.salons_count}
               </p>
             </div>
-            {isFull
-              ? <button onClick={e=>{e.stopPropagation();snapTo(SNAP_COLLAPSED);setPinned(null);}}
-                  style={{display:"flex",alignItems:"center",gap:5,padding:"7px 14px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,borderRadius:22}}>
-                  🗺 Map
-                </button>
-              : isCollapsed
-                ? <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>
-                : null
-            }
+            {isCollapsed&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>}
           </div>
         </div>
         {/* LIST */}
@@ -812,6 +814,15 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
           </div>
         )}
       </div>
+      {/* Floating Map button */}
+      {isFull&&(
+        <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",zIndex:500}}>
+          <button onClick={()=>{snapTo(SNAP_COLLAPSED);setPinned(null);}}
+            style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:700,padding:"12px 24px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",borderRadius:30,boxShadow:"0 4px 20px rgba(0,0,0,0.3)",display:"flex",alignItems:"center",gap:6}}>
+            🗺 Map
+          </button>
+        </div>
+      )}
     </>
   );
 }
@@ -1690,23 +1701,24 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
       {isMobile ? (
         /* mobile: fixed fullscreen container */
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column"}}>
-          {/* nav + filter — slide up when sheet is full */}
-          <div id="prod-topbar" style={{flexShrink:0,overflow:"hidden",background:"#0d0d0d",transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",maxHeight:200}}>
+          {/* nav — hides on full */}
+          <div id="prod-nav" style={{flexShrink:0,overflow:"hidden",background:"#0d0d0d",transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",maxHeight:56}}>
             <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
-            <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px 14px",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap"}}>
-              <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0}}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-                {t.filter}{activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
-              </button>
-              <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}}/>
-              <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"7px 13px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:"12px",fontWeight:inSalonOnly?600:400,borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>
-                📍 In salon
-              </button>
-              {cats.filter(c=>c!=="All").slice(0,4).map(cat=>{
-                const a=prodCats.includes(cat);
-                return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>{cat}</button>;
-              })}
-            </div>
+          </div>
+          {/* filterbar — always visible */}
+          <div style={{flexShrink:0,background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px 14px",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap",zIndex:2}}>
+            <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+              {t.filter}{activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
+            </button>
+            <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}}/>
+            <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"7px 13px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:"12px",fontWeight:inSalonOnly?600:400,borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>
+              📍 In salon
+            </button>
+            {cats.filter(c=>c!=="All").slice(0,4).map(cat=>{
+              const a=prodCats.includes(cat);
+              return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap"}}>{cat}</button>;
+            })}
           </div>
           {/* map */}
           <div style={{flex:1,position:"relative",overflow:"hidden"}}>
@@ -1722,9 +1734,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
               onClear={()=>{setSelProd(null);setMapSalons([]);}}
               salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon}
               onExpandChange={(full)=>{
-                const el=document.getElementById("prod-topbar");
-                if(el) el.style.maxHeight=full?"0px":"200px";
-                if(el) el.style.overflow="hidden";
+                const el=document.getElementById("prod-nav");
+                if(el) el.style.maxHeight=full?"0px":"56px";
               }}
               onModalProd={setModalProd}
             />
