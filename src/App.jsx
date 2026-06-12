@@ -162,7 +162,7 @@ function TierBadge({ tier, size=14 }) {
 }
 
 // ── LEAFLET MAP (split/mobile) ────────────────────────────────────────────────
-function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini }) {
+function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToSalons }) {
   const uid = useRef(`map-${Math.random().toString(36).slice(2)}`);
   const map  = useRef(null);
   const marks = useRef([]);
@@ -189,6 +189,15 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini }) {
     }
     return ()=>{ m.remove(); map.current=null; marks.current=[]; };
   },[]);
+
+  // fitBounds when fitToSalons prop changes (e.g. product selected)
+  useEffect(()=>{
+    if (!fitToSalons || !map.current || !window.L) return;
+    const pts = fitToSalons.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
+    if (pts.length>0) {
+      try { map.current.fitBounds(pts, {padding:[60,60],maxZoom:14}); } catch(e){}
+    }
+  },[fitToSalons]);
 
   useEffect(()=>{
     const L=window.L; if(!L||!map.current) return;
@@ -376,7 +385,7 @@ function SalonModalProducts({ prods, t, onClose, lang }) {
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{"✦ Discover K-Beauty here"}</p>
         <div style={{height:1,flex:1,background:"#ede8e2"}} />
       </div>
-      <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",margin:"0 0 14px",lineHeight:1.6}}>""</p>
+
       <div style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:6}}>
         {prods.map(p=>{
           const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
@@ -801,7 +810,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
                 {count} {t.salons_count}
               </p>
             </div>
-            {isCollapsed&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>↑ swipe up</p>}
+            
           </div>
         </div>
         {/* LIST */}
@@ -1625,10 +1634,8 @@ function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onTogg
       <div style={{flex:1,minWidth:0}}>
         <p style={{...SS,fontSize:"9px",color,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",margin:"0 0 2px"}}>{brandD}</p>
         <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontWeight:600,color:"#1a1a1a",margin:"0 0 3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.product_name}</p>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          {p.category&&<span style={{...SS,fontSize:"10px",color:"#aaa"}}>{p.category}</span>}
-          {(p._salons||[]).length>0&&<span style={{...SS,fontSize:"10px",color:"#c9a96e",fontWeight:600}}>📍 {(p._salons||[]).length}</span>}
-        </div>
+        <p style={{...SS,fontSize:"10px",color:"#aaa",margin:"0 0 2px"}}>{p.category}</p>
+        {(p._salons||[]).length>0&&<p style={{...SS,fontSize:"10px",color:"#c9a96e",fontWeight:600,margin:0}}>📍 {(p._salons||[]).length} salons</p>}
       </div>
       {/* detail button */}
       <button onClick={e=>{e.stopPropagation();onDetail(e);}}
@@ -1653,7 +1660,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
   const [selProd,setSelProd]=useState(null);   // selected on map
   const [modalProd,setModalProd]=useState(null); // opened in modal
   const [selSalon,setSelSalon]=useState(null);
-  const [mapSalons,setMapSalons]=useState([]); // salons shown on map
+  const [mapSalons,setMapSalons]=useState([]);
+  const [prodVisibleIds,setProdVisibleIds]=useState(null);
   const [lr,setLr]=useState(!!window.L);
 
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
@@ -1744,7 +1752,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
           {/* map */}
           <div style={{flex:1,position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",inset:0}}>
-              {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={s=>{if(ProductBottomSheet._setPinned)ProductBottomSheet._setPinned(s);}} />
+              {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={s=>{if(ProductBottomSheet._setPinned)ProductBottomSheet._setPinned(s);}} onBoundsChange={setProdVisibleIds} fitToSalons={mapSalons.length>0?mapSalons:null} />
                 :<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>}
             </div>
             <ProductBottomSheet
