@@ -513,7 +513,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
           {allImgs.length>0 ? <>
             {/* blurred background */}
             <img src={allImgs[imgIdx]} alt=""
-              style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(20px) saturate(1.4) opacity(0.85)",transform:"scale(1.1)",pointerEvents:"none"}} />
+              style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(20px) saturate(1.3) opacity(0.9)",pointerEvents:"none"}} />
             {/* contained foreground */}
             <img src={allImgs[imgIdx]} alt={prod.product_name}
               onClick={e=>{e.stopPropagation();setLightbox(allImgs[imgIdx]);}}
@@ -1180,9 +1180,9 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
     sub:"Find salons near you. Explore products inside.",
     cta1:"→ Explore Salons", cta2:"→ Browse Products",
     what_title:"What is this?",
-    what_body:"The Beauty Pause brings K-Beauty products into beauty salons across Paris — so you can discover them naturally, while you're already there.",
+    what_body:"The Beauty Pause helps you discover new beauty products inside salons — naturally, during your salon visit.",
     how_title:"How it works",
-    steps:["Find a salon near you","Discover K-Beauty products inside","Learn more or purchase via QR"],
+    steps:["Visit a participating salon","Discover products inside the Discovery Spot","Scan the QR code to learn more and join the Beauty Gift Draw"],
     salon_title:"Featured Salons",
     salon_cta:"View all salons →",
     prod_title:"K-Beauty Products",
@@ -1195,9 +1195,9 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
     sub:"Trouvez un salon près de chez vous. Explorez les produits à l'intérieur.",
     cta1:"→ Explorer les salons", cta2:"→ Voir les produits",
     what_title:"C'est quoi ?",
-    what_body:"The Beauty Pause apporte des produits K-Beauty dans les salons de beauté parisiens — pour que vous puissiez les découvrir naturellement, pendant votre visite.",
+    what_body:"The Beauty Pause vous aide à découvrir de nouveaux produits de beauté dans les salons — naturellement, pendant votre visite.",
     how_title:"Comment ça marche",
-    steps:["Trouvez un salon près de chez vous","Découvrez des produits K-Beauty à l'intérieur","En savoir plus ou acheter via QR code"],
+    steps:["Visitez un salon partenaire","Découvrez les produits dans le Discovery Spot","Scannez le QR code pour en savoir plus et participer au Beauty Gift Draw"],
     salon_title:"Salons à découvrir",
     salon_cta:"Voir tous les salons →",
     prod_title:"Produits K-Beauty",
@@ -1678,7 +1678,7 @@ function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onTogg
       {/* image */}
       <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#1a1a1a",position:"relative"}}>
         {img ? <>
-          <img src={img} alt="" style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(8px) saturate(1.4) opacity(0.85)",pointerEvents:"none"}} />
+          <img src={img} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(8px) saturate(1.3) opacity(0.9)",pointerEvents:"none"}} />
           <img src={img} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}} />
         </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px"}}>✨</div>}
       </div>
@@ -1929,7 +1929,7 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
       <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden",background:"#f5f0eb"}}>
         {img ? <>
           {/* blurred background */}
-          <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(14px) saturate(1.4) opacity(0.85)",transform:"scale(1.05)",pointerEvents:"none"}} />
+          <img src={img} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(14px) saturate(1.3) opacity(0.9)",pointerEvents:"none"}} />
           {/* contained foreground */}
           <img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}} />
         </> : <div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
@@ -2270,7 +2270,7 @@ function SpotPage({ lang, setLang }) {
               {/* product image */}
               <div style={{width:90,height:90,flexShrink:0,position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
                 {img ? <>
-                  <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(8px) saturate(1.4) opacity(0.85)"}}/>
+                  <img src={img} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(8px) saturate(1.3) opacity(0.9)"}}/>
                   <img src={img} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
                 </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"28px"}}>✨</div>}
               </div>
@@ -2524,7 +2524,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
               <div style={{display:"flex",gap:12,alignItems:"center"}}>
                 {(()=>{const pi=getProdImg(product);return pi&&(
                   <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",flexShrink:0,position:"relative",background:"#333"}}>
-                    <img src={pi} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(8px) saturate(1.4) opacity(0.85)"}}/>
+                    <img src={pi} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(8px) saturate(1.3) opacity(0.9)"}}/>
                     <img src={pi} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
                   </div>
                 );})()}
