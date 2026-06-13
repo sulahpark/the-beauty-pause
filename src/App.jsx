@@ -2402,7 +2402,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
     return () => window.removeEventListener("popstate", handlePop);
   }, [step]);
 
-  const googleReviewUrl = salon?.google_review_url || salon?.google_maps_url;
+  const googleReviewUrl = salon?.google_review_url || salon?.google || salon?.google_maps_url;
 
   const handleScreenshot = (e) => {
     const file = e.target.files?.[0];
