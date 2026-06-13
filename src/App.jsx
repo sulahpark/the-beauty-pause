@@ -1676,9 +1676,11 @@ function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onTogg
         transition:"all 0.15s",
         boxShadow:isSelected?"0 2px 12px rgba(201,169,110,0.15)":"0 1px 4px rgba(0,0,0,0.05)"}}>
       {/* image */}
-      <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f5f0eb"}}>
-        {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-          :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px"}}>✨</div>}
+      <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#1a1a1a",position:"relative"}}>
+        {img ? <>
+          <img src={img} alt="" style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(10px) brightness(0.5)",pointerEvents:"none"}} />
+          <img src={img} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}} />
+        </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px"}}>✨</div>}
       </div>
       {/* info */}
       <div style={{flex:1,minWidth:0}}>
@@ -1924,9 +1926,14 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
   const inner = (
     <>
       {onToggleFav&&!noWrapper&&<div style={{position:"absolute",top:8,right:8,zIndex:2}}><FavBtn type="product" item={p} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={16}/></div>}
-      <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden"}}>
-        {img?<img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
-        <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4}}>{isNew?t.new_in:t.top_pick}</div>
+      <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden",background:"#1a1a1a"}}>
+        {img ? <>
+          {/* blurred background */}
+          <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(16px) brightness(0.5) saturate(1.2)",transform:"scale(1.05)",pointerEvents:"none"}} />
+          {/* contained foreground */}
+          <img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}} />
+        </> : <div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
+        <div style={{position:"absolute",top:8,left:8,background:color,color:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"8px",fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",padding:"3px 9px",borderRadius:4,zIndex:2}}>{isNew?t.new_in:t.top_pick}</div>
       </div>
       <div style={{padding:"11px 13px 13px"}}>
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{brandDisplay}</p>
@@ -2185,50 +2192,94 @@ function SpotPage({ lang, setLang }) {
     </div></>
   );
 
-  // ── SCREEN: LANDING (2 big buttons) ─────────────────────────────────────────
+  // ── SCREEN: LANDING ──────────────────────────────────────────────────────────
   if (screen==="landing") return (
     <>
-      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}@keyframes shimmer{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.6}}`}</style>
       <SpotNav/>
-      <div style={{minHeight:"calc(100vh - 56px)",background:"#0d0d0d",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 20px",animation:"fadeUp 0.6s ease both"}}>
-        {/* salon context */}
-        {salon&&<div style={{display:"flex",alignItems:"center",gap:10,marginBottom:32,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"10px 16px",width:"100%",maxWidth:420}}>
-          {salonImg&&<div style={{width:40,height:40,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={salonImg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>}
-          <div style={{minWidth:0}}>
-            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 2px"}}>✦ Discovery Spot</p>
-            <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#f5f0eb",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</p>
+      <div style={{minHeight:"calc(100vh - 56px)",display:"flex",flexDirection:"column",animation:"fadeUp 0.5s ease both"}}>
+
+        {/* ① SALON HERO — full width image with overlay */}
+        {salon&&(
+          <div style={{position:"relative",height:"38vh",minHeight:220,overflow:"hidden",background:"#1a1a1a",flexShrink:0}}>
+            {salonImg&&<img src={salonImg} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.7}}/>}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 60%,transparent 100%)"}}/>
+            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"20px 20px 24px"}}>
+              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>✦ Discovery Spot</p>
+              <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,6vw,36px)",fontWeight:600,color:"#fff",margin:"0 0 4px",lineHeight:1.1}}>{salon.name}</h1>
+              {salon.address&&<p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.6)",margin:0}}>📍 {salon.address}</p>}
+            </div>
           </div>
-        </div>}
+        )}
 
-        {/* product preview */}
-        {product&&<div style={{width:"100%",maxWidth:420,marginBottom:36,textAlign:"center"}}>
-          {img&&<div style={{width:120,height:120,borderRadius:16,overflow:"hidden",margin:"0 auto 16px",background:"#f5f0eb"}}>
-            <img src={img} alt={product.product_name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-          </div>}
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{brandDisplay}</p>
-          <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,5vw,32px)",fontWeight:400,color:"#f5f0eb",lineHeight:1.2,margin:0}}>{product.product_name}</h1>
-        </div>}
+        {/* ② LUCKY DRAW — main CTA, gold card */}
+        <div style={{padding:"20px 20px 0",flexShrink:0}}>
+          <div style={{background:"linear-gradient(135deg,#1a1a1a 0%,#2a2218 100%)",borderRadius:20,padding:"24px 22px",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative",overflow:"hidden"}}>
+            {/* decorative circle */}
+            <div style={{position:"absolute",top:-30,right:-30,width:120,height:120,borderRadius:"50%",background:"rgba(201,169,110,0.08)"}}/>
+            <div style={{position:"absolute",bottom:-20,left:-20,width:80,height:80,borderRadius:"50%",background:"rgba(201,169,110,0.05)"}}/>
 
-        {/* 2 big buttons */}
-        <div style={{display:"flex",flexDirection:"column",gap:14,width:"100%",maxWidth:420}}>
-          <button onClick={()=>setScreen("product")}
-            style={{padding:"18px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"1px",borderRadius:14,transition:"all 0.2s",textAlign:"center"}}
-            onMouseEnter={e=>e.currentTarget.style.background="#c9a96e"}
-            onMouseLeave={e=>e.currentTarget.style.background="#f5f0eb"}>
-            {lang==="fr"?"📦 Voir le produit":"📦 View product info"}
-          </button>
-          <button onClick={()=>setScreen("lucky")}
-            style={{padding:"18px 24px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"1px",borderRadius:14,transition:"all 0.2s",textAlign:"center",boxShadow:"0 4px 20px rgba(201,169,110,0.3)"}}
-            onMouseEnter={e=>e.currentTarget.style.opacity="0.9"}
-            onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
-            🎁 Lucky Draw
-          </button>
+            <div style={{position:"relative"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <span style={{fontSize:"24px"}}>🎁</span>
+                <div>
+                  <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0}}>
+                    {lang==="fr"?"Tirage au sort":"Lucky Draw"}
+                  </p>
+                </div>
+              </div>
+              <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5vw,28px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.2}}>
+                {lang==="fr"?"Laissez un avis,\ngagnez un cadeau":"Leave a review,\nwin a gift"}
+              </h2>
+              <p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.5)",margin:"0 0 20px",lineHeight:1.5}}>
+                {lang==="fr"
+                  ? "Donnez votre avis sur Google · Partagez une capture d'écran · Gagnez des produits K-Beauty"
+                  : "Rate the salon on Google · Share a screenshot · Win K-Beauty products"}
+              </p>
+              <button onClick={()=>setScreen("lucky")}
+                style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"0.5px",borderRadius:12,boxShadow:"0 4px 20px rgba(201,169,110,0.4)",transition:"opacity 0.2s"}}
+                onTouchStart={e=>e.currentTarget.style.opacity="0.85"}
+                onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
+                {lang==="fr"?"✦ Participer au tirage":"✦ Enter the Lucky Draw"}
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* discover more */}
-        <div style={{marginTop:40,display:"flex",gap:16}}>
-          <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:"12px",color:"#555",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>Salons</button>
-          <button onClick={()=>navigate("/products")} style={{...SS,fontSize:"12px",color:"#555",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>Products</button>
+        {/* ③ PRODUCT INFO — secondary, below */}
+        {product&&(
+          <div style={{padding:"16px 20px 32px"}}>
+            <div onClick={()=>setScreen("product")}
+              style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,overflow:"hidden",cursor:"pointer",display:"flex",alignItems:"center",gap:0,transition:"all 0.2s",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}
+              onTouchStart={e=>e.currentTarget.style.opacity="0.8"}
+              onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
+              {/* product image */}
+              <div style={{width:90,height:90,flexShrink:0,position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
+                {img ? <>
+                  <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(10px) brightness(0.5)"}}/>
+                  <img src={img} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
+                </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"28px"}}>✨</div>}
+              </div>
+              {/* info */}
+              <div style={{flex:1,padding:"14px 16px",minWidth:0}}>
+                <p style={{...SS,fontSize:"9px",color:"#c9a96e",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{brandDisplay}</p>
+                <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{product.product_name}</p>
+                <p style={{...SS,fontSize:"11px",color:"#aaa",margin:"0 0 8px"}}>{product.category}{product.price_customer&&` · €${product.price_customer}`}</p>
+                <p style={{...SS,fontSize:"11px",color:"#c9a96e",fontWeight:600,margin:0}}>
+                  {lang==="fr"?"Voir le produit →":"View product info →"}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* footer links */}
+        <div style={{marginTop:"auto",padding:"16px 20px 32px",display:"flex",gap:16,justifyContent:"center"}}>
+          <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:"11px",color:"#bbb",background:"none",border:"none",cursor:"pointer"}}>Salons</button>
+          <span style={{color:"#ddd"}}>·</span>
+          <button onClick={()=>navigate("/products")} style={{...SS,fontSize:"11px",color:"#bbb",background:"none",border:"none",cursor:"pointer"}}>Products</button>
+          <span style={{color:"#ddd"}}>·</span>
+          <button onClick={()=>navigate("/")} style={{...SS,fontSize:"11px",color:"#bbb",background:"none",border:"none",cursor:"pointer"}}>Home</button>
         </div>
       </div>
     </>
