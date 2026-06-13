@@ -1569,16 +1569,22 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
           display:"flex",flexDirection:"column",overflow:"hidden"
         }}>
 
-        {/* HANDLE */}
+        {/* HANDLE — tall enough to drag easily */}
         <div onTouchStart={onHandleTouchStart} onTouchMove={onHandleTouchMove} onTouchEnd={onHandleTouchEnd}
-          style={{flexShrink:0,paddingTop:10,paddingBottom:6,touchAction:"none",cursor:"grab"}}>
-          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto"}}/>
+          style={{flexShrink:0,padding:"10px 16px 10px",touchAction:"none",cursor:"grab",minHeight:44}}>
+          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 8px"}}/>
+          {!isFull&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontWeight:600,color:"#1a1a1a",margin:0,textAlign:"center",lineHeight:1}}>
+            {displayProds.length} {pinnedSalon?"products":t.products||"products"}
+          </p>}
         </div>
 
         {/* LIST — mid and full */}
         {!isCollapsed&&(
           <div ref={listRef} onTouchStart={onListTouchStart} onTouchEnd={onListTouchEnd}
-            style={{flex:1,overflowY:"auto",padding:"4px 12px 32px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
+            style={{flex:1,overflowY:"auto",padding:"4px 12px 80px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
+            {selProd&&!pinnedSalon&&<div style={{marginBottom:8}}>
+              <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
+            </div>}
             {loading
               ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
               : displayProds.length===0
@@ -1598,6 +1604,16 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
           </div>
         )}
       </div>
+
+      {/* Floating Map button — fixed bottom center, only when full */}
+      {isFull&&(
+        <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",zIndex:600}}>
+          <button onClick={()=>snapTo(SNAP_MID)}
+            style={{...SS,fontSize:"13px",fontWeight:700,padding:"12px 28px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",borderRadius:30,boxShadow:"0 4px 20px rgba(0,0,0,0.35)",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap"}}>
+            🗺 Map
+          </button>
+        </div>
+      )}
     </>
   );
 }
