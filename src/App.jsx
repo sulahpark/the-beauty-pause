@@ -2122,6 +2122,20 @@ function SpotPage({ lang, setLang }) {
   const [screen, setScreen] = useState("landing"); // landing | product | lucky
   const [imgIdx, setImgIdx] = useState(0);
 
+  // intercept browser back button for screen navigation
+  useEffect(() => {
+    if (status !== "found") return;
+    window.history.pushState({ spotScreen: screen }, "");
+    const handlePop = () => {
+      if (screen === "lucky" || screen === "product") {
+        setScreen("landing");
+        window.history.pushState({ spotScreen: "landing" }, "");
+      }
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, [screen, status]);
+
   // increment scan count
   const incrementScan = async (spotRecordId) => {
     try {
@@ -2201,7 +2215,7 @@ function SpotPage({ lang, setLang }) {
 
         {/* ① SALON HERO — full width image with overlay */}
         {salon&&(
-          <div style={{position:"relative",height:"38vh",minHeight:220,overflow:"hidden",background:"#1a1a1a",flexShrink:0}}>
+          <div style={{position:"relative",height:"30vh",minHeight:180,overflow:"hidden",background:"#1a1a1a",flexShrink:0}}>
             {salonImg&&<img src={salonImg} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.7}}/>}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 60%,transparent 100%)"}}/>
             <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"20px 20px 24px"}}>
@@ -2370,6 +2384,24 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // intercept browser/phone back button
+  useEffect(() => {
+    // push a dummy state so back button hits us first
+    window.history.pushState({ luckyStep: step }, "");
+    const handlePop = (e) => {
+      if (step === "form") {
+        e.preventDefault();
+        setStep("intro");
+        window.history.pushState({ luckyStep: "intro" }, "");
+      } else if (step === "intro") {
+        onBack();
+      }
+      // success: let it go back normally
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, [step]);
+
   const googleReviewUrl = salon?.google_review_url || salon?.google_maps_url;
 
   const handleScreenshot = (e) => {
@@ -2471,46 +2503,82 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       <main style={{maxWidth:480,margin:"0 auto",padding:"28px 20px 80px",animation:"fadeUp 0.5s ease both"}}>
 
         {step==="intro" && <>
-          {/* product context */}
-          {product&&<div style={{display:"flex",gap:12,alignItems:"center",background:"#fff",border:"1px solid #ede8e2",borderRadius:12,padding:"12px 14px",marginBottom:24}}>
-            {getProdImg(product)&&<div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f5f0eb"}}>
-              <img src={getProdImg(product)} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-            </div>}
-            <div>
-              <p style={{...SS,fontSize:"11px",color:"#c9a96e",fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{product.brand_name||""}</p>
-              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#1a1a1a",margin:0,fontWeight:600}}>{product.product_name}</p>
+          {/* salon + prize header */}
+          <div style={{textAlign:"center",marginBottom:24}}>
+            <span style={{fontSize:"36px",display:"block",marginBottom:12}}>🎁</span>
+            <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,6vw,34px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.2}}>
+              {lang==="fr"?"Tirage au sort":"Lucky Draw"}
+            </h1>
+            <p style={{...SS,fontSize:"13px",color:"#888",margin:0,lineHeight:1.6}}>
+              {lang==="fr"
+                ?"Laissez un avis sur ce salon et tentez votre chance !"
+                :"Leave a review for this salon and enter to win!"}
+            </p>
+          </div>
+
+          {/* prize card */}
+          <div style={{background:"linear-gradient(135deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"20px",marginBottom:20,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:-20,right:-20,width:80,height:80,borderRadius:"50%",background:"rgba(201,169,110,0.1)"}}/>
+            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>🎀 {lang==="fr"?"Le cadeau":"The prize"}</p>
+            {product ? (
+              <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                {(()=>{const pi=getProdImg(product);return pi&&(
+                  <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",flexShrink:0,position:"relative",background:"#333"}}>
+                    <img src={pi} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(8px) brightness(0.5)"}}/>
+                    <img src={pi} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
+                  </div>
+                );})()}
+                <div style={{minWidth:0}}>
+                  <p style={{...SS,fontSize:"10px",color:"rgba(201,169,110,0.7)",fontWeight:700,textTransform:"uppercase",letterSpacing:"1px",margin:"0 0 2px"}}>{product.brand_name||""}</p>
+                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#f5f0eb",margin:"0 0 4px",fontWeight:600,lineHeight:1.2}}>{product.product_name}</p>
+                  <p style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.4)",margin:0}}>
+                    {lang==="fr"?"Ce produit ou un produit similaire":"This product or a similar one"}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#f5f0eb",margin:0}}>
+                {lang==="fr"?"Un produit K-Beauty sélectionné":"A curated K-Beauty product"}
+              </p>
+            )}
+            <div style={{marginTop:14,padding:"10px 12px",background:"rgba(255,255,255,0.05)",borderRadius:8,border:"1px solid rgba(201,169,110,0.2)"}}>
+              <p style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.5)",margin:0,lineHeight:1.5}}>
+                {lang==="fr"
+                  ?"Le produit actuellement en salon sera offert, ou à défaut un produit K-Beauty de valeur équivalente."
+                  :"The current in-salon product will be sent, or if unavailable, a K-Beauty product of equivalent value."}
+              </p>
             </div>
-          </div>}
+          </div>
 
           {/* how it works */}
-          <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px",marginBottom:24,color:"#f5f0eb"}}>
-            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",fontWeight:400,margin:"0 0 6px"}}>🎁 Lucky Draw</h2>
-            <p style={{...SS,fontSize:"13px",color:"#c9a96e",margin:"0 0 20px"}}>
-              {lang==="fr"?"Gagnez des produits K-Beauty exclusifs":"Win exclusive K-Beauty products"}
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"20px",marginBottom:20}}>
+            <p style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>
+              {lang==="fr"?"Comment participer":"How it works"}
             </p>
             {[
-              {n:"1", text:lang==="fr"?"Laissez un avis Google sur ce salon":"Leave a Google review for this salon"},
-              {n:"2", text:lang==="fr"?"Prenez une capture d'écran de votre avis":"Screenshot your review"},
-              {n:"3", text:lang==="fr"?"Revenez et soumettez la capture d'écran":"Come back and submit the screenshot"},
-              {n:"4", text:lang==="fr"?"X gagnants par semaine, résultat par email":"X winners per week, notified by email"},
-            ].map(({n,text})=>(
-              <div key={n} style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:14}}>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",color:"rgba(201,169,110,0.4)",fontWeight:300,flexShrink:0,lineHeight:1}}>{n}</span>
-                <p style={{...SS,fontSize:"13px",color:"#ccc",lineHeight:1.5,margin:"4px 0 0"}}>{text}</p>
+              {n:"1", icon:"⭐", text:lang==="fr"?"Laissez un avis Google sur ce salon":"Leave a Google review for this salon"},
+              {n:"2", icon:"📸", text:lang==="fr"?"Prenez une capture d'écran":"Screenshot your review"},
+              {n:"3", icon:"📤", text:lang==="fr"?"Soumettez ici avec vos coordonnées":"Submit here with your contact info"},
+              {n:"4", icon:"🎁", text:lang==="fr"?"Résultats par email chaque semaine":"Winners notified weekly by email"},
+            ].map(({n,icon,text})=>(
+              <div key={n} style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:n==="4"?0:14}}>
+                <div style={{width:32,height:32,borderRadius:"50%",background:"#fdf8ee",border:"1px solid #e8d9b8",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"15px",flexShrink:0}}>{icon}</div>
+                <p style={{...SS,fontSize:"13px",color:"#555",lineHeight:1.5,margin:"6px 0 0"}}>{text}</p>
               </div>
             ))}
           </div>
 
-          {/* Google review button */}
+          {/* Google review CTA */}
           {googleReviewUrl&&<a href={googleReviewUrl} target="_blank" rel="noopener noreferrer"
-            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"16px",background:"#4285f4",color:"#fff",textDecoration:"none",borderRadius:12,marginBottom:14,...SS,fontSize:"14px",fontWeight:700}}>
-            ⭐ {lang==="fr"?"Laisser un avis Google":"Leave a Google Review"}
-            <span style={{fontSize:"12px",opacity:0.8}}>↗</span>
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"15px",background:"#fff",color:"#1a1a1a",textDecoration:"none",borderRadius:12,marginBottom:12,...SS,fontSize:"14px",fontWeight:600,border:"1.5px solid #ede8e2",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
+            <span style={{fontSize:"18px"}}>⭐</span>
+            {lang==="fr"?"Laisser un avis Google":"Leave a Google Review"}
+            <span style={{marginLeft:"auto",fontSize:"16px",color:"#aaa"}}>↗</span>
           </a>}
 
           <button onClick={()=>setStep("form")}
-            style={{width:"100%",padding:"16px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"13px",fontWeight:700,letterSpacing:"1px",borderRadius:12}}>
-            {lang==="fr"?"J'ai laissé mon avis → Continuer":"I left my review → Continue"}
+            style={{width:"100%",padding:"16px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,borderRadius:12,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
+            {lang==="fr"?"J'ai laissé mon avis → Participer":"I left my review → Enter now"}
           </button>
         </>}
 
