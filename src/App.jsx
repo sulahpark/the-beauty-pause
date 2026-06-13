@@ -162,12 +162,31 @@ function TierBadge({ tier, size=14 }) {
 }
 
 // ── LEAFLET MAP (split/mobile) ────────────────────────────────────────────────
-function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToSalons }) {
+function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToSalons, highlightId }) {
   const uid = useRef(`map-${Math.random().toString(36).slice(2)}`);
   const map  = useRef(null);
   const marks = useRef([]);
+  const markMap = useRef({}); // salonId -> marker element
   const salRef = useRef(salons);
   salRef.current = salons;
+
+  // highlight effect when highlightId changes
+  useEffect(()=>{
+    Object.entries(markMap.current).forEach(([id, el])=>{
+      if (!el) return;
+      const s = salRef.current.find(x=>x.id===id);
+      const hasK = (s?._products||[]).length>0;
+      const isHL = id === highlightId;
+      const col = isHL ? "#b85c5c" : hasK ? "#c9a96e" : "#888";
+      const size = isHL ? 36 : 28;
+      el.style.width = size+"px";
+      el.style.height = size+"px";
+      el.style.background = col;
+      el.style.transform = isHL ? "scale(1.2)" : "scale(1)";
+      el.style.zIndex = isHL ? "1000" : "";
+      el.style.boxShadow = isHL ? "0 4px 16px rgba(0,0,0,0.35)" : "0 3px 12px rgba(0,0,0,0.25)";
+    });
+  },[highlightId]);
 
   useEffect(()=>{
     if (map.current || !window.L) return;
@@ -210,6 +229,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
   useEffect(()=>{
     const L=window.L; if(!L||!map.current) return;
     marks.current.forEach(m=>m.remove()); marks.current=[];
+    markMap.current = {};
     (focusSalon?[focusSalon]:salons).forEach(s=>{
       const lat=+s.latitude,lng=+s.longitude; if(!lat||!lng) return;
       const hasKbeauty=(s._products||[]).length>0;
@@ -219,6 +239,11 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
         html:`<div style="width:${hl?36:28}px;height:${hl?36:28}px;border-radius:50%;background:${col};border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;cursor:pointer"><div style="width:6px;height:6px;border-radius:50%;background:#fff"></div></div>`,
         iconSize:[hl?36:28,hl?36:28],iconAnchor:[hl?18:14,hl?18:14]});
       const mk=L.marker([lat,lng],{icon}).addTo(map.current);
+      // store reference to marker div for hover highlight
+      setTimeout(()=>{
+        const el = mk.getElement()?.querySelector("div");
+        if (el) { el.style.transition="all 0.15s"; markMap.current[s.id]=el; }
+      },0);
       if (!mini) {
         const tooltip = hasKbeauty
           ? `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a;line-height:1.4">${s.name}<br/><span style="font-size:10px;font-weight:700;letter-spacing:0.5px;color:#c9a96e;background:#fdf8ee;padding:2px 8px;border-radius:10px;border:1px solid #e8d9b8;display:inline-block;margin-top:3px">✦ K-Beauty</span></div>`
@@ -483,24 +508,28 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
     <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:5000,background:"rgba(8,6,4,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",maxWidth:640,width:"100%",borderRadius:16,overflow:"hidden",boxShadow:"0 48px 120px rgba(0,0,0,0.4)",maxHeight:"92vh",overflowY:"auto",display:"flex",flexDirection:"column"}}>
 
-        {/* PHOTO SLIDER */}
-        <div style={{position:"relative",paddingBottom:"60%",overflow:"hidden",background:"#f5f0eb",flexShrink:0}}>
-          {allImgs.length>0
-            ? <img src={allImgs[imgIdx]} alt={prod.product_name}
-                onClick={e=>{e.stopPropagation();setLightbox(allImgs[imgIdx]);}}
-                style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"opacity 0.3s",cursor:"zoom-in"}} />
-            : <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"48px"}}>✨</div>
-          }
-
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.4) 0%,transparent 50%)",pointerEvents:"none"}} />
-          <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"rgba(0,0,0,0.4)",color:"#fff",border:"none",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>×</button>
-          {onToggleFav&&<div style={{position:"absolute",top:14,left:14,zIndex:2}}>
+        {/* PHOTO SLIDER — blurred bg + contained foreground */}
+        <div style={{position:"relative",paddingBottom:"65%",overflow:"hidden",background:"#1a1a1a",flexShrink:0}}>
+          {allImgs.length>0 ? <>
+            {/* blurred background */}
+            <img src={allImgs[imgIdx]} alt=""
+              style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(24px) brightness(0.5) saturate(1.2)",transform:"scale(1.1)",pointerEvents:"none"}} />
+            {/* contained foreground */}
+            <img src={allImgs[imgIdx]} alt={prod.product_name}
+              onClick={e=>{e.stopPropagation();setLightbox(allImgs[imgIdx]);}}
+              style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",transition:"opacity 0.3s",cursor:"zoom-in",zIndex:1}} />
+          </> : (
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"48px"}}>✨</div>
+          )}
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.35) 0%,transparent 60%)",pointerEvents:"none",zIndex:2}} />
+          <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"rgba(0,0,0,0.45)",color:"#fff",border:"none",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:4}}>×</button>
+          {onToggleFav&&<div style={{position:"absolute",top:14,left:14,zIndex:4}}>
             <FavBtn type="product" item={prod} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={22}/>
           </div>}
           {allImgs.length>1&&<>
-            <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i-1+allImgs.length)%allImgs.length);}} style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>‹</button>
-            <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i+1)%allImgs.length);}} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>›</button>
-            <div style={{position:"absolute",bottom:14,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5,zIndex:2}}>
+            <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i-1+allImgs.length)%allImgs.length);}} style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3}}>‹</button>
+            <button onClick={e=>{e.stopPropagation();setImgIdx(i=>(i+1)%allImgs.length);}} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.85)",border:"none",cursor:"pointer",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3}}>›</button>
+            <div style={{position:"absolute",bottom:14,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5,zIndex:3}}>
               {allImgs.map((_,i)=><div key={i} onClick={e=>{e.stopPropagation();setImgIdx(i);}} style={{width:i===imgIdx?18:6,height:6,borderRadius:3,background:i===imgIdx?"#fff":"rgba(255,255,255,0.5)",transition:"all 0.2s",cursor:"pointer"}} />)}
             </div>
           </>}
@@ -1357,6 +1386,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   const [search,setSearch]=useState("");
   const [visibleIds,setVisibleIds]=useState(null);
   const [sheetExpanded,setSheetExpanded]=useState(false);
+  const [hoveredSalonId,setHoveredSalonId]=useState(null);
   const activeFilters=[sf.kbeautyOnly,(sf.categories||[]).length>0,sf.area,search].filter(Boolean).length;
   const [filtered,setFiltered]=useState(salons);
   const [showFilter,setShowFilter]=useState(false);
@@ -1428,12 +1458,17 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
               {(()=>{const list=visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered; return list.length===0
                 ?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
                 :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
-                  {list.map((s,i)=><div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}><SalonCard salon={s} onClick={setSelSalon} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} /></div>)}
+                  {list.map((s,i)=><div key={s.id}
+                    onMouseEnter={()=>setHoveredSalonId(s.id)}
+                    onMouseLeave={()=>setHoveredSalonId(null)}
+                    style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}>
+                    <SalonCard salon={s} onClick={setSelSalon} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} />
+                  </div>)}
                 </div>;
               })()}
             </>}
           </div>
-          <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={filtered} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
+          <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={filtered} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} highlightId={hoveredSalonId} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
         </div>
       )}
       {showFilter&&<FilterModal onClose={()=>setShowFilter(false)} lang={lang} filters={sf} setFilters={setSf} areas={areas} brands={brands} sortBy={sortBy} setSortBy={setSortBy} />}
