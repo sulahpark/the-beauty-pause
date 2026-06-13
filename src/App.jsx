@@ -1383,9 +1383,27 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
       </section>
 
       {/* FOOTER */}
-      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
-        <div><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:"#f5f0eb",letterSpacing:"3px",fontWeight:300}}>THE</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:"#c9a96e",letterSpacing:"3px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span></div>
-        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444"}}>{t.footer}</p>
+      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+        <div>
+          <div style={{marginBottom:4}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:"#f5f0eb",letterSpacing:"3px",fontWeight:300}}>THE</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:"#c9a96e",letterSpacing:"3px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span></div>
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#333",margin:0}}>© 2025 Gentle Riches</p>
+        </div>
+        <div style={{display:"flex",gap:16,alignItems:"center",flexWrap:"wrap"}}>
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",margin:0}}>{t.footer}</p>
+          <span style={{color:"#222"}}>·</span>
+          <a href="/privacy" style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",textDecoration:"none"}}
+            onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"} onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+            {lang==="fr"?"Confidentialité":"Privacy"}
+          </a>
+          <a href="/legal" style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",textDecoration:"none"}}
+            onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"} onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+            {lang==="fr"?"Mentions légales":"Legal"}
+          </a>
+          <a href="mailto:hello@thebeautypause.com" style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",textDecoration:"none"}}
+            onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"} onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+            Contact
+          </a>
+        </div>
       </footer>
 
       {showJoin&&<AuthModal onClose={()=>setShowJoin(false)} lang={lang} initialMode="signup" />}
@@ -2662,7 +2680,135 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
 }
 
 
-// ── MAIN APP ──────────────────────────────────────────────────────────────────
+// ── PRIVACY PAGE ──────────────────────────────────────────────────────────────
+function PrivacyPage({ lang, setLang }) {
+  const navigate = useNavigate();
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const sections = [
+    {
+      title: lang==="fr" ? "1. Responsable du traitement" : "1. Data Controller",
+      body: `Gentle Riches\n29 rue Blanche, 75009 Paris, France\nSIREN: 920437399 | TVA: FR17920437399\nEmail: hello@thebeautypause.com`
+    },
+    {
+      title: lang==="fr" ? "2. Données collectées" : "2. Data We Collect",
+      body: lang==="fr"
+        ? "Nous collectons les données suivantes :\n• Prénom et adresse email (lors de la création de compte)\n• Nom, email et numéro de téléphone (lors d'une participation au Lucky Draw)\n• Capture d'écran d'un avis Google (lors d'une participation au Lucky Draw)\n• Préférences de salons et produits (favoris)"
+        : "We collect the following data:\n• First name and email address (when creating an account)\n• Name, email and phone number (when entering a Lucky Draw)\n• Screenshot of a Google review (when entering a Lucky Draw)\n• Salon and product preferences (favourites)"
+    },
+    {
+      title: lang==="fr" ? "3. Finalités du traitement" : "3. Purpose of Processing",
+      body: lang==="fr"
+        ? "Vos données sont utilisées pour :\n• Gérer votre compte utilisateur\n• Organiser les tirages au sort Lucky Draw\n• Vous contacter en cas de gain\n• Améliorer nos services"
+        : "Your data is used to:\n• Manage your user account\n• Organise Lucky Draw prize draws\n• Contact you if you win\n• Improve our services"
+    },
+    {
+      title: lang==="fr" ? "4. Base légale" : "4. Legal Basis",
+      body: lang==="fr"
+        ? "Le traitement est fondé sur :\n• Votre consentement (participation au Lucky Draw)\n• L'exécution d'un contrat (gestion de compte)\n• Notre intérêt légitime (amélioration des services)"
+        : "Processing is based on:\n• Your consent (Lucky Draw participation)\n• Contract performance (account management)\n• Our legitimate interest (service improvement)"
+    },
+    {
+      title: lang==="fr" ? "5. Conservation des données" : "5. Data Retention",
+      body: lang==="fr"
+        ? "Vos données sont conservées pendant 3 ans à compter de votre dernière activité, puis supprimées automatiquement."
+        : "Your data is retained for 3 years from your last activity, then automatically deleted."
+    },
+    {
+      title: lang==="fr" ? "6. Vos droits (RGPD)" : "6. Your Rights (GDPR)",
+      body: lang==="fr"
+        ? "Conformément au RGPD, vous disposez des droits suivants :\n• Droit d'accès à vos données\n• Droit de rectification\n• Droit à l'effacement (« droit à l'oubli »)\n• Droit à la portabilité\n• Droit d'opposition\n\nPour exercer vos droits, contactez-nous à : hello@thebeautypause.com"
+        : "Under GDPR, you have the following rights:\n• Right of access to your data\n• Right to rectification\n• Right to erasure (\"right to be forgotten\")\n• Right to data portability\n• Right to object\n\nTo exercise your rights, contact us at: hello@thebeautypause.com"
+    },
+    {
+      title: lang==="fr" ? "7. Cookies" : "7. Cookies",
+      body: lang==="fr"
+        ? "Ce site utilise uniquement des cookies techniques nécessaires au fonctionnement du service (authentification). Aucun cookie publicitaire ou de tracking tiers n'est utilisé."
+        : "This site only uses technical cookies necessary for the service to function (authentication). No advertising or third-party tracking cookies are used."
+    },
+    {
+      title: lang==="fr" ? "8. Contact" : "8. Contact",
+      body: "hello@thebeautypause.com"
+    }
+  ];
+
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}`}</style>
+      <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
+        <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer"}}>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE </span>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600}}>BEAUTY PAUSE</span>
+        </button>
+        <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+          {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+        </div>
+      </nav>
+      <main style={{maxWidth:720,margin:"0 auto",padding:"40px 24px 80px"}}>
+        <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:8}}>✦ Legal</p>
+        <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,5vw,40px)",fontWeight:300,color:"#1a1a1a",marginBottom:8}}>
+          {lang==="fr" ? "Politique de confidentialité" : "Privacy Policy"}
+        </h1>
+        <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:40}}>
+          {lang==="fr" ? "Dernière mise à jour : juin 2025" : "Last updated: June 2025"}
+        </p>
+        {sections.map(({title,body},i)=>(
+          <div key={i} style={{marginBottom:32,paddingBottom:32,borderBottom:"1px solid #ede8e2"}}>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",marginBottom:10}}>{title}</h2>
+            <p style={{...SS,fontSize:"13px",color:"#555",lineHeight:1.8,whiteSpace:"pre-line"}}>{body}</p>
+          </div>
+        ))}
+        <button onClick={()=>navigate("/")} style={{...SS,fontSize:"12px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",padding:"10px 20px",borderRadius:20,marginTop:8}}>
+          ← {lang==="fr"?"Retour à l'accueil":"Back to home"}
+        </button>
+      </main>
+    </>
+  );
+}
+
+// ── LEGAL MENTIONS PAGE ────────────────────────────────────────────────────────
+function LegalPage({ lang, setLang }) {
+  const navigate = useNavigate();
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}`}</style>
+      <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
+        <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer"}}>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE </span>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600}}>BEAUTY PAUSE</span>
+        </button>
+        <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+          {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:"11px",fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+        </div>
+      </nav>
+      <main style={{maxWidth:720,margin:"0 auto",padding:"40px 24px 80px"}}>
+        <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:8}}>✦ Legal</p>
+        <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,5vw,40px)",fontWeight:300,color:"#1a1a1a",marginBottom:40}}>
+          {lang==="fr" ? "Mentions légales" : "Legal Notice"}
+        </h1>
+        {[
+          {title: lang==="fr"?"Éditeur du site":"Site Publisher", body:"Gentle Riches\n29 rue Blanche, 75009 Paris, France\nSIREN: 920437399\nTVA intracommunautaire: FR17920437399\nEmail: hello@thebeautypause.com"},
+          {title: lang==="fr"?"Directeur de la publication":"Publication Director", body:"Gentle Riches"},
+          {title: lang==="fr"?"Hébergement":"Hosting", body:"Vercel Inc.\n340 Pine Street, Suite 701\nSan Francisco, CA 94104, USA\nhttps://vercel.com"},
+          {title: lang==="fr"?"Propriété intellectuelle":"Intellectual Property", body: lang==="fr"
+            ?"L'ensemble des contenus présents sur le site thebeautypause.com (textes, images, logos) sont la propriété exclusive de Gentle Riches et sont protégés par les lois françaises et internationales relatives à la propriété intellectuelle."
+            :"All content on thebeautypause.com (texts, images, logos) is the exclusive property of Gentle Riches and is protected by French and international intellectual property laws."},
+          {title:"Contact", body:"hello@thebeautypause.com"},
+        ].map(({title,body},i)=>(
+          <div key={i} style={{marginBottom:32,paddingBottom:32,borderBottom:"1px solid #ede8e2"}}>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",marginBottom:10}}>{title}</h2>
+            <p style={{...SS,fontSize:"13px",color:"#555",lineHeight:1.8,whiteSpace:"pre-line"}}>{body}</p>
+          </div>
+        ))}
+        <button onClick={()=>navigate("/")} style={{...SS,fontSize:"12px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",padding:"10px 20px",borderRadius:20,marginTop:8}}>
+          ← {lang==="fr"?"Retour à l'accueil":"Back to home"}
+        </button>
+      </main>
+    </>
+  );
+}
+
+
 export default function App() {
   const [lang,setLang]=useState("fr");
   const {salons,allProducts,loading}=useData();
@@ -2713,6 +2859,8 @@ export default function App() {
         <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} />} />
         <Route path="/spot/:spotId" element={<SpotPage lang={lang} setLang={setLang} />} />
+        <Route path="/privacy" element={<PrivacyPage lang={lang} setLang={setLang} />} />
+        <Route path="/legal" element={<LegalPage lang={lang} setLang={setLang} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
