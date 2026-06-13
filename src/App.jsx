@@ -81,7 +81,7 @@ const T = {
     join_submit:"Join the community", join_success:"You're in! ✦",
     join_success_sub:"We'll be in touch when something special comes your way.",
     join_error:"Something went wrong.", joining:"Joining…",
-    footer:"Curating K-Beauty across Paris · @thebeautypause",
+    footer:"",
   },
   fr: {
     tagline:"K-Beauty · Salons Sélectionnés · Paris",
@@ -117,7 +117,7 @@ const T = {
     join_submit:"Rejoindre la communauté", join_success:"Vous êtes inscrit·e ! ✦",
     join_success_sub:"Nous vous contacterons dès qu'une offre spéciale vous attend.",
     join_error:"Une erreur s'est produite.", joining:"Inscription…",
-    footer:"Curation K-Beauty à Paris · @thebeautypause",
+    footer:"",
   },
 };
 
@@ -1386,7 +1386,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
       <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
         <div>
           <div style={{marginBottom:4}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:"#f5f0eb",letterSpacing:"3px",fontWeight:300}}>THE</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:"#c9a96e",letterSpacing:"3px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span></div>
-          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#333",margin:0}}>© 2025 Gentle Riches</p>
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
         </div>
         <div style={{display:"flex",gap:16,alignItems:"center",flexWrap:"wrap"}}>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",margin:0}}>{t.footer}</p>
