@@ -509,11 +509,11 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
       <div onClick={e=>e.stopPropagation()} style={{background:"#faf7f4",maxWidth:640,width:"100%",borderRadius:16,overflow:"hidden",boxShadow:"0 48px 120px rgba(0,0,0,0.4)",maxHeight:"92vh",overflowY:"auto",display:"flex",flexDirection:"column"}}>
 
         {/* PHOTO SLIDER — blurred bg + contained foreground */}
-        <div style={{position:"relative",paddingBottom:"65%",overflow:"hidden",background:"#1a1a1a",flexShrink:0}}>
+        <div style={{position:"relative",paddingBottom:"65%",overflow:"hidden",background:"#f5f0eb",flexShrink:0}}>
           {allImgs.length>0 ? <>
             {/* blurred background */}
             <img src={allImgs[imgIdx]} alt=""
-              style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(24px) brightness(0.5) saturate(1.2)",transform:"scale(1.1)",pointerEvents:"none"}} />
+              style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(20px) saturate(1.4) opacity(0.85)",transform:"scale(1.1)",pointerEvents:"none"}} />
             {/* contained foreground */}
             <img src={allImgs[imgIdx]} alt={prod.product_name}
               onClick={e=>{e.stopPropagation();setLightbox(allImgs[imgIdx]);}}
@@ -1678,7 +1678,7 @@ function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onTogg
       {/* image */}
       <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#1a1a1a",position:"relative"}}>
         {img ? <>
-          <img src={img} alt="" style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(10px) brightness(0.5)",pointerEvents:"none"}} />
+          <img src={img} alt="" style={{position:"absolute",inset:"-20%",width:"140%",height:"140%",objectFit:"cover",filter:"blur(8px) saturate(1.4) opacity(0.85)",pointerEvents:"none"}} />
           <img src={img} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}} />
         </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px"}}>✨</div>}
       </div>
@@ -1926,10 +1926,10 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
   const inner = (
     <>
       {onToggleFav&&!noWrapper&&<div style={{position:"absolute",top:8,right:8,zIndex:2}}><FavBtn type="product" item={p} user={user} favourites={favourites||[]} onToggle={onToggleFav} size={16}/></div>}
-      <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden",background:"#1a1a1a"}}>
+      <div style={{position:"relative",paddingBottom:"80%",overflow:"hidden",background:"#f5f0eb"}}>
         {img ? <>
           {/* blurred background */}
-          <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(16px) brightness(0.5) saturate(1.2)",transform:"scale(1.05)",pointerEvents:"none"}} />
+          <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(14px) saturate(1.4) opacity(0.85)",transform:"scale(1.05)",pointerEvents:"none"}} />
           {/* contained foreground */}
           <img src={img} alt={p.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}} />
         </> : <div style={{position:"absolute",inset:0,background:"#f5f0eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"36px"}}>✨</div>}
@@ -2270,7 +2270,7 @@ function SpotPage({ lang, setLang }) {
               {/* product image */}
               <div style={{width:90,height:90,flexShrink:0,position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
                 {img ? <>
-                  <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(10px) brightness(0.5)"}}/>
+                  <img src={img} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(8px) saturate(1.4) opacity(0.85)"}}/>
                   <img src={img} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
                 </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"28px"}}>✨</div>}
               </div>
@@ -2524,7 +2524,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
               <div style={{display:"flex",gap:12,alignItems:"center"}}>
                 {(()=>{const pi=getProdImg(product);return pi&&(
                   <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",flexShrink:0,position:"relative",background:"#333"}}>
-                    <img src={pi} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(8px) brightness(0.5)"}}/>
+                    <img src={pi} alt="" style={{position:"absolute",inset:"-15%",width:"130%",height:"130%",objectFit:"cover",filter:"blur(8px) saturate(1.4) opacity(0.85)"}}/>
                     <img src={pi} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
                   </div>
                 );})()}
@@ -2544,8 +2544,8 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
             <div style={{marginTop:14,padding:"10px 12px",background:"rgba(255,255,255,0.05)",borderRadius:8,border:"1px solid rgba(201,169,110,0.2)"}}>
               <p style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.5)",margin:0,lineHeight:1.5}}>
                 {lang==="fr"
-                  ?"Le produit actuellement en salon sera offert, ou à défaut un produit K-Beauty de valeur équivalente."
-                  :"The current in-salon product will be sent, or if unavailable, a K-Beauty product of equivalent value."}
+                  ?"Le produit actuellement en salon vous sera envoyé. Si indisponible, un autre produit K-Beauty susceptible de vous plaire sera envoyé à la place."
+                  :"The product currently in the salon will be sent. If unavailable, a K-Beauty product we think you'll love will be sent instead."}
               </p>
             </div>
           </div>
@@ -2556,7 +2556,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
               {lang==="fr"?"Comment participer":"How it works"}
             </p>
             {[
-              {n:"1", icon:"⭐", text:lang==="fr"?"Laissez un avis Google sur ce salon":"Leave a Google review for this salon"},
+              {n:"1", icon:"⭐", text:lang==="fr"?"Laissez un avis sur ce salon":"Leave a review for this salon"},
               {n:"2", icon:"📸", text:lang==="fr"?"Prenez une capture d'écran":"Screenshot your review"},
               {n:"3", icon:"📤", text:lang==="fr"?"Soumettez ici avec vos coordonnées":"Submit here with your contact info"},
               {n:"4", icon:"🎁", text:lang==="fr"?"Résultats par email chaque semaine":"Winners notified weekly by email"},
@@ -2572,7 +2572,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
           {googleReviewUrl&&<a href={googleReviewUrl} target="_blank" rel="noopener noreferrer"
             style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"15px",background:"#fff",color:"#1a1a1a",textDecoration:"none",borderRadius:12,marginBottom:12,...SS,fontSize:"14px",fontWeight:600,border:"1.5px solid #ede8e2",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
             <span style={{fontSize:"18px"}}>⭐</span>
-            {lang==="fr"?"Laisser un avis Google":"Leave a Google Review"}
+            {lang==="fr"?"Laisser un avis sur ce salon":"Leave a Salon Review"}
             <span style={{marginLeft:"auto",fontSize:"16px",color:"#aaa"}}>↗</span>
           </a>}
 
@@ -2593,7 +2593,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
           {/* screenshot upload */}
           <div style={{marginBottom:18}}>
             <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:8}}>
-              {lang==="fr"?"Capture d'écran de l'avis *":"Review screenshot *"}
+              {lang==="fr"?"Capture d'écran de l'avis Google *":"Google review screenshot *"}
             </label>
             {screenshotPreview
               ? <div style={{position:"relative",borderRadius:12,overflow:"hidden",marginBottom:8}}>
@@ -2606,7 +2606,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
                   onMouseLeave={e=>e.currentTarget.style.borderColor="#ede8e2"}>
                   <span style={{fontSize:"32px"}}>📸</span>
                   <p style={{...SS,fontSize:"13px",color:"#aaa",margin:0,textAlign:"center"}}>
-                    {lang==="fr"?"Appuyez pour ajouter la capture":"Tap to upload screenshot"}
+                    {lang==="fr"?"Appuyez pour ajouter la capture d'écran Google":"Tap to upload Google review screenshot"}
                   </p>
                   <input type="file" accept="image/*" onChange={handleScreenshot} style={{display:"none"}}/>
                 </label>
