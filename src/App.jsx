@@ -1422,11 +1422,15 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
         <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
           <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
             {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>:<>
-              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>{filtered.length} {t.salons_count}</p>
-              {filtered.length===0?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
-              :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
-                {filtered.map((s,i)=><div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}><SalonCard salon={s} onClick={setSelSalon} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} /></div>)}
-              </div>}
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>
+                {(visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered).length} {t.salons_count}
+              </p>
+              {(()=>{const list=visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered; return list.length===0
+                ?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
+                :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
+                  {list.map((s,i)=><div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}><SalonCard salon={s} onClick={setSelSalon} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} /></div>)}
+                </div>;
+              })()}
             </>}
           </div>
           <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={filtered} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
@@ -1766,20 +1770,25 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
               {lr?<SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={s=>{if(ProductBottomSheet._setPinned)ProductBottomSheet._setPinned(s);}} onBoundsChange={setProdVisibleIds} fitToSalons={mapSalons.length>0?mapSalons:null} />
                 :<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>}
             </div>
-            <ProductBottomSheet
-              fp={fp} loading={loading} t={t} SS={SS}
-              selProd={selProd} onProdClick={handleProdClick}
-              onDetail={handleProdDetail}
-              user={user} favourites={favourites} onToggleFav={onToggleFav}
-              onClear={()=>{setSelProd(null);setMapSalons([]);}}
-              salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon}
-              onExpandChange={(full)=>{
-                const el=document.getElementById("prod-nav");
-                if(el) el.style.maxHeight=full?"0px":"56px";
-              }}
-              onModalProd={setModalProd}
-              visibleProdCount={prodVisibleIds ? fp.filter(p=>(p._salons||[]).some(s=>prodVisibleIds.includes(s.id))).length : null}
-            />
+            {(()=>{
+              const visibleFp = prodVisibleIds ? fp.filter(p=>(p._salons||[]).some(s=>prodVisibleIds.includes(s.id))) : fp;
+              return (
+                <ProductBottomSheet
+                  fp={visibleFp} loading={loading} t={t} SS={SS}
+                  selProd={selProd} onProdClick={handleProdClick}
+                  onDetail={handleProdDetail}
+                  user={user} favourites={favourites} onToggleFav={onToggleFav}
+                  onClear={()=>{setSelProd(null);setMapSalons([]);}}
+                  salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon}
+                  onExpandChange={(full)=>{
+                    const el=document.getElementById("prod-nav");
+                    if(el) el.style.maxHeight=full?"0px":"56px";
+                  }}
+                  onModalProd={setModalProd}
+                  visibleProdCount={null}
+                />
+              );
+            })()}
           </div>
         </div>
       ) : (
@@ -1788,17 +1797,25 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
           <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
             {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
             :<>
-              <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:16}}>{fp.length} products{selProd?` · Showing ${(selProd._salons||[]).length} salon${(selProd._salons||[]).length!==1?"s":""} on map`:""}</p>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
-                {fp.map((p,i)=>(
-                  <ProductCard key={p.id} p={p} i={i} t={t}
-                    onClick={()=>handleProdClick(p)}
-                    onDetail={handleProdDetail}
-                    user={user} favourites={favourites} onToggleFav={onToggleFav}
-                    isSelected={selProd?.id===p.id}
-                  />
-                ))}
-              </div>
+              {(()=>{
+                const visibleFp = prodVisibleIds ? fp.filter(p=>(p._salons||[]).some(s=>prodVisibleIds.includes(s.id))) : fp;
+                return <>
+                  <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:16}}>
+                    {visibleFp.length} products
+                    {selProd&&` · Showing ${(selProd._salons||[]).length} salon${(selProd._salons||[]).length!==1?"s":""} on map`}
+                  </p>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
+                    {visibleFp.map((p,i)=>(
+                      <ProductCard key={p.id} p={p} i={i} t={t}
+                        onClick={()=>handleProdClick(p)}
+                        onDetail={handleProdDetail}
+                        user={user} favourites={favourites} onToggleFav={onToggleFav}
+                        isSelected={selProd?.id===p.id}
+                      />
+                    ))}
+                  </div>
+                </>;
+              })()}
             </>}
           </div>
           {/* RIGHT: map */}
@@ -1807,20 +1824,19 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
             <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px 16px",display:"flex",alignItems:"center",gap:10,flexShrink:0,minHeight:60}}>
               {selProd ? (
                 <>
-                  {/* product thumbnail */}
                   {(()=>{const img=getProdImg(selProd);return img&&<div style={{width:40,height:40,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>;})()}
                   <div style={{flex:1,minWidth:0}}>
                     <p style={{...SS,fontSize:"12px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{selProd.product_name}</p>
                     <p style={{...SS,fontSize:"11px",color:"#c9a96e",margin:0}}>📍 Salons where you can discover this product ({(selProd._salons||[]).length})</p>
                   </div>
-                  <button onClick={()=>{setSelProd(null);setMapSalons([]);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:"18px",lineHeight:1,flexShrink:0}}>×</button>
+                  <button onClick={()=>{setSelProd(null);setMapSalons([]);setProdVisibleIds(null);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:"18px",lineHeight:1,flexShrink:0}}>×</button>
                 </>
               ) : (
                 <><span style={{fontSize:"14px"}}>💡</span><span style={{...SS,fontSize:"12px",color:"#aaa"}}>Click a product to see where it's available</span></>
               )}
             </div>
             {lr
-              ? <SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} />
+              ? <SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} onBoundsChange={setProdVisibleIds} />
               : <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>
             }
           </div>
