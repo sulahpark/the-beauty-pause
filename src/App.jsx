@@ -201,10 +201,9 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     if (!fitToSalons || !map.current || !window.L) return;
     const pts = fitToSalons.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
     if (pts.length>0) {
-      // paddingBottom accounts for bottom sheet covering ~46% of screen
       const VH = window.innerHeight;
-      const sheetH = Math.round(VH * 0.46);
-      try { map.current.fitBounds(pts, {paddingTopLeft:[40,40], paddingBottomRight:[40, sheetH + 40], maxZoom:14}); } catch(e){}
+      const sheetH = Math.round(VH * 0.46); // mid snap height
+      try { map.current.fitBounds(pts, {paddingTopLeft:[40,40], paddingBottomRight:[40, sheetH+60], maxZoom:14}); } catch(e){}
     }
   },[fitToSalons]);
 
@@ -1442,7 +1441,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
 
 // ── PRODUCTS PAGE ─────────────────────────────────────────────────────────────
 // ── PRODUCT BOTTOM SHEET (mobile) ────────────────────────────────────────────
-function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick, onExpandChange, onModalProd }) {
+function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick, onExpandChange, onModalProd, visibleProdCount }) {
   const VH = window.innerHeight;
   const SNAP_COLLAPSED = 88;
   const SNAP_MID = Math.round(VH * 0.46);
@@ -1569,22 +1568,27 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
           display:"flex",flexDirection:"column",overflow:"hidden"
         }}>
 
-        {/* HANDLE — tall enough to drag easily */}
+        {/* HANDLE — same style as salon page */}
         <div onTouchStart={onHandleTouchStart} onTouchMove={onHandleTouchMove} onTouchEnd={onHandleTouchEnd}
-          style={{flexShrink:0,padding:"10px 16px 10px",touchAction:"none",cursor:"grab",minHeight:44}}>
-          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 8px"}}/>
-          {!isFull&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontWeight:600,color:"#1a1a1a",margin:0,textAlign:"center",lineHeight:1}}>
-            {displayProds.length} {pinnedSalon?"products":t.products||"products"}
-          </p>}
+          style={{flexShrink:0,paddingTop:10,paddingBottom:10,touchAction:"none",cursor:"grab"}}>
+          <div style={{width:36,height:4,borderRadius:2,background:"#ccc",margin:"0 auto 10px"}}/>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px"}}>
+            <div>
+              <p style={{...SS,fontSize:"11px",color:"#aaa",fontWeight:500,margin:"0 0 1px",textTransform:"uppercase",letterSpacing:"0.5px"}}>View</p>
+              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1}}>
+                {visibleProdCount??displayProds.length} {pinnedSalon?"products":"products"}
+              </p>
+            </div>
+          </div>
+          {selProd&&!pinnedSalon&&!isFull&&<div style={{padding:"4px 16px 0"}}>
+            <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
+          </div>}
         </div>
 
         {/* LIST — mid and full */}
         {!isCollapsed&&(
           <div ref={listRef} onTouchStart={onListTouchStart} onTouchEnd={onListTouchEnd}
             style={{flex:1,overflowY:"auto",padding:"4px 12px 80px",touchAction:"pan-y",overscrollBehavior:"contain"}}>
-            {selProd&&!pinnedSalon&&<div style={{marginBottom:8}}>
-              <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
-            </div>}
             {loading
               ? <div style={{textAlign:"center",padding:"32px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#ccc"}}>{t.loading}</div>
               : displayProds.length===0
@@ -1774,6 +1778,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
                 if(el) el.style.maxHeight=full?"0px":"56px";
               }}
               onModalProd={setModalProd}
+              visibleProdCount={prodVisibleIds ? fp.filter(p=>(p._salons||[]).some(s=>prodVisibleIds.includes(s.id))).length : null}
             />
           </div>
         </div>
