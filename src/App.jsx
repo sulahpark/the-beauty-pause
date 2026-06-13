@@ -895,12 +895,27 @@ function AuthModal({ onClose, lang, salons, initialMode="signup" }) {
     try {
       if (mode==="signup") {
         if (!fn.trim()) { setMsg("Please enter your first name."); setSt("idle"); return; }
-        const {error}=await supabase.auth.signUp({
+        const {data, error}=await supabase.auth.signUp({
           email:em.trim(), password:pw,
           options:{data:{first_name:fn.trim()}}
         });
         if (error) { setMsg(error.message); setSt("error"); }
-        else { setSt("success"); setMsg("Check your email to confirm your account!"); }
+        else {
+          // sync to Airtable Members table
+          try {
+            await fetch(`https://api.airtable.com/v0/${AT_BASE}/tblfvDAfIGbgkMAK7`, {
+              method:"POST",
+              headers:{Authorization:`Bearer ${AT_KEY}`,"Content-Type":"application/json"},
+              body:JSON.stringify({records:[{fields:{
+                email: em.trim(),
+                first_name: fn.trim(),
+                joined_at: new Date().toISOString().split("T")[0],
+                supabase_id: data?.user?.id||""
+              }}]})
+            });
+          } catch(e) { console.log("Airtable sync error:", e); }
+          setSt("success"); setMsg("Check your email to confirm your account!");
+        }
       } else if (mode==="login") {
         const {error}=await supabase.auth.signInWithPassword({email:em.trim(),password:pw});
         if (error) { setMsg(error.message); setSt("error"); }
