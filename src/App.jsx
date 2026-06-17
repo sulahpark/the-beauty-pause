@@ -28,7 +28,7 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.error) return (
       <div style={{padding:40,fontFamily:"monospace",background:"#fff",color:"#333",minHeight:"100vh"}}>
-        <h2 style={{color:"#b85c5c",marginBottom:16}}>Something went wrong</h2>
+        <h2 style={{color:"#fb5607",marginBottom:16}}>Something went wrong</h2>
         <pre style={{background:"#f5f5f5",padding:16,borderRadius:8,fontSize:12,overflow:"auto",whiteSpace:"pre-wrap"}}>{String(this.state.error)}{this.state.errorInfo?.componentStack}</pre>
         <button onClick={()=>this.setState({error:null,errorInfo:null})} style={{marginTop:16,padding:"10px 20px",background:"#1a1a1a",color:"#fff",border:"none",cursor:"pointer",borderRadius:8,fontFamily:"sans-serif",fontSize:13}}>← Go back</button>
       </div>
@@ -177,7 +177,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
       const s = salRef.current.find(x=>x.id===id);
       const hasK = (s?._products||[]).length>0;
       const isHL = id === highlightId;
-      const col = isHL ? "#b85c5c" : hasK ? "#c9a96e" : "#888";
+      const col = isHL ? "#fb5607" : hasK ? "#c9a96e" : "#888";
       const size = isHL ? 36 : 28;
       el.style.width = size+"px";
       el.style.height = size+"px";
@@ -194,7 +194,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     const center = focusSalon ? [+focusSalon.latitude,+focusSalon.longitude] : [48.8566,2.3522];
     const m = L.map(uid.current,{zoomControl:!mini,scrollWheelZoom:!mini,dragging:!mini||true}).setView(center, focusSalon?15:13);
     map.current = m;
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:"© OpenStreetMap © CARTO",maxZoom:19}).addTo(m);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:'<span style="font-size:8px;opacity:0.4;filter:grayscale(1)">© OSM © CARTO</span>',maxZoom:19}).addTo(m);
     // fit to salon markers on first load
     if (!focusSalon && !mini) {
       const pts = salRef.current.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
@@ -220,7 +220,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     if (!fitToSalons || !map.current || !window.L) return;
     const pts = fitToSalons.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
     if (pts.length>0) {
-      const VH = window.innerHeight;
+      const VH = window.visualViewport?.height || window.innerHeight;
       const sheetH = Math.round(VH * 0.46); // mid snap height
       try { map.current.fitBounds(pts, {paddingTopLeft:[40,40], paddingBottomRight:[40, sheetH+60], maxZoom:14}); } catch(e){}
     }
@@ -233,7 +233,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     (focusSalon?[focusSalon]:salons).forEach(s=>{
       const lat=+s.latitude,lng=+s.longitude; if(!lat||!lng) return;
       const hasKbeauty=(s._products||[]).length>0;
-      const col = focusSalon?.id===s.id ? "#b85c5c" : hasKbeauty ? "#c9a96e" : "#888";
+      const col = focusSalon?.id===s.id ? "#fb5607" : hasKbeauty ? "#c9a96e" : "#888";
       const hl = focusSalon?.id===s.id;
       const icon=L.divIcon({className:"",
         html:`<div style="width:${hl?36:28}px;height:${hl?36:28}px;border-radius:50%;background:${col};border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;cursor:pointer"><div style="width:6px;height:6px;border-radius:50%;background:#fff"></div></div>`,
@@ -312,11 +312,11 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
               const isNew=p._badge==="new"; const img=getProdImg(p);
               return (
                 <div key={p.id} style={{flexShrink:0,width:60}}>
-                  <div style={{width:60,height:60,borderRadius:8,overflow:"hidden",background:"#f5f0eb",marginBottom:3,position:"relative",border:`1.5px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
+                  <div style={{width:60,height:60,borderRadius:8,overflow:"hidden",background:"#f5f0eb",marginBottom:3,position:"relative",border:`1.5px solid ${isNew?"#e8d9b8":"#ffd5c2"}`}}>
                     {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px"}}>✨</div>}
-                    <div style={{position:"absolute",top:2,right:2,width:7,height:7,borderRadius:"50%",background:isNew?"#c9a96e":"#b85c5c",border:"1.5px solid #fff"}} />
+                    <div style={{position:"absolute",top:2,right:2,width:7,height:7,borderRadius:"50%",background:isNew?"#c9a96e":"#fb5607",border:"1.5px solid #fff"}} />
                   </div>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,textTransform:"uppercase",margin:"0 0 1px",letterSpacing:"0.5px"}}>{isNew?t.new_in:t.top_pick}</p>
+                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:isNew?"#a07832":"#fb5607",fontWeight:700,textTransform:"uppercase",margin:"0 0 1px",letterSpacing:"0.5px"}}>{isNew?t.new_in:t.top_pick}</p>
                   <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:"#888",margin:0,lineHeight:1.2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||""}</p>
                 </div>
               );
@@ -360,13 +360,13 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
           <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
             {salon.rdv&&<a href={salon.rdv} target="_blank" rel="noopener noreferrer"
               style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#1a1a1a",border:"none",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#f5f0eb",fontWeight:600,transition:"all 0.2s",flex:1,justifyContent:"center"}}
-              onMouseEnter={e=>e.currentTarget.style.background="#b85c5c"}
+              onMouseEnter={e=>e.currentTarget.style.background="#fb5607"}
               onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>
               📅 {t.book}{salon.bookingPlatform?` · ${salon.bookingPlatform}`:""}
             </a>}
             {salon.instagram&&<a href={`https://instagram.com/${salon.instagram.replace("@","")}`} target="_blank" rel="noopener noreferrer"
               style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",background:"#fff",border:"1px solid #ede8e2",borderRadius:8,textDecoration:"none",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#444",fontWeight:500,transition:"all 0.2s",flex:1,justifyContent:"center"}}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor="#b85c5c";e.currentTarget.style.color="#b85c5c";}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="#fb5607";e.currentTarget.style.color="#fb5607";}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#444";}}>
               📸 Instagram
             </a>}
@@ -415,13 +415,13 @@ function SalonModalProducts({ prods, t, onClose, lang }) {
     <div style={{marginBottom:24}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
         <div style={{height:1,flex:1,background:"#ede8e2"}} />
-        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{"✦ Discover K-Beauty here"}</p>
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0,whiteSpace:"nowrap"}}>{"✦ Discover K-Beauty here"}</p>
         <div style={{height:1,flex:1,background:"#ede8e2"}} />
       </div>
 
       <div style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:6}}>
         {prods.map(p=>{
-          const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
+          const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#fb5607"; const border=isNew?"#e8d9b8":"#ffd5c2"; const img=getProdImg(p);
           const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
           return (
             <div key={p.id} style={{background:"#fff",border:`1px solid ${border}`,overflow:"hidden",flexShrink:0,width:180,borderRadius:10}}>
@@ -461,7 +461,7 @@ function SalonModalProducts({ prods, t, onClose, lang }) {
 function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick, lang, user, favourites, onToggleFav }) {
   if (!prod) return null;
   const t=T[lang];
-  const isNew=prod._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c";
+  const isNew=prod._badge==="new"; const color=isNew?"#c9a96e":"#fb5607";
 
   // ALL state hooks must be before any return
   const [imgIdx,setImgIdx]=useState(0);
@@ -552,7 +552,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
           {/* ✦ FIND IN SALON — first, max 3 + view more */}
           {salonsWithProd.length>0&&(
             <div style={{marginBottom:20}}>
-              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#b85c5c",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ {t.find_in_salon}</p>
+              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ {t.find_in_salon}</p>
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {(showAllSalons?salonsWithProd:salonsWithProd.slice(0,3)).map(s=>{
                   const sImg=getSalonImg(s);
@@ -573,7 +573,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
                   );
                 })}
                 {salonsWithProd.length>3&&!showAllSalons&&(
-                  <button onClick={()=>setShowAllSalons(true)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#b85c5c",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"8px 0",borderRadius:8,textAlign:"center",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#fdf0f0";}} onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
+                  <button onClick={()=>setShowAllSalons(true)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#fb5607",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"8px 0",borderRadius:8,textAlign:"center",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#fff3ee";}} onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
                     + {salonsWithProd.length-3} more salon{salonsWithProd.length-3>1?"s":""}
                   </button>
                 )}
@@ -623,7 +623,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
               </div>
               <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:4}}>
                 {related.map(p=>{
-                  const img=getProdImg(p); const c=p._badge==="new"?"#c9a96e":"#b85c5c";
+                  const img=getProdImg(p); const c=p._badge==="new"?"#c9a96e":"#fb5607";
                   const bd=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                   return (
                     <div key={p.id} style={{flexShrink:0,width:110,background:"#fff",border:"1px solid #ede8e2",borderRadius:10,overflow:"hidden",cursor:"pointer",transition:"all 0.2s"}}
@@ -670,7 +670,7 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingBottom:18,borderBottom:"1px solid #ede8e2",marginBottom:18}}>
             <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",color:"#333",fontWeight:500}}>✦ {t.kbeauty_only}</span>
             <div onClick={()=>setLoc(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))}
-              style={{width:46,height:26,borderRadius:13,background:loc.kbeautyOnly?"#b85c5c":"#ddd",cursor:"pointer",position:"relative",transition:"background 0.2s",flexShrink:0}}>
+              style={{width:46,height:26,borderRadius:13,background:loc.kbeautyOnly?"#fb5607":"#ddd",cursor:"pointer",position:"relative",transition:"background 0.2s",flexShrink:0}}>
               <div style={{width:22,height:22,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:loc.kbeautyOnly?22:2,transition:"left 0.2s",boxShadow:"0 1px 4px rgba(0,0,0,0.2)"}} />
             </div>
           </div>
@@ -998,13 +998,13 @@ function AuthModal({ onClose, lang, salons, initialMode="signup" }) {
                   {mode==="login"&&<button onClick={()=>{setMode("reset");setMsg("");setSt("idle");}} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",marginTop:6,padding:0,textDecoration:"underline"}}>{L.forgot}</button>}
                 </div>
               )}
-              {msg&&st==="error"&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#b85c5c",margin:"0 0 12px",lineHeight:1.4}}>{msg}</p>}
-              <button onClick={submit} disabled={st==="loading"} style={{width:"100%",padding:"13px",background:st==="loading"?"#ccc":"#1a1a1a",color:"#f5f0eb",border:"none",cursor:st==="loading"?"not-allowed":"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"background 0.2s",marginBottom:16}} onMouseEnter={e=>{if(st!=="loading")e.target.style.background="#b85c5c";}} onMouseLeave={e=>{if(st!=="loading")e.target.style.background="#1a1a1a";}}>
+              {msg&&st==="error"&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#fb5607",margin:"0 0 12px",lineHeight:1.4}}>{msg}</p>}
+              <button onClick={submit} disabled={st==="loading"} style={{width:"100%",padding:"13px",background:st==="loading"?"#ccc":"#1a1a1a",color:"#f5f0eb",border:"none",cursor:st==="loading"?"not-allowed":"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"background 0.2s",marginBottom:16}} onMouseEnter={e=>{if(st!=="loading")e.target.style.background="#fb5607";}} onMouseLeave={e=>{if(st!=="loading")e.target.style.background="#1a1a1a";}}>
                 {st==="loading"?"…":L.btn}
               </button>
               <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",textAlign:"center",margin:0}}>
                 {L.alt}{" "}
-                <button onClick={()=>{setMode(mode==="login"?"signup":"login");setMsg("");setSt("idle");}} style={{background:"none",border:"none",cursor:"pointer",color:"#b85c5c",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,padding:0,textDecoration:"underline"}}>{L.altBtn}</button>
+                <button onClick={()=>{setMode(mode==="login"?"signup":"login");setMsg("");setSt("idle");}} style={{background:"none",border:"none",cursor:"pointer",color:"#fb5607",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:600,padding:0,textDecoration:"underline"}}>{L.altBtn}</button>
               </p>
             </>
           )}
@@ -1305,7 +1305,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
               <div>
                 <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#1a1a1a",margin:0,fontWeight:400}}>Featured Salons <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#c9a96e",fontWeight:700,letterSpacing:"1px"}}>✦ K-Beauty</span></p>
               </div>
-              <button onClick={()=>navigate("/salons")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#b85c5c",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",fontWeight:600,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",transition:"all 0.2s",flexShrink:0}} onMouseEnter={e=>{e.currentTarget.style.background="#b85c5c";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#b85c5c";}}>{L.salon_cta}</button>
+              <button onClick={()=>navigate("/salons")} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#fb5607",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",fontWeight:600,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",transition:"all 0.2s",flexShrink:0}} onMouseEnter={e=>{e.currentTarget.style.background="#fb5607";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#fb5607";}}>{L.salon_cta}</button>
             </div>
             {/* horizontal scroll of tall cards — 1.2x bigger: 200→240 */}
             <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",paddingBottom:4}}>
@@ -1335,10 +1335,10 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
                           const isNew=p._badge==="new"; const prodImg=getProdImg(p);
                           const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                           return (
-                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:9,background:isNew?"#fdf8ee":"#fdf0f0",padding:"7px 10px",borderRadius:10,border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`}}>
+                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:9,background:isNew?"#fdf8ee":"#fff3ee",padding:"7px 10px",borderRadius:10,border:`1px solid ${isNew?"#e8d9b8":"#ffd5c2"}`}}>
                               {prodImg&&<img src={prodImg} alt="" style={{width:48,height:48,borderRadius:8,objectFit:"cover",flexShrink:0}}/>}
                               <div style={{minWidth:0}}>
-                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:isNew?"#a07832":"#b85c5c",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
+                                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:isNew?"#a07832":"#fb5607",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
                                 <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#444",margin:0,lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.product_name}</p>
                               </div>
                             </div>
@@ -1379,7 +1379,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:16}}>✦ Community</p>
         <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,4vw,48px)",fontWeight:300,color:"#1a1a1a",maxWidth:560,margin:"0 auto 16px"}}>{L.join_cta}</h2>
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"14px",color:"#888",lineHeight:1.7,maxWidth:440,margin:"0 auto 32px"}}>{L.join_sub}</p>
-        <button onClick={()=>setShowJoin(true)} style={{padding:"14px 36px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>e.target.style.background="#b85c5c"} onMouseLeave={e=>e.target.style.background="#1a1a1a"}>✦ {L.join_cta}</button>
+        <button onClick={()=>setShowJoin(true)} style={{padding:"14px 36px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>e.target.style.background="#fb5607"} onMouseLeave={e=>e.target.style.background="#1a1a1a"}>✦ {L.join_cta}</button>
       </section>
 
       {/* FOOTER */}
@@ -1514,7 +1514,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
 // ── PRODUCTS PAGE ─────────────────────────────────────────────────────────────
 // ── PRODUCT BOTTOM SHEET (mobile) ────────────────────────────────────────────
 function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick, onExpandChange, onModalProd, visibleProdCount }) {
-  const VH = window.innerHeight;
+  const VH = window.visualViewport?.height || window.innerHeight;
   const SNAP_COLLAPSED = 88;
   const SNAP_MID = Math.round(VH * 0.46);
   const SNAP_FULL = VH;
@@ -1608,12 +1608,12 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
             </div>
             <div style={{display:"flex",gap:8,overflowX:"auto",padding:"0 12px 12px"}}>
               {(pinnedSalon._products||[]).slice(0,6).map(p=>{
-                const img=getProdImg(p); const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c";
+                const img=getProdImg(p); const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#fb5607";
                 const bd=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                 return (
                   <div key={p.id} onClick={()=>setInlineModal(p)} style={{flexShrink:0,width:60,cursor:"pointer"}}
                     onTouchStart={e=>e.currentTarget.style.opacity="0.7"} onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
-                    <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",background:"#f5f0eb",border:`1.5px solid ${isNew?"#e8d9b8":"#f0d0d0"}`,marginBottom:3}}>
+                    <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",background:"#f5f0eb",border:`1.5px solid ${isNew?"#e8d9b8":"#ffd5c2"}`,marginBottom:3}}>
                       {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px"}}>✨</div>}
                     </div>
                     <p style={{...SS,fontSize:"8px",color,fontWeight:700,textTransform:"uppercase",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{bd}</p>
@@ -1653,7 +1653,7 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
             </div>
           </div>
           {selProd&&!pinnedSalon&&!isFull&&<div style={{padding:"4px 16px 0"}}>
-            <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
+            <button onClick={onClear} style={{...SS,fontSize:"11px",color:"#fb5607",background:"none",border:"none",cursor:"pointer",padding:0}}>× Clear selection</button>
           </div>}
         </div>
 
@@ -1696,7 +1696,7 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
 
 function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onToggleFav, isSelected, hideHover }) {
   const img = getProdImg(p);
-  const isNew = p._badge==="new"; const color = isNew?"#c9a96e":"#b85c5c";
+  const isNew = p._badge==="new"; const color = isNew?"#c9a96e":"#fb5607";
   const brandD = p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"—";
   const [pressed, setPressed] = useState(false);
   return (
@@ -1954,7 +1954,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
 // ── PRODUCT CARD (shared) ──────────────────────────────────────────────────────
 function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav, noWrapper, isSelected }) {
-  const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c"; const border=isNew?"#e8d9b8":"#f0d0d0"; const img=getProdImg(p);
+  const isNew=p._badge==="new"; const color=isNew?"#c9a96e":"#fb5607"; const border=isNew?"#e8d9b8":"#ffd5c2"; const img=getProdImg(p);
   const brandDisplay=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"—";
   const inner = (
     <>
@@ -2081,7 +2081,7 @@ function AccountPage({lang,setLang,salons,allProducts}) {
         <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:12,padding:"24px",marginBottom:18,animation:"fadeUp 0.6s ease 0.1s both"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,paddingBottom:12,borderBottom:"1px solid #f5f0f0"}}>
             <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",fontWeight:400,color:"#1a1a1a",margin:0}}>Favourite Salons ♡</h2>
-            <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:"11px",color:"#b85c5c",background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Browse →</button>
+            <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:"11px",color:"#fb5607",background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Browse →</button>
           </div>
           {favSalons.length===0
             ? <p style={{...SS,fontSize:"13px",color:"#ccc",textAlign:"center",padding:"16px 0"}}>Heart a salon to save it here.</p>
@@ -2097,7 +2097,7 @@ function AccountPage({lang,setLang,salons,allProducts}) {
                         <p style={{...SS,fontSize:"13px",fontWeight:600,color:"#1a1a1a",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{f.item_name}</p>
                         {s&&<p style={{...SS,fontSize:"11px",color:"#aaa",margin:0}}>{s.area||"Paris"}</p>}
                       </div>
-                      <button onClick={e=>{e.stopPropagation();removeFav(f);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:"18px",padding:"4px",flexShrink:0}} onMouseEnter={e=>e.target.style.color="#b85c5c"} onMouseLeave={e=>e.target.style.color="#ddd"}>×</button>
+                      <button onClick={e=>{e.stopPropagation();removeFav(f);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:"18px",padding:"4px",flexShrink:0}} onMouseEnter={e=>e.target.style.color="#fb5607"} onMouseLeave={e=>e.target.style.color="#ddd"}>×</button>
                     </div>
                   );
                 })}
@@ -2116,9 +2116,9 @@ function AccountPage({lang,setLang,salons,allProducts}) {
             : <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:12}}>
                 {favProds.map(f=>{
                   const p=allProducts.find(x=>x.id===f.item_id); const img=p?getProdImg(p):null;
-                  const isNew=p?._badge==="new"; const color=isNew?"#c9a96e":"#b85c5c";
+                  const isNew=p?._badge==="new"; const color=isNew?"#c9a96e":"#fb5607";
                   return (
-                    <div key={f.id} onClick={()=>navigate("/products")} style={{background:"#fff",border:`1px solid ${isNew?"#e8d9b8":"#f0d0d0"}`,borderRadius:10,overflow:"hidden",position:"relative",cursor:"pointer"}}>
+                    <div key={f.id} onClick={()=>navigate("/products")} style={{background:"#fff",border:`1px solid ${isNew?"#e8d9b8":"#ffd5c2"}`,borderRadius:10,overflow:"hidden",position:"relative",cursor:"pointer"}}>
                       <div style={{paddingBottom:"80%",position:"relative",overflow:"hidden",background:"#f5f0eb"}}>
                         {img?<img src={img} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px"}}>✨</div>}
                       </div>
@@ -2126,7 +2126,7 @@ function AccountPage({lang,setLang,salons,allProducts}) {
                         <p style={{...SS,fontSize:"8px",color,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 2px"}}>{p?.brand}</p>
                         <p style={{...SS,fontSize:"11px",color:"#1a1a1a",margin:0,lineHeight:1.3}}>{f.item_name}</p>
                       </div>
-                      <button onClick={e=>{e.stopPropagation();removeFav(f);}} style={{position:"absolute",top:6,right:6,background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",color:"#aaa",fontSize:"14px",width:22,height:22,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}} onMouseEnter={e=>e.target.style.color="#b85c5c"} onMouseLeave={e=>e.target.style.color="#aaa"}>×</button>
+                      <button onClick={e=>{e.stopPropagation();removeFav(f);}} style={{position:"absolute",top:6,right:6,background:"rgba(255,255,255,0.9)",border:"none",cursor:"pointer",color:"#aaa",fontSize:"14px",width:22,height:22,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}} onMouseEnter={e=>e.target.style.color="#fb5607"} onMouseLeave={e=>e.target.style.color="#aaa"}>×</button>
                     </div>
                   );
                 })}
@@ -2134,7 +2134,7 @@ function AccountPage({lang,setLang,salons,allProducts}) {
           }
         </div>
 
-        <button onClick={signOut} style={{...SS,fontSize:"12px",color:"#aaa",background:"none",border:"1px solid #ede8e2",cursor:"pointer",padding:"10px 20px",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#b85c5c";e.currentTarget.style.color="#b85c5c";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#aaa";}}>Sign out</button>
+        <button onClick={signOut} style={{...SS,fontSize:"12px",color:"#aaa",background:"none",border:"1px solid #ede8e2",cursor:"pointer",padding:"10px 20px",borderRadius:8,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#fb5607";e.currentTarget.style.color="#fb5607";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#ede8e2";e.currentTarget.style.color="#aaa";}}>Sign out</button>
       </main>
     </>
   );
@@ -2667,7 +2667,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
               : "By entering, you agree your details will be used for this draw only. Winners notified weekly by email."}
           </p>
 
-          {error&&<p style={{...SS,fontSize:"12px",color:"#b85c5c",marginBottom:14}}>{error}</p>}
+          {error&&<p style={{...SS,fontSize:"12px",color:"#fb5607",marginBottom:14}}>{error}</p>}
 
           <button onClick={submit} disabled={submitting}
             style={{width:"100%",padding:"16px",background:submitting?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:submitting?"not-allowed":"pointer",...SS,fontSize:"13px",fontWeight:700,letterSpacing:"1px",borderRadius:12,transition:"opacity 0.2s"}}>
