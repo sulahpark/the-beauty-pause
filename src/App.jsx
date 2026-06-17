@@ -2813,116 +2813,110 @@ function LegalPage({ lang, setLang }) {
 // ── FOR BRANDS PAGE ───────────────────────────────────────────────────────────
 function ForBrandsPage() {
   const navigate = useNavigate();
+  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
 
   const BrandsNav = () => (
-    <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,60px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+    <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
       <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
-        <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-        <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600}}>BEAUTY PAUSE</span>
+        <span style={{...CG,fontSize:"16px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+        <span style={{...CG,fontSize:"16px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600}}>BEAUTY PAUSE</span>
       </button>
-      <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"12px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",padding:"7px 16px",borderRadius:20,textDecoration:"none",fontWeight:600}}>
+      <a href="mailto:hello@thebeautypause.com"
+        style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600,transition:"all 0.2s"}}
+        onMouseEnter={e=>{e.currentTarget.style.background="rgba(201,169,110,0.12)"}}
+        onMouseLeave={e=>{e.currentTarget.style.background="transparent"}}>
         브랜드 문의하기
       </a>
     </nav>
   );
 
   const Tag = ({children}) => (
-    <span style={{...SS,fontSize:"12px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"5px 13px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>
+    <span style={{...SS,fontSize:"12px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"5px 14px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>
   );
+
+  const Divider = () => <div style={{width:40,height:2,background:"#c9a96e",marginBottom:20}}/>;
 
   return (
     <>
-      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}`}</style>
       <BrandsNav/>
 
       {/* HERO */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(20px,5vw,60px) 72px",animation:"fadeUp 0.6s ease both"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>✦ For Brands</p>
-          <h1 style={{...CG,fontSize:"clamp(32px,5vw,52px)",fontWeight:300,color:"#f5f0eb",lineHeight:1.15,margin:"0 0 20px"}}>
-            파리 뷰티 살롱 안에서<br/>고객에게 발견되세요
+      <section style={{background:"linear-gradient(160deg,#0d0d0d 60%,#1a160e 100%)",padding:"96px clamp(24px,6vw,80px) 88px",animation:"fadeUp 0.6s ease both"}}>
+        <div style={{maxWidth:820,margin:"0 auto"}}>
+          <span style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:24,border:"1px solid rgba(201,169,110,0.3)",padding:"5px 14px",borderRadius:20}}>✦ For Brands</span>
+          <h1 style={{...KR,fontSize:"clamp(28px,5vw,50px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.3,margin:"0 0 24px"}}>
+            파리 뷰티 살롱에서<br/>브랜드를 소개하세요
           </h1>
-          <p style={{...SS,fontSize:"15px",color:"rgba(255,255,255,0.55)",lineHeight:1.8,maxWidth:600,margin:"0 0 36px"}}>
-            The Beauty Pause는 파리의 실제 뷰티 살롱 안에 Discovery Spot을 운영합니다. 브랜드는 제품을 단순히 노출하는 것이 아니라, 고객이 서비스를 받는 동안 자연스럽게 제품을 발견하고 경험할 수 있는 환경에 참여하게 됩니다.
+          <p style={{...KR,fontSize:"clamp(14px,2vw,17px)",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 12px"}}>
+            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드가 실제 고객과 만날 수 있는 기회를 제공합니다.
+          </p>
+          <p style={{...KR,fontSize:"clamp(14px,2vw,17px)",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 40px"}}>
+            제품은 살롱 안에 비치되고, 고객은 서비스를 받는 동안 자연스럽게 제품을 발견하고 브랜드를 알아갈 수 있습니다.
           </p>
           <a href="mailto:hello@thebeautypause.com"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...SS,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none",boxShadow:"0 4px 20px rgba(201,169,110,0.3)"}}>
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...SS,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
             브랜드 문의하기 →
           </a>
         </div>
       </section>
 
       {/* WHAT IS TBP */}
-      <section style={{background:"#fff",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ About</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 16px"}}>The Beauty Pause는 무엇인가요?</h2>
-          <p style={{...SS,fontSize:"14px",color:"#555",lineHeight:1.9,margin:"0 0 12px"}}>
-            The Beauty Pause는 파리 뷰티 살롱 네트워크 안에 Discovery Spot을 운영하는 <strong>뷰티 디스커버리 플랫폼</strong>입니다.
-          </p>
-          <p style={{...SS,fontSize:"14px",color:"#555",lineHeight:1.9,margin:"0 0 12px"}}>
-            고객은 살롱 방문 중 새로운 뷰티 제품을 발견하고, QR을 통해 제품 정보를 확인하거나 이벤트에 참여할 수 있습니다.
-          </p>
-          <p style={{...SS,fontSize:"14px",color:"#555",lineHeight:1.9}}>
-            우리는 브랜드, 살롱, 고객을 실제 오프라인 공간 안에서 연결합니다.
-          </p>
-        </div>
-      </section>
-
-      {/* WHY SALON */}
-      <section style={{background:"#faf7f4",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ Why</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 16px"}}>왜 살롱인가요?</h2>
-          <p style={{...SS,fontSize:"14px",color:"#555",lineHeight:1.9,margin:"0 0 16px"}}>고객은 뷰티 살롱에서 수십 분에서 수 시간까지 머뭅니다.</p>
-          <div style={{background:"#0d0d0d",borderRadius:16,padding:"28px 32px",margin:"24px 0",borderLeft:"3px solid #c9a96e"}}>
-            <p style={{...CG,fontSize:"clamp(18px,3vw,24px)",color:"#f5f0eb",fontWeight:300,lineHeight:1.7,margin:0}}>
-              "광고를 통해 관심을 끌어오는 것이 아니라,<br/>고객이 이미 머물고 있는 공간 안에서<br/>제품을 발견하게 만드는 구조입니다."
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:820,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 1fr",gap:48,alignItems:"center"}}>
+          <div>
+            <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 16px"}}>About</p>
+            <Divider/>
+            <h2 style={{...KR,fontSize:"clamp(20px,3vw,30px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px",lineHeight:1.4}}>The Beauty Pause는<br/>무엇인가요?</h2>
+          </div>
+          <div>
+            <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 14px"}}>
+              The Beauty Pause는 파리의 뷰티 살롱과 브랜드를 연결하는 <strong style={{color:"#1a1a1a"}}>뷰티 디스커버리 네트워크</strong>입니다.
+            </p>
+            <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9}}>
+              우리는 살롱 안에 제품을 소개하고 관리하며, 고객이 새로운 뷰티 제품을 발견할 수 있는 환경을 만듭니다.
             </p>
           </div>
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section style={{background:"#fff",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ Process</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 32px"}}>어떻게 운영되나요?</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:20}}>
-            {[
-              {n:"01",t:"제품 배치",d:"파리 참여 살롱의 Discovery Spot에 제품이 배치됩니다."},
-              {n:"02",t:"고객 발견",d:"서비스를 받는 동안 고객이 자연스럽게 제품을 발견합니다."},
-              {n:"03",t:"QR 경험",d:"제품 정보 확인, 이벤트 및 럭키드로우 참여가 가능합니다."},
-              {n:"04",t:"운영 관리",d:"제품 교체, Spot 유지, QR 운영, 현장 방문을 지속 수행합니다."},
-            ].map(({n,t,d})=>(
-              <div key={n} style={{background:"#faf7f4",borderRadius:14,padding:"24px 20px"}}>
-                <p style={{...CG,fontSize:"32px",color:"rgba(201,169,110,0.3)",fontWeight:300,margin:"0 0 8px",lineHeight:1}}>{n}</p>
-                <p style={{...SS,fontSize:"14px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
-                <p style={{...SS,fontSize:"13px",color:"#666",lineHeight:1.6,margin:0}}>{d}</p>
-              </div>
-            ))}
+      {/* WHY SALON */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:820,margin:"0 auto"}}>
+          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 16px"}}>Why Salon</p>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,30px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>왜 살롱인가요?</h2>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 32px",maxWidth:600}}>
+            고객은 뷰티 살롱에서 30분에서 수 시간까지 머뭅니다. The Beauty Pause는 이미 존재하는 고객의 관심과 시간을 활용하여 제품이 자연스럽게 소개될 수 있도록 합니다.
+          </p>
+          <div style={{background:"#0d0d0d",borderRadius:20,padding:"36px 40px",borderLeft:"4px solid #c9a96e"}}>
+            <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#f5f0eb",fontWeight:300,lineHeight:1.8,margin:0}}>
+              광고를 통해 관심을 끌어오는 것이 아니라,<br/>
+              고객이 이미 머물고 있는 공간 안에서<br/>
+              <strong style={{color:"#c9a96e",fontWeight:700}}>브랜드를 만나는 구조입니다.</strong>
+            </p>
           </div>
         </div>
       </section>
 
       {/* WHAT BRANDS GET */}
-      <section style={{background:"#faf7f4",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ Benefits</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 28px"}}>브랜드가 얻는 것</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:16}}>
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:820,margin:"0 auto"}}>
+          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 16px"}}>Benefits</p>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,30px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>브랜드는 무엇을 받나요?</h2>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:24}}>
             {[
-              {t:"파리 살롱 내 실제 노출",d:"실제 고객이 방문하는 뷰티 살롱 안에서 제품이 소개됩니다."},
-              {t:"제품 발견 기회",d:"고객이 새로운 제품을 자연스럽게 발견할 수 있는 환경에 참여합니다."},
-              {t:"고객 관심 확보",d:"서비스가 진행되는 동안 고객의 관심과 시간을 활용할 수 있습니다."},
-              {t:"네트워크 참여",d:"The Beauty Pause Discovery Spot 네트워크의 일부가 됩니다."},
+              {t:"파리 살롱 내 제품 소개",d:"실제 뷰티 살롱 안에서 제품이 소개됩니다."},
+              {t:"브랜드 노출",d:"고객이 브랜드와 제품을 발견할 수 있는 기회를 만듭니다."},
+              {t:"고객 참여",d:"QR을 통해 제품 정보를 확인하고 이벤트에 참여할 수 있습니다."},
+              {t:"현장 운영",d:"The Beauty Pause가 직접 제품 배치, 관리, 교체를 운영합니다."},
             ].map(({t,d})=>(
-              <div key={t} style={{background:"#fff",borderRadius:14,padding:"22px 20px",border:"1px solid #ede8e2"}}>
-                <p style={{color:"#c9a96e",fontSize:"18px",margin:"0 0 10px"}}>✦</p>
-                <p style={{...SS,fontSize:"14px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
-                <p style={{...SS,fontSize:"13px",color:"#666",lineHeight:1.6,margin:0}}>{d}</p>
+              <div key={t} style={{borderTop:"2px solid #c9a96e",paddingTop:20}}>
+                <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px"}}>{t}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
@@ -2930,111 +2924,94 @@ function ForBrandsPage() {
       </section>
 
       {/* CURRENT NETWORK */}
-      <section style={{background:"#0d0d0d",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ Network</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 16px"}}>현재 네트워크</h2>
-          <p style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 24px"}}>
-            현재 The Beauty Pause는 파리의 뷰티 살롱 안에서 Discovery Spot을 운영하고 있습니다.
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:820,margin:"0 auto"}}>
+          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 16px"}}>Network</p>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,30px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 20px"}}>현재 운영 현황</h2>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.8,margin:"0 0 36px",maxWidth:540}}>
+            현재 The Beauty Pause는 파리 뷰티 살롱 네트워크를 운영하고 있습니다.
           </p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12,marginBottom:24}}>
-            {["Active Discovery Spot 운영","QR 기반 고객 참여","제품 순환 운영","현장 관리 시스템 구축"].map(item=>(
-              <div key={item} style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{color:"#c9a96e",flexShrink:0}}>✦</span>
-                <p style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:0}}>{item}</p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:16}}>
+            {["Active Salon Network","제품 비치 및 관리","QR 기반 고객 참여","리뷰 생성 프로그램 운영","정기 현장 방문"].map(item=>(
+              <div key={item} style={{display:"flex",alignItems:"center",gap:10,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,padding:"14px 16px"}}>
+                <span style={{color:"#c9a96e",flexShrink:0,fontSize:"14px"}}>✦</span>
+                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.6)",margin:0}}>{item}</p>
               </div>
             ))}
-          </div>
-          <p style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.3)",fontStyle:"italic"}}>※ 네트워크는 지속적으로 확장되고 있습니다.</p>
-        </div>
-      </section>
-
-      {/* GOOD FIT */}
-      <section style={{background:"#fff",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ Fit</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 20px"}}>어떤 브랜드와 잘 맞을까요?</h2>
-          <p style={{...SS,fontSize:"14px",color:"#555",lineHeight:1.8,margin:"0 0 20px"}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
-          <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
-            {["스킨케어","헤어케어","바디케어","웰니스 뷰티","신생 뷰티 브랜드","유럽 시장 반응을 확인하고 싶은 브랜드"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
         </div>
       </section>
 
       {/* PRICING */}
-      <section style={{background:"#faf7f4",padding:"64px clamp(20px,5vw,60px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>✦ Participation</p>
-          <h2 style={{...CG,fontSize:"clamp(24px,4vw,36px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 32px"}}>Participation Options</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20,marginBottom:28}}>
-            <div style={{background:"#0d0d0d",borderRadius:16,padding:"32px 28px",border:"1px solid rgba(201,169,110,0.2)"}}>
-              <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 8px"}}>Discovery Spot Placement</p>
-              <p style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>제품을 The Beauty Pause Discovery Spot 네트워크에 배치합니다.</p>
-              <div style={{marginBottom:28}}>
-                {["Discovery Spot 배치","제품 카드 제작","QR 연동","현장 설치","Spot 유지 관리","제품 교체 및 순환 운영","기본 리포트 제공"].map(i=>(
-                  <div key={i} style={{display:"flex",gap:8,alignItems:"center",marginBottom:8}}>
-                    <span style={{color:"#c9a96e",fontSize:"12px"}}>✦</span>
-                    <p style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.6)",margin:0}}>{i}</p>
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:820,margin:"0 auto"}}>
+          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 16px"}}>Pricing</p>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,30px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>시작하기</h2>
+          <p style={{...KR,fontSize:"15px",color:"#777",margin:"0 0 40px"}}>브랜드 규모와 목표에 맞는 플랜을 선택하세요.</p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:24,marginBottom:32}}>
+            {/* Starter */}
+            <div style={{background:"#fff",borderRadius:20,padding:"36px 32px",border:"1px solid #e8e0d8",boxShadow:"0 4px 24px rgba(0,0,0,0.06)"}}>
+              <p style={{...SS,fontSize:"12px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>Starter</p>
+              <p style={{...KR,fontSize:"14px",color:"#888",lineHeight:1.6,margin:"0 0 28px"}}>유럽 시장 반응을 가볍게 확인하고 싶은 브랜드</p>
+              <div style={{marginBottom:32}}>
+                {["제품 소개","살롱 비치","QR 연동","기본 운영"].map(i=>(
+                  <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:10}}>
+                    <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✦</span>
+                    <p style={{...KR,fontSize:"14px",color:"#555",margin:0}}>{i}</p>
                   </div>
                 ))}
               </div>
-              <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",paddingTop:20}}>
-                <p style={{...CG,fontSize:"28px",color:"#c9a96e",margin:"0 0 4px"}}>€300<span style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.3)"}}> / month~</span></p>
-                <p style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.3)"}}>프로그램 및 제품 수량에 따라 달라질 수 있습니다.</p>
+              <div style={{borderTop:"1px solid #ede8e2",paddingTop:24}}>
+                <p style={{...CG,fontSize:"32px",color:"#1a1a1a",margin:"0 0 4px",fontWeight:400}}>€300<span style={{fontSize:"16px",color:"#aaa",fontFamily:"'DM Sans',sans-serif"}}> / month~</span></p>
+                <p style={{...KR,fontSize:"12px",color:"#aaa"}}>프로그램에 따라 달라질 수 있습니다.</p>
               </div>
             </div>
-            <div style={{background:"#fff",borderRadius:16,padding:"32px 28px",border:"1px solid #ede8e2"}}>
-              <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 8px"}}>Pilot Program</p>
-              <p style={{...SS,fontSize:"13px",color:"#666",lineHeight:1.6,margin:"0 0 24px"}}>유럽 시장 반응을 확인하고 싶은 브랜드를 위한 소규모 테스트 프로그램</p>
-              <div style={{marginBottom:28}}>
-                {["제한된 Spot 배치","제품 노출","기본 참여 데이터","운영 피드백"].map(i=>(
-                  <div key={i} style={{display:"flex",gap:8,alignItems:"center",marginBottom:8}}>
-                    <span style={{color:"#fb5607",fontSize:"12px"}}>✦</span>
-                    <p style={{...SS,fontSize:"13px",color:"#555",margin:0}}>{i}</p>
+            {/* Network */}
+            <div style={{background:"#0d0d0d",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.2)",boxShadow:"0 4px 24px rgba(0,0,0,0.15)"}}>
+              <p style={{...SS,fontSize:"12px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>Network Program</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 28px"}}>여러 살롱에서 브랜드를 소개하고 싶은 브랜드</p>
+              <div style={{marginBottom:32}}>
+                {["다수 살롱 운영","제품 순환","현장 관리","기본 리포트"].map(i=>(
+                  <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:10}}>
+                    <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✦</span>
+                    <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",margin:0}}>{i}</p>
                   </div>
                 ))}
               </div>
-              <div style={{borderTop:"1px solid #ede8e2",paddingTop:20}}>
-                <p style={{...CG,fontSize:"22px",color:"#1a1a1a",margin:"0 0 4px"}}>Contact Us</p>
-                <p style={{...SS,fontSize:"11px",color:"#aaa"}}>브랜드 상황에 따라 별도 협의</p>
+              <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",paddingTop:24}}>
+                <p style={{...CG,fontSize:"24px",color:"#c9a96e",margin:"0 0 4px",fontWeight:400}}>별도 협의</p>
+                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)"}}>브랜드 상황에 따라 맞춤 제안</p>
               </div>
-            </div>
-          </div>
-          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:14,padding:"24px 28px"}}>
-            <p style={{...SS,fontSize:"12px",color:"#c9a96e",fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",margin:"0 0 10px"}}>Why We Don't Charge Per Salon</p>
-            <p style={{...SS,fontSize:"14px",color:"#555",lineHeight:1.8,margin:"0 0 14px"}}>
-              The Beauty Pause는 단순 매장 입점 서비스가 아닙니다. 브랜드는 개별 살롱이 아니라, <strong>Discovery Spot 네트워크에 참여</strong>하게 됩니다.
-            </p>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-              {["설치","관리","유지","제품 순환","고객 참여"].map(i=><Tag key={i}>{i}</Tag>)}
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section style={{background:"#0d0d0d",padding:"72px clamp(20px,5vw,60px)",textAlign:"center"}}>
+      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)",textAlign:"center"}}>
         <div style={{maxWidth:600,margin:"0 auto"}}>
-          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>✦ Contact</p>
-          <h2 style={{...CG,fontSize:"clamp(26px,4vw,40px)",fontWeight:300,color:"#f5f0eb",margin:"0 0 16px",lineHeight:1.3}}>
+          <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",fontWeight:600,margin:"0 0 20px",display:"inline-block",border:"1px solid rgba(201,169,110,0.3)",padding:"5px 14px",borderRadius:20}}>✦ Contact</p>
+          <h2 style={{...KR,fontSize:"clamp(22px,4vw,38px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 16px",lineHeight:1.4}}>
             파리 살롱 네트워크를 통해<br/>브랜드를 소개하고 싶으신가요?
           </h2>
-          <p style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.4)",margin:"0 0 32px"}}>hello@thebeautypause.com</p>
+          <p style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.35)",margin:"0 0 36px"}}>hello@thebeautypause.com</p>
           <a href="mailto:hello@thebeautypause.com"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 36px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...SS,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none",boxShadow:"0 4px 20px rgba(201,169,110,0.35)"}}>
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...SS,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.4)"}}>
             브랜드 문의하기 →
           </a>
         </div>
       </section>
 
-      <footer style={{background:"#0d0d0d",borderTop:"1px solid rgba(255,255,255,0.06)",padding:"20px clamp(20px,5vw,60px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10}}>
+      <footer style={{background:"#0d0d0d",borderTop:"1px solid rgba(255,255,255,0.06)",padding:"20px clamp(24px,6vw,80px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10}}>
         <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer"}}>
-          <span style={{...CG,fontSize:"13px",color:"rgba(255,255,255,0.3)",letterSpacing:"2px"}}>THE BEAUTY PAUSE</span>
+          <span style={{...CG,fontSize:"13px",color:"rgba(255,255,255,0.25)",letterSpacing:"3px"}}>THE BEAUTY PAUSE</span>
         </button>
-        <div style={{display:"flex",gap:16}}>
-          <a href="/privacy" style={{...SS,fontSize:"11px",color:"#333",textDecoration:"none"}}>Privacy</a>
-          <a href="/legal" style={{...SS,fontSize:"11px",color:"#333",textDecoration:"none"}}>Legal</a>
-          <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"11px",color:"#333",textDecoration:"none"}}>Contact</a>
+        <div style={{display:"flex",gap:20}}>
+          <a href="/privacy" style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.25)",textDecoration:"none"}}>Privacy</a>
+          <a href="/legal" style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.25)",textDecoration:"none"}}>Legal</a>
+          <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.25)",textDecoration:"none"}}>Contact</a>
         </div>
       </footer>
     </>
