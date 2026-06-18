@@ -3059,10 +3059,12 @@ function ForBrandsPage() {
           </div>
           <div style={{paddingTop:4}}>
             <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 28px"}}>
-              The Beauty Pause는 현재 파리의 뷰티 살롱 네트워크를 운영하고 있습니다.
+              파리의 네일살롱, 헤어살롱, 마사지살롱을 중심으로 뷰티 네트워크를 운영하고 있습니다.
+
             </p>
             <div style={{display:"flex",flexDirection:"column",gap:0}}>
-              {["Active Discovery Spot 운영","90%+ Spot 유지율","QR 기반 고객 참여 발생","리뷰 생성 프로그램 운영","정기 현장 방문 및 관리"].map(item=>(
+              {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장
+","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
                 <CheckItem key={item} light>{item}</CheckItem>
               ))}
             </div>
