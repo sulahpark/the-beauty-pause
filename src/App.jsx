@@ -2962,7 +2962,7 @@ function ForBrandsPage() {
           <div>
             <Badge>✦ Network</Badge>
             <Divider/>
-            <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4}}>현재 네트워크</h2>
+            <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4}}>살롱 네트워크</h2>
           </div>
           <div>
             <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
@@ -3042,8 +3042,7 @@ function ForBrandsPage() {
 
             {/* Starter */}
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
-              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.3)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 4px"}}>Program 01</p>
-              <p style={{...KR,fontSize:"22px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Salon Starter</p>
+              <p style={{...KR,fontSize:"22px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Salon <span style={{color:"#c9a96e"}}>Starter</span></p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리 뷰티 살롱에서 브랜드를 가볍게 소개해보고 싶은 브랜드</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:16}}>
                 {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리","최대 10개 살롱 운영"].map(i=>(
@@ -3068,14 +3067,13 @@ function ForBrandsPage() {
 
             {/* Growth */}
             <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.2)"}}>
-              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.3)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:600,margin:"0 0 4px"}}>Program 02</p>
               <p style={{...KR,fontSize:"22px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Network <span style={{color:"#fb5607"}}>Member</span></p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>The Beauty Pause 살롱 네트워크 안에서 브랜드를 지속적으로 운영하고 싶은 브랜드</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:24}}>
-                {[{l:"Salon Starter 전체 포함",special:false},{l:"다수 살롱 운영",special:false},{l:"정기 운영 및 제품 교체 순환",special:false},{l:"운영 리포트",special:false},{l:"구매 구조 연결",special:true}].map(({l,special})=>(
+                {[{l:"Starter 전체 포함",special:false},{l:"다수 살롱 운영",special:false},{l:"정기 운영",special:false},{l:"제품 교체 및 순환",special:false},{l:"운영 리포트",special:false},{l:"구매 구조 연결",special:true}].map(({l,special})=>(
                   <div key={l} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
-                    <p style={{...KR,fontSize:"13px",color:special?"#fb5607":"rgba(255,255,255,0.55)",margin:"6px 0",fontWeight:special?700:400}}>{l}</p>
+                    <p style={{...KR,fontSize:"13px",color:special?"#fb5607":"rgba(255,255,255,0.55)",margin:"6px 0"}}>{l}</p>
                   </div>
                 ))}
               </div>
