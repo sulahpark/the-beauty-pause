@@ -3063,8 +3063,7 @@ function ForBrandsPage() {
 
             </p>
             <div style={{display:"flex",flexDirection:"column",gap:0}}>
-              {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장
-","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
+              {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
                 <CheckItem key={item} light>{item}</CheckItem>
               ))}
             </div>
