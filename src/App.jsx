@@ -2884,20 +2884,23 @@ function ForBrandsPage() {
 
       {/* PHOTO GALLERY */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:1100,margin:"0 auto"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
           <Badge>✦ Real Environments</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>실제 파리 뷰티 살롱</h2>
-          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.8,margin:"0 0 36px"}}>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:560,lineHeight:1.8,margin:"0 0 32px"}}>
             The Beauty Pause는 실제 뷰티 살롱 안에서 운영됩니다. 제품은 고객이 머무는 공간 안에 배치되며, 정기적인 방문을 통해 관리됩니다.
           </p>
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:12}}>
-            <div style={{borderRadius:20,overflow:"hidden",minHeight:480,background:"#ece8e3"}}>
+          {/* big + 2x2 grid */}
+          <div style={{display:"grid",gridTemplateColumns:"1.4fr 1fr",gap:10}}>
+            {/* big left */}
+            <div style={{borderRadius:16,overflow:"hidden",background:"#ddd",aspectRatio:"3/4"}}>
               <img src="/images/aurabeaute04.jpeg" alt="salon" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            {/* right 2x2 */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:10}}>
               {["/images/IMG_0166.jpeg","/images/IMG_0170.jpeg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
-                <div key={i} style={{borderRadius:16,overflow:"hidden",aspectRatio:"1",background:"#ece8e3"}}>
+                <div key={i} style={{borderRadius:12,overflow:"hidden",background:"#ddd",aspectRatio:"1"}}>
                   <img src={src} alt="salon" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
                 </div>
               ))}
