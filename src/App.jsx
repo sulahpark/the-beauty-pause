@@ -3020,94 +3020,136 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Participation</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>참여 프로그램</h2>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 40px"}}>브랜드 규모와 목표에 맞는 프로그램을 선택하세요.</p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20}}>
-           ```jsx
-<div className="grid gap-8 lg:grid-cols-2">
+     ```jsx
+{/* PRICING */}
+<section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+  <div style={{maxWidth:800,margin:"0 auto"}}>
+    <Badge>✦ Participation</Badge>
+    <Divider/>
+    <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>
+      참여 프로그램
+    </h2>
+    <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 40px"}}>
+      브랜드 목표와 운영 범위에 맞는 프로그램을 선택하세요.
+    </p>
 
-  {/* Starter */}
-  <div className="rounded-3xl border border-[#E5DED8] bg-white p-8">
-    <div className="mb-6">
-      <h3 className="mb-2 text-2xl font-light text-[#111]">
-        Starter
-      </h3>
-      <p className="text-sm text-[#666]">
-        파리 뷰티 살롱에서 브랜드를 소개해보고 싶은 브랜드
-      </p>
-    </div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20}}>
+      
+      {/* Starter */}
+      <div style={{
+        background:"rgba(255,255,255,0.04)",
+        borderRadius:20,
+        padding:"36px 32px",
+        border:"1px solid rgba(255,255,255,0.08)"
+      }}>
+        <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
+          Starter
+        </p>
 
-    <ul className="mb-8 space-y-3 text-sm text-[#444]">
-      <li>• 제품 카드 제작</li>
-      <li>• 제품 진열</li>
-      <li>• QR 연결</li>
-      <li>• 현장 설치</li>
-      <li>• 정기 관리</li>
-    </ul>
+        <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>
+          파리 뷰티 살롱에서 브랜드를 소개해보고 싶은 브랜드
+        </p>
 
-    <div className="mb-6 rounded-2xl bg-[#FCF7F1] p-4 text-center">
-      <p className="text-xs uppercase tracking-[0.2em] text-[#A57B47]">
-        Paris Beauty Show 참가 브랜드 한정
-      </p>
-    </div>
+        <div className="program-items" style={{marginBottom:28}}>
+          {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리"].map(i=>(
+            <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
+              <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
+            </div>
+          ))}
+        </div>
 
-    <div className="border-t border-[#EEE7E1] pt-6">
-      <div className="mb-1 text-3xl font-light text-[#111]">
-        79만원 ~
+        <div style={{
+          background:"rgba(201,169,110,0.08)",
+          border:"1px solid rgba(201,169,110,0.18)",
+          borderRadius:14,
+          padding:"14px 16px",
+          marginBottom:24
+        }}>
+          <p style={{...KR,fontSize:"12px",color:"#c9a96e",margin:0,fontWeight:600,lineHeight:1.6}}>
+            Paris Beauty Show 참가 브랜드 한정
+          </p>
+        </div>
+
+        <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
+          <p style={{...CG,fontSize:"34px",color:"#c9a96e",margin:"0 0 6px",fontWeight:400}}>
+            79만원<span style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.25)"}}> ~</span>
+          </p>
+          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.35)",margin:"0 0 20px"}}>
+            최대 10개 살롱 운영
+          </p>
+          <a href="mailto:hello@thebeautypause.com"
+            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+            시작하기 →
+          </a>
+        </div>
       </div>
-      <div className="text-sm text-[#666]">
-        최대 10개 살롱 운영
+
+      {/* Network */}
+      <div style={{
+        background:"rgba(201,169,110,0.06)",
+        borderRadius:20,
+        padding:"36px 32px",
+        border:"1px solid rgba(201,169,110,0.2)",
+        position:"relative"
+      }}>
+        <div style={{
+          position:"absolute",
+          top:18,
+          right:18,
+          background:"#fb5607",
+          color:"#fff",
+          ...SS,
+          fontSize:"10px",
+          fontWeight:700,
+          letterSpacing:"1px",
+          textTransform:"uppercase",
+          padding:"6px 12px",
+          borderRadius:999
+        }}>
+          Most Popular
+        </div>
+
+        <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
+          Network
+        </p>
+
+        <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px",paddingRight:70}}>
+          파리 살롱 네트워크 안에서 브랜드를 지속적으로 운영하고 싶은 브랜드
+        </p>
+
+        <div className="program-items" style={{marginBottom:32}}>
+          {["Starter 전체 포함","다수 살롱 운영","정기 운영","판매 루트 연결","운영 리포트"].map(i=>(
+            <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
+              <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
+            </div>
+          ))}
+        </div>
+
+        <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
+          <p style={{...CG,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:400}}>
+            브랜드 맞춤 협의
+          </p>
+
+          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 6px",lineHeight:1.7}}>
+            운영 규모 및 브랜드별 조건에 따라 협의됩니다.
+          </p>
+
+          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px",lineHeight:1.7}}>
+            국내 계산서 발행 가능
+          </p>
+
+          <a href="mailto:hello@thebeautypause.com"
+            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"#f5f0eb",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+            문의하기 →
+          </a>
+        </div>
       </div>
+
     </div>
   </div>
-
-  {/* Network */}
-  <div className="relative rounded-3xl border border-[#A57B47] bg-[#FCF7F1] p-8">
-
-    <div className="absolute right-6 top-6 rounded-full bg-[#A57B47] px-3 py-1 text-xs text-white">
-      Recommended
-    </div>
-
-    <div className="mb-6">
-      <h3 className="mb-2 text-2xl font-light text-[#111]">
-        Network
-      </h3>
-      <p className="text-sm text-[#666]">
-        파리 살롱 네트워크 안에서 브랜드를 지속적으로 운영하고 싶은 브랜드
-      </p>
-    </div>
-
-    <ul className="mb-8 space-y-3 text-sm text-[#444]">
-      <li>• Starter 전체 포함</li>
-      <li>• 다수 살롱 운영</li>
-      <li>• 정기 운영</li>
-      <li>• 판매 루트 연결</li>
-      <li>• 운영 리포트</li>
-    </ul>
-
-    <div className="border-t border-[#E5DED8] pt-6">
-      <div className="mb-1 text-3xl font-light text-[#111]">
-        Custom
-      </div>
-
-      <div className="text-sm text-[#666]">
-        브랜드 맞춤 협의
-      </div>
-
-      <div className="mt-3 text-xs leading-relaxed text-[#888]">
-        운영 규모 및 브랜드별 조건에 따라 협의됩니다.<br />
-        국내 계산서 발행 가능
-      </div>
-    </div>
-  </div>
-
-
-      </section>
+</section>
 
       {/* WHY TBP */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
