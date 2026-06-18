@@ -3015,7 +3015,7 @@ function ForBrandsPage() {
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>어떤 브랜드와 잘 맞을까요?</h2>
           <p style={{...KR,fontSize:"15px",color:"#777",margin:"0 0 24px",lineHeight:1.8}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
           <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
-            {["스킨케어","헤어케어","바디케어","웰니스 뷰티","신생 뷰티 브랜드","유럽 시장 내 브랜드 인지도를 만들고 싶은 브랜드"].map(t=><Tag key={t}>{t}</Tag>)}
+            {["스킨케어","헤어케어","바디케어","웰니스 뷰티","신생 뷰티 브랜드","유럽 고객과 만나고 싶은 브랜드","오프라인 접점을 만들고 싶은 브랜드"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
         </div>
       </section>
@@ -3141,15 +3141,20 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why The Beauty Pause</Badge>
           <Divider/>
-          <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,margin:"0 0 14px",maxWidth:580}}>
-            우리는 제품을 단순히 배치하는 것이 아니라,
-          </p>
+          
           <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#1a1a1a",fontWeight:700,lineHeight:1.9,margin:"0 0 14px",maxWidth:580}}>
-            파리의 실제 뷰티 살롱 안에서 고객의 관심과 발견이 발생하는 네트워크를 구축하고 있습니다.
+            우리는 제품이 고객 앞에 놓이는 환경을 운영합니다
+          </p>
+          <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,margin:"0 0 14px",maxWidth:580}}>
+            유럽 시장에서 브랜드가 알려지기 위해서는 먼저 고객과 만날 기회가 필요합니다.
+          </p>
+          <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,maxWidth:580}}>
+            The Beauty Pause는 파리의 실제 뷰티 살롱 안에서 그 만남이 일어날 수 있는 공간을 운영합니다.
           </p>
           <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,maxWidth:580}}>
             브랜드는 광고가 아닌 실제 뷰티 환경 안에서 고객과 만날 수 있습니다.
           </p>
+          
         </div>
       </section>
 
