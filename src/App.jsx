@@ -2880,7 +2880,111 @@ function ForBrandsPage() {
           </a>
         </div>
       </section>
+{/* REAL SALONS */}
+<section
+  style={{
+    padding: "80px clamp(24px,6vw,80px)",
+    background: "#faf7f4"
+  }}
+>
+  <div style={{ maxWidth: 1200, margin: "0 auto" }}>
 
+    <Badge>✦ Real Environments</Badge>
+    <Divider />
+
+    <h2
+      style={{
+        ...KR,
+        fontSize: "clamp(24px,3vw,36px)",
+        fontWeight: 700,
+        color: "#111",
+        margin: "0 0 12px"
+      }}
+    >
+      실제 파리 뷰티 살롱
+    </h2>
+
+    <p
+      style={{
+        ...KR,
+        fontSize: "15px",
+        color: "#666",
+        maxWidth: 700,
+        lineHeight: 1.8,
+        margin: "0 0 40px"
+      }}
+    >
+      The Beauty Pause는 실제 뷰티 살롱 안에서 운영됩니다.
+      제품은 고객이 머무는 공간 안에 배치되며,
+      정기적인 방문을 통해 관리됩니다.
+    </p>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: 16
+      }}
+    >
+
+      {/* Large Image */}
+      <div
+        style={{
+          borderRadius: 24,
+          overflow: "hidden",
+          minHeight: 520,
+          background: "#ece8e3"
+        }}
+      >
+        <img
+          src="/images/salon-main.jpg"
+          alt=""
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block"
+          }}
+        />
+      </div>
+
+      {/* Right Grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 16
+        }}
+      >
+
+        {[1,2,3,4].map((n) => (
+          <div
+            key={n}
+            style={{
+              borderRadius: 20,
+              overflow: "hidden",
+              background: "#ece8e3",
+              aspectRatio: "1 / 1"
+            }}
+          >
+            <img
+              src={`/images/salon-${n}.jpg`}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block"
+              }}
+            />
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+  </div>
+</section>
       {/* ABOUT */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
