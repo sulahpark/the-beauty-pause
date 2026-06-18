@@ -2869,7 +2869,7 @@ function ForBrandsPage() {
             파리 뷰티 살롱에서<br/>브랜드를 소개하세요
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 14px"}}>
-            The Beauty Pause는 파리의 실제 뷰티 살롱 네트워크를 통해 브랜드가 고객과 만날 수 있는 기회를 제공합니다.
+            The Beauty Pause는 파리의 실제 뷰티 살롱 안에서 브랜드가 고객과 만날 수 있는 환경을 운영합니다.
           </p>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
             제품은 살롱 안에 비치되고, 고객은 서비스를 받는 동안 자연스럽게 제품과 브랜드를 발견할 수 있습니다.
@@ -2910,14 +2910,14 @@ function ForBrandsPage() {
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>왜 살롱인가요?</h2>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 12px",maxWidth:580}}>
-            고객은 뷰티 살롱에서 수십 분에서 수 시간까지 머뭅니다.
+            뷰티에 관심있는 고객들이 살롱에서 수십 분에서 수 시간까지 머뭅니다.
           </p>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 32px",maxWidth:580}}>
             The Beauty Pause는 이미 존재하는 고객의 관심과 시간을 활용하여 제품이 자연스럽게 소개될 수 있도록 합니다.
           </p>
           <div style={{background:"#0d0d0d",borderRadius:20,padding:"36px 40px",borderLeft:"4px solid #c9a96e",maxWidth:640}}>
-            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"rgba(255,255,255,0.5)",fontWeight:300,lineHeight:1.9,margin:"0 0 6px"}}>광고를 통해 관심을 끌어오는 것이 아니라,</p>
-            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"#f5f0eb",fontWeight:500,lineHeight:1.9,margin:0}}>고객이 이미 머물고 있는 공간 안에서<br/>브랜드를 만나는 구조입니다.</p>
+            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"rgba(255,255,255,0.5)",fontWeight:300,lineHeight:1.9,margin:"0 0 6px"}}>고객이 제품을 찾게 만드는 것이 아니라,</p>
+            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"#f5f0eb",fontWeight:500,lineHeight:1.9,margin:0}}>고객이 이미 머물고 있는 공간 안에서<br/>제품을 만나는 구조입니다.</p>
           </div>
         </div>
       </section>
@@ -2975,10 +2975,10 @@ function ForBrandsPage() {
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>브랜드가 얻는 것</h2>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:24}}>
             {[
-              {t:"파리 살롱 내 브랜드 노출",d:"실제 고객이 방문하는 뷰티 살롱 안에서 브랜드가 소개됩니다."},
-              {t:"고객 접점 확보",d:"고객이 서비스를 받는 동안 브랜드와 제품을 발견할 수 있습니다."},
-              {t:"고객 참여 기회",d:"QR을 통해 브랜드 정보 확인 및 이벤트 참여가 가능합니다."},
-              {t:"파리 현장 네트워크 참여",d:"The Beauty Pause가 운영하는 뷰티 살롱 네트워크의 일부가 됩니다."},
+              {t:"파리 살롱 내 제품 진열",d:"실제 고객이 방문하는 뷰티 살롱 안에서 브랜드가 소개됩니다."},
+              {t:"고객 오프라인 접점",d:"고객이 살롱에 머무는 동안 브랜드와 제품을 발견하고 체험할 수 있습니다."},
+              {t:"브랜드 정보 전달",d:"QR과 제품 카드를 통해 브랜드 스토리와 제품 정보를 전달할 수 있습니다."},
+              {t:"유럽 시장 활동 이력",d:"The Beauty Pause가 운영하는 뷰티 살롱 네트워크의 일부가 됩니다."},
             ].map(({t,d})=>(
               <div key={t} style={{background:"#fff",borderRadius:16,padding:"24px 22px",border:"1px solid #e8e0d8"}}>
                 <div style={{width:28,height:2,background:"#c9a96e",marginBottom:16}}/>
@@ -3093,22 +3093,7 @@ function ForBrandsPage() {
         border:"1px solid rgba(201,169,110,0.2)",
         position:"relative"
       }}>
-        <div style={{
-          position:"absolute",
-          top:18,
-          right:18,
-          background:"#fb5607",
-          color:"#fff",
-          ...SS,
-          fontSize:"10px",
-          fontWeight:700,
-          letterSpacing:"1px",
-          textTransform:"uppercase",
-          padding:"6px 12px",
-          borderRadius:999
-        }}>
-          Most Popular
-        </div>
+      
 
         <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
           Network
@@ -3119,7 +3104,7 @@ function ForBrandsPage() {
         </p>
 
         <div className="program-items" style={{marginBottom:32}}>
-          {["Starter 전체 포함","다수 살롱 운영","정기 운영","판매 루트 연결","운영 리포트"].map(i=>(
+          {["Starter 전체 포함","다수 살롱 운영","정기 운영","구매 구조 연결","운영 리포트"].map(i=>(
             <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
               <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
