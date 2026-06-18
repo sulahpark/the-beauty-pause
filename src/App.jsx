@@ -2817,6 +2817,7 @@ function ForBrandsPage() {
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
   const [showTop, setShowTop] = useState(false);
+
   useEffect(()=>{
     const onScroll = () => setShowTop(window.scrollY > 600);
     window.addEventListener('scroll', onScroll);
@@ -2839,26 +2840,26 @@ function ForBrandsPage() {
   const Badge = ({children}) => (
     <span style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:16}}>{children}</span>
   );
-
   const Divider = () => <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>;
-
+  const Tag = ({children}) => (
+    <span style={{...KR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>
+  );
   const CheckItem = ({children, light}) => (
     <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
       <span style={{color:"#c9a96e",flexShrink:0,marginTop:2}}>✓</span>
       <p style={{...KR,fontSize:"14px",color:light?"rgba(255,255,255,0.6)":"#555",margin:0,lineHeight:1.6}}>{children}</p>
     </div>
   );
-
-  const Tag = ({children}) => (
-    <span style={{...KR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>
+  const ProgramItem = ({children, accent}) => (
+    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:10}}>
+      <span style={{color:accent||"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
+      <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{children}</p>
+    </div>
   );
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-.program-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 16px}
-@media (min-width:640px){.program-items{grid-template-columns:1fr;gap:9px 0}}
-`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
       <BrandsNav/>
 
       {/* HERO */}
@@ -2880,120 +2881,40 @@ function ForBrandsPage() {
           </a>
         </div>
       </section>
-{/* REAL SALONS */}
-<section
-  style={{
-    padding: "80px clamp(24px,6vw,80px)",
-    background: "#faf7f4"
-  }}
->
-  <div style={{ maxWidth: 1200, margin: "0 auto" }}>
 
-    <Badge>✦ Real Environments</Badge>
-    <Divider />
-
-    <h2
-      style={{
-        ...KR,
-        fontSize: "clamp(24px,3vw,36px)",
-        fontWeight: 700,
-        color: "#111",
-        margin: "0 0 12px"
-      }}
-    >
-      실제 파리 뷰티 살롱
-    </h2>
-
-    <p
-      style={{
-        ...KR,
-        fontSize: "15px",
-        color: "#666",
-        maxWidth: 700,
-        lineHeight: 1.8,
-        margin: "0 0 40px"
-      }}
-    >
-      The Beauty Pause는 실제 뷰티 살롱 안에서 운영됩니다.
-      제품은 고객이 머무는 공간 안에 배치되며,
-      정기적인 방문을 통해 관리됩니다.
-    </p>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: 16
-      }}
-    >
-
-      {/* Large Image */}
-      <div
-        style={{
-          borderRadius: 24,
-          overflow: "hidden",
-          minHeight: 520,
-          background: "#ece8e3"
-        }}
-      >
-        <img
-          src="/images/salon-main.jpg"
-          alt=""
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block"
-          }}
-        />
-      </div>
-
-      {/* Right Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 16
-        }}
-      >
-
-        {[1,2,3,4].map((n) => (
-          <div
-            key={n}
-            style={{
-              borderRadius: 20,
-              overflow: "hidden",
-              background: "#ece8e3",
-              aspectRatio: "1 / 1"
-            }}
-          >
-            <img
-              src={`/images/salon-${n}.jpg`}
-              alt=""
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block"
-              }}
-            />
+      {/* PHOTO GALLERY */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:1100,margin:"0 auto"}}>
+          <Badge>✦ Real Environments</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>실제 파리 뷰티 살롱</h2>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.8,margin:"0 0 36px"}}>
+            The Beauty Pause는 실제 뷰티 살롱 안에서 운영됩니다. 제품은 고객이 머무는 공간 안에 배치되며, 정기적인 방문을 통해 관리됩니다.
+          </p>
+          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:12}}>
+            <div style={{borderRadius:20,overflow:"hidden",minHeight:480,background:"#ece8e3"}}>
+              <img src="/images/aurabeaute04.jpeg" alt="salon" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              {["/images/IMG_0166.jpeg","/images/IMG_0170.jpeg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
+                <div key={i} style={{borderRadius:16,overflow:"hidden",aspectRatio:"1",background:"#ece8e3"}}>
+                  <img src={src} alt="salon" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
+      </section>
 
-      </div>
-    </div>
-
-  </div>
-</section>
       {/* ABOUT */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
           <div>
             <Badge>✦ About</Badge>
             <Divider/>
             <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.4}}>The Beauty Pause는 무엇인가요?</h2>
           </div>
-          <div style={{paddingTop:4}}>
+          <div>
             <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 14px"}}>
               The Beauty Pause는 파리의 뷰티 살롱과 브랜드를 연결하는 <strong style={{color:"#1a1a1a"}}>뷰티 디스커버리 네트워크</strong>입니다.
             </p>
@@ -3039,7 +2960,7 @@ function ForBrandsPage() {
               {n:"03",t:"QR 경험",d:"제품 정보 확인, 이벤트 참여, 럭키드로우 등의 고객 참여가 이루어집니다."},
               {n:"04",t:"현장 운영",d:"The Beauty Pause가 직접 제품 관리, QR 운영, 정기 방문 및 유지 관리를 수행합니다."},
             ].map(({n,t,d},i)=>(
-              <div key={n} style={{padding:"28px 24px",borderTop:"2px solid "+( i===0?"#c9a96e":"#ede8e2")}}>
+              <div key={n} style={{padding:"28px 24px",borderTop:`2px solid ${i===0?"#c9a96e":"#ede8e2"}`}}>
                 <p style={{...CG,fontSize:"36px",color:"rgba(201,169,110,0.25)",fontWeight:300,margin:"0 0 12px",lineHeight:1}}>{n}</p>
                 <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px"}}>{t}</p>
                 <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
@@ -3051,22 +2972,19 @@ function ForBrandsPage() {
 
       {/* NETWORK */}
       <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
           <div>
             <Badge>✦ Network</Badge>
             <Divider/>
             <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4}}>현재 네트워크</h2>
           </div>
-          <div style={{paddingTop:4}}>
-            <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 28px"}}>
+          <div>
+            <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
               파리의 네일살롱, 헤어살롱, 마사지살롱을 중심으로 뷰티 네트워크를 운영하고 있습니다.
-
             </p>
-            <div style={{display:"flex",flexDirection:"column",gap:0}}>
-              {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
-                <CheckItem key={item} light>{item}</CheckItem>
-              ))}
-            </div>
+            {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
+              <CheckItem key={item} light>{item}</CheckItem>
+            ))}
             <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.2)",marginTop:20,fontStyle:"italic"}}>※ 네트워크는 지속적으로 확장되고 있습니다.</p>
           </div>
         </div>
@@ -3077,15 +2995,15 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Benefits</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>브랜드가 얻는 것</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:24}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 36px"}}>브랜드가 얻는 것</h2>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:20}}>
             {[
               {t:"파리 살롱 내 제품 진열",d:"실제 고객이 방문하는 뷰티 살롱 안에서 브랜드가 소개됩니다."},
               {t:"고객 오프라인 접점",d:"고객이 살롱에 머무는 동안 브랜드와 제품을 발견하고 체험할 수 있습니다."},
               {t:"브랜드 정보 전달",d:"QR과 제품 카드를 통해 브랜드 스토리와 제품 정보를 전달할 수 있습니다."},
               {t:"유럽 시장 활동 이력",d:"The Beauty Pause가 운영하는 뷰티 살롱 네트워크의 일부가 됩니다."},
             ].map(({t,d})=>(
-              <div key={t} style={{background:"#fff",borderRadius:16,padding:"24px 22px",border:"1px solid #e8e0d8"}}>
+              <div key={t} style={{background:"#fff",borderRadius:16,padding:"24px 20px",border:"1px solid #e8e0d8"}}>
                 <div style={{width:28,height:2,background:"#c9a96e",marginBottom:16}}/>
                 <p style={{...KR,fontSize:"14px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.4}}>{t}</p>
                 <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
@@ -3097,14 +3015,14 @@ function ForBrandsPage() {
 
       {/* INCLUDED */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
           <div>
             <Badge>✦ Included</Badge>
             <Divider/>
             <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.4}}>포함 서비스</h2>
             <p style={{...KR,fontSize:"14px",color:"#888",lineHeight:1.7,marginTop:14}}>The Beauty Pause가 직접 운영합니다.</p>
           </div>
-          <div style={{paddingTop:4,display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px 24px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px 24px",paddingTop:4}}>
             {["제품 비치","제품 카드 제작","QR 연동","현장 설치","정기 방문","유지 관리","제품 교체","기본 리포트 제공"].map(i=>(
               <CheckItem key={i}>{i}</CheckItem>
             ))}
@@ -3125,141 +3043,74 @@ function ForBrandsPage() {
         </div>
       </section>
 
-     ```jsx
-{/* PRICING */}
-<section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
-  <div style={{maxWidth:800,margin:"0 auto"}}>
-    <Badge>✦ Participation</Badge>
-    <Divider/>
-    <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>
-      참여 프로그램
-    </h2>
-    <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 40px"}}>
-      브랜드 목표와 운영 범위에 맞는 프로그램을 선택하세요.
-    </p>
+      {/* PRICING */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Participation</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>참여 프로그램</h2>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 40px"}}>브랜드 목표와 운영 범위에 맞는 프로그램을 선택하세요.</p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20}}>
 
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20}}>
-      
-      {/* Starter */}
-      <div style={{
-        background:"rgba(255,255,255,0.04)",
-        borderRadius:20,
-        padding:"36px 32px",
-        border:"1px solid rgba(255,255,255,0.08)"
-      }}>
-        <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
-          Starter
-        </p>
-
-        <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>
-          파리 뷰티 살롱에서 브랜드를 소개해보고 싶은 브랜드
-        </p>
-
-        <div className="program-items" style={{marginBottom:28}}>
-          {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리"].map(i=>(
-            <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
-              <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
+            {/* Starter */}
+            <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
+              <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 8px"}}>Starter</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리 뷰티 살롱에서 브랜드를 소개해보고 싶은 브랜드</p>
+              <div style={{marginBottom:16}}>
+                {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리"].map(i=><ProgramItem key={i}>{i}</ProgramItem>)}
+              </div>
+              <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.18)",borderRadius:12,padding:"12px 16px",marginBottom:24}}>
+                <p style={{...KR,fontSize:"12px",color:"#c9a96e",margin:0,fontWeight:600,lineHeight:1.6}}>Paris Beauty Show 참가 브랜드 한정</p>
+              </div>
+              <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
+                <p style={{...CG,fontSize:"34px",color:"#c9a96e",margin:"0 0 4px",fontWeight:400}}>79만원<span style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.25)"}}> ~</span></p>
+                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px"}}>최대 10개 살롱 운영</p>
+                <a href="mailto:hello@thebeautypause.com"
+                  style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+                  시작하기 →
+                </a>
+              </div>
             </div>
-          ))}
-        </div>
 
-        <div style={{
-          background:"rgba(201,169,110,0.08)",
-          border:"1px solid rgba(201,169,110,0.18)",
-          borderRadius:14,
-          padding:"14px 16px",
-          marginBottom:24
-        }}>
-          <p style={{...KR,fontSize:"12px",color:"#c9a96e",margin:0,fontWeight:600,lineHeight:1.6}}>
-            Paris Beauty Show 참가 브랜드 한정
-          </p>
-        </div>
-
-        <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
-          <p style={{...CG,fontSize:"34px",color:"#c9a96e",margin:"0 0 6px",fontWeight:400}}>
-            79만원<span style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.25)"}}> ~</span>
-          </p>
-          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.35)",margin:"0 0 20px"}}>
-            최대 10개 살롱 운영
-          </p>
-          <a href="mailto:hello@thebeautypause.com"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-            시작하기 →
-          </a>
-        </div>
-      </div>
-
-      {/* Growth */}
-      <div style={{
-        background:"rgba(201,169,110,0.06)",
-        borderRadius:20,
-        padding:"36px 32px",
-        border:"1px solid rgba(201,169,110,0.2)",
-        position:"relative"
-      }}>
-      
-
-        <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
-          Growth
-        </p>
-
-        <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px",paddingRight:70}}>
-          파리 살롱 네트워크 안에서 브랜드를 지속적으로 운영하고 싶은 브랜드
-        </p>
-
-        <div className="program-items" style={{marginBottom:32}}>
-          {["Starter 전체 포함","다수 살롱 운영","정기 운영","구매 구조 연결","운영 리포트"].map(i=>(
-            <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
-              <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
+            {/* Growth */}
+            <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.2)"}}>
+              <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 8px"}}>Growth</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리 살롱 네트워크 안에서 브랜드를 지속적으로 운영하고 싶은 브랜드</p>
+              <div style={{marginBottom:24}}>
+                {["Starter 전체 포함","다수 살롱 운영","정기 운영","구매 구조 연결","운영 리포트"].map(i=><ProgramItem key={i} accent="#fb5607">{i}</ProgramItem>)}
+              </div>
+              <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
+                <p style={{...CG,fontSize:"26px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:400}}>브랜드 맞춤 협의</p>
+                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 4px",lineHeight:1.7}}>운영 규모 및 브랜드별 조건에 따라 협의됩니다.</p>
+                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px",lineHeight:1.7}}>국내 계산서 발행 가능</p>
+                <a href="mailto:hello@thebeautypause.com"
+                  style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"#f5f0eb",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+                  문의하기 →
+                </a>
+              </div>
             </div>
-          ))}
+
+          </div>
         </div>
-
-        <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
-          <p style={{...CG,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:400}}>
-            브랜드 맞춤 협의
-          </p>
-
-          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 6px",lineHeight:1.7}}>
-            운영 규모 및 브랜드별 조건에 따라 협의됩니다.
-          </p>
-
-          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px",lineHeight:1.7}}>
-            국내 계산서 발행 가능
-          </p>
-
-          <a href="mailto:hello@thebeautypause.com"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"#f5f0eb",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-            문의하기 →
-          </a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* WHY TBP */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why The Beauty Pause</Badge>
           <Divider/>
-          
           <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#1a1a1a",fontWeight:700,lineHeight:1.9,margin:"0 0 14px",maxWidth:580}}>
             우리는 제품이 고객 앞에 놓이는 환경을 운영합니다
           </p>
           <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,margin:"0 0 14px",maxWidth:580}}>
             유럽 시장에서 브랜드가 알려지기 위해서는 먼저 고객과 만날 기회가 필요합니다.
           </p>
-          <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,maxWidth:580}}>
+          <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,margin:"0 0 14px",maxWidth:580}}>
             The Beauty Pause는 파리의 실제 뷰티 살롱 안에서 그 만남이 일어날 수 있는 공간을 운영합니다.
           </p>
           <p style={{...KR,fontSize:"clamp(16px,2.5vw,22px)",color:"#555",lineHeight:1.9,maxWidth:580}}>
             브랜드는 광고가 아닌 실제 뷰티 환경 안에서 고객과 만날 수 있습니다.
           </p>
-          
         </div>
       </section>
 
@@ -3278,12 +3129,15 @@ function ForBrandsPage() {
         </div>
       </section>
 
+      {/* SCROLL TO TOP */}
       {showTop&&(
-        <button onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}
+        <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
           style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>
           ↑
         </button>
       )}
+
+      {/* FOOTER */}
       <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
         <div>
           <div style={{marginBottom:4}}>
@@ -3292,8 +3146,10 @@ function ForBrandsPage() {
           </div>
           <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
         </div>
-        <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}
-          onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"} onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+        <a href="mailto:hello@thebeautypause.com"
+          style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}
+          onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"}
+          onMouseLeave={e=>e.currentTarget.style.color="#444"}>
           Contact
         </a>
       </footer>
