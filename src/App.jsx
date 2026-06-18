@@ -3079,8 +3079,7 @@ function ForBrandsPage() {
               </div>
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
                 <p style={{...KR,fontSize:"22px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>브랜드 맞춤 협의</p>
-                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 4px",lineHeight:1.7}}>운영 규모 및 브랜드별 조건에 따라 협의됩니다.</p>
-                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px",lineHeight:1.7}}>국내 계산서 발행 가능</p>
+                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px",lineHeight:1.7}}>운영 규모 및 브랜드별 조건에 따라 협의됩니다.</p>
                 <a href="mailto:hello@thebeautypause.com"
                   style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"#f5f0eb",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
                   문의하기 →
@@ -3100,7 +3099,7 @@ function ForBrandsPage() {
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16,marginBottom:40}}>
             {[
               {n:"01",t:"고객이 이미 머무는 공간에 들어갑니다",d:"뷰티 고객은 살롱에서 수십 분에서 수 시간까지 머뭅니다. The Beauty Pause는 고객의 관심을 끌어오는 것이 아니라, 고객이 이미 머무는 공간 안에서 브랜드를 소개합니다."},
-              {n:"02",t:"현장에서 직접 운영합니다",d:"제품 설치, QR 운영, 정기 방문 및 유지 관리는 The Beauty Pause가 직접 수행합니다. 살롱은 별도의 운영 부담 없이 참여할 수 있습니다."},
+              {n:"02",t:"현장에서 직접 운영합니다",d:"The Beauty Pause는 파리의 살롱을 직접 방문하며 제품 설치, 교체 및 운영 관리를 수행합니다. 단순 샘플 배포가 아닌, 지속적으로 관리되는 살롱 네트워크를 운영합니다."},
               {n:"03",t:"실제 뷰티 환경에서 브랜드를 소개합니다",d:"광고 이미지나 온라인 배너가 아닌, 실제 뷰티 서비스를 받는 환경 안에서 브랜드와 제품이 소개됩니다."},
               {n:"04",t:"유럽 시장 진입의 첫 거점을 만듭니다",d:"파리에서의 실제 운영 경험은 향후 유럽 시장 확장의 기반이 될 수 있습니다."},
             ].map(({n,t,d})=>(
