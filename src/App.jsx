@@ -2832,7 +2832,7 @@ function ForBrandsPage() {
       </button>
       <a href="mailto:hello@thebeautypause.com"
         style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
-        브랜드 문의하기
+        브랜드 등록하기
       </a>
     </nav>
   );
@@ -2877,7 +2877,7 @@ function ForBrandsPage() {
           </p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
-            브랜드 문의하기 →
+            브랜드 등록하기 →
           </a>
         </div>
       </section>
@@ -2908,25 +2908,15 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* ABOUT */}
+      {/* K-BEAUTY IN SALONS */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
-          <div>
-            <Badge>✦ About</Badge>
-            <Divider/>
-            <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.4}}>The Beauty Pause는 무엇인가요?</h2>
-          </div>
-          <div>
-            <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 14px"}}>
-              The Beauty Pause는 파리의 뷰티 살롱과 브랜드를 연결하는 <strong style={{color:"#1a1a1a"}}>뷰티 디스커버리 네트워크</strong>입니다.
-            </p>
-            <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 14px"}}>
-              우리는 살롱 안에 제품을 소개하고 관리하며, 고객이 새로운 뷰티 제품을 발견할 수 있는 환경을 만듭니다.
-            </p>
-            <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9}}>
-              고객, 살롱, 브랜드를 실제 오프라인 공간 안에서 연결합니다.
-            </p>
-          </div>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ K-Beauty in Salons</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px",lineHeight:1.4}}>파리 살롱에서 만나는 K-뷰티</h2>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,maxWidth:600}}>
+            The Beauty Pause는 파리의 네일샵, 헤어살롱, 마사지샵을 중심으로 뷰티 살롱 네트워크를 운영하고 있습니다. 참여 브랜드는 네트워크 내 활발한 살롱을 우선으로 소개되며, 현재 파리를 중심으로 지속적으로 확장되고 있습니다.
+          </p>
         </div>
       </section>
 
@@ -2998,12 +2988,14 @@ function ForBrandsPage() {
           <Badge>✦ Benefits</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 36px"}}>브랜드가 얻는 것</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:20}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:20}}>
             {[
-              {t:"파리 살롱 내 제품 진열",d:"실제 고객이 방문하는 뷰티 살롱 안에서 브랜드가 소개됩니다."},
-              {t:"고객 오프라인 접점",d:"고객이 살롱에 머무는 동안 브랜드와 제품을 발견하고 체험할 수 있습니다."},
-              {t:"브랜드 정보 전달",d:"QR과 제품 카드를 통해 브랜드 스토리와 제품 정보를 전달할 수 있습니다."},
-              {t:"유럽 시장 활동 이력",d:"The Beauty Pause가 운영하는 뷰티 살롱 네트워크의 일부가 됩니다."},
+              {t:"파리 살롱 네트워크 진입",d:"실제 고객이 방문하는 파리 뷰티 살롱 안에서 브랜드가 소개됩니다."},
+              {t:"고객 발견 기회",d:"고객이 살롱에 머무는 동안 브랜드와 제품을 자연스럽게 발견할 수 있습니다."},
+              {t:"브랜드 정보 전달",d:"QR과 제품 카드를 통해 브랜드와 제품 정보를 전달할 수 있습니다."},
+              {t:"운영 현황 확인",d:"현재 제품이 소개되고 있는 살롱과 운영 현황을 확인할 수 있습니다."},
+              {t:"고객 관심 신호 확인",d:"QR 스캔, 관심 등록 등 고객 반응을 확인할 수 있습니다."},
+              {t:"판매 기회 확장",d:"Growth 프로그램의 경우, 고객 구매가 발생할 수 있는 판매 루트와 연결됩니다."},
             ].map(({t,d})=>(
               <div key={t} style={{background:"#fff",borderRadius:16,padding:"24px 20px",border:"1px solid #e8e0d8"}}>
                 <div style={{width:28,height:2,background:"#c9a96e",marginBottom:16}}/>
@@ -3126,7 +3118,7 @@ function ForBrandsPage() {
           <p style={{...SS,fontSize:"15px",color:"rgba(255,255,255,0.3)",margin:"0 0 36px"}}>hello@thebeautypause.com</p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
-            브랜드 문의하기 →
+            브랜드 등록하기 →
           </a>
         </div>
       </section>
