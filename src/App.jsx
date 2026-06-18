@@ -2855,7 +2855,10 @@ function ForBrandsPage() {
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.program-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 16px}
+@media (min-width:640px){.program-items{grid-template-columns:1fr;gap:9px 0}}
+`}</style>
       <BrandsNav/>
 
       {/* HERO */}
@@ -3029,9 +3032,9 @@ function ForBrandsPage() {
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
               <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>Starter</p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>파리 뷰티 살롱 네트워크를 통해 브랜드를 소개하고 싶은 브랜드</p>
-              <div style={{marginBottom:32}}>
+              <div className="program-items" style={{marginBottom:32}}>
                 {["제품 비치","제품 카드 제작","QR 연동","현장 설치","정기 관리"].map(i=>(
-                  <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:9}}>
+                  <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
                   </div>
@@ -3050,9 +3053,9 @@ function ForBrandsPage() {
             <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.2)"}}>
               <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>Network Program</p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>여러 살롱에서 브랜드를 운영하고 싶은 브랜드</p>
-              <div style={{marginBottom:32}}>
+              <div className="program-items" style={{marginBottom:32}}>
                 {["다수 살롱 운영","제품 순환","현장 관리","기본 리포트"].map(i=>(
-                  <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:9}}>
+                  <div key={i} style={{display:"flex",gap:10,alignItems:"center"}}>
                     <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{i}</p>
                   </div>
