@@ -1242,7 +1242,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
 
       {/* NAV */}
       <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:`0 ${px}`,position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
-        <div><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span></div>
+        <div><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,4vw,17px)",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,4vw,17px)",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span></div>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           {!isMobile&&(user
             ? <button onClick={()=>navigate("/account")} style={{padding:"7px 16px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:20,transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#0d0d0d";}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#c9a96e";}}>✦ Account</button>
@@ -2816,13 +2816,11 @@ function ForBrandsPage() {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
-  const [linkOpen, setLinkOpen] = useState(false);
-
   const BrandsNav = () => (
     <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
       <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
-        <span style={{...CG,fontSize:"17px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-        <span style={{...CG,fontSize:"17px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
+        <span style={{...CG,fontSize:"clamp(14px,4vw,17px)",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+        <span style={{...CG,fontSize:"clamp(14px,4vw,17px)",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
       </button>
       <a href="mailto:hello@thebeautypause.com"
         style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
@@ -3061,20 +3059,7 @@ function ForBrandsPage() {
                     style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"#f5f0eb",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
                     문의하기 →
                   </a>
-                  <button onClick={()=>setLinkOpen(v=>!v)}
-                    style={{display:"inline-flex",alignItems:"center",gap:6,padding:"11px 18px",background:"transparent",color:"rgba(255,255,255,0.35)",border:"1px solid rgba(255,255,255,0.12)",...KR,fontSize:"13px",fontWeight:500,borderRadius:10,cursor:"pointer"}}>
-                    구매 링크 {linkOpen?"▲":"▼"}
-                  </button>
                 </div>
-                {linkOpen&&(
-                  <div style={{marginTop:14,padding:"14px 16px",background:"rgba(255,255,255,0.04)",borderRadius:10,border:"1px solid rgba(255,255,255,0.07)"}}>
-                    <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.35)",margin:"0 0 8px"}}>구매 가능한 외부 링크 연결 (옵션)</p>
-                    <a href="mailto:hello@thebeautypause.com?subject=Network Program - 구매 링크 연결"
-                      style={{...KR,fontSize:"13px",color:"#c9a96e",textDecoration:"underline"}}>
-                      링크 연결 문의 →
-                    </a>
-                  </div>
-                )}
               </div>
             </div>
           </div>
