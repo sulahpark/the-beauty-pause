@@ -3191,7 +3191,7 @@ function ForBrandsPage() {
         </div>
       </div>
 
-      {/* Network */}
+      {/* Growth */}
       <div style={{
         background:"rgba(201,169,110,0.06)",
         borderRadius:20,
@@ -3202,7 +3202,7 @@ function ForBrandsPage() {
       
 
         <p style={{...SS,fontSize:"11px",color:"#fb5607",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
-          Network
+          Growth
         </p>
 
         <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px",paddingRight:70}}>
