@@ -2816,6 +2816,13 @@ function ForBrandsPage() {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const [showTop, setShowTop] = useState(false);
+  useEffect(()=>{
+    const onScroll = () => setShowTop(window.scrollY > 600);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const BrandsNav = () => (
     <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
       <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
@@ -2873,7 +2880,7 @@ function ForBrandsPage() {
 
       {/* ABOUT */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"minmax(200px,1fr) 2fr",gap:56,alignItems:"start"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
           <div>
             <Badge>✦ About</Badge>
             <Divider/>
@@ -2937,7 +2944,7 @@ function ForBrandsPage() {
 
       {/* NETWORK */}
       <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"minmax(200px,1fr) 2fr",gap:56,alignItems:"start"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
           <div>
             <Badge>✦ Network</Badge>
             <Divider/>
@@ -2982,7 +2989,7 @@ function ForBrandsPage() {
 
       {/* INCLUDED */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"minmax(200px,1fr) 2fr",gap:56,alignItems:"start"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
           <div>
             <Badge>✦ Included</Badge>
             <Divider/>
@@ -3098,11 +3105,17 @@ function ForBrandsPage() {
         </div>
       </section>
 
+      {showTop&&(
+        <button onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}
+          style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>
+          ↑
+        </button>
+      )}
       <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
         <div>
           <div style={{marginBottom:4}}>
-            <span style={{...CG,fontSize:"17px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-            <span style={{...CG,fontSize:"17px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
+            <span style={{...CG,fontSize:"clamp(14px,4vw,17px)",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+            <span style={{...CG,fontSize:"clamp(14px,4vw,17px)",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
           </div>
           <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
         </div>
