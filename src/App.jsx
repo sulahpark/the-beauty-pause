@@ -459,6 +459,38 @@ function SalonModalProducts({ prods, t, onClose, lang }) {
 
 // ── PRODUCT MODAL ─────────────────────────────────────────────────────────────
 function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick, lang, user, favourites, onToggleFav }) {
+  const [buying, setBuying] = useState(false);
+  const [buyError, setBuyError] = useState("");
+
+  const handleBuy = async () => {
+    setBuying(true); setBuyError("");
+    try {
+      const img = getProdImg(prod);
+      const brandD = prod.brand_name || (Array.isArray(prod.brand) ? null : (!prod.brand?.startsWith?.("rec") ? prod.brand : null)) || "";
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: prod.id,
+          productName: prod.product_name,
+          brandName: brandD,
+          priceEur: prod.price_customer,
+          imageUrl: img && img.startsWith("http") ? img : undefined,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        setBuyError(data.error || "Checkout failed. Please try again.");
+        setBuying(false);
+      }
+    } catch (err) {
+      setBuyError("Something went wrong. Please try again.");
+      setBuying(false);
+    }
+  };
+
   if (!prod) return null;
   const t=T[lang];
   const isNew=prod._badge==="new"; const color=isNew?"#c9a96e":"#fb5607";
@@ -542,12 +574,25 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
           </div>
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",margin:"0 0 4px"}}>{brandDisplay}</p>
           <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:600,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.2}}>{prod.product_name}</h2>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
             <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#aaa",margin:0}}>{prod.category}</p>
             {prod.price_customer&&<><span style={{color:"#ede8e2"}}>·</span>
               <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#1a1a1a",margin:0,fontWeight:600}}>€{prod.price_customer}</p>
             </>}
           </div>
+
+          {/* BUY BUTTON */}
+          {prod.price_customer&&(
+            <div style={{marginBottom:20}}>
+              <button onClick={handleBuy} disabled={buying}
+                style={{width:"100%",padding:"14px",background:buying?"#ccc":"#1a1a1a",color:"#fff",border:"none",cursor:buying?"not-allowed":"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:700,letterSpacing:"0.5px",borderRadius:10,transition:"opacity 0.2s"}}
+                onMouseEnter={e=>!buying&&(e.currentTarget.style.opacity="0.85")}
+                onMouseLeave={e=>!buying&&(e.currentTarget.style.opacity="1")}>
+                {buying ? "Redirecting…" : `구매하기 — €${prod.price_customer}`}
+              </button>
+              {buyError&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#fb5607",margin:"8px 0 0"}}>{buyError}</p>}
+            </div>
+          )}
 
           {/* ✦ FIND IN SALON — first, max 3 + view more */}
           {salonsWithProd.length>0&&(
