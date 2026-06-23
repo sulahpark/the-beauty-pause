@@ -2927,7 +2927,17 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* PHOTO GALLERY */}
+      {/* TAGLINE */}
+      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)",borderBottom:"1px solid #ede8e2"}}>
+        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+          <p style={{...KR,fontSize:"clamp(16px,2.2vw,20px)",color:"#888",lineHeight:1.8,margin:"0 0 6px"}}>
+            좋은 제품도 고객이 만날 기회가 없다면 발견될 수 없습니다.
+          </p>
+          <p style={{...KR,fontSize:"clamp(16px,2.2vw,20px)",color:"#1a1a1a",fontWeight:700,lineHeight:1.8,margin:0}}>
+            The Beauty Pause는 파리의 실제 뷰티 고객과 브랜드를 연결합니다.
+          </p>
+        </div>
+      </section>
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ K-Beauty in Salons</Badge>
@@ -3001,26 +3011,6 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* NETWORK */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
-          <div>
-            <Badge>✦ Network</Badge>
-            <Divider/>
-            <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4}}>살롱 네트워크</h2>
-          </div>
-          <div>
-            <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
-              파리의 네일살롱, 헤어살롱, 마사지살롱을 중심으로 뷰티 네트워크를 운영하고 있습니다.
-            </p>
-            {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
-              <CheckItem key={item} light>{item}</CheckItem>
-            ))}
-            <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.2)",marginTop:20,fontStyle:"italic"}}>※ 네트워크는 지속적으로 확장되고 있습니다.</p>
-          </div>
-        </div>
-      </section>
-
       {/* BENEFITS */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
@@ -3055,6 +3045,26 @@ function ForBrandsPage() {
           <p style={{...KR,fontSize:"15px",color:"#777",margin:"0 0 24px",lineHeight:1.8}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
           <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
             {["스킨케어","헤어케어","바디케어","웰니스 뷰티","신생 뷰티 브랜드","유럽 고객과 만나고 싶은 브랜드","오프라인 접점을 만들고 싶은 브랜드"].map(t=><Tag key={t}>{t}</Tag>)}
+          </div>
+        </div>
+      </section>
+
+      {/* NETWORK */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
+          <div>
+            <Badge>✦ Network</Badge>
+            <Divider/>
+            <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4}}>살롱 네트워크</h2>
+          </div>
+          <div>
+            <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
+              파리의 네일살롱, 헤어살롱, 마사지살롱을 중심으로 뷰티 네트워크를 운영하고 있습니다.
+            </p>
+            {["네일 · 헤어 · 마사지 살롱 중심 운영","참여 브랜드별 제품 큐레이션","고객 접점이 높은 살롱 우선 운영","지속적인 살롱 네트워크 확장","파리 → 프랑스 → 유럽 확장 예정"].map(item=>(
+              <CheckItem key={item} light>{item}</CheckItem>
+            ))}
+            <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.2)",marginTop:20,fontStyle:"italic"}}>※ 네트워크는 지속적으로 확장되고 있습니다.</p>
           </div>
         </div>
       </section>
@@ -3129,17 +3139,22 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"22px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Salon <span style={{color:"#c9a96e"}}>Starter</span></p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리 뷰티 살롱에서 브랜드를 가볍게 소개해보고 싶은 브랜드</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:16}}>
-                {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리","최대 10개 살롱 운영"].map(i=>(
+                {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
                   </div>
                 ))}
+                <div style={{display:"flex",gap:8,alignItems:"center",gridColumn:"1/-1"}}>
+                  <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
+                  <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"6px 0"}}>최대 10개 살롱 운영</p>
+                </div>
               </div>
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
                 <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.18)",borderRadius:10,padding:"10px 14px",marginBottom:16}}>
                   <p style={{...KR,fontSize:"12px",color:"#c9a96e",margin:0,fontWeight:600,lineHeight:1.5}}>🎫 Paris Expo Korea 2026 참가 브랜드 한정</p>
                 </div>
+                <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 4px"}}>최대 10개 살롱 운영</p>
                 <p style={{...KR,fontSize:"28px",color:"#c9a96e",margin:"0 0 4px",fontWeight:700}}>79만원 ~</p>
                 <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px"}}>운영 규모 및 브랜드별 조건에 따라 협의됩니다.</p>
                 <a href="mailto:hello@thebeautypause.com"
