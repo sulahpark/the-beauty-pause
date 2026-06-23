@@ -3046,23 +3046,6 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* INCLUDED */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:36,alignItems:"start"}}>
-          <div>
-            <Badge>✦ Included</Badge>
-            <Divider/>
-            <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.4}}>포함 서비스</h2>
-            <p style={{...KR,fontSize:"14px",color:"#888",lineHeight:1.7,marginTop:14}}>The Beauty Pause가 직접 운영합니다.</p>
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px 24px",paddingTop:4}}>
-            {["제품 비치","제품 카드 제작","QR 연동","현장 설치","정기 방문","유지 관리","제품 교체","기본 리포트 제공"].map(i=>(
-              <CheckItem key={i}>{i}</CheckItem>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FIT */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
@@ -3097,13 +3080,13 @@ function ForBrandsPage() {
               {
                 n:"Option 2", t:"현지 발송 대행",
                 flow:"QR → 브랜드 자사몰 결제 → TBP가 프랑스에서 발송",
-                items:["소량 재고를 파리에 미리 보관","결제는 브랜드 자사몰 그대로","배송 기간 2–3일"],
+                items:["결제는 브랜드 자사몰에서 진행","소량 재고를 파리에 미리 보관","배송 기간 2–3일"],
                 tag:null
               },
               {
                 n:"Option 3", t:"TBP 직접 판매",
                 flow:"QR → TBP 사이트 결제 → TBP가 발송",
-                items:["결제·발송 전부 TBP가 처리","브랜드는 판매 데이터만 확인","추후 확장 예정 옵션"],
+                items:["결제는 TBP 사이트에서 진행","재고 보관 및 발송도 TBP가 처리","추후 확장 예정 옵션"],
                 tag:"Coming soon"
               },
             ].map(({n,t,flow,items,tag})=>(
