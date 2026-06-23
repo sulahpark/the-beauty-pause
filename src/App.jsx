@@ -3076,6 +3076,62 @@ function ForBrandsPage() {
         </div>
       </section>
 
+      {/* PURCHASE FULFILLMENT */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Purchase Fulfillment</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>고객이 구매하면 어떻게 처리되나요</h2>
+          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.8,margin:"0 0 40px",maxWidth:600}}>
+            살롱 안에서의 발견 경험은 동일합니다. 구매가 처리되는 방식은 브랜드가 선택할 수 있습니다.
+          </p>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
+            {[
+              {
+                n:"Option 1", t:"자사몰 연결",
+                flow:"QR → 브랜드 자사몰 → 한국에서 발송",
+                items:["가장 가벼운 시작","결제·배송 전부 브랜드가 처리","배송 기간 1–2주"],
+                tag:null
+              },
+              {
+                n:"Option 2", t:"현지 발송 대행",
+                flow:"QR → 브랜드 자사몰 결제 → TBP가 프랑스에서 발송",
+                items:["소량 재고를 파리에 미리 보관","결제는 브랜드 자사몰 그대로","배송 기간 2–3일"],
+                tag:null
+              },
+              {
+                n:"Option 3", t:"TBP 직접 판매",
+                flow:"QR → TBP 사이트 결제 → TBP가 발송",
+                items:["결제·발송 전부 TBP가 처리","브랜드는 판매 데이터만 확인","추후 확장 예정 옵션"],
+                tag:"Coming soon"
+              },
+            ].map(({n,t,flow,items,tag})=>(
+              <div key={n} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"26px 22px",position:"relative"}}>
+                {tag&&<span style={{position:"absolute",top:18,right:18,...SS,fontSize:"9px",color:"#fb5607",border:"1px solid rgba(251,86,7,0.3)",padding:"3px 9px",borderRadius:12,fontWeight:700,letterSpacing:"0.5px"}}>{tag}</span>}
+                <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>{n}</p>
+                <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 14px"}}>{t}</p>
+                <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:10,padding:"10px 12px",marginBottom:18}}>
+                  <p style={{...SS,fontSize:"11px",color:"#888",margin:0,lineHeight:1.6,fontFamily:"monospace,'DM Sans',sans-serif"}}>{flow}</p>
+                </div>
+                <div>
+                  {items.map(i=>(
+                    <div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:8}}>
+                      <span style={{color:"#c9a96e",fontSize:"11px",flexShrink:0,marginTop:2}}>✓</span>
+                      <p style={{...KR,fontSize:"13px",color:"#666",lineHeight:1.6,margin:0}}>{i}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{...KR,fontSize:"13px",color:"#999",lineHeight:1.7,margin:"28px 0 0",fontStyle:"italic"}}>
+            ※ 브랜드 상황에 맞춰 상담을 통해 결정합니다.
+          </p>
+        </div>
+      </section>
+
       {/* PRICING */}
       <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
