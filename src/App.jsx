@@ -2912,7 +2912,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Brands</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
-            파리 뷰티 살롱에서<br/>브랜드를 소개하세요
+            파리 뷰티 살롱에서<br/>고객을 만나보세요
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 14px"}}>
             The Beauty Pause는 파리의 실제 뷰티 살롱 안에서 브랜드가 고객과 만날 수 있는 환경을 운영합니다.
