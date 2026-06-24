@@ -466,7 +466,10 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
     setBuying(true); setBuyError("");
     try {
       const img = getProdImg(prod);
-      const brandD = prod.brand_name || (Array.isArray(prod.brand) ? null : (!prod.brand?.startsWith?.("rec") ? prod.brand : null)) || "";
+      let brandRaw = prod.brand_name || prod.brand || "";
+      let brandD = Array.isArray(brandRaw) ? (brandRaw.find(v=>typeof v==="string"&&!v.startsWith?.("rec")) || "") : brandRaw;
+      if (typeof brandD !== "string") brandD = String(brandD || "");
+      if (brandD.startsWith?.("rec")) brandD = "";
       const res = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -588,7 +591,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
                 style={{width:"100%",padding:"14px",background:buying?"#ccc":"#1a1a1a",color:"#fff",border:"none",cursor:buying?"not-allowed":"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:700,letterSpacing:"0.5px",borderRadius:10,transition:"opacity 0.2s"}}
                 onMouseEnter={e=>!buying&&(e.currentTarget.style.opacity="0.85")}
                 onMouseLeave={e=>!buying&&(e.currentTarget.style.opacity="1")}>
-                {buying ? "Redirecting…" : `구매하기 — €${prod.price_customer}`}
+                {buying ? (lang==="fr"?"Redirection…":"Redirecting…") : (lang==="fr"?`Acheter — €${prod.price_customer}`:`Buy now — €${prod.price_customer}`)}
               </button>
               {buyError&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#fb5607",margin:"8px 0 0"}}>{buyError}</p>}
             </div>
