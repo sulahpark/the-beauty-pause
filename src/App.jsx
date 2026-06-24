@@ -2873,8 +2873,38 @@ function ForBrandsPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const CityRotator = () => {
+    const cities = ["런던","피렌체","마드리드","파리"];
+    const [idx, setIdx] = useState(0);
+    const [done, setDone] = useState(false);
+    const ref = useRef(null);
+    const [started, setStarted] = useState(false);
+    useEffect(() => {
+      const obs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+          setStarted(true);
+          let i = 0;
+          const interval = setInterval(() => {
+            i++;
+            if (i >= cities.length) {
+              clearInterval(interval);
+              setIdx(cities.length - 1);
+              setDone(true);
+            } else {
+              setIdx(i);
+            }
+          }, 220);
+        }
+      }, { threshold: 0.3 });
+      if (ref.current) obs.observe(ref.current);
+      return () => obs.disconnect();
+    }, [started]);
+    return <span ref={ref} style={{animation:done?"flicker 2.4s ease-in-out infinite":"none"}}>{cities[idx]}</span>;
+  };
+
   const CountUp = ({ target, suffix="", duration=1400 }) => {
     const [val, setVal] = useState(0);
+    const [done, setDone] = useState(false);
     const ref = useRef(null);
     const [started, setStarted] = useState(false);
     useEffect(() => {
@@ -2888,6 +2918,7 @@ function ForBrandsPage() {
             const eased = 1 - Math.pow(1 - progress, 3);
             setVal(Math.round(target * eased));
             if (progress < 1) requestAnimationFrame(tick);
+            else setDone(true);
           };
           requestAnimationFrame(tick);
         }
@@ -2895,7 +2926,20 @@ function ForBrandsPage() {
       if (ref.current) obs.observe(ref.current);
       return () => obs.disconnect();
     }, [started]);
-    return <span ref={ref}>{val}{suffix}</span>;
+    return <span ref={ref} style={{animation:done?"flicker 2.4s ease-in-out infinite":"none"}}>{val}{suffix}</span>;
+  };
+
+  const StaticFlicker = ({ children }) => {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+    useEffect(() => {
+      const obs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) setVisible(true);
+      }, { threshold: 0.3 });
+      if (ref.current) obs.observe(ref.current);
+      return () => obs.disconnect();
+    }, []);
+    return <span ref={ref} style={{animation:visible?"flicker 2.4s ease-in-out infinite":"none"}}>{children}</span>;
   };
 
   const BrandsNav = () => (
@@ -2933,7 +2977,7 @@ function ForBrandsPage() {
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}`}</style>
       <BrandsNav/>
 
       {/* HERO */}
@@ -2941,7 +2985,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Brands</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
-            뷰티 고객이 머무는 공간에서<br/>브랜드를 소개하세요
+            파리 뷰티 살롱에서<br/>브랜드를 소개하세요
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
             The Beauty Pause는 파리의 실제 뷰티 살롱 네트워크를 운영하며, 브랜드와 제품이 자연스럽게 발견될 수 있는 오프라인 접점을 제공합니다.
@@ -3088,21 +3132,23 @@ function ForBrandsPage() {
 
           {/* operating metrics */}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:16,marginBottom:36}}>
-            {[
-              {n:"파리",l:"운영 도시",isNum:false},
-              {n:21,l:"참여 살롱",isNum:true,suffix:"개"},
-              {n:"3종",l:"운영 카테고리",sub:"네일 · 헤어 · 마사지",isNum:false},
-              {n:20,l:"설치 완료 제품",isNum:true,suffix:"개+"},
-            ].map(({n,l,sub,isNum,suffix},idx)=>(
-              <div key={l} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px",position:"relative"}}>
-                {idx===1&&<span style={{position:"absolute",top:14,right:14,width:6,height:6,borderRadius:"50%",background:"#4ade80",boxShadow:"0 0 8px rgba(74,222,128,0.6)",animation:"pulse 2s infinite"}}/>}
-                <p style={{...CG,fontSize:"28px",color:"#c9a96e",fontWeight:600,margin:"0 0 4px",lineHeight:1}}>
-                  {isNum ? <CountUp target={n} suffix={suffix}/> : n}
-                </p>
-                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>{l}</p>
-                {sub&&<p style={{...KR,fontSize:"10px",color:"rgba(255,255,255,0.25)",margin:"4px 0 0"}}>{sub}</p>}
-              </div>
-            ))}
+            <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
+              <p style={{...KR,fontSize:"28px",color:"#c9a96e",fontWeight:700,margin:"0 0 4px",lineHeight:1}}><CityRotator/></p>
+              <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>운영 도시</p>
+            </div>
+            <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
+              <p style={{...KR,fontSize:"28px",color:"#c9a96e",fontWeight:700,margin:"0 0 4px",lineHeight:1}}><CountUp target={21} suffix="개"/></p>
+              <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>참여 살롱</p>
+            </div>
+            <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
+              <p style={{...KR,fontSize:"28px",color:"#c9a96e",fontWeight:700,margin:"0 0 4px",lineHeight:1}}><StaticFlicker>3종</StaticFlicker></p>
+              <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>운영 카테고리</p>
+              <p style={{...KR,fontSize:"10px",color:"rgba(255,255,255,0.25)",margin:"4px 0 0"}}>네일 · 헤어 · 마사지</p>
+            </div>
+            <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
+              <p style={{...KR,fontSize:"28px",color:"#c9a96e",fontWeight:700,margin:"0 0 4px",lineHeight:1}}><CountUp target={20} suffix="가지+"/></p>
+              <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>비치 완료 제품</p>
+            </div>
           </div>
 
           <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.2)",marginBottom:32,fontStyle:"italic"}}>※ 네트워크는 지속적으로 확장되고 있습니다.</p>
@@ -3249,7 +3295,7 @@ function ForBrandsPage() {
               {n:"01",t:"고객이 이미 머무는 공간에 들어갑니다",d:"뷰티 고객은 살롱에서 수십 분에서 수 시간까지 머뭅니다. The Beauty Pause는 고객의 관심을 끌어오는 것이 아니라, 고객이 이미 머무는 공간 안에서 브랜드를 소개합니다."},
               {n:"02",t:"현장에서 직접 운영합니다",d:"The Beauty Pause는 살롱을 직접 방문하며 제품 설치, 교체 및 운영 관리를 수행합니다. 단순 샘플 배포가 아닌, 지속적으로 관리되는 살롱 네트워크를 운영합니다."},
               {n:"03",t:"실제 뷰티 환경에서 브랜드를 소개합니다",d:"광고 이미지나 온라인 배너가 아닌, 실제 뷰티 서비스를 받는 환경 안에서 브랜드와 제품이 소개됩니다."},
-              {n:"04",t:"유럽 시장 진입의 첫 거점을 만듭니다",d:"현지에서의 실제 운영 경험은 향후 유럽 시장 확장의 기반이 될 수 있습니다."},
+              {n:"04",t:"파리에서 브랜드 존재감을 만듭니다",d:"브랜드는 온라인 광고가 아닌, 실제 고객이 방문하는 공간 안에서 지속적으로 소개될 수 있습니다."},
             ].map(({n,t,d})=>(
               <div key={n} style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:16,padding:"28px 24px"}}>
                 <p style={{...CG,fontSize:"32px",color:"rgba(201,169,110,0.3)",fontWeight:300,margin:"0 0 14px",lineHeight:1}}>{n}</p>
