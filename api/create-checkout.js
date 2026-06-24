@@ -31,6 +31,10 @@ module.exports = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
+      shipping_address_collection: {
+        allowed_countries: ["FR", "BE", "DE", "ES", "IT", "NL", "LU", "GB", "US", "KR"],
+      },
+      phone_number_collection: { enabled: true },
       line_items: [
         {
           price_data: {
