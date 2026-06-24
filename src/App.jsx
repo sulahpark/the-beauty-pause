@@ -2985,13 +2985,10 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Brands</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
-            파리 살롱에서<br/>실제 뷰티 고객을 만나보세요
+            파리 살롱에서<br/>브랜드를 소개하세요
           </h1>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 14px"}}>
-            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품이 실제 고객에게 소개될 수 있는 오프라인 접점을 제공합니다.
-          </p>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
-            고객이 이미 방문하는 공간에서 브랜드와 제품을 경험할 수 있도록 연결합니다.
+            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품이 고객에게 소개될 수 있는 오프라인 환경을 운영합니다.
           </p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
@@ -3005,13 +3002,13 @@ function ForBrandsPage() {
         <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Discovery</Badge>
           <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.5,margin:"8px 0 16px"}}>
-            좋은 제품도 발견될 기회가 필요합니다.
+            좋은 제품도<br/>발견될 기회가 필요합니다.
           </h2>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#666",lineHeight:1.9,margin:"0 0 10px"}}>
-            아무리 좋은 제품이라도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
+            좋은 제품도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
           </p>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#1a1a1a",fontWeight:600,lineHeight:1.9,margin:0}}>
-            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는 파리의 실제 뷰티 고객과 브랜드를 연결하여, 브랜드가 발견되는 경험을 만듭니다.
+            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는 고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
           </p>
         </div>
       </section>
@@ -3022,7 +3019,7 @@ function ForBrandsPage() {
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>파리의 뷰티 살롱에서 만나는 K-뷰티</h2>
           <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 32px"}}>
-            The Beauty Pause는 파리의 네일샵, 헤어살롱, 마사지샵을 중심으로 뷰티 살롱 네트워크를 운영하고 있습니다.
+            네일샵, 헤어살롱, 마사지샵을 중심으로 운영되는 TBP 뷰티 살롱 네트워크는 지속적으로 확장되고 있습니다.
           </p>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {/* big left — 1:1 */}
@@ -3038,12 +3035,6 @@ function ForBrandsPage() {
               ))}
             </div>
           </div>
-          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"28px 0 6px"}}>
-            브랜드 제품 비치부터 QR 운영, 정기 관리까지 직접 수행하며, 브랜드가 실제 고객과 만나는 접점을 만듭니다.
-          </p>
-          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:0}}>
-            현재 네트워크는 파리를 중심으로 지속적으로 확장되고 있습니다.
-          </p>
         </div>
       </section>
 
