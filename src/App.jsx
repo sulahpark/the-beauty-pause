@@ -489,7 +489,8 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
         setBuying(false);
       }
     } catch (err) {
-      setBuyError("Something went wrong. Please try again.");
+      console.error("Buy error:", err);
+      setBuyError(err.message || "Something went wrong. Please try again.");
       setBuying(false);
     }
   };
