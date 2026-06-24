@@ -3239,18 +3239,14 @@ function ForBrandsPage() {
             {/* Starter */}
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
               <p style={{...KR,fontSize:"22px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Salon <span style={{color:"#c9a96e"}}>Starter</span></p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>프랑스 뷰티 살롱에서 브랜드를 가볍게 소개해보고 싶은 브랜드</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리 살롱에서 브랜드를 소개하고 현지 고객과의 접점을 만들어보는 프로그램</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:16}}>
-                {["제품 카드 제작","제품 진열","QR 연결","현장 설치","정기 관리"].map(i=>(
+                {["제품 소개 카드 제작","QR 연결","살롱 매칭 및 제품 비치","최대 10개 살롱","현장 콘텐츠 제공","기본 운영 현황 확인"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
                   </div>
                 ))}
-                <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                  <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
-                  <p style={{...KR,fontSize:"13px",color:"#c9a96e",margin:"6px 0",whiteSpace:"nowrap"}}>최대 10개 살롱</p>
-                </div>
               </div>
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
                 <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.18)",borderRadius:10,padding:"10px 14px",marginBottom:16}}>
@@ -3269,9 +3265,9 @@ function ForBrandsPage() {
             {/* Growth */}
             <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.2)"}}>
               <p style={{...KR,fontSize:"22px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Network <span style={{color:"#fb5607"}}>Member</span></p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>The Beauty Pause 살롱 네트워크 안에서 브랜드를 지속적으로 운영하고 싶은 브랜드</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>살롱 네트워크에서 브랜드를 지속적으로 확장하고 반복 노출 및 구매 전환까지 연결하는 프로그램</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:24}}>
-                {[{l:"Starter 전체 포함",special:false},{l:"다수 살롱 운영",special:false},{l:"정기 운영",special:false},{l:"제품 교체 및 순환",special:false},{l:"운영 리포트",special:false},{l:"구매 구조 연결",special:true}].map(({l,special})=>(
+                {[{l:"Starter 전체 포함",special:false},{l:"10개 이상 살롱 확장",special:false},{l:"순환형 노출",special:false},{l:"브랜드 소개 콘텐츠",special:false},{l:"고객 참여 프로그램",special:false},{l:"상위 티어 살롱 우선 배치",special:false},{l:"구매 구조 연결",special:true}].map(({l,special})=>(
                   <div key={l} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:special?"#fb5607":"rgba(255,255,255,0.55)",margin:"6px 0"}}>{l}</p>
@@ -3289,6 +3285,52 @@ function ForBrandsPage() {
             </div>
 
           </div>
+        </div>
+      </section>
+
+      {/* FOUNDING BRAND PROGRAM */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Founding Brand Program</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
+            The Beauty Pause와 함께 파리 네트워크를 만들어갈 첫 <strong style={{color:"#1a1a1a"}}>20개 브랜드</strong>를 모집합니다.
+          </p>
+          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 6px",maxWidth:600}}>
+            Founding Brand는 단순한 초기 참여 브랜드가 아니라, The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어가는 첫 파트너입니다.
+          </p>
+          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
+            초기 파트너는 네트워크의 성장과 함께 가장 오래, 가장 많은 혜택을 누릴 수 있는 브랜드가 됩니다.
+          </p>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20,marginBottom:32}}>
+            {[
+              {n:"①",t:"Founding Price",d:"Founding Brand는 현재 적용되는 초기 파트너 가격으로 참여할 수 있으며, 향후 프로그램 가격이 변경되더라도 기존 조건이 유지됩니다."},
+              {n:"②",t:"Priority Access",d:"신규 살롱 추가, 새로운 도시 확장, 신규 프로그램 운영 시 Founding Brand에게 우선 참여 기회가 제공됩니다."},
+              {n:"③",t:"Founding Brand Status",d:"Founding Brand Badge가 부여되며, The Beauty Pause의 초기 파트너 브랜드로 기록됩니다. 향후 브랜드 소개 페이지, 콘텐츠 프로그램, 신규 네트워크 기능이 추가될 경우 우선적으로 참여할 수 있습니다."},
+              {n:"④",t:"Network Growth Advantage",d:"네트워크가 확장될수록 더 많은 살롱, 더 많은 고객 접점, 더 많은 운영 기회가 만들어집니다. Founding Brand는 이러한 성장의 혜택을 가장 먼저 누릴 수 있습니다."},
+            ].map(({n,t,d})=>(
+              <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
+                <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 10px"}}>{n}</p>
+                <p style={{...KR,fontSize:"14px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                <p style={{...KR,fontSize:"12px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px 28px",marginBottom:20}}>
+            <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>Additional Support</p>
+            {["제품 라벨링 지원 (해당 시)","초기 해외 발송 지원 (조건별 협의)"].map(i=>(
+              <div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:6}}>
+                <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0,marginTop:2}}>✓</span>
+                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:0,lineHeight:1.6}}>{i}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{...KR,fontSize:"13px",color:"#999",fontStyle:"italic",margin:0}}>
+            ※ Founding Brand 모집은 선착순 20개 브랜드로 마감됩니다.
+          </p>
         </div>
       </section>
 
