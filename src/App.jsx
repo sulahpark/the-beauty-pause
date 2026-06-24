@@ -2985,10 +2985,13 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Brands</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
-            파리 뷰티 살롱에서<br/>브랜드를 소개하세요
+            파리 살롱에서<br/>실제 뷰티 고객을 만나보세요
           </h1>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 14px"}}>
+            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품이 실제 고객에게 소개될 수 있는 오프라인 접점을 제공합니다.
+          </p>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
-            The Beauty Pause는 파리의 실제 뷰티 살롱 네트워크를 운영하며, 브랜드와 제품이 자연스럽게 발견될 수 있는 오프라인 접점을 제공합니다.
+            고객이 이미 방문하는 공간에서 브랜드와 제품을 경험할 수 있도록 연결합니다.
           </p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
@@ -2997,14 +3000,18 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* TAGLINE */}
-      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px) 40px",borderBottom:"1px solid #ede8e2"}}>
+      {/* DISCOVERY */}
+      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)",borderBottom:"1px solid #ede8e2"}}>
         <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
-          <p style={{...KR,fontSize:"clamp(16px,2.2vw,20px)",color:"#888",lineHeight:1.8,margin:"0 0 6px"}}>
-            좋은 제품도 고객이 만날 기회가 없다면 발견될 수 없습니다.
+          <Badge>✦ Discovery</Badge>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.5,margin:"8px 0 16px"}}>
+            좋은 제품도 발견될 기회가 필요합니다.
+          </h2>
+          <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#666",lineHeight:1.9,margin:"0 0 10px"}}>
+            아무리 좋은 제품이라도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
           </p>
-          <p style={{...KR,fontSize:"clamp(16px,2.2vw,20px)",color:"#1a1a1a",fontWeight:700,lineHeight:1.8,margin:0}}>
-            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는 프랑스의 실제 뷰티 고객과 브랜드를 연결합니다.
+          <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#1a1a1a",fontWeight:600,lineHeight:1.9,margin:0}}>
+            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는 파리의 실제 뷰티 고객과 브랜드를 연결하여, 브랜드가 발견되는 경험을 만듭니다.
           </p>
         </div>
       </section>
@@ -3013,10 +3020,15 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ K-Beauty in Salons</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>파리 살롱에서 만나는 K-뷰티</h2>
-          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 32px"}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>파리의 뷰티 살롱에서 만나는 K-뷰티</h2>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 6px"}}>
             The Beauty Pause는 파리의 네일샵, 헤어살롱, 마사지샵을 중심으로 뷰티 살롱 네트워크를 운영하고 있습니다.
-현재 파리를 중심으로 지속적으로 확장되고 있습니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 6px"}}>
+            브랜드 제품 비치부터 QR 운영, 정기 관리까지 직접 수행하며, 브랜드가 실제 고객과 만나는 접점을 만듭니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 32px"}}>
+            현재 네트워크는 파리를 중심으로 지속적으로 확장되고 있습니다.
           </p>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {/* big left — 1:1 */}
@@ -3035,23 +3047,18 @@ function ForBrandsPage() {
         </div>
       </section>
 
-
-
       {/* WHY SALON */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>왜 살롱인가요?</h2>
-          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 12px",maxWidth:580}}>
-            뷰티에 관심있는 고객들이 살롱에서 수십 분에서 수 시간까지 머뭅니다.
-          </p>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 32px",maxWidth:580}}>
-            The Beauty Pause는 이미 존재하는 고객의 관심과 시간을 활용하여 제품이 자연스럽게 소개될 수 있도록 합니다.
+            뷰티 고객은 살롱에서 수십 분에서 수 시간까지 머무르며, 새로운 제품과 뷰티 정보를 접하기에 가장 적합한 환경에 있습니다.
           </p>
           <div style={{background:"#0d0d0d",borderRadius:20,padding:"36px 40px",borderLeft:"4px solid #c9a96e",maxWidth:640}}>
-            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"rgba(255,255,255,0.5)",fontWeight:300,lineHeight:1.9,margin:"0 0 6px"}}>고객이 제품을 찾게 만드는 것이 아니라,</p>
-            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"#f5f0eb",fontWeight:500,lineHeight:1.9,margin:0}}>고객이 이미 머물고 있는 공간 안에서<br/>제품을 만나는 구조입니다.</p>
+            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"rgba(255,255,255,0.5)",fontWeight:300,lineHeight:1.9,margin:"0 0 6px"}}>고객을 제품으로 데려오는 것이 아니라,</p>
+            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"#f5f0eb",fontWeight:500,lineHeight:1.9,margin:0}}>고객이 이미 머무는 공간에서<br/>브랜드를 발견하도록 만드는 것이<br/><span style={{color:"#c9a96e"}}>The Beauty Pause</span>의 방식입니다.</p>
           </div>
         </div>
       </section>
