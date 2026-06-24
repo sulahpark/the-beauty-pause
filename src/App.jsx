@@ -2869,6 +2869,31 @@ function ForBrandsPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const CountUp = ({ target, suffix="", duration=1400 }) => {
+    const [val, setVal] = useState(0);
+    const ref = useRef(null);
+    const [started, setStarted] = useState(false);
+    useEffect(() => {
+      const obs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+          setStarted(true);
+          const startTime = Date.now();
+          const tick = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setVal(Math.round(target * eased));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      }, { threshold: 0.3 });
+      if (ref.current) obs.observe(ref.current);
+      return () => obs.disconnect();
+    }, [started]);
+    return <span ref={ref}>{val}{suffix}</span>;
+  };
+
   const BrandsNav = () => (
     <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
       <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
@@ -2904,7 +2929,7 @@ function ForBrandsPage() {
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
       <BrandsNav/>
 
       {/* HERO */}
@@ -2912,7 +2937,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Brands</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
-            고객이 이미 머무는 공간에서<br/>브랜드를 소개하세요
+            뷰티 고객이 머무는 공간에서<br/>브랜드를 소개하세요
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
             The Beauty Pause는 파리의 실제 뷰티 살롱 네트워크를 운영하며, 브랜드와 제품이 자연스럽게 발견될 수 있는 오프라인 접점을 제공합니다.
@@ -2936,24 +2961,6 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* FUNNEL */}
-      <section style={{background:"#faf7f4",padding:"0 clamp(24px,6vw,80px) 64px"}}>
-        <div style={{maxWidth:700,margin:"0 auto"}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",flexWrap:"wrap",gap:0}}>
-            {["발견","관심","참여","구매"].map((step,i)=>(
-              <Fragment key={step}>
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,padding:"0 4px"}}>
-                  <div style={{width:52,height:52,borderRadius:"50%",background:i===3?"rgba(251,86,7,0.08)":"rgba(201,169,110,0.1)",border:`1.5px solid ${i===3?"rgba(251,86,7,0.3)":"rgba(201,169,110,0.3)"}`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                    <span style={{...CG,fontSize:"18px",color:i===3?"#fb5607":"#c9a96e",fontWeight:600}}>{i+1}</span>
-                  </div>
-                  <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:0}}>{step}</p>
-                </div>
-                {i<3&&<div style={{width:"clamp(20px,5vw,48px)",height:1,background:"#d8cfc2",margin:"0 2px 24px"}}/>}
-              </Fragment>
-            ))}
-          </div>
-        </div>
-      </section>
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ K-Beauty in Salons</Badge>
@@ -3012,7 +3019,7 @@ function ForBrandsPage() {
               {n:"01",t:"제품 소개",d1:"브랜드 제품은 참여 뷰티 살롱 안에 비치됩니다.",d2:"The Beauty Pause는 브랜드와 살롱을 직접 매칭하고, 제품 설치 및 QR 운영을 직접 관리합니다."},
               {n:"02",t:"고객 발견",d1:"고객은 서비스를 받는 동안 자연스럽게 제품을 발견합니다.",d2:"제품은 고객이 머무는 공간에 비치되며, 브랜드와 제품을 자유롭게 둘러볼 수 있습니다."},
               {n:"03",t:"QR 경험",d1:"고객은 QR을 통해 제품 및 브랜드 정보를 확인할 수 있습니다.",d2:"브랜드 스토리, 제품 정보, 이벤트 안내 등 다양한 콘텐츠를 제공할 수 있습니다."},
-              {n:"04",t:"고객 참여",d1:"제품을 발견한 고객은 이벤트, 럭키드로우 등 다양한 참여 프로그램에 참여할 수 있습니다.",d2:"일부 프로그램의 경우 고객이 제품을 구매할 수 있는 구조까지 함께 연결됩니다."},
+              {n:"04",t:"고객 참여 및 구매",d1:"제품을 발견한 고객은 이벤트, 럭키드로우 등 다양한 참여 프로그램에 참여할 수 있습니다.",d2:"일부 프로그램의 경우 고객이 제품을 구매할 수 있는 구조까지 함께 연결됩니다."},
             ].map(({n,t,d1,d2},i)=>(
               <div key={n} style={{display:"grid",gridTemplateColumns:"80px 1fr",gap:"0 24px",padding:"32px 0",borderTop:`2px solid ${i===0?"#c9a96e":"#ede8e2"}`}}>
                 <p style={{...CG,fontSize:"40px",color:"rgba(201,169,110,0.25)",fontWeight:300,lineHeight:1,paddingTop:4}}>{n}</p>
@@ -3078,13 +3085,16 @@ function ForBrandsPage() {
           {/* operating metrics */}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:16,marginBottom:36}}>
             {[
-              {n:"파리",l:"운영 도시"},
-              {n:"21개",l:"참여 살롱"},
-              {n:"3종",l:"운영 카테고리",sub:"네일 · 헤어 · 마사지"},
-              {n:"20개+",l:"설치 완료 제품"},
-            ].map(({n,l,sub})=>(
-              <div key={l} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
-                <p style={{...CG,fontSize:"28px",color:"#c9a96e",fontWeight:600,margin:"0 0 4px",lineHeight:1}}>{n}</p>
+              {n:"파리",l:"운영 도시",isNum:false},
+              {n:21,l:"참여 살롱",isNum:true,suffix:"개"},
+              {n:"3종",l:"운영 카테고리",sub:"네일 · 헤어 · 마사지",isNum:false},
+              {n:20,l:"설치 완료 제품",isNum:true,suffix:"개+"},
+            ].map(({n,l,sub,isNum,suffix},idx)=>(
+              <div key={l} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px",position:"relative"}}>
+                {idx===1&&<span style={{position:"absolute",top:14,right:14,width:6,height:6,borderRadius:"50%",background:"#4ade80",boxShadow:"0 0 8px rgba(74,222,128,0.6)",animation:"pulse 2s infinite"}}/>}
+                <p style={{...CG,fontSize:"28px",color:"#c9a96e",fontWeight:600,margin:"0 0 4px",lineHeight:1}}>
+                  {isNum ? <CountUp target={n} suffix={suffix}/> : n}
+                </p>
                 <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>{l}</p>
                 {sub&&<p style={{...KR,fontSize:"10px",color:"rgba(255,255,255,0.25)",margin:"4px 0 0"}}>{sub}</p>}
               </div>
@@ -3117,7 +3127,7 @@ function ForBrandsPage() {
             {[
               {
                 n:"Option 1", t:"자사몰 연결",
-                flow:"QR → 브랜드 자사몰 → 한국에서 발송",
+                flow:"QR → 브랜드 자사몰 결제 → 한국에서 발송",
                 items:["가장 가벼운 시작","결제·배송 전부 브랜드가 처리","배송 기간 1–2주"],
                 tag:null
               },
@@ -3180,9 +3190,9 @@ function ForBrandsPage() {
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
                   </div>
                 ))}
-                <div style={{display:"flex",gap:8,alignItems:"center",gridColumn:"1/-1"}}>
+                <div style={{display:"flex",gap:8,alignItems:"center"}}>
                   <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
-                  <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"6px 0"}}>최대 10개 살롱 운영</p>
+                  <p style={{...KR,fontSize:"13px",color:"#c9a96e",margin:"6px 0",whiteSpace:"nowrap"}}>최대 10개 살롱</p>
                 </div>
               </div>
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
