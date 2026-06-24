@@ -37,14 +37,21 @@ module.exports = async (req, res) => {
       const AT_KEY = process.env.REACT_APP_AIRTABLE_KEY;
       const TBL_ORDERS = "tbl7EarBPyllxm1so";
 
+      const shipping = session.shipping_details || session.customer_details;
+      const addr = shipping?.address || {};
+      const shippingAddress = [addr.line1, addr.line2, addr.postal_code, addr.city, addr.country]
+        .filter(Boolean).join(", ");
+
       const fields = {
         order_id: session.id,
         product_name: session.metadata?.product_name || "",
         customer_email: session.customer_details?.email || session.customer_email || "",
-        customer_name: session.customer_details?.name || "",
+        customer_name: session.customer_details?.name || shipping?.name || "",
         amount: (session.amount_total || 0) / 100,
         status: "paid",
       };
+      if (shippingAddress) fields.shipping_address = shippingAddress;
+      if (session.customer_details?.phone) fields.phone = session.customer_details.phone;
 
       const atRes = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_ORDERS}`, {
         method: "POST",
