@@ -3047,22 +3047,6 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* WHY SALON */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Why</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>왜 살롱인가요?</h2>
-          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 32px",maxWidth:580}}>
-            뷰티 고객은 살롱에서 수십 분에서 수 시간까지 머무르며, 새로운 제품과 뷰티 정보를 접하기에 가장 적합한 환경에 있습니다.
-          </p>
-          <div style={{background:"#0d0d0d",borderRadius:20,padding:"36px 40px",borderLeft:"4px solid #c9a96e",maxWidth:640}}>
-            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"rgba(255,255,255,0.5)",fontWeight:300,lineHeight:1.9,margin:"0 0 6px"}}>고객을 제품으로 데려오는 것이 아니라,</p>
-            <p style={{...KR,fontSize:"clamp(15px,2vw,20px)",color:"#f5f0eb",fontWeight:500,lineHeight:1.9,margin:0}}>고객이 이미 머무는 공간에서<br/>브랜드를 발견하도록 만드는 것이<br/><span style={{color:"#c9a96e"}}>The Beauty Pause</span>의 방식입니다.</p>
-          </div>
-        </div>
-      </section>
-
       {/* PROCESS */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
@@ -3095,14 +3079,12 @@ function ForBrandsPage() {
           <Badge>✦ Benefits</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 36px"}}>브랜드가 얻는 것</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16,marginBottom:48}}>
             {[
-              {t:"파리 뷰티 살롱 노출",d:"실제 고객이 방문하는 뷰티 살롱 안에서 브랜드와 제품이 소개됩니다."},
-              {t:"고객 발견 기회",d:"고객이 서비스를 받는 동안 브랜드와 제품을 자연스럽게 발견할 수 있습니다."},
-              {t:"브랜드 정보 전달",d:"QR과 제품 카드를 통해 브랜드 스토리와 제품 정보를 전달할 수 있습니다."},
-              {t:"현장 운영 지원",d:"The Beauty Pause가 직접 제품 설치, QR 운영, 정기 방문 및 유지 관리를 수행합니다."},
-              {t:"운영 현황 확인",d:"현재 제품이 소개되고 있는 살롱과 운영 현황을 확인할 수 있습니다."},
-              {t:"판매 기회 확장",d:"Member 프로그램의 경우, 고객 구매가 발생할 수 있는 판매 구조까지 함께 연결됩니다."},
+              {t:"프랑스 고객과의 오프라인 접점",d:"박람회나 행사 없이도 파리의 실제 뷰티 고객에게 소개할 수 있습니다."},
+              {t:"낮은 진입 장벽으로 유럽 시장 시작",d:"유통사나 바이어 계약 없이도 적은 물량으로 유럽 시장에 첫 발을 내디딜 수 있습니다."},
+              {t:"현지 운영 부담 없이 브랜드 운영",d:"현지 인력이나 운영 체계를 직접 만들지 않고도 파리 살롱 네트워크를 활용해 유럽에서 운영할 수 있습니다."},
+              {t:"소개에서 판매까지 연결",d:"브랜드를 소개하는 것에 그치지 않고, 고객을 자사몰 또는 구매 페이지로 연결해 판매 기회를 만들 수 있습니다."},
             ].map(({t,d})=>(
               <div key={t} style={{background:"#fff",borderRadius:16,padding:"20px 18px",border:"1px solid #e8e0d8"}}>
                 <div style={{width:24,height:2,background:"#c9a96e",marginBottom:12}}/>
@@ -3111,16 +3093,8 @@ function ForBrandsPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* FIT */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Fit</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>어떤 브랜드와 잘 맞을까요?</h2>
-          <p style={{...KR,fontSize:"15px",color:"#777",margin:"0 0 24px",lineHeight:1.8}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
+          <p style={{...KR,fontSize:"15px",color:"#777",margin:"0 0 16px",lineHeight:1.8}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
           <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
             {["스킨케어","헤어케어","바디케어","웰니스 뷰티","신생 뷰티 브랜드","유럽 고객과 만나고 싶은 브랜드","오프라인 접점을 만들고 싶은 브랜드"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
@@ -3243,19 +3217,19 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 20px"}}>
                 The Beauty Pause는 매월 새로운 브랜드와 함께 Paris Launch Week를 진행합니다.
               </p>
+              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 20px"}}>
+                선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 브랜드의 첫 유럽 오프라인 런칭 캠페인입니다.
+              </p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"15px",color:"#f5f0eb",fontWeight:700,margin:"0 0 6px",textAlign:"center",letterSpacing:"0.5px"}}>
                   THE BEAUTY PAUSE <span style={{color:"#888",fontWeight:400}}>×</span> 참여 브랜드
                 </p>
-                <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 14px",textAlign:"center",letterSpacing:"1px"}}>
+                <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
                   ✦ PARIS LAUNCH WEEK ✦
                 </p>
-                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,margin:"0 0 14px",textAlign:"center",letterSpacing:"0.3px"}}>
+                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,margin:0,textAlign:"center",letterSpacing:"0.3px"}}>
                   10 뷰티 살롱 · 2 주 · QR 체험 · 럭키드로우
-                </p>
-                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:0}}>
-                  선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 브랜드의 첫 유럽 오프라인 런칭 캠페인입니다.
                 </p>
               </div>
 
@@ -3314,23 +3288,22 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Founding Brand Program</Badge>
           <Divider/>
-          <p style={{...KR,fontSize:"14px",color:"#c9a96e",margin:"0 0 16px",fontWeight:600}}>✦ 현재 파리에서 초기 브랜드 파트너(Founding Brand)를 모집하고 있습니다.</p>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
-            The Beauty Pause와 함께 파리 네트워크를 만들어갈 첫 <strong style={{color:"#1a1a1a"}}>20개 초기 파트너 브랜드</strong>를 모집합니다.
+            현재 파리 네트워크의 <strong style={{color:"#1a1a1a"}}>10개 초기 파트너 브랜드</strong>를 모집합니다.
           </p>
           <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 6px",maxWidth:600}}>
-            초기 파트너 브랜드는 단순한 초기 참여 브랜드가 아니라, The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어가는 첫 파트너입니다.
+            초기 파트너 브랜드는 The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어가는 첫 브랜드입니다.
           </p>
           <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
-            초기 파트너는 네트워크의 성장과 함께 가장 오래, 가장 많은 혜택을 누릴 수 있는 브랜드가 됩니다.
+            네트워크의 성장과 함께 가장 오래, 가장 큰 혜택을 함께 누릴 수 있습니다.
           </p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20,marginBottom:32}}>
             {[
               {n:"①",t:"초기 파트너 가격",d:"현재 적용되는 초기 파트너 가격으로 참여할 수 있으며, 향후 가격이 변경되어도 기존 조건이 유지됩니다."},
-              {n:"②",t:"우선 참여 기회",d:"신규 살롱 추가, 도시 확장, 신규 프로그램 운영 시 우선 참여 기회가 제공됩니다."},
-              {n:"③",t:"초기 파트너 배지",d:"초기 파트너 배지가 부여되며, 향후 브랜드 소개 페이지나 신규 기능 추가 시 우선 참여할 수 있습니다."},
-              {n:"④",t:"네트워크 성장 혜택",d:"네트워크가 확장될수록 더 많은 살롱과 고객 접점이 만들어지며, 그 혜택을 가장 먼저 누릴 수 있습니다."},
+              {n:"②",t:"우선 참여 혜택",d:"신규 살롱, 도시 확장, 신규 프로그램 운영 시 우선 참여 기회가 제공됩니다."},
+              {n:"③",t:"초기 파트너 자격",d:"초기 파트너 배지가 부여되며, 향후 추가되는 브랜드 콘텐츠, 프로그램 및 신규 기능에 우선 참여할 수 있습니다."},
+              {n:"④",t:"네트워크 성장 혜택",d:"네트워크가 확장될수록 더 많은 살롱과 고객 접점이 만들어지며, 초기 파트너는 그 혜택을 가장 먼저 누릴 수 있습니다."},
             ].map(({n,t,d})=>(
               <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
                 <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 10px"}}>{n}</p>
@@ -3340,18 +3313,8 @@ function ForBrandsPage() {
             ))}
           </div>
 
-          <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px 28px",marginBottom:20}}>
-            <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>Additional Support</p>
-            {["제품 라벨링 지원","해외 발송 지원"].map(i=>(
-              <div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:6}}>
-                <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0,marginTop:2}}>✓</span>
-                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:0,lineHeight:1.6}}>{i}</p>
-              </div>
-            ))}
-          </div>
-
           <p style={{...KR,fontSize:"13px",color:"#999",fontStyle:"italic",margin:0}}>
-            ※ 초기 파트너 브랜드 모집은 선착순 20개 브랜드로 마감됩니다.
+            ※ 초기 파트너 브랜드 모집은 선착순 10개 브랜드로 마감됩니다.
           </p>
         </div>
       </section>
@@ -3361,12 +3324,19 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why The Beauty Pause</Badge>
           <Divider/>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16,marginBottom:40}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>왜 뷰티 살롱인가요?</h2>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 20px",maxWidth:600}}>
+            뷰티 고객은 살롱에서 수십 분에서 수 시간까지 머무르며, 새로운 제품과 뷰티 정보를 접하기에 가장 적합한 환경에 있습니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 40px",maxWidth:600}}>
+            <span style={{color:"#c9a96e",fontWeight:600}}>The Beauty Pause</span>는 고객을 새로운 공간으로 데려오는 것이 아니라, 고객이 이미 머무는 공간에서 브랜드를 자연스럽게 발견하도록 만듭니다.
+          </p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16}}>
             {[
-              {n:"01",t:"고객이 이미 머무는 공간에 들어갑니다",d:"뷰티 고객은 살롱에서 수십 분에서 수 시간까지 머뭅니다. The Beauty Pause는 고객의 관심을 끌어오는 것이 아니라, 고객이 이미 머무는 공간 안에서 브랜드를 소개합니다."},
-              {n:"02",t:"현장에서 직접 운영합니다",d:"The Beauty Pause는 살롱을 직접 방문하며 제품 설치, 교체 및 운영 관리를 수행합니다. 단순 샘플 배포가 아닌, 지속적으로 관리되는 살롱 네트워크를 운영합니다."},
-              {n:"03",t:"실제 뷰티 환경에서 브랜드를 소개합니다",d:"광고 이미지나 온라인 배너가 아닌, 실제 뷰티 서비스를 받는 환경 안에서 브랜드와 제품이 소개됩니다."},
-              {n:"04",t:"파리에서 브랜드 존재감을 만듭니다",d:"브랜드는 온라인 광고가 아닌, 실제 고객이 방문하는 공간 안에서 지속적으로 소개될 수 있습니다."},
+              {n:"01",t:"고객이 있는 곳에서 시작합니다",d:"광고를 통해 관심을 끌어오는 것이 아니라, 고객이 이미 머무는 공간 안에서 브랜드를 소개합니다."},
+              {n:"02",t:"파리에서 직접 운영합니다",d:"The Beauty Pause가 직접 살롱을 방문하며 제품 설치, 교체, QR 운영 및 현장 관리를 수행합니다."},
+              {n:"03",t:"실제 뷰티 환경에서 브랜드를 소개합니다",d:"광고 이미지가 아닌, 실제 서비스를 받는 환경 안에서 브랜드와 제품이 자연스럽게 소개됩니다."},
+              {n:"04",t:"브랜드의 첫 유럽 거점을 만듭니다",d:"단발성 이벤트가 아니라, 파리의 실제 살롱 네트워크 안에서 브랜드가 지속적으로 소개될 수 있는 기반을 만듭니다."},
             ].map(({n,t,d})=>(
               <div key={n} style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:16,padding:"28px 24px"}}>
                 <p style={{...CG,fontSize:"32px",color:"rgba(201,169,110,0.3)",fontWeight:300,margin:"0 0 14px",lineHeight:1}}>{n}</p>
