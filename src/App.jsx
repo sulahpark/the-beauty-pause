@@ -3238,26 +3238,29 @@ function ForBrandsPage() {
 
             {/* Launch Program */}
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
-              <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Launch <span style={{color:"#c9a96e"}}>Program</span></p>
+              <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Paris Launch <span style={{color:"#c9a96e"}}>Program</span></p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 20px"}}>파리에서 브랜드를 런칭하는 프로그램</p>
               <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 20px"}}>
-                매월 새로운 브랜드와 함께 Paris Launch Week를 진행합니다.
+                The Beauty Pause는 매월 새로운 브랜드와 함께 Paris Launch Week를 진행합니다.
               </p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"15px",color:"#f5f0eb",fontWeight:700,margin:"0 0 6px",textAlign:"center",letterSpacing:"0.5px"}}>
-                  THE BEAUTY PAUSE <span style={{color:"#888",fontWeight:400}}>×</span> K브랜드
+                  THE BEAUTY PAUSE <span style={{color:"#888",fontWeight:400}}>×</span> 참여 브랜드
                 </p>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 14px",textAlign:"center",letterSpacing:"1px"}}>
-                  ✦ 파리 런칭 위크 ✦
+                  ✦ PARIS LAUNCH WEEK ✦
+                </p>
+                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,margin:"0 0 14px",textAlign:"center",letterSpacing:"0.3px"}}>
+                  10 뷰티 살롱 · 2 주 · QR 체험 · 럭키드로우
                 </p>
                 <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:0}}>
-                  선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 실제 뷰티 고객과 브랜드가 만나는 첫 오프라인 접점을 만듭니다.
+                  선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 브랜드의 첫 유럽 오프라인 런칭 캠페인입니다.
                 </p>
               </div>
 
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:24}}>
-                {["Paris Launch Week 참여","제품 소개 카드 제작","QR 연결","살롱 매칭 및 제품 비치","최대 10개 살롱 동시 운영","현장 콘텐츠 제공","기본 운영 현황 확인"].map(i=>(
+                {["파리 런칭 위크 참여","제품 소개 카드 제작","QR 연결","살롱 매칭 및 제품 비치","최대 10개 살롱 동시 운영","현장 콘텐츠 제공","기본 운영 현황 확인"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
@@ -3280,11 +3283,11 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Network <span style={{color:"#fb5607"}}>Program</span></p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 20px"}}>파리 살롱 네트워크에서 브랜드를 지속적으로 운영하는 프로그램</p>
               <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 24px"}}>
-                Launch 이후에도 살롱 네트워크 안에서 브랜드를 지속적으로 소개하고, 반복 노출과 고객 참여, 구매 연결까지 이어지는 운영 프로그램입니다.
+                런칭 이후에도 살롱 네트워크 안에서 브랜드를 지속적으로 소개하고, 반복 노출과 고객 참여, 구매 연결까지 이어지는 운영 프로그램입니다.
               </p>
 
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:24}}>
-                {[{l:"Launch Program 전체 포함",special:false},{l:"10개 이상 살롱 확장 운영",special:false},{l:"순환형 제품 운영",special:false},{l:"브랜드 콘텐츠 운영",special:false},{l:"고객 참여 프로그램",special:false},{l:"상위 티어 살롱 우선 운영",special:false},{l:"구매 구조 연결",special:true}].map(({l,special})=>(
+                {[{l:"Paris Launch Program 전체 포함",special:false},{l:"10개 이상 살롱 확장 운영",special:false},{l:"순환형 제품 운영",special:false},{l:"브랜드 콘텐츠 운영",special:false},{l:"고객 참여 프로그램",special:false},{l:"상위 티어 살롱 우선 운영",special:false},{l:"구매 구조 연결",special:true}].map(({l,special})=>(
                   <div key={l} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#fb5607",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:special?"#fb5607":"rgba(255,255,255,0.55)",margin:"6px 0"}}>{l}</p>
