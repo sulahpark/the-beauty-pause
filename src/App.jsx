@@ -3245,7 +3245,12 @@ function ForBrandsPage() {
               </p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
-                <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center"}}>✦ THE BEAUTY PAUSE X K브랜드 Paris Launch ✦</p>
+                <p style={{...KR,fontSize:"15px",color:"#f5f0eb",fontWeight:700,margin:"0 0 6px",textAlign:"center",letterSpacing:"0.5px"}}>
+                  THE BEAUTY PAUSE <span style={{color:"#888",fontWeight:400}}>×</span> K브랜드
+                </p>
+                <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 14px",textAlign:"center",letterSpacing:"1px"}}>
+                  ✦ 파리 런칭 위크 ✦
+                </p>
                 <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:0}}>
                   선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 실제 뷰티 고객과 브랜드가 만나는 첫 오프라인 접점을 만듭니다.
                 </p>
