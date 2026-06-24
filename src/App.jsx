@@ -2944,9 +2944,9 @@ function ForBrandsPage() {
 
   const BrandsNav = () => (
     <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
-      <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
-        <span style={{...CG,fontSize:"17px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-        <span style={{...CG,fontSize:"17px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
+      <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+        <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+        <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
       </button>
       <a href="mailto:hello@thebeautypause.com"
         style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
@@ -3249,11 +3249,8 @@ function ForBrandsPage() {
                 ))}
               </div>
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
-                <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.18)",borderRadius:10,padding:"10px 14px",marginBottom:16}}>
-                  <p style={{...KR,fontSize:"12px",color:"#c9a96e",margin:0,fontWeight:600,lineHeight:1.5}}>🎫 Paris Expo Korea 2026 참가 브랜드 한정</p>
-                </div>
-                <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>최대 10개 살롱 운영</p>
-                <p style={{...KR,fontSize:"16px",color:"#c9a96e",margin:"0 0 4px",fontWeight:600}}>79만원 ~</p>
+                <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>79만원 부터</p>
+                <p style={{...KR,fontSize:"16px",color:"#c9a96e",margin:"0 0 4px",fontWeight:600}}>살롱 10곳 기준</p>
                 <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px"}}>운영 규모 및 브랜드별 조건에 따라 협의됩니다.</p>
                 <a href="mailto:hello@thebeautypause.com"
                   style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
@@ -3294,10 +3291,10 @@ function ForBrandsPage() {
           <Badge>✦ Founding Brand Program</Badge>
           <Divider/>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
-            The Beauty Pause와 함께 파리 네트워크를 만들어갈 첫 <strong style={{color:"#1a1a1a"}}>20개 브랜드</strong>를 모집합니다.
+            The Beauty Pause와 함께 파리 네트워크를 만들어갈 첫 <strong style={{color:"#1a1a1a"}}>20개 초기 파트너 브랜드</strong>를 모집합니다.
           </p>
           <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 6px",maxWidth:600}}>
-            Founding Brand는 단순한 초기 참여 브랜드가 아니라, The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어가는 첫 파트너입니다.
+            초기 파트너 브랜드는 단순한 초기 참여 브랜드가 아니라, The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어가는 첫 파트너입니다.
           </p>
           <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
             초기 파트너는 네트워크의 성장과 함께 가장 오래, 가장 많은 혜택을 누릴 수 있는 브랜드가 됩니다.
@@ -3305,10 +3302,10 @@ function ForBrandsPage() {
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20,marginBottom:32}}>
             {[
-              {n:"①",t:"Founding Price",d:"Founding Brand는 현재 적용되는 초기 파트너 가격으로 참여할 수 있으며, 향후 프로그램 가격이 변경되더라도 기존 조건이 유지됩니다."},
-              {n:"②",t:"Priority Access",d:"신규 살롱 추가, 새로운 도시 확장, 신규 프로그램 운영 시 Founding Brand에게 우선 참여 기회가 제공됩니다."},
-              {n:"③",t:"Founding Brand Status",d:"Founding Brand Badge가 부여되며, The Beauty Pause의 초기 파트너 브랜드로 기록됩니다. 향후 브랜드 소개 페이지, 콘텐츠 프로그램, 신규 네트워크 기능이 추가될 경우 우선적으로 참여할 수 있습니다."},
-              {n:"④",t:"Network Growth Advantage",d:"네트워크가 확장될수록 더 많은 살롱, 더 많은 고객 접점, 더 많은 운영 기회가 만들어집니다. Founding Brand는 이러한 성장의 혜택을 가장 먼저 누릴 수 있습니다."},
+              {n:"①",t:"초기 파트너 가격",d:"현재 적용되는 초기 파트너 가격으로 참여할 수 있으며, 향후 가격이 변경되어도 기존 조건이 유지됩니다."},
+              {n:"②",t:"우선 참여 기회",d:"신규 살롱 추가, 도시 확장, 신규 프로그램 운영 시 우선 참여 기회가 제공됩니다."},
+              {n:"③",t:"초기 파트너 배지",d:"초기 파트너 배지가 부여되며, 향후 브랜드 소개 페이지나 신규 기능 추가 시 우선 참여할 수 있습니다."},
+              {n:"④",t:"네트워크 성장 혜택",d:"네트워크가 확장될수록 더 많은 살롱과 고객 접점이 만들어지며, 그 혜택을 가장 먼저 누릴 수 있습니다."},
             ].map(({n,t,d})=>(
               <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
                 <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 10px"}}>{n}</p>
@@ -3320,7 +3317,7 @@ function ForBrandsPage() {
 
           <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px 28px",marginBottom:20}}>
             <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>Additional Support</p>
-            {["제품 라벨링 지원 (해당 시)","초기 해외 발송 지원 (조건별 협의)"].map(i=>(
+            {["제품 라벨링 지원","해외 발송 지원"].map(i=>(
               <div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:6}}>
                 <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0,marginTop:2}}>✓</span>
                 <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:0,lineHeight:1.6}}>{i}</p>
@@ -3329,7 +3326,7 @@ function ForBrandsPage() {
           </div>
 
           <p style={{...KR,fontSize:"13px",color:"#999",fontStyle:"italic",margin:0}}>
-            ※ Founding Brand 모집은 선착순 20개 브랜드로 마감됩니다.
+            ※ 초기 파트너 브랜드 모집은 선착순 20개 브랜드로 마감됩니다.
           </p>
         </div>
       </section>
@@ -3383,8 +3380,8 @@ function ForBrandsPage() {
       <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
         <div>
           <div style={{marginBottom:4}}>
-            <span style={{...CG,fontSize:"clamp(14px,4vw,17px)",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-            <span style={{...CG,fontSize:"clamp(14px,4vw,17px)",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
+            <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+            <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
           </div>
           <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
         </div>
