@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Component } from "react";
+import { useState, useEffect, useRef, Component, Fragment } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
@@ -2941,7 +2941,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:700,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"center",flexWrap:"wrap",gap:0}}>
             {["발견","관심","참여","구매"].map((step,i)=>(
-              <React.Fragment key={step}>
+              <Fragment key={step}>
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,padding:"0 4px"}}>
                   <div style={{width:52,height:52,borderRadius:"50%",background:i===3?"rgba(251,86,7,0.08)":"rgba(201,169,110,0.1)",border:`1.5px solid ${i===3?"rgba(251,86,7,0.3)":"rgba(201,169,110,0.3)"}`,display:"flex",alignItems:"center",justifyContent:"center"}}>
                     <span style={{...CG,fontSize:"18px",color:i===3?"#fb5607":"#c9a96e",fontWeight:600}}>{i+1}</span>
@@ -2949,7 +2949,7 @@ function ForBrandsPage() {
                   <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:0}}>{step}</p>
                 </div>
                 {i<3&&<div style={{width:"clamp(20px,5vw,48px)",height:1,background:"#d8cfc2",margin:"0 2px 24px"}}/>}
-              </React.Fragment>
+              </Fragment>
             ))}
           </div>
         </div>
