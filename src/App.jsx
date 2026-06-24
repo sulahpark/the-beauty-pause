@@ -3021,14 +3021,8 @@ function ForBrandsPage() {
           <Badge>✦ K-Beauty in Salons</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>파리의 뷰티 살롱에서 만나는 K-뷰티</h2>
-          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 6px"}}>
-            The Beauty Pause는 파리의 네일샵, 헤어살롱, 마사지샵을 중심으로 뷰티 살롱 네트워크를 운영하고 있습니다.
-          </p>
-          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 6px"}}>
-            브랜드 제품 비치부터 QR 운영, 정기 관리까지 직접 수행하며, 브랜드가 실제 고객과 만나는 접점을 만듭니다.
-          </p>
           <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"0 0 32px"}}>
-            현재 네트워크는 파리를 중심으로 지속적으로 확장되고 있습니다.
+            The Beauty Pause는 파리의 네일샵, 헤어살롱, 마사지샵을 중심으로 뷰티 살롱 네트워크를 운영하고 있습니다.
           </p>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {/* big left — 1:1 */}
@@ -3044,6 +3038,12 @@ function ForBrandsPage() {
               ))}
             </div>
           </div>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:"28px 0 6px"}}>
+            브랜드 제품 비치부터 QR 운영, 정기 관리까지 직접 수행하며, 브랜드가 실제 고객과 만나는 접점을 만듭니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"#666",maxWidth:600,lineHeight:1.9,margin:0}}>
+            현재 네트워크는 파리를 중심으로 지속적으로 확장되고 있습니다.
+          </p>
         </div>
       </section>
 
@@ -3232,8 +3232,7 @@ function ForBrandsPage() {
           <Badge>✦ Participation</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>참여 프로그램</h2>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 14px"}}>브랜드 목표와 운영 범위에 맞는 프로그램을 선택하세요.</p>
-          <p style={{...KR,fontSize:"13px",color:"#c9a96e",margin:"0 0 40px",fontWeight:500}}>✦ 현재 파리에서 초기 브랜드 파트너(Founding Brand)를 모집하고 있습니다.</p>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 40px"}}>브랜드 목표와 운영 범위에 맞는 프로그램을 선택하세요.</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20}}>
 
             {/* Starter */}
@@ -3249,8 +3248,7 @@ function ForBrandsPage() {
                 ))}
               </div>
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
-                <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>79만원 부터</p>
-                <p style={{...KR,fontSize:"16px",color:"#c9a96e",margin:"0 0 4px",fontWeight:600}}>살롱 10곳 기준</p>
+                <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>79만원</p>
                 <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",margin:"0 0 20px"}}>운영 규모 및 브랜드별 조건에 따라 협의됩니다.</p>
                 <a href="mailto:hello@thebeautypause.com"
                   style={{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 22px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
@@ -3290,6 +3288,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Founding Brand Program</Badge>
           <Divider/>
+          <p style={{...KR,fontSize:"14px",color:"#c9a96e",margin:"0 0 16px",fontWeight:600}}>✦ 현재 파리에서 초기 브랜드 파트너(Founding Brand)를 모집하고 있습니다.</p>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
             The Beauty Pause와 함께 파리 네트워크를 만들어갈 첫 <strong style={{color:"#1a1a1a"}}>20개 초기 파트너 브랜드</strong>를 모집합니다.
           </p>
