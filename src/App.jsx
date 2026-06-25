@@ -3002,13 +3002,13 @@ function ForBrandsPage() {
         <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Discovery</Badge>
           <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.5,margin:"8px 0 16px"}}>
-            좋은 제품도<br/>발견될 기회가 필요합니다.
+            좋은 제품도 발견될 기회가 필요합니다.
           </h2>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#666",lineHeight:1.9,margin:"0 0 10px"}}>
             좋은 제품도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
           </p>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#1a1a1a",fontWeight:600,lineHeight:1.9,margin:0}}>
-            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는 고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
+            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
           </p>
         </div>
       </section>
@@ -3206,9 +3206,7 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Paris Launch <span style={{color:"#c9a96e"}}>Program</span></p>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 20px"}}>파리에서 브랜드를 런칭하는 프로그램</p>
               <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 20px"}}>
-                The Beauty Pause는 매월 새로운 브랜드와 함께 Paris Launch Week를 진행합니다.
-              </p>
-              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 20px"}}>
+                The Beauty Pause는 매월 새로운 브랜드와 함께 Paris Launch Week를 진행합니다.<br/>
                 선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 브랜드의 첫 유럽 오프라인 런칭 캠페인입니다.
               </p>
 
