@@ -2379,12 +2379,12 @@ function SpotPage({ lang, setLang }) {
                 </div>
               </div>
               <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5vw,28px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.2}}>
-                {lang==="fr"?"Laissez un avis,\ngagnez un coffret":"Leave a review,\nwin a gift set"}
+                {lang==="fr"?"Laissez un avis,\ngagnez un coffret K-Beauty":"Leave a review,\nwin a K-Beauty gift"}
               </h2>
               <p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.5)",margin:"0 0 20px",lineHeight:1.5}}>
                 {lang==="fr"
-                  ? "Donnez votre avis sur ce salon · Tentez de gagner un coffret cadeau de 50€"
-                  : "Rate this salon · Enter to win a €50 gift set"}
+                  ? "Donnez votre avis sur ce salon · Tentez de gagner un coffret K-Beauty"
+                  : "Rate this salon · Enter to win a K-Beauty gift set"}
               </p>
               <button onClick={()=>setScreen("lucky")}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"0.5px",borderRadius:12,boxShadow:"0 4px 20px rgba(201,169,110,0.4)",transition:"opacity 0.2s"}}
@@ -2596,8 +2596,8 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
         </p>
         <p style={{...SS,fontSize:"13px",color:"#c9a96e",lineHeight:1.7,marginBottom:32,maxWidth:360,fontWeight:600}}>
           {lang==="fr"
-            ? "🎁 Vous pourriez gagner un coffret cadeau de 50€ — surveillez votre boîte mail !"
-            : "🎁 You could win a €50 gift set — keep an eye on your inbox!"}
+            ? "🎁 Vous pourriez être sélectionné(e) pour un coffret K-Beauty — surveillez votre boîte mail !"
+            : "🎁 You could be selected for a K-Beauty gift set — keep an eye on your inbox!"}
         </p>
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
           <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
@@ -2634,7 +2634,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
           {/* prize card */}
           <div style={{background:"linear-gradient(135deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"20px",marginBottom:20,position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:-20,right:-20,width:80,height:80,borderRadius:"50%",background:"rgba(201,169,110,0.1)"}}/>
-            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>🎀 {lang==="fr"?"Le cadeau":"The prize"}</p>
+            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>🎁 {lang==="fr"?"K-Beauty Gift":"K-Beauty Gift"}</p>
             {product ? (
               <div style={{display:"flex",gap:12,alignItems:"center"}}>
                 {(()=>{const pi=getProdImg(product);return pi&&(
