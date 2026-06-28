@@ -2308,7 +2308,31 @@ function SpotPage({ lang, setLang }) {
           </div>
         )}
 
-        {/* ② LUCKY DRAW — main CTA, gold card */}
+        {/* ② INSTANT REWARD — discount code shown immediately on scan */}
+        {product&&product.discount_code&&(
+          <div style={{padding:"20px 20px 0",flexShrink:0}}>
+            <div style={{background:"#fff",border:"1.5px solid #e8d9b8",borderRadius:16,padding:"18px 20px",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <span style={{fontSize:"16px"}}>🎉</span>
+                <p style={{...SS,fontSize:"11px",color:"#a07832",fontWeight:700,letterSpacing:"0.5px",margin:0}}>
+                  {lang==="fr"?"Vous avez débloqué une réduction !":"You've unlocked a discount!"}
+                </p>
+              </div>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"#fdf8ee",border:"1px dashed #c9a96e",borderRadius:10,padding:"12px 16px"}}>
+                <span style={{...SS,fontSize:"18px",fontWeight:800,color:"#1a1a1a",letterSpacing:"1px"}}>{product.discount_code}</span>
+                <button onClick={()=>{navigator.clipboard?.writeText(product.discount_code);}}
+                  style={{...SS,fontSize:"11px",fontWeight:700,color:"#fff",background:"#1a1a1a",border:"none",padding:"7px 14px",borderRadius:8,cursor:"pointer"}}>
+                  {lang==="fr"?"Copier":"Copy"}
+                </button>
+              </div>
+              <p style={{...SS,fontSize:"10px",color:"#bbb",margin:"8px 0 0"}}>
+                {lang==="fr"?"Faites une capture d'écran pour ne pas l'oublier.":"Screenshot this so you don't lose it."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ③ LUCKY DRAW — main CTA, gold card */}
         <div style={{padding:"20px 20px 0",flexShrink:0}}>
           <div style={{background:"linear-gradient(135deg,#1a1a1a 0%,#2a2218 100%)",borderRadius:20,padding:"24px 22px",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",position:"relative",overflow:"hidden"}}>
             {/* decorative circle */}
@@ -2325,12 +2349,12 @@ function SpotPage({ lang, setLang }) {
                 </div>
               </div>
               <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5vw,28px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.2}}>
-                {lang==="fr"?"Laissez un avis,\ngagnez un cadeau":"Leave a review,\nwin a gift"}
+                {lang==="fr"?"Laissez un avis,\ngagnez un coffret":"Leave a review,\nwin a gift set"}
               </h2>
               <p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.5)",margin:"0 0 20px",lineHeight:1.5}}>
                 {lang==="fr"
-                  ? "Donnez votre avis sur Google · Partagez une capture d'écran · Gagnez des produits K-Beauty"
-                  : "Rate the salon on Google · Share a screenshot · Win K-Beauty products"}
+                  ? "Donnez votre avis sur ce salon · Tentez de gagner un coffret cadeau de 50€"
+                  : "Rate this salon · Enter to win a €50 gift set"}
               </p>
               <button onClick={()=>setScreen("lucky")}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"0.5px",borderRadius:12,boxShadow:"0 4px 20px rgba(201,169,110,0.4)",transition:"opacity 0.2s"}}
@@ -2342,7 +2366,7 @@ function SpotPage({ lang, setLang }) {
           </div>
         </div>
 
-        {/* ③ PRODUCT INFO — secondary, below */}
+        {/* ④ PRODUCT INFO — secondary, below */}
         {product&&(
           <div style={{padding:"16px 20px 32px"}}>
             <div onClick={()=>setScreen("product")}
@@ -2519,7 +2543,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
         throw new Error("Supabase not configured - cannot upload screenshot");
       }
 
-      // 2. Submit to Airtable with public URL
+      // 2. Submit to Airtable with public URL — record product seen at this submission
       const fields = {
         spot_id: spotId,
         name: name.trim(),
@@ -2529,6 +2553,8 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       if (phone.trim()) fields.phone = phone.trim();
       if (salon?.id) fields.salon = [salon.id];
       if (screenshotUrl) fields.screenshot = [{ url: screenshotUrl, filename: screenshot.name }];
+      if (product?.product_name) fields.product_seen = product.product_name;
+      if (product?.discount_code) fields.discount_code_sent = product.discount_code;
       const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_LUCKY_DRAW}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
@@ -2565,6 +2591,14 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
             ? "Votre participation est enregistrée. Résultats envoyés par email chaque semaine."
             : "Your entry has been recorded. Winners are announced weekly by email."}
         </p>
+        {product?.discount_code&&(
+          <div style={{background:"rgba(201,169,110,0.08)",border:"1px dashed rgba(201,169,110,0.4)",borderRadius:10,padding:"12px 18px",marginBottom:20,marginTop:8}}>
+            <p style={{...SS,fontSize:"11px",color:"#999",margin:"0 0 6px"}}>
+              {lang==="fr"?"Votre code promo (déjà envoyé par email) :":"Your discount code (also sent by email):"}
+            </p>
+            <span style={{...SS,fontSize:"16px",fontWeight:800,color:"#c9a96e",letterSpacing:"1px"}}>{product.discount_code}</span>
+          </div>
+        )}
         {salon&&<p style={{...SS,fontSize:"12px",color:"#555",marginBottom:32}}>Spot: {salon.name}</p>}
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
           <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
@@ -3038,6 +3072,87 @@ function ForBrandsPage() {
         </div>
       </section>
 
+      {/* SALON TYPE PHILOSOPHY */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Salon Matching</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>어떤 살롱에 배치되나요?</h2>
+          <p style={{...KR,fontSize:"14px",color:"#999",margin:"0 0 36px"}}>우리는 살롱에 오는 뷰티 고객을 타겟합니다</p>
+
+          {/* FUNNEL DIAGRAM */}
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginBottom:48,padding:"36px 16px",background:"#fff",borderRadius:20,border:"1px solid #ede8e2"}}>
+            {/* customer node */}
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginBottom:4}}>
+              <div style={{width:60,height:60,borderRadius:"50%",background:"#0d0d0d",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"26px",marginBottom:8,boxShadow:"0 6px 18px rgba(0,0,0,0.15)"}}>👤</div>
+              <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:0}}>Beauty Customers</p>
+              <p style={{...KR,fontSize:"11px",color:"#999",margin:"2px 0 0"}}>뷰티 살롱을 찾는 고객</p>
+            </div>
+
+            {/* connector lines: 1 -> 3 */}
+            <svg width="280" height="36" style={{display:"block"}}><line x1="140" y1="0" x2="140" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="30" y1="16" x2="250" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="30" y1="16" x2="30" y2="36" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="140" y1="16" x2="140" y2="36" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="250" y1="16" x2="250" y2="36" stroke="#d8cfc2" strokeWidth="1.5"/></svg>
+
+            {/* 3 salon types */}
+            <div style={{display:"flex",gap:12,marginTop:-4,flexWrap:"wrap",justifyContent:"center"}}>
+              {["Nail Salon","Hair Salon","Massage Salon"].map(s=>(
+                <div key={s} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:12,padding:"12px 16px",textAlign:"center",minWidth:88}}>
+                  <p style={{...KR,fontSize:"12px",fontWeight:700,color:"#1a1a1a",margin:0}}>{s}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* connector lines: 3 -> 1 */}
+            <svg width="280" height="36" style={{display:"block"}}><line x1="30" y1="0" x2="30" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="140" y1="0" x2="140" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="250" y1="0" x2="250" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="30" y1="16" x2="250" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="140" y1="16" x2="140" y2="36" stroke="#c9a96e" strokeWidth="2"/></svg>
+
+            {/* discover badge */}
+            <div style={{background:"linear-gradient(135deg,#c9a96e,#b8944d)",borderRadius:20,padding:"9px 22px",marginTop:-4,marginBottom:20,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
+              <p style={{...KR,fontSize:"12.5px",fontWeight:700,color:"#0d0d0d",margin:0,letterSpacing:"0.3px"}}>✦ Discover Korean Beauty ✦</p>
+            </div>
+
+            {/* QR -> Learn -> Purchase */}
+            <div style={{display:"flex",alignItems:"center"}}>
+              {["QR","Learn","Purchase"].map((step,i)=>(
+                <div key={step} style={{display:"flex",alignItems:"center"}}>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+                    <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px solid ${i===2?"#fb5607":"#c9a96e"}`,background:i===2?"rgba(251,86,7,0.08)":"rgba(201,169,110,0.1)",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:"13px",fontWeight:700,color:i===2?"#fb5607":"#c9a96e"}}>{i+1}</div>
+                    <p style={{...KR,fontSize:"11px",fontWeight:600,color:"#1a1a1a",margin:0}}>{step}</p>
+                  </div>
+                  {i<2 && <div style={{width:28,height:1,background:"#d8cfc2",margin:"0 6px 22px"}}/>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 20px",maxWidth:600}}>
+            살롱이 제품을 직접 구매하는 구조라면 살롱 유형이 매우 중요합니다. 하지만 The Beauty Pause는 최종 구매자가 살롱이 아니라 <strong style={{color:"#1a1a1a"}}>고객</strong>이기 때문에, 살롱의 종류보다 그 공간에 머무는 뷰티 고객에게 더 집중합니다.
+          </p>
+
+          <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px 28px",marginBottom:32}}>
+            <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",lineHeight:1.8,margin:0}}>
+              다만 헤어 제품처럼 <strong style={{color:"#c9a96e"}}>바로 사용해볼 수 있고 살롱 서비스와 직접 연결되는 제품</strong>은 특정 살롱 유형에서 더 좋은 반응을 보일 수 있습니다.
+            </p>
+          </div>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16,marginBottom:32}}>
+            {[
+              {t:"스킨케어 · 바디 · 웰니스",d:"살롱 유형보다 고객이 머무는 시간이 핵심 — 모든 살롱에서 고르게 좋은 반응"},
+              {t:"헤어케어",d:"헤어살롱에서 특히 더 강한 반응 — 서비스와 직접 연결되는 제품 특성"},
+              {t:"네일 전용 제품",d:"네일샵이 가장 적합한 채널 — 전문성과 즉시성이 중요한 경우"},
+            ].map(({t,d})=>(
+              <div key={t} style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:14,padding:"20px 18px"}}>
+                <div style={{width:24,height:2,background:"#c9a96e",marginBottom:12}}/>
+                <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4}}>{t}</p>
+                <p style={{...KR,fontSize:"12px",color:"#777",lineHeight:1.6,margin:0}}>{d}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{...KR,fontSize:"13px",color:"#999",lineHeight:1.8,margin:0,fontStyle:"italic"}}>
+            ※ The Beauty Pause는 운영 데이터를 통해 제품 카테고리별로 가장 효과적인 살롱 채널을 지속적으로 파악하고, 브랜드와 공유합니다.
+          </p>
+        </div>
+      </section>
+
       {/* PROCESS */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
@@ -3099,7 +3214,7 @@ function ForBrandsPage() {
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 16px",lineHeight:1.4}}>살롱 네트워크</h2>
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 36px",maxWidth:560}}>
-            네일, 헤어, 마사지 살롱을 중심으로 뷰티 네트워크를 운영하고 있습니다.
+            네일, 헤어, 마사지 살롱을 중심으로 뷰티 네트워크를 운영하고 있으며, 네트워크는 지속적으로 확장되고 있습니다.
           </p>
 
           {/* operating metrics */}
@@ -3122,8 +3237,6 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.4)",margin:0}}>비치 완료 제품</p>
             </div>
           </div>
-
-          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.2)",marginBottom:32,fontStyle:"italic"}}>※ 네트워크는 지속적으로 확장되고 있습니다.</p>
 
           {/* live network CTA */}
           <a href="https://thebeautypause.com" target="_blank" rel="noopener noreferrer"
