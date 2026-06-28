@@ -2308,26 +2308,56 @@ function SpotPage({ lang, setLang }) {
           </div>
         )}
 
-        {/* ② INSTANT REWARD — discount code shown immediately on scan */}
-        {product&&product.discount_code&&(
+        {/* ② PRODUCT + DISCOUNT CODE — combined box */}
+        {product&&(
           <div style={{padding:"20px 20px 0",flexShrink:0}}>
-            <div style={{background:"#fff",border:"1.5px solid #e8d9b8",borderRadius:16,padding:"18px 20px",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-                <span style={{fontSize:"16px"}}>🎉</span>
-                <p style={{...SS,fontSize:"11px",color:"#a07832",fontWeight:700,letterSpacing:"0.5px",margin:0}}>
-                  {lang==="fr"?"Vous avez débloqué une réduction !":"You've unlocked a discount!"}
-                </p>
+            <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
+              {/* product row — clickable to product detail */}
+              <div onClick={()=>setScreen("product")}
+                style={{display:"flex",alignItems:"center",gap:0,cursor:"pointer",transition:"opacity 0.2s"}}
+                onTouchStart={e=>e.currentTarget.style.opacity="0.8"}
+                onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
+                {/* product image */}
+                <div style={{width:90,height:90,flexShrink:0,position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
+                  {img ? <>
+                    <img src={img} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(8px) saturate(1.3) opacity(0.9)"}}/>
+                    <img src={img} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
+                  </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"28px"}}>✨</div>}
+                </div>
+                {/* info */}
+                <div style={{flex:1,padding:"14px 16px",minWidth:0}}>
+                  <p style={{...SS,fontSize:"9px",color:"#c9a96e",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{brandDisplay}</p>
+                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{product.product_name}</p>
+                  <p style={{...SS,fontSize:"11px",color:"#aaa",margin:"0 0 8px"}}>{product.category}{product.price_customer&&` · €${product.price_customer}`}</p>
+                  <p style={{...SS,fontSize:"11px",color:"#c9a96e",fontWeight:600,margin:0}}>
+                    {lang==="fr"?"Voir le produit →":"View product info →"}
+                  </p>
+                </div>
               </div>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"#fdf8ee",border:"1px dashed #c9a96e",borderRadius:10,padding:"12px 16px"}}>
-                <span style={{...SS,fontSize:"18px",fontWeight:800,color:"#1a1a1a",letterSpacing:"1px"}}>{product.discount_code}</span>
-                <button onClick={()=>{navigator.clipboard?.writeText(product.discount_code);}}
-                  style={{...SS,fontSize:"11px",fontWeight:700,color:"#fff",background:"#1a1a1a",border:"none",padding:"7px 14px",borderRadius:8,cursor:"pointer"}}>
-                  {lang==="fr"?"Copier":"Copy"}
-                </button>
-              </div>
-              <p style={{...SS,fontSize:"10px",color:"#bbb",margin:"8px 0 0"}}>
-                {lang==="fr"?"Faites une capture d'écran pour ne pas l'oublier.":"Screenshot this so you don't lose it."}
-              </p>
+
+              {/* discount code — same box, below product row */}
+              {product.discount_code&&(
+                <div style={{borderTop:"1px solid #f0ebe2",padding:"16px 20px",background:"#fdf8ee"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                    <span style={{fontSize:"16px"}}>🎉</span>
+                    <p style={{...SS,fontSize:"11px",color:"#a07832",fontWeight:700,letterSpacing:"0.5px",margin:0}}>
+                      {lang==="fr"?"Vous avez débloqué une réduction !":"You've unlocked a discount!"}
+                    </p>
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"#fff",border:"1px dashed #c9a96e",borderRadius:10,padding:"12px 16px"}}>
+                    <span style={{...SS,fontSize:"18px",fontWeight:800,color:"#1a1a1a",letterSpacing:"1px"}}>{product.discount_code}</span>
+                    <button onClick={(e)=>{e.stopPropagation();navigator.clipboard?.writeText(product.discount_code);}}
+                      style={{...SS,fontSize:"11px",fontWeight:700,color:"#fff",background:"#1a1a1a",border:"none",padding:"7px 14px",borderRadius:8,cursor:"pointer"}}>
+                      {lang==="fr"?"Copier":"Copy"}
+                    </button>
+                  </div>
+                  <p style={{...SS,fontSize:"10px",color:"#bbb",margin:"8px 0 0"}}>
+                    {lang==="fr"
+                      ?"Valable sur tous nos produits, pas seulement celui-ci. Faites une capture d'écran."
+                      :"Valid on all products, not just this one. Screenshot this to save it."}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -2365,33 +2395,6 @@ function SpotPage({ lang, setLang }) {
             </div>
           </div>
         </div>
-
-        {/* ④ PRODUCT INFO — secondary, below */}
-        {product&&(
-          <div style={{padding:"16px 20px 32px"}}>
-            <div onClick={()=>setScreen("product")}
-              style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,overflow:"hidden",cursor:"pointer",display:"flex",alignItems:"center",gap:0,transition:"all 0.2s",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}
-              onTouchStart={e=>e.currentTarget.style.opacity="0.8"}
-              onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
-              {/* product image */}
-              <div style={{width:90,height:90,flexShrink:0,position:"relative",overflow:"hidden",background:"#1a1a1a"}}>
-                {img ? <>
-                  <img src={img} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(8px) saturate(1.3) opacity(0.9)"}}/>
-                  <img src={img} alt={product.product_name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
-                </> : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"28px"}}>✨</div>}
-              </div>
-              {/* info */}
-              <div style={{flex:1,padding:"14px 16px",minWidth:0}}>
-                <p style={{...SS,fontSize:"9px",color:"#c9a96e",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",margin:"0 0 3px"}}>{brandDisplay}</p>
-                <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{product.product_name}</p>
-                <p style={{...SS,fontSize:"11px",color:"#aaa",margin:"0 0 8px"}}>{product.category}{product.price_customer&&` · €${product.price_customer}`}</p>
-                <p style={{...SS,fontSize:"11px",color:"#c9a96e",fontWeight:600,margin:0}}>
-                  {lang==="fr"?"Voir le produit →":"View product info →"}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* footer links */}
         <div style={{marginTop:"auto",padding:"16px 20px 32px",display:"flex",gap:16,justifyContent:"center"}}>
@@ -2591,15 +2594,11 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
             ? "Votre participation est enregistrée. Résultats envoyés par email chaque semaine."
             : "Your entry has been recorded. Winners are announced weekly by email."}
         </p>
-        {product?.discount_code&&(
-          <div style={{background:"rgba(201,169,110,0.08)",border:"1px dashed rgba(201,169,110,0.4)",borderRadius:10,padding:"12px 18px",marginBottom:20,marginTop:8}}>
-            <p style={{...SS,fontSize:"11px",color:"#999",margin:"0 0 6px"}}>
-              {lang==="fr"?"Votre code promo (déjà envoyé par email) :":"Your discount code (also sent by email):"}
-            </p>
-            <span style={{...SS,fontSize:"16px",fontWeight:800,color:"#c9a96e",letterSpacing:"1px"}}>{product.discount_code}</span>
-          </div>
-        )}
-        {salon&&<p style={{...SS,fontSize:"12px",color:"#555",marginBottom:32}}>Spot: {salon.name}</p>}
+        <p style={{...SS,fontSize:"13px",color:"#c9a96e",lineHeight:1.7,marginBottom:32,maxWidth:360,fontWeight:600}}>
+          {lang==="fr"
+            ? "🎁 Vous pourriez gagner un coffret cadeau de 50€ — surveillez votre boîte mail !"
+            : "🎁 You could win a €50 gift set — keep an eye on your inbox!"}
+        </p>
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
           <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
             {lang==="fr"?"Accueil":"Homepage"}
