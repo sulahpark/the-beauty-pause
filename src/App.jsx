@@ -3473,20 +3473,29 @@ function ForBrandsPage() {
       )}
 
       {/* FOOTER */}
-      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
-        <div>
-          <div style={{marginBottom:4}}>
-            <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-            <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,marginBottom:20}}>
+          <div>
+            <div style={{marginBottom:4}}>
+              <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+              <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+            </div>
+            <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
           </div>
-          <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
+          <a href="mailto:hello@thebeautypause.com"
+            style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}
+            onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"}
+            onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+            Contact
+          </a>
         </div>
-        <a href="mailto:hello@thebeautypause.com"
-          style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}
-          onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"}
-          onMouseLeave={e=>e.currentTarget.style.color="#444"}>
-          Contact
-        </a>
+        <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:16}}>
+          <p style={{...SS,fontSize:"10px",color:"#444",lineHeight:1.8,margin:0}}>
+            주식회사 쏜다 · 대표자 박슬아 · 서울 강남구 테헤란로82길 15 (대치동, 디아이타워)<br/>
+            사업자등록번호 426-88-02305 · 통신판매업신고번호 2025-서울강남-00594<br/>
+            연락처 010-1234-5678 · hello@thebeautypause.com
+          </p>
+        </div>
       </footer>
     </>
   );
