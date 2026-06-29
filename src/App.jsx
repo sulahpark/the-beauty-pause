@@ -3493,7 +3493,7 @@ function ForBrandsPage() {
           <p style={{...SS,fontSize:"10px",color:"#444",lineHeight:1.8,margin:0}}>
             주식회사 쏜다 · 대표자 박슬아 · 서울 강남구 테헤란로82길 15 (대치동, 디아이타워)<br/>
             사업자등록번호 426-88-02305 · 통신판매업신고번호 2025-서울강남-00594<br/>
-            연락처 010-1234-5678 · hello@thebeautypause.com
+            hello@thebeautypause.com
           </p>
         </div>
       </footer>
