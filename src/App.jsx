@@ -3592,42 +3592,43 @@ function ForPartnersPage() {
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4}}>브랜드는 이렇게 유럽에서 소개됩니다.</h2>
           <p style={{...KR,fontSize:"13px",color:"#999",margin:"8px 0 36px"}}>계약은 한국에서, 운영은 프랑스 법인이 직접 담당합니다.</p>
-          <div style={{display:"flex",flexDirection:"column",gap:12}}>
-            {/* Korea row */}
-            <div style={{background:"#eeeae4",border:"1px solid #e8e0d8",borderRadius:14,padding:"16px 20px",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-              <span style={{...SS,fontSize:11,fontWeight:700,color:"#777",minWidth:60,flexShrink:0}}>🇰🇷 한국</span>
-              <div style={{display:"flex",alignItems:"center",gap:0,flexWrap:"wrap"}}>
-                {[["한국 브랜드",""],["한국 법인 계약","더뷰티퍼즈 한국"],["제품 발송",""]].map(([label,sub],i,arr)=>(
-                  <Fragment key={label}>
-                    <div style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:10,padding:"10px 14px",textAlign:"center",...KR,fontSize:12,fontWeight:700,color:"#1a1a1a",display:"flex",flexDirection:"column",alignItems:"center",gap:2,minWidth:100}}>
-                      {label}{sub&&<small style={{fontSize:10,fontWeight:400,color:"#999"}}>{sub}</small>}
+          <div style={{overflowX:"auto",paddingBottom:8}}>
+            <div style={{display:"flex",alignItems:"center",gap:0,minWidth:"max-content"}}>
+              {[
+                {l:"한국 브랜드",s:"",flag:"🇰🇷"},
+                {l:"한국 법인 계약",s:"더뷰티퍼즈 한국",flag:""},
+                {l:"제품 발송",s:"",flag:""},
+                {l:"프랑스 법인 운영",s:"더뷰티퍼즈 프랑스",flag:"🇫🇷"},
+                {l:"파리 살롱",s:"네트워크",accent:true},
+                {l:"유럽 고객",s:""},
+                {l:"QR",s:"이벤트/구매"},
+                {l:"리포트",s:""},
+              ].map(({l,s,flag,accent},i,arr)=>(
+                <Fragment key={l}>
+                  <div style={{
+                    background: accent?"rgba(201,169,110,0.15)":(i>=3?"#fff8ee":"#fff"),
+                    border: accent?"2px solid #c9a96e":(i>=3?"1px solid rgba(201,169,110,0.35)":"1px solid #e8e0d8"),
+                    borderRadius:12,padding:"12px 16px",textAlign:"center",
+                    ...KR,fontSize:12,fontWeight:700,color:"#1a1a1a",
+                    display:"flex",flexDirection:"column",alignItems:"center",gap:3,minWidth:96,
+                    boxShadow: i>=3?"0 2px 8px rgba(201,169,110,0.08)":"none"
+                  }}>
+                    {flag&&<span style={{fontSize:14}}>{flag}</span>}
+                    <span>{l}</span>
+                    {s&&<small style={{fontSize:9,fontWeight:400,color: i>=3?"#b8924a":"#999"}}>{s}</small>}
+                  </div>
+                  {i<arr.length-1&&(
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"0 2px"}}>
+                      {i===2&&<div style={{width:1,height:10,background:"#ccc"}}/>}
+                      <span style={{color:i>=2?"#c9a96e":"#ccc",fontSize:14,fontWeight:i>=2?700:400,padding:"0 2px"}}>→</span>
+                      {i===2&&<div style={{width:1,height:10,background:"#ccc"}}/>}
                     </div>
-                    {i<arr.length-1&&<span style={{color:"#aaa",fontSize:14,padding:"0 4px"}}>→</span>}
-                  </Fragment>
-                ))}
-              </div>
-            </div>
-            {/* France row */}
-            <div style={{background:"#e8e1d4",border:"1px solid rgba(201,169,110,0.4)",borderRadius:14,padding:"16px 20px",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-              <span style={{...SS,fontSize:11,fontWeight:700,color:"#8a6d3b",minWidth:60,flexShrink:0}}>🇫🇷 파리</span>
-              <div style={{display:"flex",alignItems:"center",gap:0,flexWrap:"wrap"}}>
-                {[
-                  {l:"프랑스 법인 운영",s:"더뷰티퍼즈 프랑스",accent:false},
-                  {l:"파리 살롱",s:"네트워크",accent:true},
-                  {l:"유럽 고객",s:"",accent:false},
-                  {l:"QR →",s:"이벤트/구매",accent:false},
-                  {l:"리포트",s:"",accent:false},
-                ].map(({l,s,accent},i,arr)=>(
-                  <Fragment key={l}>
-                    <div style={{background:accent?"rgba(201,169,110,0.2)":"rgba(0,0,0,0.06)",border:accent?"2px solid #c9a96e":"1px solid rgba(201,169,110,0.4)",borderRadius:10,padding:"10px 14px",textAlign:"center",...KR,fontSize:12,fontWeight:700,color:"#1a1a1a",display:"flex",flexDirection:"column",alignItems:"center",gap:2,minWidth:100}}>
-                      {l}{s&&<small style={{fontSize:10,fontWeight:400,color:"#6b5c3e"}}>{s}</small>}
-                    </div>
-                    {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:14,padding:"0 4px"}}>→</span>}
-                  </Fragment>
-                ))}
-              </div>
+                  )}
+                </Fragment>
+              ))}
             </div>
           </div>
+          <p style={{...KR,fontSize:"11px",color:"#bbb",marginTop:12}}>← 한국&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;파리 →</p>
         </div>
       </section>
 
@@ -3636,9 +3637,9 @@ function ForPartnersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ What We Do</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 28px",lineHeight:1.4}}>더뷰티퍼즈가 담당합니다.</h2>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px"}}>
-            {["한국 법인 계약","CPNP 지원 (필요 시)","프랑스 법인 운영","파리 살롱 네트워크 운영","제품 설치 및 관리","QR 제작 및 연결","고객 참여 이벤트","콘텐츠 제작","운영 결과 리포트"].map(t=><CheckItem key={t} dark>{t}</CheckItem>)}
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.4}}>The Beauty Pause가 현지 운영을 담당합니다.</h2>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px",marginTop:28}}>
+            {["한국 법인 계약","CPNP 지원 및 라벨링 지원 필요 시","현지 수령 관리","파리 살롱 매칭","제품 설치 및 관리","QR 페이지 제작 및 연결","고객 참여 이벤트 운영","현장 콘텐츠 제작","운영 결과 정리 및 공유"].map(t=><CheckItem key={t} dark>{t}</CheckItem>)}
           </div>
         </div>
       </section>
@@ -3648,19 +3649,19 @@ function ForPartnersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Brand Deliverables</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px",lineHeight:1.4}}>브랜드 결과물</h2>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px"}}>
-            {["어느 살롱에 배치되었는지","현장 설치 사진","브랜드 콘텐츠","QR 스캔 수","고객 참여 현황","이벤트 결과","구매 연결 현황"].map(t=><CheckItem key={t}>{t}</CheckItem>)}
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4}}>프로그램 운영 결과를 제공합니다.</h2>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px",marginTop:28}}>
+            {["제품이 소개된 살롱 정보","현장 설치 사진","현장 콘텐츠 사진·영상","QR 방문 현황","고객 참여 현황","운영 결과 요약"].map(t=><CheckItem key={t}>{t}</CheckItem>)}
           </div>
         </div>
       </section>
 
       {/* WHY 더뷰티퍼즈 — dark */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why 더뷰티퍼즈</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 28px",lineHeight:1.4}}>왜 더뷰티퍼즈여야 하나</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px",lineHeight:1.4}}>왜 더뷰티퍼즈여야 하나</h2>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12}}>
             {[
               {i:"🇰🇷",t:"한국 계약 가능",d:"한국 법인으로 계약 진행 — 해외 법인 설립 없이 바로 시작"},
@@ -3668,9 +3669,9 @@ function ForPartnersPage() {
               {i:"💄",t:"파리 살롱 네트워크 보유",d:"파리 전역 뷰티 살롱과의 신뢰 관계 — 즉시 입점 가능"},
               {i:"📊",t:"데이터 기반 결과 리포트",d:"QR 스캔, 구매 연결 현황을 수치로 정리해서 제공"},
             ].map(({i,t,d})=>(
-              <div key={t} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:12,padding:20}}>
+              <div key={t} style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:12,padding:20}}>
                 <p style={{fontSize:18,marginBottom:10}}>{i}</p>
-                <p style={{...KR,fontSize:13,color:"rgba(255,255,255,0.65)",lineHeight:1.6,margin:0}}><strong style={{color:"#f5f0eb",fontWeight:700,display:"block",marginBottom:4}}>{t}</strong>{d}</p>
+                <p style={{...KR,fontSize:13,color:"#666",lineHeight:1.6,margin:0}}><strong style={{color:"#1a1a1a",fontWeight:700,display:"block",marginBottom:4}}>{t}</strong>{d}</p>
               </div>
             ))}
           </div>
@@ -3689,18 +3690,18 @@ function ForPartnersPage() {
         </div>
       </section>
 
-      {/* WHY THIS MODEL — light */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+      {/* WHY THIS MODEL — dark */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why This Model</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px",lineHeight:1.4}}>기존 방식과 다른 점</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 32px",lineHeight:1.4}}>기존 방식과 다른 점</h2>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-            <div style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:16,padding:"28px 24px"}}>
-              <p style={{...SS,fontSize:"10px",color:"#999",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기존 해외진출</p>
+            <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:"28px 24px"}}>
+              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.4)",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기존 해외진출</p>
               {[["✕","박람회 — 행사 후 연결 끊김"],["✕","유통사 계약 — 높은 진입장벽"],["✕","바이어 미팅 — 결과 불명확"],["✕","리테일 입점 — 긴 준비 기간"]].map(([ic,t])=>(
-                <div key={t} style={{display:"flex",gap:8,...KR,fontSize:14,color:"#666",marginBottom:10,lineHeight:1.5}}>
-                  <span style={{color:"#ccc",flexShrink:0}}>{ic}</span>{t}
+                <div key={t} style={{display:"flex",gap:8,...KR,fontSize:14,color:"rgba(255,255,255,0.5)",marginBottom:10,lineHeight:1.5}}>
+                  <span style={{color:"rgba(255,255,255,0.25)",flexShrink:0}}>{ic}</span>{t}
                 </div>
               ))}
             </div>
@@ -3716,14 +3717,14 @@ function ForPartnersPage() {
         </div>
       </section>
 
-      {/* WHY WE DO THIS — dark */}
-      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)"}}>
+      {/* WHY WE DO THIS — mid */}
+      <section style={{background:"#faf7f4",padding:"88px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:680,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Why We Do This</Badge>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 24px",lineHeight:1.5}}>해외 진출의 새로운 실행 방식을 제안합니다.</h2>
-          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 16px"}}>The Beauty Pause는 파리 현지에서 직접 운영하는 뷰티 살롱 네트워크를 기반으로 한국 브랜드가 유럽 소비자와 만날 수 있는 오프라인 프로그램을 운영합니다.</p>
-          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 16px"}}>현지 소비자 접점과 운영까지 포함하는 새로운 형태의 해외 마케팅 프로그램으로 활용할 수 있습니다.</p>
-          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 40px"}}>검토 후 궁금한 점이나, 함께 조정해볼 수 있는 운영 방식이 있다면 편하게 의견 주세요.</p>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"16px 0 24px",lineHeight:1.5}}>해외 진출의 새로운 실행 방식을 제안합니다.</h2>
+          <p style={{...KR,fontSize:15,color:"#666",lineHeight:2,margin:"0 0 16px"}}>The Beauty Pause는 파리 현지에서 직접 운영하는 뷰티 살롱 네트워크를 기반으로 한국 브랜드가 유럽 소비자와 만날 수 있는 오프라인 프로그램을 운영합니다.</p>
+          <p style={{...KR,fontSize:15,color:"#666",lineHeight:2,margin:"0 0 16px"}}>현지 소비자 접점과 운영까지 포함하는 새로운 형태의 해외 마케팅 프로그램으로 활용할 수 있습니다.</p>
+          <p style={{...KR,fontSize:15,color:"#666",lineHeight:2,margin:"0 0 40px"}}>검토 후 궁금한 점이나, 함께 조정해볼 수 있는 운영 방식이 있다면 편하게 의견 주세요.</p>
           <a href="mailto:hello@thebeautypause.com" style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:15,fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
             hello@thebeautypause.com
           </a>
