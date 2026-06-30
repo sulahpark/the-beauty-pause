@@ -3501,6 +3501,268 @@ function ForBrandsPage() {
   );
 }
 
+// ── FOR PARTNERS PAGE (institutional / agencies) ─────────────────────────────
+function ForPartnersPage() {
+  const navigate = useNavigate();
+  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif"};
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(()=>{
+    const onScroll = () => setShowTop(window.scrollY > 600);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const PartnersNav = () => (
+    <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
+      <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+        <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+        <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+      </button>
+      <a href="mailto:hello@thebeautypause.com"
+        style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
+        문의하기
+      </a>
+    </nav>
+  );
+
+  const Badge = ({children}) => (
+    <span style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:16}}>{children}</span>
+  );
+  const Divider = () => <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>;
+  const CheckItem = ({children, light}) => (
+    <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
+      <span style={{color:"#c9a96e",flexShrink:0,marginTop:2}}>✓</span>
+      <p style={{...KR,fontSize:"14px",color:light?"rgba(255,255,255,0.6)":"#555",margin:0,lineHeight:1.6}}>{children}</p>
+    </div>
+  );
+  const Tag = ({children}) => (
+    <span style={{...KR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>
+  );
+
+  // flow diagram step component
+  const FlowStep = ({label, sub, isLast, dark}) => (
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
+      <div style={{background:dark?"#fff":"#0d0d0d",border:dark?"1px solid #e8e0d8":"1px solid rgba(201,169,110,0.25)",borderRadius:12,padding:"12px 18px",textAlign:"center",minWidth:140}}>
+        <p style={{...KR,fontSize:"13px",fontWeight:700,color:dark?"#1a1a1a":"#f5f0eb",margin:0}}>{label}</p>
+        {sub&&<p style={{...KR,fontSize:"10px",color:dark?"#999":"rgba(255,255,255,0.4)",margin:"3px 0 0"}}>{sub}</p>}
+      </div>
+      {!isLast&&<div style={{width:1,height:24,background:dark?"#d8cfc2":"rgba(201,169,110,0.3)",margin:"4px 0"}}/>}
+    </div>
+  );
+
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <PartnersNav/>
+
+      {/* HERO */}
+      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 64px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ For Institutions & Agencies</Badge>
+          <h1 style={{...KR,fontSize:"clamp(28px,5vw,48px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.3,margin:"0 0 24px"}}>
+            Korean Beauty,<br/>Launch in Paris
+          </h1>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 12px"}}>
+            The Beauty Pause는 파리의 실제 뷰티 살롱 네트워크를 통해 한국 뷰티 브랜드가 유럽 소비자와 만날 수 있는 오프라인 런칭 프로그램을 운영합니다.
+          </p>
+        </div>
+      </section>
+
+      {/* HERO IMAGE */}
+      <section style={{background:"#0d0d0d",padding:"0 clamp(24px,6vw,80px) 64px"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <div style={{borderRadius:20,overflow:"hidden",aspectRatio:"16/9",background:"#1a1a1a"}}>
+            <img src="/images/aurabeaute04.jpeg" alt="Paris salon" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS — flow diagram */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ How It Works</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>브랜드는 이렇게 유럽에서 소개됩니다.</h2>
+          <p style={{...KR,fontSize:"13px",color:"#999",margin:"0 0 40px"}}>계약은 한국에서, 운영은 프랑스 법인이 직접 담당합니다.</p>
+
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
+            <FlowStep label="한국 브랜드" dark/>
+            <FlowStep label="한국 법인 계약" sub="Korea" dark/>
+            <FlowStep label="제품 발송" dark/>
+            <FlowStep label="프랑스 법인 운영" sub="Gentle Riches · France" dark={false}/>
+            <FlowStep label="파리 Beauty Salon Network" dark={false}/>
+            <FlowStep label="유럽 고객" dark={false}/>
+            <FlowStep label="QR Scan" dark={false}/>
+            <FlowStep label="Brand Info · Event · Purchase" dark={false} isLast/>
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT WE DO */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ What We Do</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>The Beauty Pause가 담당합니다.</h2>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px"}}>
+            {["한국 브랜드 계약","CPNP 지원 (필요 시)","프랑스 법인 운영","살롱 매칭","제품 설치","QR 제작","이벤트 운영","콘텐츠 제작","운영 관리","결과 리포트"].map(i=>(
+              <CheckItem key={i}>{i}</CheckItem>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PARIS LAUNCH WEEK */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Paris Launch Week</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>브랜드를 함께 런칭합니다.</h2>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 32px",maxWidth:600}}>
+            Paris Launch Week는 선정된 브랜드를 일정 기간 동안 파리의 참여 살롱에서 동시에 소개하는 공동 런칭 프로그램입니다.
+          </p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:12}}>
+            {[
+              {i:"🏠",t:"10 Beauty Salons"},
+              {i:"📅",t:"2 Weeks"},
+              {i:"📱",t:"QR Experience"},
+              {i:"🎁",t:"Lucky Draw"},
+              {i:"📸",t:"SNS Contents"},
+              {i:"🛍",t:"Purchase Link"},
+            ].map(({i,t})=>(
+              <div key={t} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:12,padding:"18px 14px",textAlign:"center"}}>
+                <p style={{fontSize:"20px",margin:"0 0 8px"}}>{i}</p>
+                <p style={{...KR,fontSize:"12px",fontWeight:600,color:"#f5f0eb",margin:0}}>{t}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT BRANDS RECEIVE */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ What Brands Receive</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>브랜드 결과물</h2>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px"}}>
+            {["어느 살롱에 배치되었는지","현장 설치 사진","브랜드 콘텐츠","QR 스캔 수","고객 참여 현황","이벤트 결과","구매 연결 현황"].map(i=>(
+              <CheckItem key={i}>{i}</CheckItem>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHY THIS MODEL */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Why This Model</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>기존 방식과 다른 점</h2>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20}}>
+            <div style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:16,padding:"28px 24px"}}>
+              <p style={{...SS,fontSize:"10px",color:"#999",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기존</p>
+              <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                {["박람회","행사 종료","끝"].map((s,i,arr)=>(
+                  <Fragment key={s}>
+                    <span style={{...KR,fontSize:"13px",color:"#777",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:8,padding:"6px 12px"}}>{s}</span>
+                    {i<arr.length-1&&<span style={{color:"#ccc"}}>→</span>}
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+            <div style={{background:"#0d0d0d",borderRadius:16,padding:"28px 24px",border:"1px solid rgba(201,169,110,0.2)"}}>
+              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>The Beauty Pause</p>
+              <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                {["박람회","Paris Launch Week","살롱 노출","QR","구매 연결","콘텐츠","결과 리포트"].map((s,i,arr)=>(
+                  <Fragment key={s}>
+                    <span style={{...KR,fontSize:"12px",color:"#f5f0eb",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,padding:"5px 10px"}}>{s}</span>
+                    {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:"11px"}}>→</span>}
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FLEXIBLE */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Flexible</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>기관 목적에 맞게 운영 가능합니다.</h2>
+          <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:20}}>
+            {["참여 브랜드 수","운영 기간","살롱 수","이벤트 방식","콘텐츠","리포트"].map(t=><Tag key={t}>{t}</Tag>)}
+          </div>
+          <p style={{...KR,fontSize:"14px",color:"#777",margin:0}}>맞춤 운영 가능합니다.</p>
+        </div>
+      </section>
+
+      {/* WHY WE DO THIS */}
+      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:680,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Why We Do This</Badge>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 24px",lineHeight:1.5}}>
+            좋은 브랜드도 만날 기회가 없으면 선택되지 않습니다.
+          </h2>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 16px"}}>
+            The Beauty Pause는 한국 브랜드가 유럽에서 첫 발을 내딛는 가장 현실적인 방법을 만들고 있습니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 16px"}}>
+            귀 기관이 지원하시는 브랜드들이 박람회 이후에도 계속 소개되고, 실제 결과로 이어질 수 있도록 — 함께 할 수 있는 방법을 상의드리고 싶습니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 40px"}}>
+            이 페이지를 보시고 궁금한 점이나, 함께 만들어볼 수 있는 운영 방식이 있다면 편하게 답장 주세요.
+          </p>
+          <a href="mailto:hello@thebeautypause.com"
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
+            hello@thebeautypause.com
+          </a>
+        </div>
+      </section>
+
+      {/* SCROLL TO TOP */}
+      {showTop&&(
+        <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+          style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>
+          ↑
+        </button>
+      )}
+
+      {/* FOOTER */}
+      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,marginBottom:20}}>
+          <div>
+            <div style={{marginBottom:4}}>
+              <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+              <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+            </div>
+            <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
+          </div>
+          <a href="mailto:hello@thebeautypause.com"
+            style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}
+            onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"}
+            onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+            Contact
+          </a>
+        </div>
+        <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:16}}>
+          <p style={{...SS,fontSize:"10px",color:"#444",lineHeight:1.8,margin:0}}>
+            주식회사 쏜다 · 대표자 박슬아 · 서울 강남구 테헤란로82길 15 (대치동, 디아이타워)<br/>
+            사업자등록번호 426-88-02305 · 통신판매업신고번호 2025-서울강남-00594<br/>
+            hello@thebeautypause.com
+          </p>
+        </div>
+      </footer>
+    </>
+  );
+}
+
 export default function App() {
   const [lang,setLang]=useState("fr");
   const {salons,allProducts,loading}=useData();
@@ -3554,6 +3816,7 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPage lang={lang} setLang={setLang} />} />
         <Route path="/legal" element={<LegalPage lang={lang} setLang={setLang} />} />
         <Route path="/brands" element={<ForBrandsPage />} />
+        <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
