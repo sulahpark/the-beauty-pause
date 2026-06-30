@@ -3628,7 +3628,6 @@ function ForPartnersPage() {
               ))}
             </div>
           </div>
-          <p style={{...KR,fontSize:"11px",color:"#bbb",marginTop:12}}>← 한국&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;파리 →</p>
         </div>
       </section>
 
@@ -3678,30 +3677,30 @@ function ForPartnersPage() {
         </div>
       </section>
 
-      {/* FLEXIBLE — mid */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+      {/* FLEXIBLE — dark */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Flexible Program</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4}}>기관 사업 목적에 맞게 프로그램을 조정할 수 있습니다.</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.4}}>기관 사업 목적에 맞게 프로그램을 조정할 수 있습니다.</h2>
           <div style={{display:"flex",flexWrap:"wrap",gap:4,marginTop:20}}>
             {["참여 브랜드 수","운영 기간","살롱 수","이벤트 방식","콘텐츠 제작","결과 리포트"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
         </div>
       </section>
 
-      {/* WHY THIS MODEL — dark */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+      {/* WHY THIS MODEL — light */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why This Model</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 32px",lineHeight:1.4}}>기존 방식과 다른 점</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px",lineHeight:1.4}}>기존 방식과 다른 점</h2>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-            <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:"28px 24px"}}>
-              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.4)",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기존 해외진출</p>
+            <div style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"28px 24px"}}>
+              <p style={{...SS,fontSize:"10px",color:"#999",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기존 해외진출</p>
               {[["✕","박람회 — 행사 후 연결 끊김"],["✕","유통사 계약 — 높은 진입장벽"],["✕","바이어 미팅 — 결과 불명확"],["✕","리테일 입점 — 긴 준비 기간"]].map(([ic,t])=>(
-                <div key={t} style={{display:"flex",gap:8,...KR,fontSize:14,color:"rgba(255,255,255,0.5)",marginBottom:10,lineHeight:1.5}}>
-                  <span style={{color:"rgba(255,255,255,0.25)",flexShrink:0}}>{ic}</span>{t}
+                <div key={t} style={{display:"flex",gap:8,...KR,fontSize:14,color:"#666",marginBottom:10,lineHeight:1.5}}>
+                  <span style={{color:"#ccc",flexShrink:0}}>{ic}</span>{t}
                 </div>
               ))}
             </div>
