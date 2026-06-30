@@ -3110,7 +3110,7 @@ function ForBrandsPage() {
 
             {/* QR -> Learn -> Purchase */}
             <div style={{display:"flex",alignItems:"center"}}>
-              {["QR","Learn","Purchase"].map((step,i)=>(
+              {["QR","Learn","참여"].map((step,i)=>(
                 <div key={step} style={{display:"flex",alignItems:"center"}}>
                   <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
                     <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px solid ${i===2?"#fb5607":"#c9a96e"}`,background:i===2?"rgba(251,86,7,0.08)":"rgba(201,169,110,0.1)",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:"13px",fontWeight:700,color:i===2?"#fb5607":"#c9a96e"}}>{i+1}</div>
@@ -3123,32 +3123,9 @@ function ForBrandsPage() {
           </div>
 
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 20px",maxWidth:600}}>
-            살롱이 제품을 직접 구매하는 구조라면 살롱 유형이 매우 중요합니다. 하지만 The Beauty Pause는 최종 구매자가 살롱이 아니라 <strong style={{color:"#1a1a1a"}}>고객</strong>이기 때문에, 살롱의 종류보다 그 공간에 머무는 뷰티 고객에게 더 집중합니다.
+            The Beauty Pause는 최종 구매자가 살롱이 아니라 <strong style={{color:"#1a1a1a"}}>고객</strong>이기 때문에, 살롱의 종류보다 그 공간에 머무는 뷰티 고객에게 더 집중합니다.
           </p>
 
-          <div style={{background:"#0d0d0d",borderRadius:16,padding:"24px 28px",marginBottom:32}}>
-            <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",lineHeight:1.8,margin:0}}>
-              다만 헤어 제품처럼 <strong style={{color:"#c9a96e"}}>바로 사용해볼 수 있고 살롱 서비스와 직접 연결되는 제품</strong>은 특정 살롱 유형에서 더 좋은 반응을 보일 수 있습니다.
-            </p>
-          </div>
-
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16,marginBottom:32}}>
-            {[
-              {t:"스킨케어 · 바디 · 웰니스",d:"살롱 유형보다 고객이 머무는 시간이 핵심 — 모든 살롱에서 고르게 좋은 반응"},
-              {t:"헤어케어",d:"헤어살롱에서 특히 더 강한 반응 — 서비스와 직접 연결되는 제품 특성"},
-              {t:"네일 전용 제품",d:"네일샵이 가장 적합한 채널 — 전문성과 즉시성이 중요한 경우"},
-            ].map(({t,d})=>(
-              <div key={t} style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:14,padding:"20px 18px"}}>
-                <div style={{width:24,height:2,background:"#c9a96e",marginBottom:12}}/>
-                <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4}}>{t}</p>
-                <p style={{...KR,fontSize:"12px",color:"#777",lineHeight:1.6,margin:0}}>{d}</p>
-              </div>
-            ))}
-          </div>
-
-          <p style={{...KR,fontSize:"13px",color:"#999",lineHeight:1.8,margin:0,fontStyle:"italic"}}>
-            ※ The Beauty Pause는 운영 데이터를 통해 제품 카테고리별로 가장 효과적인 살롱 채널을 지속적으로 파악하고, 브랜드와 공유합니다.
-          </p>
         </div>
       </section>
 
