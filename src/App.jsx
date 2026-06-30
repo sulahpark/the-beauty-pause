@@ -3563,7 +3563,7 @@ function ForPartnersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Institutions & Agencies</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,48px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.3,margin:"0 0 24px"}}>
-            한국 뷰티,<br/>파리 살롱에서 론칭
+            파리 런칭 위크<br/><span style={{fontSize:"0.55em",color:"rgba(255,255,255,0.5)",fontWeight:400}}>한국 뷰티 브랜드의 파리 오프라인 런칭 프로그램</span>
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 12px"}}>
             더뷰티퍼즈(The Beauty Pause)는 파리의 실제 뷰티 살롱 네트워크를 통해 한국 뷰티 브랜드가 유럽 소비자와 만날 수 있는 오프라인 런칭 프로그램을 운영합니다.
@@ -3617,7 +3617,7 @@ function ForPartnersPage() {
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>The Beauty Pause가 담당합니다.</h2>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px"}}>
-            {["한국 브랜드 계약","CPNP 지원 (필요 시)","프랑스 법인 운영","살롱 매칭","제품 설치","QR 제작","이벤트 운영","콘텐츠 제작","운영 관리","결과 리포트"].map(i=>(
+            {["한국 법인 계약","CPNP 지원 (필요 시)","프랑스 법인 운영","파리 살롱 네트워크 운영","제품 설치 및 관리","QR 제작 및 연결","고객 참여 이벤트","콘텐츠 제작","운영 결과 리포트"].map(i=>(
               <CheckItem key={i}>{i}</CheckItem>
             ))}
           </div>
@@ -3701,11 +3701,11 @@ function ForPartnersPage() {
       {/* FLEXIBLE */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Flexible</Badge>
+          <Badge>✦ Flexible Program</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>목적에 맞게 맞춤 운영 가능합니다.</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>기관 사업 목적에 맞게 프로그램을 조정할 수 있습니다.</h2>
           <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:20}}>
-            {["참여 브랜드 수","운영 기간","살롱 수","이벤트 방식","콘텐츠","리포트"].map(t=><Tag key={t}>{t}</Tag>)}
+            {["참여 브랜드 수","운영 기간","살롱 수","이벤트 방식","콘텐츠 제작","결과 리포트"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
           
         </div>
