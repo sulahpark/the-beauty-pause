@@ -3563,19 +3563,28 @@ function ForPartnersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Institutions & Agencies</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,48px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.3,margin:"0 0 24px"}}>
-            Korean Beauty,<br/>Launch in Paris
+            한국 뷰티,<br/>파리 살롱에서 론칭
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 12px"}}>
-            The Beauty Pause는 파리의 실제 뷰티 살롱 네트워크를 통해 한국 뷰티 브랜드가 유럽 소비자와 만날 수 있는 오프라인 런칭 프로그램을 운영합니다.
+            더뷰티퍼즈(The Beauty Pause)는 파리의 실제 뷰티 살롱 네트워크를 통해 한국 뷰티 브랜드가 유럽 소비자와 만날 수 있는 오프라인 런칭 프로그램을 운영합니다.
           </p>
         </div>
       </section>
 
-      {/* HERO IMAGE */}
+      {/* HERO IMAGE — same gallery as brands page */}
       <section style={{background:"#0d0d0d",padding:"0 clamp(24px,6vw,80px) 64px"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          <div style={{borderRadius:20,overflow:"hidden",aspectRatio:"16/9",background:"#1a1a1a"}}>
-            <img src="/images/aurabeaute04.jpeg" alt="Paris salon" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <div style={{borderRadius:14,overflow:"hidden",aspectRatio:"1",background:"#ddd",pointerEvents:"none",userSelect:"none"}}>
+              <img src="/images/aurabeaute04.jpeg" alt="salon" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none"}}/>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:8}}>
+              {["/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
+                <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd",pointerEvents:"none",userSelect:"none"}}>
+                  <img src={src} alt="salon" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none"}}/>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -3590,9 +3599,9 @@ function ForPartnersPage() {
 
           <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
             <FlowStep label="한국 브랜드" dark/>
-            <FlowStep label="한국 법인 계약" sub="Korea" dark/>
+            <FlowStep label="한국 법인 계약" sub="더뷰티퍼즈 한국 법인" dark/>
             <FlowStep label="제품 발송" dark/>
-            <FlowStep label="프랑스 법인 운영" sub="Gentle Riches · France" dark={false}/>
+            <FlowStep label="프랑스 법인 운영" sub="더뷰티퍼즈 프랑스 법인" dark={false}/>
             <FlowStep label="파리 Beauty Salon Network" dark={false}/>
             <FlowStep label="유럽 고객" dark={false}/>
             <FlowStep label="QR Scan" dark={false}/>
@@ -3626,12 +3635,11 @@ function ForPartnersPage() {
           </p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:12}}>
             {[
-              {i:"🏠",t:"10 Beauty Salons"},
-              {i:"📅",t:"2 Weeks"},
-              {i:"📱",t:"QR Experience"},
-              {i:"🎁",t:"Lucky Draw"},
-              {i:"📸",t:"SNS Contents"},
-              {i:"🛍",t:"Purchase Link"},
+              {i:"🏠",t:"살롱 10곳"},
+              {i:"📅",t:"2주간 운영"},
+              {i:"🎁",t:"고객 참여 이벤트 운영"},
+              {i:"📸",t:"SNS 콘텐츠"},
+              {i:"🛍",t:"구매 연결"},
             ].map(({i,t})=>(
               <div key={t} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:12,padding:"18px 14px",textAlign:"center"}}>
                 <p style={{fontSize:"20px",margin:"0 0 8px"}}>{i}</p>
@@ -3663,7 +3671,7 @@ function ForPartnersPage() {
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>기존 방식과 다른 점</h2>
 
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20}}>
+          <div style={{display:"flex",flexDirection:"column",gap:20}}>
             <div style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:16,padding:"28px 24px"}}>
               <p style={{...SS,fontSize:"10px",color:"#999",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기존</p>
               <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
@@ -3676,9 +3684,9 @@ function ForPartnersPage() {
               </div>
             </div>
             <div style={{background:"#0d0d0d",borderRadius:16,padding:"28px 24px",border:"1px solid rgba(201,169,110,0.2)"}}>
-              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>The Beauty Pause</p>
+              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>더뷰티퍼즈</p>
               <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                {["박람회","Paris Launch Week","살롱 노출","QR","구매 연결","콘텐츠","결과 리포트"].map((s,i,arr)=>(
+                {["Paris Launch Week","살롱 노출","QR","구매 연결","콘텐츠","결과 리포트"].map((s,i,arr)=>(
                   <Fragment key={s}>
                     <span style={{...KR,fontSize:"12px",color:"#f5f0eb",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,padding:"5px 10px"}}>{s}</span>
                     {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:"11px"}}>→</span>}
@@ -3695,11 +3703,11 @@ function ForPartnersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Flexible</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>기관 목적에 맞게 운영 가능합니다.</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>목적에 맞게 맞춤 운영 가능합니다.</h2>
           <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:20}}>
             {["참여 브랜드 수","운영 기간","살롱 수","이벤트 방식","콘텐츠","리포트"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
-          <p style={{...KR,fontSize:"14px",color:"#777",margin:0}}>맞춤 운영 가능합니다.</p>
+          
         </div>
       </section>
 
@@ -3708,16 +3716,16 @@ function ForPartnersPage() {
         <div style={{maxWidth:680,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Why We Do This</Badge>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 24px",lineHeight:1.5}}>
-            좋은 브랜드도 만날 기회가 없으면 선택되지 않습니다.
+            좋은 브랜드도 고객과 만날 기회가 없다면 선택되기 어렵습니다.
           </h2>
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 16px"}}>
-            The Beauty Pause는 한국 브랜드가 유럽에서 첫 발을 내딛는 가장 현실적인 방법을 만들고 있습니다.
+            더뷰티퍼즈(The Beauty Pause)는 한국 뷰티 브랜드가 유럽 소비자와 만날 수 있는 현실적인 오프라인 접점을 만들고 있습니다.
           </p>
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 16px"}}>
-            귀 기관이 지원하시는 브랜드들이 박람회 이후에도 계속 소개되고, 실제 결과로 이어질 수 있도록 — 함께 할 수 있는 방법을 상의드리고 싶습니다.
+            유통 계약, 리테일 입점 이전 단계에서 브랜드가 현지 고객에게 소개되고, 반응을 확인하며, 구매 페이지까지 연결될 수 있는 홍보 방식을 제공합니다.
           </p>
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 40px"}}>
-            이 페이지를 보시고 궁금한 점이나, 함께 만들어볼 수 있는 운영 방식이 있다면 편하게 답장 주세요.
+            검토 후 궁금한 점이나, 함께 조정해볼 수 있는 운영 방식이 있다면 편하게 의견 주세요.
           </p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
