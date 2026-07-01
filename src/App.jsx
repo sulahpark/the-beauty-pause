@@ -3741,6 +3741,40 @@ export default function App() {
   const [favourites,setFavourites]=useState([]);
   const [showAuth,setShowAuth]=useState(false);
   const [authMode,setAuthMode]=useState("signup");
+  const [cookieConsent,setCookieConsent]=useState(()=>localStorage.getItem("tbp_cookie_consent"));
+
+  const handleAccept = () => {
+    localStorage.setItem("tbp_cookie_consent","accepted");
+    setCookieConsent("accepted");
+    // Enable GA after consent
+    window.gtag && window.gtag('consent','update',{analytics_storage:'granted'});
+  };
+  const handleDecline = () => {
+    localStorage.setItem("tbp_cookie_consent","declined");
+    setCookieConsent("declined");
+    window.gtag && window.gtag('consent','update',{analytics_storage:'denied'});
+  };
+
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const KR = {fontFamily:"'Noto Sans KR',sans-serif"};
+  const CookieBanner = () => cookieConsent ? null : (
+    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9999,background:"#1a1a1a",borderTop:"1px solid rgba(255,255,255,0.08)",padding:"16px clamp(16px,4vw,48px)",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12}}>
+      <p style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.7)",margin:0,maxWidth:560,lineHeight:1.6}}>
+        {lang==="fr"
+          ? "Nous utilisons des cookies pour analyser le trafic du site (Google Analytics). Aucune donnée personnelle n'est partagée."
+          : "We use cookies to analyse site traffic (Google Analytics). No personal data is shared."}
+        {" "}<a href="/privacy" style={{color:"#c9a96e",textDecoration:"underline"}}>{lang==="fr"?"Politique de confidentialité":"Privacy policy"}</a>
+      </p>
+      <div style={{display:"flex",gap:8,flexShrink:0}}>
+        <button onClick={handleDecline} style={{...SS,fontSize:"13px",fontWeight:600,color:"rgba(255,255,255,0.4)",background:"none",border:"1px solid rgba(255,255,255,0.15)",padding:"8px 18px",borderRadius:8,cursor:"pointer"}}>
+          {lang==="fr"?"Refuser":"Decline"}
+        </button>
+        <button onClick={handleAccept} style={{...SS,fontSize:"13px",fontWeight:700,color:"#0d0d0d",background:"#c9a96e",border:"none",padding:"8px 20px",borderRadius:8,cursor:"pointer"}}>
+          {lang==="fr"?"Accepter":"Accept"}
+        </button>
+      </div>
+    </div>
+  );
 
   useEffect(()=>{
     supabase.auth.getSession().then(({data:{session}})=>{
@@ -3791,6 +3825,7 @@ export default function App() {
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
+      <CookieBanner/>
     </LocationAwareErrorBoundary>
   );
 }
