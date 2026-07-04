@@ -3041,7 +3041,7 @@ function ForBrandsPage() {
             좋은 제품도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
           </p>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#1a1a1a",fontWeight:600,lineHeight:1.9,margin:0}}>
-            <span style={{color:"#c9a96e"}}>더뷰티퍼즈-The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
+            <span style={{color:"#c9a96e"}}>더뷰티퍼즈 The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
           </p>
         </div>
       </section>
