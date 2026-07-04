@@ -3223,18 +3223,15 @@ function ForBrandsPage() {
       {/* PRICING */}
       <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:760,margin:"0 auto"}}>
-          <Badge>✦ Participation</Badge>
+          <Badge>✦ Program</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>TBP 프로그램</h2>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 48px"}}>브랜드 목표에 맞는 운영 프로그램을 선택하세요.</p>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>파리 런칭 프로그램 <span style={{color:"#c9a96e"}}>Paris Launch Program</span></h2>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 48px"}}>파리에서 브랜드를 소개하는 기본 프로그램입니다.</p>
 
           <div style={{display:"flex",flexDirection:"column",gap:24}}>
 
             {/* Launch Program */}
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
-              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Program</p>
-              <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>파리 런칭 프로그램 <span style={{color:"#c9a96e"}}>Paris Launch Program</span></p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리에서 브랜드를 소개하는 기본 프로그램입니다.</p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
