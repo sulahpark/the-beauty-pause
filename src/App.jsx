@@ -3300,8 +3300,9 @@ function ForBrandsPage() {
       {/* FOUNDING BRAND PROGRAM */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Founding Brand Program</Badge>
+          <Badge>✦ Founding Brand</Badge>
           <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>초기 참여 브랜드 혜택</h2>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
             현재 파리 네트워크의 <strong style={{color:"#1a1a1a"}}>10개 초기 파트너 브랜드</strong>를 모집합니다.
           </p>
