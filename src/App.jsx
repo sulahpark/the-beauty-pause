@@ -3031,7 +3031,7 @@ function ForBrandsPage() {
       </section>
 
       {/* DISCOVERY */}
-      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)",borderBottom:"1px solid #ede8e2"}}>
+      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)",borderBottom:"1px solid #ede8e2"}}>
         <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Discovery</Badge>
           <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.5,margin:"8px 0 16px"}}>
@@ -3046,7 +3046,7 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ K-Beauty in Salons</Badge>
           <Divider/>
@@ -3068,64 +3068,6 @@ function ForBrandsPage() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* SALON TYPE PHILOSOPHY */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Salon Matching</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>어떤 살롱에 배치되나요?</h2>
-          <p style={{...KR,fontSize:"14px",color:"#999",margin:"0 0 36px"}}>우리는 살롱에 오는 뷰티 고객을 타겟합니다</p>
-
-          {/* FUNNEL DIAGRAM */}
-          <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginBottom:48,padding:"36px 16px",background:"#fff",borderRadius:20,border:"1px solid #ede8e2"}}>
-            {/* customer node */}
-            <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginBottom:4}}>
-              <div style={{width:60,height:60,borderRadius:"50%",background:"#0d0d0d",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"26px",marginBottom:8,boxShadow:"0 6px 18px rgba(0,0,0,0.15)"}}>👤</div>
-              <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:0}}>Beauty Customers</p>
-              <p style={{...KR,fontSize:"11px",color:"#999",margin:"2px 0 0"}}>뷰티 살롱을 찾는 고객</p>
-            </div>
-
-            {/* connector lines: 1 -> 3 */}
-            <svg width="280" height="36" style={{display:"block"}}><line x1="140" y1="0" x2="140" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="30" y1="16" x2="250" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="30" y1="16" x2="30" y2="36" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="140" y1="16" x2="140" y2="36" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="250" y1="16" x2="250" y2="36" stroke="#d8cfc2" strokeWidth="1.5"/></svg>
-
-            {/* 3 salon types */}
-            <div style={{display:"flex",gap:12,marginTop:-4,flexWrap:"wrap",justifyContent:"center"}}>
-              {["Nail Salon","Hair Salon","Massage Salon"].map(s=>(
-                <div key={s} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:12,padding:"12px 16px",textAlign:"center",minWidth:88}}>
-                  <p style={{...KR,fontSize:"12px",fontWeight:700,color:"#1a1a1a",margin:0}}>{s}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* connector lines: 3 -> 1 */}
-            <svg width="280" height="36" style={{display:"block"}}><line x1="30" y1="0" x2="30" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="140" y1="0" x2="140" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="250" y1="0" x2="250" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="30" y1="16" x2="250" y2="16" stroke="#d8cfc2" strokeWidth="1.5"/><line x1="140" y1="16" x2="140" y2="36" stroke="#c9a96e" strokeWidth="2"/></svg>
-
-            {/* discover badge */}
-            <div style={{background:"linear-gradient(135deg,#c9a96e,#b8944d)",borderRadius:20,padding:"9px 22px",marginTop:-4,marginBottom:20,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
-              <p style={{...KR,fontSize:"12.5px",fontWeight:700,color:"#0d0d0d",margin:0,letterSpacing:"0.3px"}}>✦ Discover Korean Beauty ✦</p>
-            </div>
-
-            {/* QR -> Learn -> Purchase */}
-            <div style={{display:"flex",alignItems:"center"}}>
-              {["QR","Learn","참여"].map((step,i)=>(
-                <div key={step} style={{display:"flex",alignItems:"center"}}>
-                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
-                    <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px solid ${i===2?"#fb5607":"#c9a96e"}`,background:i===2?"rgba(251,86,7,0.08)":"rgba(201,169,110,0.1)",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:"13px",fontWeight:700,color:i===2?"#fb5607":"#c9a96e"}}>{i+1}</div>
-                    <p style={{...KR,fontSize:"11px",fontWeight:600,color:"#1a1a1a",margin:0}}>{step}</p>
-                  </div>
-                  {i<2 && <div style={{width:28,height:1,background:"#d8cfc2",margin:"0 6px 22px"}}/>}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 20px",maxWidth:600}}>
-            The Beauty Pause는 최종 구매자가 살롱이 아니라 <strong style={{color:"#1a1a1a"}}>고객</strong>이기 때문에, 살롱의 종류보다 그 공간에 머무는 뷰티 고객에게 더 집중합니다.
-          </p>
-
         </div>
       </section>
 
