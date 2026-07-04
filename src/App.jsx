@@ -3093,11 +3093,11 @@ function ForBrandsPage() {
       </section>
 
       {/* BENEFITS */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Benefits</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 36px"}}>브랜드가 얻는 것</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 36px"}}>브랜드가 얻는 것</h2>
           <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16,marginBottom:48}}>
             {[
               {t:"① 파리 오프라인 소개",d:"파리의 실제 뷰티 살롱에서 브랜드를 소개합니다."},
@@ -3105,15 +3105,15 @@ function ForBrandsPage() {
               {t:"③ 해외 마케팅 콘텐츠",d:"파리에서의 브랜드 활동을 사진과 영상으로 기록하여 해외 마케팅에 활용할 수 있습니다."},
               {t:"④ 살롱 협업 캠페인 (선택)",d:"브랜드에 맞는 살롱 협업 캠페인을 기획하고 운영할 수 있습니다."},
             ].map(({t,d})=>(
-              <div key={t} style={{background:"rgba(255,255,255,0.04)",borderRadius:16,padding:"20px 18px",border:"1px solid rgba(255,255,255,0.08)"}}>
+              <div key={t} style={{background:"#fff",borderRadius:16,padding:"20px 18px",border:"1px solid #e8e0d8"}}>
                 <div style={{width:24,height:2,background:"#c9a96e",marginBottom:12}}/>
-                <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.4}}>{t}</p>
-                <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.45)",lineHeight:1.6,margin:0}}>{d}</p>
+                <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.4}}>{t}</p>
+                <p style={{...KR,fontSize:"12px",color:"#777",lineHeight:1.6,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
 
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 16px",lineHeight:1.8}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
+          <p style={{...KR,fontSize:"15px",color:"#777",margin:"0 0 16px",lineHeight:1.8}}>The Beauty Pause는 특히 아래와 같은 브랜드와 잘 맞습니다.</p>
           <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
             {["스킨케어","헤어케어","바디케어","웰니스 뷰티","신생 뷰티 브랜드","유럽 고객과 만나고 싶은 브랜드","오프라인 접점을 만들고 싶은 브랜드"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
