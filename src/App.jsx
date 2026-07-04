@@ -3292,27 +3292,22 @@ function ForBrandsPage() {
 
             {/* Launch Program */}
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
+              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Program</p>
               <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Paris Launch <span style={{color:"#c9a96e"}}>Program</span></p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 20px"}}>파리에서 브랜드를 런칭하는 프로그램</p>
-              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.8,margin:"0 0 20px"}}>
-                The Beauty Pause는 매월 새로운 브랜드와 함께 Paris Launch Week를 진행합니다.<br/>
-                선정된 브랜드는 일정 기간 동안 파리의 참여 뷰티 살롱에서 동시에 소개되며, 브랜드의 첫 유럽 오프라인 런칭 캠페인입니다.
-              </p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리에서 브랜드를 소개하는 오프라인 런칭 프로그램입니다.</p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
-                <p style={{...KR,fontSize:"15px",color:"#f5f0eb",fontWeight:700,margin:"0 0 6px",textAlign:"center",letterSpacing:"0.5px"}}>
-                  THE BEAUTY PAUSE <span style={{color:"#888",fontWeight:400}}>×</span> 참여 브랜드
-                </p>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
                   ✦ PARIS LAUNCH WEEK ✦
                 </p>
-                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,margin:0,textAlign:"center",letterSpacing:"0.3px"}}>
-                  10 뷰티 살롱 · 2 주 · QR 체험 · 럭키드로우
+                <p style={{...SS,fontSize:"12px",color:"#c9a96e",fontWeight:600,margin:0,textAlign:"center",letterSpacing:"0.3px"}}>
+                  10 Beauty Salons · 2 Weeks · QR Experience · Lucky Draw
                 </p>
               </div>
 
+              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>프로그램 포함 사항</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:24}}>
-                {["파리 런칭 위크 참여","제품 소개 카드 제작","QR 연결","살롱 매칭 및 제품 비치","최대 10개 살롱 동시 운영","현장 콘텐츠 제공","기본 운영 현황 확인"].map(i=>(
+                {["Paris Launch Week 참여","최대 10개 살롱 동시 운영","브랜드 소개 카드 제작","QR 브랜드 페이지 연결","파리 런칭 콘텐츠 제공","운영 현황 공유"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
