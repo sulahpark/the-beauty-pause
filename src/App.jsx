@@ -3020,9 +3020,7 @@ function ForBrandsPage() {
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
             파리 살롱에서<br/>브랜드를 소개하세요
           </h1>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
-            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품을 실제 고객에게 소개하는 오프라인 프로그램입니다.
-          </p>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 44px"}}>The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품을 실제 고객에게 소개하는 오프라인 프로그램입니다.</p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
             브랜드 등록하기 →
@@ -3041,7 +3039,7 @@ function ForBrandsPage() {
             좋은 제품도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
           </p>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#1a1a1a",fontWeight:600,lineHeight:1.9,margin:0}}>
-            <span style={{color:"#c9a96e"}}>더뷰티퍼즈 The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
+            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
           </p>
         </div>
       </section>
@@ -3235,8 +3233,8 @@ function ForBrandsPage() {
             {/* Launch Program */}
             <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
               <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Program</p>
-              <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>Paris Launch <span style={{color:"#c9a96e"}}>Program</span></p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리에서 브랜드를 소개하는 오프라인 런칭 프로그램입니다.</p>
+              <p style={{...KR,fontSize:"24px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px",letterSpacing:"-0.5px"}}>파리 런칭 프로그램 <span style={{color:"#c9a96e"}}>Paris Launch Program</span></p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 24px"}}>파리에서 브랜드를 소개하는 기본 프로그램입니다.</p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
@@ -3271,7 +3269,7 @@ function ForBrandsPage() {
             <div style={{background:"rgba(255,255,255,0.03)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
               <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>Optional Add-ons</p>
               <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>선택 옵션</p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>Paris Launch Program 운영 중 필요에 따라 추가할 수 있습니다.</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>필요에 따라 추가할 수 있는 선택 서비스입니다.</p>
 
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
                 {[
