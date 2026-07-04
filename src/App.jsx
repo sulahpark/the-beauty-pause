@@ -3021,7 +3021,7 @@ function ForBrandsPage() {
             파리 살롱에서<br/>브랜드를 소개하세요
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 0 44px"}}>
-            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품이 고객에게 소개될 수 있는 오프라인 환경을 운영합니다.
+            The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품을 실제 고객에게 소개하는 오프라인 프로그램입니다.
           </p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
@@ -3041,7 +3041,7 @@ function ForBrandsPage() {
             좋은 제품도 고객이 만날 기회가 없다면 선택되기 어렵습니다.
           </p>
           <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#1a1a1a",fontWeight:600,lineHeight:1.9,margin:0}}>
-            <span style={{color:"#c9a96e"}}>The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
+            <span style={{color:"#c9a96e"}}>더뷰티퍼즈-The Beauty Pause</span>는<br/>고객이 제품을 직접 보고, 경험하고, 브랜드를 알아갈 수 있는 오프라인 접점을 만듭니다.
           </p>
         </div>
       </section>
