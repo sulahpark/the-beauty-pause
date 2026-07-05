@@ -3243,15 +3243,12 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Founding Brand</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>초기 참여 브랜드 혜택</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>파리 네트워크의 초기 파트너 브랜드</h2>
           <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
-            현재 파리 네트워크의 <strong style={{color:"#1a1a1a"}}>10개 초기 파트너 브랜드</strong>를 모집합니다.
-          </p>
-          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 6px",maxWidth:600}}>
-            초기 파트너 브랜드는 The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어가는 첫 브랜드입니다.
+            The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어갈 브랜드를 모집합니다.
           </p>
           <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
-            네트워크의 성장과 함께 가장 오래, 가장 큰 혜택을 함께 누릴 수 있습니다.
+            초기 파트너 브랜드는 네트워크 성장과 함께 다양한 우선 참여 혜택을 제공합니다.
           </p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20,marginBottom:32}}>
