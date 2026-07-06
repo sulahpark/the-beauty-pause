@@ -3020,7 +3020,7 @@ function ForBrandsPage() {
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
             파리 살롱에서<br/>브랜드를 소개하세요
           </h1>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 44px"}}>The Beauty Pause는 파리의 뷰티 살롱 네트워크를 통해 브랜드와 제품을 실제 고객에게 소개하는 오프라인 프로그램입니다.</p>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 44px"}}>더뷰티퍼즈 The Beauty Pause는<br/>파리의 뷰티 살롱 네트워크를 통해<br/>브랜드와 제품을 고객에게 소개하는 오프라인 프로그램입니다.</p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
             브랜드 등록하기 →
@@ -3137,7 +3137,7 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"12px",color:"#999",margin:0}}>운영 도시</p>
             </div>
             <div style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:14,padding:"20px 18px"}}>
-              <p style={{...KR,fontSize:"28px",color:"#c9a96e",fontWeight:700,margin:"0 0 4px",lineHeight:1}}><CountUp target={21} suffix="개"/></p>
+              <p style={{...KR,fontSize:"28px",color:"#c9a96e",fontWeight:700,margin:"0 0 4px",lineHeight:1}}><CountUp target={21} suffix="개+"/></p>
               <p style={{...KR,fontSize:"12px",color:"#999",margin:0}}>참여 살롱</p>
             </div>
             <div style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:14,padding:"20px 18px"}}>
@@ -3153,11 +3153,63 @@ function ForBrandsPage() {
 
           {/* live network CTA */}
           <a href="https://thebeautypause.com" target="_blank" rel="noopener noreferrer"
-            style={{display:"inline-flex",alignItems:"center",gap:8,...KR,fontSize:"14px",color:"#c9a96e",textDecoration:"none",fontWeight:600,border:"1px solid #e8d9b8",padding:"11px 22px",borderRadius:10,transition:"all 0.2s"}}
+            style={{display:"inline-flex",alignItems:"center",gap:8,...KR,fontSize:"14px",color:"#1a1a1a",textDecoration:"none",fontWeight:600,border:"1px solid #e8d9b8",padding:"11px 22px",borderRadius:10,transition:"all 0.2s"}}
             onMouseEnter={e=>{e.currentTarget.style.background="#fdf8ee"}}
             onMouseLeave={e=>{e.currentTarget.style.background="transparent"}}>
             실제 운영 살롱 보기 →
           </a>
+        </div>
+      </section>
+
+      {/* PURCHASE OPTIONS */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Purchase Options</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>브랜드에 맞는 판매 방식을 선택할 수 있습니다.</h2>
+          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.8,margin:"0 0 40px",maxWidth:600}}>
+            The Beauty Pause는 브랜드의 운영 방식에 맞춰 다양한 판매 구조를 제공합니다.
+          </p>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
+            {[
+              {
+                n:"Option 1", t:"브랜드 자사몰 연결",
+                flow:"QR → 브랜드 자사몰 → 한국 발송",
+                items:["가장 가볍게 시작","브랜드가 주문 및 배송 관리","초기 테스트에 적합"],
+                tag:null
+              },
+              {
+                n:"Option 2", t:"현지 발송 대행",
+                flow:"QR → 브랜드 자사몰 → TBP 프랑스 발송",
+                items:["결제는 브랜드 자사몰","소량 재고를 프랑스에 보관","빠른 배송 가능"],
+                tag:null
+              },
+              {
+                n:"Option 3", t:"The Beauty Pause Shop",
+                flow:"QR → TBP Shop → TBP 현지 운영",
+                items:["TBP에서 주문·결제·현지 발송","브랜드는 위탁 방식으로 제품 공급","판매된 수량 기준 정산"],
+                tag:"Coming Soon"
+              },
+            ].map(({n,t,flow,items,tag})=>(
+              <div key={n} style={{background:"#fff",border:"1px solid #e8e0d8",borderRadius:16,padding:"26px 22px",position:"relative"}}>
+                {tag&&<span style={{position:"absolute",top:18,right:18,...SS,fontSize:"9px",color:"#fb5607",border:"1px solid rgba(251,86,7,0.3)",padding:"3px 9px",borderRadius:12,fontWeight:700,letterSpacing:"0.5px"}}>{tag}</span>}
+                <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>{n}</p>
+                <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 14px"}}>{t}</p>
+                <div style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:10,padding:"10px 12px",marginBottom:18}}>
+                  <p style={{...SS,fontSize:"11px",color:"#888",margin:0,lineHeight:1.6,fontFamily:"monospace,'DM Sans',sans-serif"}}>{flow}</p>
+                </div>
+                <div>
+                  {items.map(i=>(
+                    <div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:8}}>
+                      <span style={{color:"#c9a96e",fontSize:"11px",flexShrink:0,marginTop:2}}>✓</span>
+                      <p style={{...KR,fontSize:"13px",color:"#666",lineHeight:1.6,margin:0}}>{i}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
