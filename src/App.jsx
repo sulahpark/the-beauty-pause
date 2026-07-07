@@ -3715,7 +3715,6 @@ function ForManufacturersPage() {
   const Divider = () => <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>;
   const Tag = ({children}) => <span style={{...KR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:4}}>{children}</span>;
 
-  const flowSteps = ["Manufacturer","Brand Introduction","The Beauty Pause","Paris Launch Week","Beauty Salon Network in Paris"];
 
   return (
     <>
@@ -3751,6 +3750,7 @@ function ForManufacturersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Why Partner with The Beauty Pause</Badge>
           <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>왜 함께하나요?</h2>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
             {[
               {t:"고객사에게 새로운 서비스 제공",d:"유럽 진출을 준비하는 브랜드에게 오프라인 런칭 프로그램을 함께 제안할 수 있습니다."},
@@ -3772,13 +3772,20 @@ function ForManufacturersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ How We Work</Badge>
           <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>협력 방식</h2>
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0,padding:"8px 0 4px"}}>
-            {flowSteps.map((step,i)=>(
-              <Fragment key={step}>
-                <div style={{background:i===2?"rgba(201,169,110,0.15)":"#fff",border:i===2?"2px solid #c9a96e":"1px solid #e8e0d8",borderRadius:12,padding:"14px 28px",textAlign:"center",...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",minWidth:220,boxShadow:i===2?"0 2px 8px rgba(201,169,110,0.1)":"none"}}>
-                  {step}
+            {[
+              {t:"파트너사 서비스",sub:"(제조 · 인증 등)"},
+              {t:"유럽 진출 프로그램"},
+              {t:"더뷰티퍼즈",accent:true},
+              {t:"파리 오프라인 런칭"},
+            ].map((step,i,arr)=>(
+              <Fragment key={step.t}>
+                <div style={{background:step.accent?"rgba(201,169,110,0.15)":"#fff",border:step.accent?"2px solid #c9a96e":"1px solid #e8e0d8",borderRadius:12,padding:"14px 28px",textAlign:"center",minWidth:220,boxShadow:step.accent?"0 2px 8px rgba(201,169,110,0.1)":"none"}}>
+                  <p style={{...KR,fontSize:14,fontWeight:700,color:step.accent?"#a07832":"#1a1a1a",margin:0}}>{step.t}</p>
+                  {step.sub&&<p style={{...KR,fontSize:11,fontWeight:400,color:"#999",margin:"3px 0 0"}}>{step.sub}</p>}
                 </div>
-                {i<flowSteps.length-1 && <div style={{color:"#c9a96e",fontSize:18,padding:"4px 0"}}>↓</div>}
+                {i<arr.length-1 && <div style={{color:"#c9a96e",fontSize:18,padding:"4px 0"}}>↓</div>}
               </Fragment>
             ))}
           </div>
@@ -3790,6 +3797,7 @@ function ForManufacturersPage() {
         <div style={{maxWidth:700,margin:"0 auto"}}>
           <Badge>✦ Partnership</Badge>
           <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 24px"}}>파트너가 얻는 가치</h2>
           <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.55)",lineHeight:2,margin:"0 0 16px"}}>The Beauty Pause는 제조사와 함께 유럽 진출 프로그램을 운영합니다.</p>
           <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.55)",lineHeight:2,margin:"0 0 16px"}}>제조사는 기존 고객에게 새로운 해외 진출 서비스를 제공하고,<br/>The Beauty Pause는 프랑스 현지에서 브랜드의 오프라인 런칭과 운영을 담당합니다.</p>
           <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.55)",lineHeight:2,margin:0}}>브랜드 상담부터 프로그램 운영까지 함께 진행하며, 파트너십 형태로 협력합니다.</p>
@@ -3801,6 +3809,7 @@ function ForManufacturersPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Ideal Partners</Badge>
           <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>이런 파트너를 찾고 있습니다</h2>
           <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
             {["화장품 제조사 (OEM / ODM)","브랜드 인큐베이팅 기업","브랜드 액셀러레이터","해외 진출 컨설팅 기업","수출 지원 기관"].map(t=><Tag key={t}>{t}</Tag>)}
           </div>
@@ -3811,9 +3820,12 @@ function ForManufacturersPage() {
       <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)",textAlign:"center"}}>
         <div style={{maxWidth:560,margin:"0 auto"}}>
           <Badge>✦ Contact</Badge>
-          <h2 style={{...KR,fontSize:"clamp(22px,3.5vw,32px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 16px",lineHeight:1.5}}>
-            유럽 진출을 준비하는 브랜드와<br/>함께하고 계신가요?
+          <h2 style={{...KR,fontSize:"clamp(22px,3.5vw,32px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 12px",lineHeight:1.5}}>
+            함께 만드는 서비스
           </h2>
+          <p style={{...KR,fontSize:16,color:"rgba(255,255,255,0.6)",margin:"0 0 8px",lineHeight:1.7}}>
+            유럽 진출을 준비하는 브랜드와 함께하고 계신가요?
+          </p>
           <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.4)",margin:"0 0 36px"}}>The Beauty Pause와 함께 새로운 서비스를 만들어보세요.</p>
           <p style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.3)",margin:"0 0 24px"}}>hello@thebeautypause.com</p>
           <a href="mailto:hello@thebeautypause.com"
