@@ -2379,18 +2379,18 @@ function SpotPage({ lang, setLang }) {
                 </div>
               </div>
               <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5vw,28px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.2}}>
-                {lang==="fr"?"Laissez un avis,\ngagnez un coffret K-Beauty":"Leave a review,\nwin a K-Beauty gift"}
+                {lang==="fr"?"Tournez la roue,\ngagnez à coup sûr":"Spin the wheel,\nwin every time"}
               </h2>
               <p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.5)",margin:"0 0 20px",lineHeight:1.5}}>
                 {lang==="fr"
-                  ? "Donnez votre avis sur ce salon · Tentez de gagner un coffret K-Beauty"
-                  : "Rate this salon · Enter to win a K-Beauty gift set"}
+                  ? "Une seule participation par personne · Résultat immédiat"
+                  : "One spin per person · Instant result"}
               </p>
               <button onClick={()=>setScreen("lucky")}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"0.5px",borderRadius:12,boxShadow:"0 4px 20px rgba(201,169,110,0.4)",transition:"opacity 0.2s"}}
                 onTouchStart={e=>e.currentTarget.style.opacity="0.85"}
                 onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
-                {lang==="fr"?"✦ Participer au tirage":"✦ Enter the Lucky Draw"}
+                {lang==="fr"?"✦ Tourner la roue":"✦ Spin the wheel"}
               </button>
             </div>
           </div>
@@ -2482,30 +2482,47 @@ function SpotPage({ lang, setLang }) {
 }
 
 // ── LUCKY DRAW SCREEN ─────────────────────────────────────────────────────────
+const PRIZE_TIERS = [
+  { key:"d10",   code:"TBP10", requiresShipping:false, weight:35, label:{en:"10% discount code",fr:"Code de réduction 10%"} },
+  { key:"d15",   code:"TBP15", requiresShipping:false, weight:25, label:{en:"15% discount code",fr:"Code de réduction 15%"} },
+  { key:"d20",   code:"TBP20", requiresShipping:false, weight:15, label:{en:"20% discount code",fr:"Code de réduction 20%"} },
+  { key:"sample",code:null,    requiresShipping:true,  weight:15, label:{en:"Mini sample gift",fr:"Échantillon offert"} },
+  { key:"gift",  code:null,    requiresShipping:true,  weight:8,  label:{en:"K-Beauty gift set",fr:"Cadeau K-Beauty"} },
+  { key:"grand", code:null,    requiresShipping:true,  weight:2,  label:{en:"Full-size K-Beauty set — Grand prize",fr:"Coffret K-Beauty taille normale — Grand prix"} },
+];
+const WHEEL_ANGLES = [30,90,150,210,270,330];
+const WHEEL_COLORS = ["#c9a96e","#b8944d","#c9a96e","#b8944d","#c9a96e","#fb5607"];
+
+function pickPrizeTier() {
+  const total = PRIZE_TIERS.reduce((s,p)=>s+p.weight,0);
+  let r = Math.random()*total;
+  for (const p of PRIZE_TIERS) { if (r < p.weight) return p; r -= p.weight; }
+  return PRIZE_TIERS[0];
+}
+
 function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, SS }) {
   const navigate = useNavigate();
-  const [step, setStep] = useState("intro"); // intro | form | success
+  const storageKey = `tbp_lucky_played_${spotId}`;
+  const [step, setStep] = useState("info"); // info | already | wheel | shipping | success
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [screenshot, setScreenshot] = useState(null);
-  const [screenshotPreview, setScreenshotPreview] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [error, setError] = useState("");
+  const [spinning, setSpinning] = useState(false);
+  const [wheelRotation, setWheelRotation] = useState(0);
+  const [prize, setPrize] = useState(null);
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [postal, setPostal] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   // intercept browser/phone back button
   useEffect(() => {
-    // push a dummy state so back button hits us first
     window.history.pushState({ luckyStep: step }, "");
     const handlePop = (e) => {
-      if (step === "form") {
-        e.preventDefault();
-        setStep("intro");
-        window.history.pushState({ luckyStep: "intro" }, "");
-      } else if (step === "intro") {
-        onBack();
-      }
-      // success: let it go back normally
+      if (step === "info") onBack();
+      // wheel/shipping/success: let it go back normally
     };
     window.addEventListener("popstate", handlePop);
     return () => window.removeEventListener("popstate", handlePop);
@@ -2513,51 +2530,47 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
 
   const googleReviewUrl = salon?.google_review_url || salon?.google || salon?.google_maps_url;
 
-  const handleScreenshot = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setScreenshot(file);
-    const reader = new FileReader();
-    reader.onload = ev => setScreenshotPreview(ev.target.result);
-    reader.readAsDataURL(file);
+  const checkAndProceed = async () => {
+    if (!name.trim() || !phone.trim() || !email.trim()) {
+      setError(lang==="fr"?"Merci de remplir tous les champs.":"Please fill in all fields.");
+      return;
+    }
+    setChecking(true); setError("");
+    try {
+      if (localStorage.getItem(storageKey)) { setStep("already"); setChecking(false); return; }
+      const formula = encodeURIComponent(`AND({spot_id}='${spotId}',{phone}='${phone.trim()}')`);
+      const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_LUCKY_DRAW}?filterByFormula=${formula}`, {
+        headers: { Authorization: `Bearer ${AT_KEY}` }
+      });
+      const data = await res.json();
+      if (data?.records?.length > 0) {
+        localStorage.setItem(storageKey, "1");
+        setStep("already");
+      } else {
+        setStep("wheel");
+      }
+    } catch(e) {
+      console.error(e);
+      setError(lang==="fr"?"Une erreur s'est produite. Réessayez.":"Something went wrong. Please try again.");
+    }
+    setChecking(false);
   };
 
-  const submit = async () => {
-    if (!name.trim() || !email.trim()) { setError("Please fill in your name and email."); return; }
-    if (!screenshot) { setError("Please upload your review screenshot."); return; }
+  const submitEntry = async (chosenPrize, shipping) => {
     setSubmitting(true); setError("");
     try {
-      // 1. Upload to Supabase Storage → get public URL
-      let screenshotUrl = null;
-      console.log("Supabase client:", supabase ? "OK" : "NULL");
-      if (supabase) {
-        const ext = screenshot.name.split('.').pop();
-        const filename = `lucky-draw/${spotId}-${Date.now()}.${ext}`;
-        console.log("Uploading to:", filename);
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('screenshots')
-          .upload(filename, screenshot, { contentType: screenshot.type, upsert: true });
-        console.log("Upload result:", uploadData, uploadError);
-        if (uploadError) throw new Error("Upload failed: " + uploadError.message);
-        const { data: { publicUrl } } = supabase.storage.from('screenshots').getPublicUrl(filename);
-        console.log("Screenshot public URL:", publicUrl);
-        screenshotUrl = publicUrl;
-      } else {
-        throw new Error("Supabase not configured - cannot upload screenshot");
-      }
-
-      // 2. Submit to Airtable with public URL — record product seen at this submission
       const fields = {
         spot_id: spotId,
         name: name.trim(),
         email: email.trim(),
-        status: "pending",
+        phone: phone.trim(),
+        status: "won",
+        prize_tier: chosenPrize.label.en,
       };
-      if (phone.trim()) fields.phone = phone.trim();
       if (salon?.id) fields.salon = [salon.id];
-      if (screenshotUrl) fields.screenshot = [{ url: screenshotUrl, filename: screenshot.name }];
       if (product?.product_name) fields.product_seen = product.product_name;
-      if (product?.discount_code) fields.discount_code_sent = product.discount_code;
+      if (chosenPrize.code) fields.discount_code_sent = chosenPrize.code;
+      if (shipping) fields.shipping_address = `${shipping.address}, ${shipping.city} ${shipping.postal}`;
       const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_LUCKY_DRAW}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
@@ -2565,9 +2578,34 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       });
       const data = await res.json();
       if (res.ok) { setStep("success"); }
-      else { console.error("Lucky draw error:", data); setError(data?.error?.message || "Something went wrong."); }
+      else { console.error("Lucky draw error:", data); setError(data?.error?.message || (lang==="fr"?"Une erreur s'est produite.":"Something went wrong.")); }
     } catch(e) { console.error(e); setError(e.message); }
     setSubmitting(false);
+  };
+
+  const spin = () => {
+    if (spinning) return;
+    setSpinning(true); setError("");
+    const chosen = pickPrizeTier();
+    const idx = PRIZE_TIERS.indexOf(chosen);
+    const spins = 5 + Math.random()*2;
+    const target = wheelRotation + 360*spins + (360 - WHEEL_ANGLES[idx]);
+    setWheelRotation(target);
+    setTimeout(() => {
+      setPrize(chosen);
+      localStorage.setItem(storageKey, "1");
+      setSpinning(false);
+      if (chosen.requiresShipping) setStep("shipping");
+      else submitEntry(chosen);
+    }, 4100);
+  };
+
+  const submitShipping = () => {
+    if (!address.trim() || !city.trim() || !postal.trim()) {
+      setError(lang==="fr"?"Merci de remplir l'adresse complète.":"Please fill in your full address.");
+      return;
+    }
+    submitEntry(prize, { address: address.trim(), city: city.trim(), postal: postal.trim() });
   };
 
   const SpotNav = () => (
@@ -2588,18 +2626,36 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       <SpotNav/>
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 56px)",padding:"40px 24px",textAlign:"center"}}>
         <div style={{fontSize:"48px",marginBottom:16}}>🎉</div>
-        <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:400,color:"#f5f0eb",marginBottom:12}}>You're in!</h2>
-        <p style={{...SS,fontSize:"14px",color:"#777",lineHeight:1.7,marginBottom:8,maxWidth:360}}>
+        <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:400,color:"#f5f0eb",marginBottom:12}}>
+          {prize?.label?.[lang==="fr"?"fr":"en"]}
+        </h2>
+        {prize?.code ? (
+          <div style={{display:"flex",alignItems:"center",gap:10,background:"#fff",border:"1px dashed #c9a96e",borderRadius:10,padding:"12px 20px",marginBottom:20}}>
+            <span style={{...SS,fontSize:"20px",fontWeight:800,color:"#0d0d0d",letterSpacing:"1px"}}>{prize.code}</span>
+            <button onClick={()=>navigator.clipboard?.writeText(prize.code)}
+              style={{...SS,fontSize:"11px",fontWeight:700,color:"#fff",background:"#1a1a1a",border:"none",padding:"7px 14px",borderRadius:8,cursor:"pointer"}}>
+              {lang==="fr"?"Copier":"Copy"}
+            </button>
+          </div>
+        ) : (
+          <p style={{...SS,fontSize:"14px",color:"#777",lineHeight:1.7,marginBottom:20,maxWidth:360}}>
+            {lang==="fr"
+              ? "Votre cadeau sera expédié à l'adresse indiquée. Confirmation par email."
+              : "Your gift will be shipped to the address you provided. Confirmation by email."}
+          </p>
+        )}
+        <p style={{...SS,fontSize:"13px",color:"#777",lineHeight:1.7,marginBottom:8,maxWidth:360}}>
           {lang==="fr"
-            ? "Votre participation est enregistrée. Résultats envoyés par email chaque semaine."
-            : "Your entry has been recorded. Winners are announced weekly by email."}
+            ? "Un email de confirmation vient de vous être envoyé."
+            : "A confirmation email has just been sent to you."}
         </p>
-        <p style={{...SS,fontSize:"13px",color:"#c9a96e",lineHeight:1.7,marginBottom:32,maxWidth:360,fontWeight:600}}>
-          {lang==="fr"
-            ? "🎁 Vous pourriez être sélectionné(e) pour un coffret K-Beauty — surveillez votre boîte mail !"
-            : "🎁 You could be selected for a K-Beauty gift set — keep an eye on your inbox!"}
-        </p>
-        <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
+
+        {googleReviewUrl&&<a href={googleReviewUrl} target="_blank" rel="noopener noreferrer"
+          style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,width:"100%",maxWidth:360,padding:"14px",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.3)",color:"#c9a96e",textDecoration:"none",borderRadius:12,margin:"20px 0",...SS,fontSize:"13px",fontWeight:600}}>
+          ⭐ {lang==="fr"?"Laisser un avis pour plus de chances de gagner":"Leave a review for a bonus prize entry"}
+        </a>}
+
+        <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center",marginTop:8}}>
           <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
             {lang==="fr"?"Accueil":"Homepage"}
           </button>
@@ -2617,143 +2673,125 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       <SpotNav/>
       <main style={{maxWidth:480,margin:"0 auto",padding:"28px 20px 80px",animation:"fadeUp 0.5s ease both"}}>
 
-        {step==="intro" && <>
-          {/* salon + prize header */}
+        {step==="info" && <>
           <div style={{textAlign:"center",marginBottom:24}}>
             <span style={{fontSize:"36px",display:"block",marginBottom:12}}>🎁</span>
             <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,6vw,34px)",fontWeight:400,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.2}}>
               {lang==="fr"?"Tirage au sort":"Lucky Draw"}
             </h1>
             <p style={{...SS,fontSize:"13px",color:"#888",margin:0,lineHeight:1.6}}>
-              {lang==="fr"
-                ?"Laissez un avis sur ce salon et tentez votre chance !"
-                :"Leave a review for this salon and enter to win!"}
+              {lang==="fr"?"Une seule participation par personne. Résultat immédiat !":"One entry per person. Instant result!"}
             </p>
           </div>
 
-          {/* prize card */}
-          <div style={{background:"linear-gradient(135deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"20px",marginBottom:20,position:"relative",overflow:"hidden"}}>
-            <div style={{position:"absolute",top:-20,right:-20,width:80,height:80,borderRadius:"50%",background:"rgba(201,169,110,0.1)"}}/>
-            <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>🎁 {lang==="fr"?"K-Beauty Gift":"K-Beauty Gift"}</p>
-            {product ? (
-              <div style={{display:"flex",gap:12,alignItems:"center"}}>
-                {(()=>{const pi=getProdImg(product);return pi&&(
-                  <div style={{width:60,height:60,borderRadius:10,overflow:"hidden",flexShrink:0,position:"relative",background:"#333"}}>
-                    <img src={pi} alt="" style={{position:"absolute",inset:"-8%",width:"116%",height:"116%",objectFit:"cover",filter:"blur(8px) saturate(1.3) opacity(0.9)"}}/>
-                    <img src={pi} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",zIndex:1}}/>
-                  </div>
-                );})()}
-                <div style={{minWidth:0}}>
-                  <p style={{...SS,fontSize:"10px",color:"rgba(201,169,110,0.7)",fontWeight:700,textTransform:"uppercase",letterSpacing:"1px",margin:"0 0 2px"}}>{product.brand_name||""}</p>
-                  <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:"#f5f0eb",margin:"0 0 4px",fontWeight:600,lineHeight:1.2}}>{product.product_name}</p>
-                  <p style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.4)",margin:0}}>
-                    {lang==="fr"?"Ce produit ou un produit similaire":"This product or a similar one"}
-                  </p>
-                </div>
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"20px",marginBottom:20}}>
+            {[
+              {label:lang==="fr"?"Prénom *":"First name *", val:name, set:setName, type:"text"},
+              {label:lang==="fr"?"Téléphone *":"Phone *", val:phone, set:setPhone, type:"tel"},
+              {label:"Email *", val:email, set:setEmail, type:"email"},
+            ].map(({label,val,set,type})=>(
+              <div key={label} style={{marginBottom:14}}>
+                <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{label}</label>
+                <input type={type} value={val} onChange={e=>set(e.target.value)}
+                  style={{width:"100%",padding:"12px 14px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}}
+                  onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"}/>
               </div>
-            ) : (
-              <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:"#f5f0eb",margin:0}}>
-                {lang==="fr"?"Un produit K-Beauty sélectionné":"A curated K-Beauty product"}
-              </p>
-            )}
-            <div style={{marginTop:14,padding:"10px 12px",background:"rgba(255,255,255,0.05)",borderRadius:8,border:"1px solid rgba(201,169,110,0.2)"}}>
-              <p style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.5)",margin:0,lineHeight:1.5}}>
-                {lang==="fr"
-                  ?"Le produit actuellement en salon vous sera envoyé. Si indisponible, un autre produit K-Beauty susceptible de vous plaire sera envoyé à la place."
-                  :"The product currently in the salon will be sent. If unavailable, a K-Beauty product we think you'll love will be sent instead."}
-              </p>
+            ))}
+            <p style={{...SS,fontSize:"11px",color:"#bbb",lineHeight:1.6,margin:0}}>
+              {lang==="fr"
+                ? "Le téléphone permet de vérifier qu'une seule participation est faite par personne."
+                : "Your phone number is used to make sure each person only enters once."}
+            </p>
+          </div>
+
+          {error&&<p style={{...SS,fontSize:"12px",color:"#fb5607",marginBottom:14}}>{error}</p>}
+
+          <button onClick={checkAndProceed} disabled={checking}
+            style={{width:"100%",padding:"16px",background:checking?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:checking?"not-allowed":"pointer",...SS,fontSize:"14px",fontWeight:700,borderRadius:12,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
+            {checking?(lang==="fr"?"Vérification…":"Checking…"):(lang==="fr"?"Tourner la roue →":"Spin the wheel →")}
+          </button>
+        </>}
+
+        {step==="already" && <>
+          <div style={{textAlign:"center",padding:"40px 0"}}>
+            <span style={{fontSize:"36px",display:"block",marginBottom:16}}>🙌</span>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",fontWeight:400,color:"#1a1a1a",margin:"0 0 10px"}}>
+              {lang==="fr"?"Vous avez déjà participé":"You've already entered"}
+            </h2>
+            <p style={{...SS,fontSize:"13px",color:"#888",lineHeight:1.7,marginBottom:24,maxWidth:340,margin:"0 auto 24px"}}>
+              {lang==="fr"
+                ? "Une seule participation est possible par personne pour ce Lucky Draw. Merci de votre visite !"
+                : "Only one entry is allowed per person for this Lucky Draw. Thanks for visiting!"}
+            </p>
+            <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
+              {lang==="fr"?"Accueil":"Homepage"}
+            </button>
+          </div>
+        </>}
+
+        {step==="wheel" && <>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px"}}>
+              {lang==="fr"?"Tournez et découvrez votre lot":"Spin to reveal your prize"}
+            </h2>
+            <p style={{...SS,fontSize:"12px",color:"#aaa",margin:0}}>
+              {lang==="fr"?"Vous gagnez à coup sûr":"You're guaranteed to win"}
+            </p>
+          </div>
+
+          <div style={{display:"flex",justifyContent:"center",margin:"20px 0"}}>
+            <div style={{position:"relative",width:240,height:240}}>
+              <div style={{width:240,height:240,borderRadius:"50%",position:"relative",transition:"transform 4s cubic-bezier(0.12,0.85,0.15,1)",transform:`rotate(${wheelRotation}deg)`,
+                background:`conic-gradient(${WHEEL_COLORS[0]} 0deg 60deg,${WHEEL_COLORS[1]} 60deg 120deg,${WHEEL_COLORS[2]} 120deg 180deg,${WHEEL_COLORS[3]} 180deg 240deg,${WHEEL_COLORS[4]} 240deg 300deg,${WHEEL_COLORS[5]} 300deg 360deg)`,
+                border:"4px solid #1a1a1a",boxSizing:"border-box"}}>
+                {PRIZE_TIERS.map((p,i)=>{
+                  const short = {d10:"10%",d15:"15%",d20:"20%",sample:lang==="fr"?"Échant.":"Sample",gift:lang==="fr"?"Cadeau":"Gift",grand:lang==="fr"?"Grand prix":"Grand prize"}[p.key];
+                  const deg = WHEEL_ANGLES[i];
+                  return <span key={p.key} style={{position:"absolute",top:"50%",left:"50%",transformOrigin:"0 0",transform:`rotate(${deg}deg) translate(28px,-6px)`,fontSize:10,fontWeight:600,color:i===5?"#fff":"#0d0d0d",width:60,textAlign:"center"}}>{short}</span>;
+                })}
+              </div>
+              <div style={{position:"absolute",top:-6,left:"50%",transform:"translateX(-50%)",width:0,height:0,borderLeft:"10px solid transparent",borderRight:"10px solid transparent",borderTop:"16px solid #fb5607",zIndex:5}}/>
+              <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:40,height:40,borderRadius:"50%",background:"#0d0d0d",border:"3px solid #c9a96e",zIndex:4}}/>
             </div>
           </div>
 
-          {/* how it works */}
-          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"20px",marginBottom:20}}>
-            <p style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>
-              {lang==="fr"?"Comment participer":"How it works"}
+          <button onClick={spin} disabled={spinning}
+            style={{width:"100%",padding:"16px",background:spinning?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:spinning?"not-allowed":"pointer",...SS,fontSize:"14px",fontWeight:700,borderRadius:12,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
+            {spinning?(lang==="fr"?"En cours…":"Spinning…"):(lang==="fr"?"✦ Tourner":"✦ Spin now")}
+          </button>
+        </>}
+
+        {step==="shipping" && <>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <span style={{fontSize:"36px",display:"block",marginBottom:10}}>🎉</span>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px"}}>
+              {prize?.label?.[lang==="fr"?"fr":"en"]}
+            </h2>
+            <p style={{...SS,fontSize:"13px",color:"#888",margin:0}}>
+              {lang==="fr"?"Indiquez l'adresse d'envoi de votre cadeau.":"Enter the address to ship your gift to."}
             </p>
+          </div>
+
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"20px",marginBottom:20}}>
             {[
-              {n:"1", icon:"⭐", text:lang==="fr"?"Laissez un avis sur ce salon":"Leave a review for this salon"},
-              {n:"2", icon:"📸", text:lang==="fr"?"Prenez une capture d'écran":"Screenshot your review"},
-              {n:"3", icon:"📤", text:lang==="fr"?"Soumettez ici avec vos coordonnées":"Submit here with your contact info"},
-              {n:"4", icon:"🎁", text:lang==="fr"?"Résultats par email chaque semaine":"Winners notified weekly by email"},
-            ].map(({n,icon,text})=>(
-              <div key={n} style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:n==="4"?0:14}}>
-                <div style={{width:32,height:32,borderRadius:"50%",background:"#fdf8ee",border:"1px solid #e8d9b8",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"15px",flexShrink:0}}>{icon}</div>
-                <p style={{...SS,fontSize:"13px",color:"#555",lineHeight:1.5,margin:"6px 0 0"}}>{text}</p>
+              {label:lang==="fr"?"Adresse *":"Street address *", val:address, set:setAddress},
+              {label:lang==="fr"?"Ville *":"City *", val:city, set:setCity},
+              {label:lang==="fr"?"Code postal *":"Postal code *", val:postal, set:setPostal},
+            ].map(({label,val,set})=>(
+              <div key={label} style={{marginBottom:14}}>
+                <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{label}</label>
+                <input type="text" value={val} onChange={e=>set(e.target.value)}
+                  style={{width:"100%",padding:"12px 14px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}}
+                  onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"}/>
               </div>
             ))}
           </div>
 
-          {/* Google review CTA */}
-          {googleReviewUrl&&<a href={googleReviewUrl} target="_blank" rel="noopener noreferrer"
-            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"15px",background:"#fff",color:"#1a1a1a",textDecoration:"none",borderRadius:12,marginBottom:12,...SS,fontSize:"14px",fontWeight:600,border:"1.5px solid #ede8e2",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
-            <span style={{fontSize:"18px"}}>⭐</span>
-            {lang==="fr"?"Laisser un avis sur ce salon":"Leave a Salon Review"}
-            <span style={{marginLeft:"auto",fontSize:"16px",color:"#aaa"}}>↗</span>
-          </a>}
-
-          <button onClick={()=>setStep("form")}
-            style={{width:"100%",padding:"16px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,borderRadius:12,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
-            {lang==="fr"?"J'ai laissé mon avis → Participer":"I left my review → Enter now"}
-          </button>
-        </>}
-
-        {step==="form" && <>
-          <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:400,color:"#1a1a1a",margin:"0 0 6px"}}>
-            {lang==="fr"?"Votre participation":"Your entry"}
-          </h2>
-          <p style={{...SS,fontSize:"13px",color:"#aaa",margin:"0 0 24px",lineHeight:1.5}}>
-            {lang==="fr"?"Soumettez votre capture d'écran et vos coordonnées.":"Submit your screenshot and contact details."}
-          </p>
-
-          {/* screenshot upload */}
-          <div style={{marginBottom:18}}>
-            <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:8}}>
-              {lang==="fr"?"Capture d'écran de l'avis Google *":"Google review screenshot *"}
-            </label>
-            {screenshotPreview
-              ? <div style={{position:"relative",borderRadius:12,overflow:"hidden",marginBottom:8}}>
-                  <img src={screenshotPreview} alt="screenshot" style={{width:"100%",borderRadius:12,maxHeight:280,objectFit:"contain",background:"#f5f0eb"}}/>
-                  <button onClick={()=>{setScreenshot(null);setScreenshotPreview(null);}}
-                    style={{position:"absolute",top:8,right:8,background:"rgba(0,0,0,0.5)",color:"#fff",border:"none",cursor:"pointer",width:28,height:28,borderRadius:"50%",fontSize:"14px",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
-                </div>
-              : <label style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"2px dashed #ede8e2",borderRadius:12,padding:"32px 20px",cursor:"pointer",background:"#fff",transition:"border 0.2s"}}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor="#c9a96e"}
-                  onMouseLeave={e=>e.currentTarget.style.borderColor="#ede8e2"}>
-                  <span style={{fontSize:"32px"}}>📸</span>
-                  <p style={{...SS,fontSize:"13px",color:"#aaa",margin:0,textAlign:"center"}}>
-                    {lang==="fr"?"Appuyez pour ajouter la capture d'écran Google":"Tap to upload Google review screenshot"}
-                  </p>
-                  <input type="file" accept="image/*" onChange={handleScreenshot} style={{display:"none"}}/>
-                </label>
-            }
-          </div>
-
-          {/* form fields */}
-          {[
-            {label:lang==="fr"?"Prénom *":"First name *", val:name, set:setName, type:"text"},
-            {label:"Email *", val:email, set:setEmail, type:"email"},
-            {label:lang==="fr"?"Téléphone (optionnel)":"Phone (optional)", val:phone, set:setPhone, type:"tel"},
-          ].map(({label,val,set,type})=>(
-            <div key={label} style={{marginBottom:14}}>
-              <label style={{...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.5px",textTransform:"uppercase",display:"block",marginBottom:5}}>{label}</label>
-              <input type={type} value={val} onChange={e=>set(e.target.value)}
-                style={{width:"100%",padding:"12px 14px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",borderRadius:8,transition:"border 0.2s"}}
-                onFocus={e=>e.target.style.borderColor="#c9a96e"} onBlur={e=>e.target.style.borderColor="#ede8e2"}/>
-            </div>
-          ))}
-
-          {/* terms */}
-          <p style={{...SS,fontSize:"11px",color:"#bbb",lineHeight:1.6,marginBottom:18}}>
-            {lang==="fr"
-              ? "En participant, vous acceptez que vos coordonnées soient utilisées pour ce tirage au sort uniquement."
-              : "By entering, you agree your details will be used for this draw only. Winners notified weekly by email."}
-          </p>
-
           {error&&<p style={{...SS,fontSize:"12px",color:"#fb5607",marginBottom:14}}>{error}</p>}
 
-          <button onClick={submit} disabled={submitting}
-            style={{width:"100%",padding:"16px",background:submitting?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:submitting?"not-allowed":"pointer",...SS,fontSize:"13px",fontWeight:700,letterSpacing:"1px",borderRadius:12,transition:"opacity 0.2s"}}>
-            {submitting?"Submitting…":lang==="fr"?"Participer au tirage":"Submit my entry 🎁"}
+          <button onClick={submitShipping} disabled={submitting}
+            style={{width:"100%",padding:"16px",background:submitting?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:submitting?"not-allowed":"pointer",...SS,fontSize:"14px",fontWeight:700,borderRadius:12,boxShadow:"0 4px 16px rgba(201,169,110,0.35)"}}>
+            {submitting?(lang==="fr"?"Envoi…":"Submitting…"):(lang==="fr"?"Confirmer mon cadeau 🎁":"Confirm my gift 🎁")}
           </button>
         </>}
       </main>
@@ -3661,6 +3699,157 @@ function ForPartnersPage() {
   );
 }
 
+function ForManufacturersPage() {
+  const navigate = useNavigate();
+  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const [showTop, setShowTop] = useState(false);
+  useEffect(()=>{
+    const fn = () => setShowTop(window.scrollY > 600);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  const Badge = ({children}) => <span style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:16}}>{children}</span>;
+  const Divider = () => <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>;
+  const Tag = ({children}) => <span style={{...KR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:4}}>{children}</span>;
+
+  const flowSteps = ["Manufacturer","Brand Introduction","The Beauty Pause","Paris Launch Week","Beauty Salon Network in Paris"];
+
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+
+      {/* NAV */}
+      <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
+        <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+          <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+          <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+        </button>
+        <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>협력 문의</a>
+      </nav>
+
+      {/* HERO */}
+      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 88px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ For Manufacturers</Badge>
+          <h1 style={{...KR,fontSize:"clamp(28px,5vw,48px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.3,margin:"0 0 24px"}}>
+            유럽 진출 브랜드를 위한<br/>오프라인 런칭 프로그램
+          </h1>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:600,margin:"0 0 8px"}}>
+            The Beauty Pause는 한국 뷰티 브랜드의 유럽 진출을 위한 오프라인 마케팅 플랫폼입니다.
+          </p>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:600}}>
+            파리의 실제 뷰티 살롱을 기반으로, 브랜드가 적은 물량으로도 유럽 시장에서 제품을 소개하고 현지 고객과 만날 수 있는 프로그램을 운영합니다.
+          </p>
+        </div>
+      </section>
+
+      {/* WHY PARTNER */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Why Partner with The Beauty Pause</Badge>
+          <Divider/>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
+            {[
+              {t:"고객사에게 새로운 서비스 제공",d:"유럽 진출을 준비하는 브랜드에게 오프라인 런칭 프로그램을 함께 제안할 수 있습니다."},
+              {t:"소규모 브랜드도 참여 가능",d:"대량 수출이나 현지 유통 계약 없이도 부담 없이 시작할 수 있습니다."},
+              {t:"현지 운영은 TBP가 담당",d:"브랜드 상담부터 파리 현지 운영까지 The Beauty Pause가 직접 진행합니다."},
+            ].map(({t,d})=>(
+              <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
+                <div style={{width:24,height:2,background:"#c9a96e",marginBottom:14}}/>
+                <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.4}}>{t}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW WE WORK */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ How We Work</Badge>
+          <Divider/>
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0,padding:"8px 0 4px"}}>
+            {flowSteps.map((step,i)=>(
+              <Fragment key={step}>
+                <div style={{background:i===2?"rgba(201,169,110,0.15)":"#fff",border:i===2?"2px solid #c9a96e":"1px solid #e8e0d8",borderRadius:12,padding:"14px 28px",textAlign:"center",...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",minWidth:220,boxShadow:i===2?"0 2px 8px rgba(201,169,110,0.1)":"none"}}>
+                  {step}
+                </div>
+                {i<flowSteps.length-1 && <div style={{color:"#c9a96e",fontSize:18,padding:"4px 0"}}>↓</div>}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PARTNERSHIP */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
+          <Badge>✦ Partnership</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.55)",lineHeight:2,margin:"0 0 16px"}}>The Beauty Pause는 제조사와 함께 유럽 진출 프로그램을 운영합니다.</p>
+          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.55)",lineHeight:2,margin:"0 0 16px"}}>제조사는 기존 고객에게 새로운 해외 진출 서비스를 제공하고,<br/>The Beauty Pause는 프랑스 현지에서 브랜드의 오프라인 런칭과 운영을 담당합니다.</p>
+          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.55)",lineHeight:2,margin:0}}>브랜드 상담부터 프로그램 운영까지 함께 진행하며, 파트너십 형태로 협력합니다.</p>
+        </div>
+      </section>
+
+      {/* IDEAL PARTNERS */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <Badge>✦ Ideal Partners</Badge>
+          <Divider/>
+          <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+            {["화장품 제조사 (OEM / ODM)","브랜드 인큐베이팅 기업","브랜드 액셀러레이터","해외 진출 컨설팅 기업","수출 지원 기관"].map(t=><Tag key={t}>{t}</Tag>)}
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)",textAlign:"center"}}>
+        <div style={{maxWidth:560,margin:"0 auto"}}>
+          <Badge>✦ Contact</Badge>
+          <h2 style={{...KR,fontSize:"clamp(22px,3.5vw,32px)",fontWeight:700,color:"#f5f0eb",margin:"16px 0 16px",lineHeight:1.5}}>
+            유럽 진출을 준비하는 브랜드와<br/>함께하고 계신가요?
+          </h2>
+          <p style={{...KR,fontSize:15,color:"rgba(255,255,255,0.4)",margin:"0 0 36px"}}>The Beauty Pause와 함께 새로운 서비스를 만들어보세요.</p>
+          <p style={{...SS,fontSize:"14px",color:"rgba(255,255,255,0.3)",margin:"0 0 24px"}}>hello@thebeautypause.com</p>
+          <a href="mailto:hello@thebeautypause.com"
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:15,fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
+            협력 문의하기 →
+          </a>
+        </div>
+      </section>
+
+      {/* SCROLL TOP */}
+      {showTop&&<button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:18,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>↑</button>}
+
+      {/* FOOTER */}
+      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,marginBottom:20}}>
+          <div>
+            <div style={{marginBottom:4}}>
+              <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+              <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+            </div>
+            <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
+          </div>
+          <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}>Contact</a>
+        </div>
+        <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:16}}>
+          <p style={{...SS,fontSize:"10px",color:"#444",lineHeight:1.8,margin:0}}>
+            주식회사 쏜다 · 대표자 박슬아 · 서울 강남구 테헤란로82길 15 (대치동, 디아이타워)<br/>
+            사업자등록번호 426-88-02305 · 통신판매업신고번호 2025-서울강남-00594<br/>
+            hello@thebeautypause.com
+          </p>
+        </div>
+      </footer>
+    </>
+  );
+}
+
 export default function App() {
   const [lang,setLang]=useState("fr");
   const {salons,allProducts,loading}=useData();
@@ -3749,6 +3938,7 @@ export default function App() {
         <Route path="/legal" element={<LegalPage lang={lang} setLang={setLang} />} />
         <Route path="/brands" element={<ForBrandsPage />} />
         <Route path="/partners" element={<ForPartnersPage />} />
+        <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
