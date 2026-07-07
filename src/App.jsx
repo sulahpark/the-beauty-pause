@@ -3127,6 +3127,9 @@ function ForBrandsPage() {
               </div>
             ))}
           </div>
+          <div style={{marginTop:40,borderRadius:16,overflow:"hidden"}}>
+            <img src="/images/how-it-works-illustration.png" alt="Salon discovery illustration" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+          </div>
         </div>
       </section>
 
