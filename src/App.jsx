@@ -3932,14 +3932,14 @@ function NewsletterPage() {
         <div class="sub">▲ 이번 달 3곳 추가</div>
       </div>
       <div class="big-stat">
-        <div class="n">4+</div>
-        <div class="l">참여 브랜드</div>
-        <div class="sub">유료·제품 파트너</div>
+        <div class="n">7+</div>
+        <div class="l">소개된 브랜드</div>
+        <div class="sub">▲ 신규 3개 추가</div>
       </div>
       <div class="big-stat">
-        <div class="n">20</div>
-        <div class="l">이번 달 판매 제품</div>
-        <div class="sub">▲ 첫 살롱 구매 발생</div>
+        <div class="n">17</div>
+        <div class="l">운영 중인 제품 종류</div>
+        <div class="sub">네일 · 헤어 · 스킨</div>
       </div>
     </div>
     <div class="feed">
@@ -3954,70 +3954,73 @@ function NewsletterPage() {
         </div>
       </div>
       <div class="news-card">
+        <div class="news-icon gold">💄</div>
+        <div class="news-body">
+          <span class="news-tag">New Brands</span>
+          <div class="news-title">신규 브랜드 파트너 3곳 합류</div>
+          <div class="news-desc">이번 달 새로운 브랜드 파트너 3곳이 추가됐습니다. 누적 소개된 브랜드 7개+.</div>
+          <span class="news-pill">총 7개+ 브랜드</span>
+        </div>
+      </div>
+      <div class="news-card">
         <div class="news-icon green">🛍</div>
         <div class="news-body">
           <span class="news-tag">First Deal</span>
           <div class="news-title">파리 살롱 첫 제품 구매 거래 성사</div>
-          <div class="news-desc">BelleGlamour Paris에서 고객 선물용 K-뷰티 제품 구매. 이번 달 총 20개 제품 판매.</div>
-          <span class="news-pill">20개 제품 판매</span>
-        </div>
-      </div>
-      <div class="news-card">
-        <div class="news-icon gold">💄</div>
-        <div class="news-body">
-          <span class="news-tag">First Contract</span>
-          <div class="news-title">유료 파트너 브랜드 첫 계약 성사</div>
-          <div class="news-desc">파리 런칭 위크 첫 유료 브랜드 계약이 완료됐습니다.</div>
-          <span class="news-pill">유료 브랜드 1호</span>
+          <div class="news-desc">속눈썹 연장 전문 살롱에서 고객 선물용 K-뷰티 제품 구매가 성사됐습니다.</div>
+          <span class="news-pill">살롱 구매 성사</span>
         </div>
       </div>
       <div class="news-card">
         <div class="news-icon blue">📸</div>
         <div class="news-body">
-          <span class="news-tag">Collab</span>
-          <div class="news-title">살롱 콜라보 콘텐츠 3건 제작</div>
-          <div class="news-desc">파트너 살롱 3곳과 K-뷰티 브랜드 콜라보 콘텐츠를 촬영하고 SNS에 업로드했습니다.</div>
-          <span class="news-pill">콘텐츠 3건</span>
+          <span class="news-tag">Coming Soon</span>
+          <div class="news-title">살롱 콜라보 콘텐츠 2건 기획 중</div>
+          <div class="news-desc">파트너 살롱 2곳과 K-뷰티 브랜드 콜라보 콘텐츠를 제작할 예정입니다.</div>
+          <span class="news-pill">콘텐츠 2건 준비 중</span>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-icon pink">🎁</div>
+        <div class="news-body">
+          <span class="news-tag">Event</span>
+          <div class="news-title">K-뷰티 이벤트 참가 6명</div>
+          <div class="news-desc">이번 달 K-뷰티 이벤트에 6명이 참가했으며, 그 중 2명이 선물을 받았습니다.</div>
+          <span class="news-pill">참가 6명 · 선물 2명</span>
         </div>
       </div>
     </div>
     <div class="small-stats">
       <div class="small-stat">
-        <div class="n">30 <span>건</span></div>
-        <div class="l">주간 QR 스캔</div>
+        <div class="n">25 <span>곳</span></div>
+        <div class="l">파트너 살롱</div>
       </div>
       <div class="small-stat">
-        <div class="n">3 <span>개</span></div>
-        <div class="l">운영 프로그램</div>
+        <div class="n">7+ <span>개</span></div>
+        <div class="l">소개된 브랜드</div>
       </div>
       <div class="small-stat">
-        <div class="n">3 <span>건</span></div>
-        <div class="l">살롱 콜라보</div>
+        <div class="n">17 <span>종</span></div>
+        <div class="l">운영 제품</div>
       </div>
       <div class="small-stat">
-        <div class="n">4 <span>개</span></div>
-        <div class="l">참여 브랜드</div>
+        <div class="n">6 <span>명</span></div>
+        <div class="l">이벤트 참가</div>
       </div>
     </div>
-    <div class="programs">
-      <div class="programs-title">✦ 운영 프로그램</div>
-      <div class="prog-row">
-        <div class="prog-chip">
-          <span class="emoji">💆</span>
-          <div class="name">K 헤드스파</div>
-          <div class="status">운영 중</div>
+    <div class="inquiry">
+      <div class="inquiry-title">✦ 제품 파트너 모집 중</div>
+      <div class="inq-row">
+        <div class="inq-item">
+          <div class="inq-label">거래 가능성 제품군</div>
+          <div class="inq-val">마스크팩, 아이패치</div>
         </div>
-        <div class="prog-chip">
-          <span class="emoji">🧴</span>
-          <div class="name">K 샴푸잉</div>
-          <div class="status">운영 중</div>
-        </div>
-        <div class="prog-chip">
-          <span class="emoji">✨</span>
-          <div class="name">K 헤어팩</div>
-          <div class="status">운영 중</div>
+        <div class="inq-item">
+          <div class="inq-label">현재 필요한 제품군</div>
+          <div class="inq-val">헤어 제품 (우선 모집)</div>
         </div>
       </div>
+      <div class="inq-note">해당 제품 보유 브랜드는 문의 주세요 :)</div>
     </div>
     <div class="brand-join">
       <div class="brand-join-title">✦ 브랜드 참가 방법</div>
@@ -4052,10 +4055,7 @@ function NewsletterPage() {
       <p>hello@thebeautypause.com · <a href="https://thebeautypause.com">thebeautypause.com</a></p>
     </div>
     <div class="footer">
-      <p>
-        The Beauty Pause · Paris<br>
-        수신을 원하지 않으시면 <a href="#">여기</a>를 클릭해 주세요.
-      </p>
+      <p>The Beauty Pause · Paris<br>수신을 원하지 않으시면 <a href="#">여기</a>를 클릭해 주세요.</p>
     </div>
   `;
 
@@ -4070,61 +4070,61 @@ function NewsletterPage() {
         .logo span { color: #c9a96e; font-weight: 600; }
         .header-tag { font-size: 10px; background: rgba(201,169,110,0.15); color: #c9a96e; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; }
         .hero { padding: 32px 32px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .hero-eyebrow { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .hero-eyebrow { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
         .hero h1 { font-size: 26px; color: #f5f0eb; font-weight: 500; line-height: 1.3; margin-bottom: 8px; }
         .hero h1 em { color: #c9a96e; font-style: normal; }
-        .hero p { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.7; }
+        .hero p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.7; }
         .big-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.06); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
         .big-stat { padding: 20px 16px; background: #0d0d0d; text-align: center; }
         .big-stat .n { font-size: 32px; font-weight: 600; color: #c9a96e; line-height: 1; margin-bottom: 4px; }
-        .big-stat .l { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; line-height: 1.4; }
-        .big-stat .sub { font-size: 10px; color: rgba(201,169,110,0.6); margin-top: 2px; }
+        .big-stat .l { font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; line-height: 1.4; }
+        .big-stat .sub { font-size: 10px; color: rgba(201,169,110,0.7); margin-top: 2px; }
         .feed { padding: 24px 32px; }
-        .feed-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+        .feed-title { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
         .news-card { border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
         .news-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
         .news-icon.gold { background: rgba(201,169,110,0.12); }
         .news-icon.green { background: rgba(100,200,150,0.1); }
         .news-icon.blue { background: rgba(100,150,255,0.1); }
+        .news-icon.pink { background: rgba(255,150,180,0.1); }
         .news-body { flex: 1; }
         .news-tag { font-size: 9px; color: #c9a96e; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
         .news-title { font-size: 14px; color: #f5f0eb; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
-        .news-desc { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.6; }
+        .news-desc { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.6; }
         .news-pill { display: inline-block; font-size: 10px; background: rgba(201,169,110,0.1); color: #c9a96e; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
         .small-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 0 32px 24px; }
         .small-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; }
         .small-stat .n { font-size: 22px; font-weight: 600; color: #f5f0eb; margin-bottom: 2px; }
         .small-stat .n span { font-size: 13px; color: #c9a96e; margin-left: 2px; }
-        .small-stat .l { font-size: 11px; color: rgba(255,255,255,0.3); }
-        .programs { margin: 0 32px 24px; }
-        .programs-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
-        .prog-row { display: flex; gap: 8px; flex-wrap: wrap; }
-        .prog-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; flex: 1; min-width: 140px; }
-        .prog-chip .emoji { font-size: 18px; margin-bottom: 6px; display: block; }
-        .prog-chip .name { font-size: 12px; color: #f5f0eb; font-weight: 500; }
-        .prog-chip .status { font-size: 10px; color: #c9a96e; margin-top: 2px; }
+        .small-stat .l { font-size: 11px; color: rgba(255,255,255,0.6); }
+        .inquiry { margin: 0 32px 24px; border: 1px solid rgba(201,169,110,0.15); border-radius: 12px; padding: 18px; background: rgba(255,255,255,0.02); }
+        .inquiry-title { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .inq-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .inq-label { font-size: 10px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+        .inq-val { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+        .inq-note { font-size: 11px; color: rgba(201,169,110,0.7); margin-top: 12px; }
         .brand-join { margin: 0 32px 20px; }
-        .brand-join-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .brand-join-title { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
         .brand-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .brand-option { border-radius: 10px; padding: 18px; border: 1px solid rgba(255,255,255,0.07); }
         .brand-option.paid { border-color: rgba(201,169,110,0.3); background: rgba(201,169,110,0.04); }
         .brand-option.free { background: rgba(255,255,255,0.02); }
         .opt-badge { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
         .brand-option.paid .opt-badge { color: #c9a96e; }
-        .brand-option.free .opt-badge { color: rgba(255,255,255,0.25); }
+        .brand-option.free .opt-badge { color: rgba(255,255,255,0.45); }
         .brand-option h4 { font-size: 13px; color: #f5f0eb; font-weight: 600; margin-bottom: 12px; }
         .opt-list { list-style: none; }
-        .opt-list li { font-size: 11px; color: rgba(255,255,255,0.4); padding: 3px 0; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+        .opt-list li { font-size: 11px; color: rgba(255,255,255,0.65); padding: 3px 0; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
         .brand-option.paid .opt-list li::before { content: "✦"; color: #c9a96e; flex-shrink: 0; font-size: 9px; margin-top: 2px; }
-        .brand-option.free .opt-list li::before { content: "·"; color: rgba(255,255,255,0.2); flex-shrink: 0; }
+        .brand-option.free .opt-list li::before { content: "·"; color: rgba(255,255,255,0.3); flex-shrink: 0; }
         .cta-area { margin: 0 32px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .cta-main { display: block; background: linear-gradient(135deg, #c9a96e, #b8944d); color: #0d0d0d; font-size: 12px; font-weight: 700; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
-        .cta-sub { display: block; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
+        .cta-sub { display: block; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
         .cta-email { margin: 0 32px 28px; text-align: center; padding-top: 10px; }
-        .cta-email p { font-size: 11px; color: rgba(255,255,255,0.2); }
-        .cta-email a { color: rgba(201,169,110,0.5); text-decoration: none; }
+        .cta-email p { font-size: 11px; color: rgba(255,255,255,0.4); }
+        .cta-email a { color: rgba(201,169,110,0.6); text-decoration: none; }
         .footer { padding: 20px 32px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
-        .footer p { font-size: 10px; color: rgba(255,255,255,0.15); line-height: 1.8; }
+        .footer p { font-size: 10px; color: rgba(255,255,255,0.35); line-height: 1.8; }
         .footer a { color: rgba(201,169,110,0.4); text-decoration: none; }
       `}</style>
       <div style={{maxWidth:600,margin:"20px auto 0",padding:"0 16px"}}>
