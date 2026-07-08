@@ -3322,12 +3322,16 @@ function ForBrandsPage() {
             </div>
           </div>
 
-          <div style={{textAlign:"center"}}>
+          <div style={{textAlign:"center",marginBottom:16}}>
             <a href="mailto:hello@thebeautypause.com"
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
               파트너 참여 문의하기 →
             </a>
           </div>
+
+          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",lineHeight:1.8,margin:0,textAlign:"center"}}>
+            ※ TBP는 프로그램 운영 이후, 브랜드와의 협업을 지속적으로 검토합니다. 운영 결과와 시장 상황에 따라 추가적인 협업이나 유통 기회가 논의될 수 있습니다.
+          </p>
 
         </div>
       </section>
@@ -3337,8 +3341,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:760,margin:"0 auto"}}>
 
           <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>Optional Add-ons</p>
-          <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>선택 옵션</p>
-          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>필요에 따라 추가할 수 있는 선택 서비스입니다.</p>
+          <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 28px"}}>선택 옵션</p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12,marginBottom:28}}>
             {[
@@ -3363,16 +3366,12 @@ function ForBrandsPage() {
             ))}
           </div>
 
-          <div style={{marginBottom:24}}>
+          <div style={{marginBottom:0}}>
             <a href="mailto:hello@thebeautypause.com"
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
               선택 옵션 문의하기 →
             </a>
           </div>
-
-          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",lineHeight:1.8,margin:0}}>
-            ※ TBP는 프로그램 운영 이후, 브랜드와의 협업을 지속적으로 검토합니다. 운영 결과와 시장 상황에 따라 추가적인 협업이나 유통 기회가 논의될 수 있습니다.
-          </p>
 
         </div>
       </section>
@@ -3382,20 +3381,16 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Founding Brand</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>파리 네트워크의 초기 파트너 브랜드</h2>
-          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
-            The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어갈 브랜드를 모집합니다.
-          </p>
-          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
-            초기 파트너 브랜드는 네트워크 성장과 함께 다양한 우선 참여 혜택을 제공합니다.
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>초기 파트너 브랜드</h2>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
+            The Beauty Pause와 초기에 함께하는 브랜드에게 제공되는 혜택입니다.
           </p>
 
+          <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>혜택</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20,marginBottom:32}}>
             {[
-              {n:"①",t:"초기 파트너 가격",d:"현재 적용되는 초기 파트너 가격으로 참여할 수 있으며, 향후 가격이 변경되어도 기존 조건이 유지됩니다."},
-              {n:"②",t:"우선 참여 혜택",d:"신규 살롱, 도시 확장, 신규 프로그램 운영 시 우선 참여 기회가 제공됩니다."},
-              {n:"③",t:"초기 파트너 자격",d:"초기 파트너 배지가 부여되며, 향후 추가되는 브랜드 콘텐츠, 프로그램 및 신규 기능에 우선 참여할 수 있습니다."},
-              {n:"④",t:"네트워크 성장 혜택",d:"네트워크가 확장될수록 더 많은 살롱과 고객 접점이 만들어지며, 초기 파트너는 그 혜택을 가장 먼저 누릴 수 있습니다."},
+              {n:"①",t:"Founding Brand 참가비 유지",d:"향후 참가비가 변경되어도 현재 참가비로 재참여할 수 있습니다."},
+              {n:"②",t:"우선 운영 기회",d:"신규 살롱, 이벤트, 콜라보 및 추천 제품 운영 시 우선 검토됩니다."},
             ].map(({n,t,d})=>(
               <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
                 <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 10px"}}>{n}</p>
@@ -3406,7 +3401,7 @@ function ForBrandsPage() {
           </div>
 
           <p style={{...KR,fontSize:"13px",color:"#999",fontStyle:"italic",margin:0}}>
-            ※ 초기 파트너 브랜드 모집은 선착순 10개 브랜드로 마감됩니다.
+            ※ Founding Brand 혜택은 선착순 10개 브랜드까지 제공됩니다.
           </p>
         </div>
       </section>
