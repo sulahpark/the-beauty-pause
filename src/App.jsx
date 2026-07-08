@@ -3265,7 +3265,7 @@ function ForBrandsPage() {
         <div style={{maxWidth:900,margin:"0 auto"}}>
           <Badge>✦ Ways to Join</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 48px"}}>참여 방법</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 48px"}}>브랜드 참여 방법</h2>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:24,alignItems:"start",marginBottom:36}}>
 
@@ -3286,7 +3286,7 @@ function ForBrandsPage() {
 
               <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>프로그램 포함 사항</p>
               <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
-                {["10개+ 살롱 2주+ 운영","파리 런칭 사진/영상 제공","제품 체험 및 브랜드 노출","제품 소개 카드 제작","QR 제품 정보 및 이벤트 운영","운영 현황 공유"].map(i=>(
+                {["10개+ 살롱 운영","2주+ 운영","파리 런칭 사진/영상 제공","제품 체험 및 브랜드 노출","QR 제품 정보 및 이벤트 운영","운영 현황 공유"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
@@ -3336,46 +3336,44 @@ function ForBrandsPage() {
       <section style={{background:"#0d0d0d",padding:"0 clamp(24px,6vw,80px) 80px"}}>
         <div style={{maxWidth:760,margin:"0 auto"}}>
 
-          <div style={{display:"flex",flexDirection:"column",gap:24}}>
+          <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>Optional Add-ons</p>
+          <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>선택 옵션</p>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>필요에 따라 추가할 수 있는 선택 서비스입니다.</p>
 
-            {/* 선택 옵션 (Add-ons) */}
-            <div style={{background:"rgba(255,255,255,0.03)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
-              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>Optional Add-ons</p>
-              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>선택 옵션</p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>필요에 따라 추가할 수 있는 선택 서비스입니다.</p>
-
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
-                {[
-                  {n:"①",t:"살롱 콜라보 캠페인",d:"브랜드와 파트너 살롱이 함께하는 협업 캠페인을 기획하고 운영합니다.",label:"예시",items:["Korean Hair Care Month","Hand Care Week","Seasonal Campaign"]},
-                  {n:"②",t:"확장 운영",d:"더 많은 제품과 더 많은 파트너 살롱으로 운영 규모를 확장합니다.",items:["제품 수량 확대","참여 살롱 확대","운영 기간 확대"]},
-                  {n:"③",t:"현지 구매 구조",d:"파리 현지에서 제품을 구매할 수 있는 환경을 구축합니다.",items:["현지 보관","배송 대행","위탁 판매 운영"]},
-                ].map(({n,t,d,label,items})=>(
-                  <div key={t} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
-                    <p style={{...CG,fontSize:"20px",color:"#c9a96e",fontWeight:600,margin:"0 0 8px"}}>{n}</p>
-                    <p style={{...KR,fontSize:"14px",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px"}}>{t}</p>
-                    <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.5)",lineHeight:1.7,margin:"0 0 14px"}}>{d}</p>
-                    {label&&<p style={{...KR,fontSize:"10px",color:"rgba(255,255,255,0.3)",letterSpacing:"1px",margin:"0 0 8px"}}>{label}</p>}
-                    <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                      {items.map(it=>(
-                        <div key={it} style={{display:"flex",gap:6,alignItems:"flex-start"}}>
-                          <span style={{color:"#c9a96e",fontSize:"11px",flexShrink:0,marginTop:2}}>·</span>
-                          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>{it}</p>
-                        </div>
-                      ))}
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12,marginBottom:28}}>
+            {[
+              {n:"①",t:"살롱 콜라보 캠페인",d:"브랜드와 파트너 살롱이 함께하는 협업 캠페인을 기획하고 운영합니다.",label:"예시",items:["Korean Hair Care Month","Hand Care Week","Seasonal Campaign"]},
+              {n:"②",t:"확장 운영",d:"더 많은 제품과 더 많은 파트너 살롱으로 운영 규모를 확장합니다.",items:["제품 수량 확대","참여 살롱 확대","운영 기간 확대"]},
+              {n:"③",t:"현지 구매 구조",d:"파리 현지에서 제품을 구매할 수 있는 환경을 구축합니다.",items:["현지 보관","배송 대행","위탁 판매 운영"]},
+            ].map(({n,t,d,label,items})=>(
+              <div key={t} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"18px 16px"}}>
+                <p style={{...CG,fontSize:"18px",color:"#c9a96e",fontWeight:600,margin:"0 0 6px"}}>{n}</p>
+                <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px"}}>{t}</p>
+                <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.5)",lineHeight:1.7,margin:"0 0 12px"}}>{d}</p>
+                {label&&<p style={{...KR,fontSize:"9px",color:"rgba(255,255,255,0.3)",letterSpacing:"1px",margin:"0 0 6px"}}>{label}</p>}
+                <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                  {items.map(it=>(
+                    <div key={it} style={{display:"flex",gap:6,alignItems:"flex-start"}}>
+                      <span style={{color:"#c9a96e",fontSize:"10px",flexShrink:0,marginTop:2}}>·</span>
+                      <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>{it}</p>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-
-              <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24,marginTop:28}}>
-                <a href="mailto:hello@thebeautypause.com"
-                  style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-                  선택 옵션 문의하기 →
-                </a>
-              </div>
-            </div>
-
+            ))}
           </div>
+
+          <div style={{marginBottom:24}}>
+            <a href="mailto:hello@thebeautypause.com"
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+              선택 옵션 문의하기 →
+            </a>
+          </div>
+
+          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",lineHeight:1.8,margin:0}}>
+            ※ TBP는 프로그램 운영 이후, 브랜드와의 협업을 지속적으로 검토합니다. 운영 결과와 시장 상황에 따라 추가적인 협업이나 유통 기회가 논의될 수 있습니다.
+          </p>
+
         </div>
       </section>
 
