@@ -3019,10 +3019,16 @@ function ForBrandsPage() {
         <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
         <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
       </button>
-      <a href="mailto:hello@thebeautypause.com"
-        style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
-        브랜드 등록하기
-      </a>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <button onClick={()=>{navigate("/newsletter");window.scrollTo(0,0);}}
+          style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.6)",background:"none",border:"1px solid rgba(255,255,255,0.15)",padding:"8px 18px",borderRadius:24,cursor:"pointer",fontWeight:600}}>
+          운영현황
+        </button>
+        <a href="mailto:hello@thebeautypause.com"
+          style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
+          브랜드 등록하기
+        </a>
+      </div>
     </nav>
   );
 
@@ -3254,18 +3260,19 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* PRICING */}
+      {/* WAYS TO JOIN */}
       <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:760,margin:"0 auto"}}>
-          <Badge>✦ Program</Badge>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Ways to Join</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>파리 런칭위크 <span style={{color:"#c9a96e"}}>Paris Launch Week</span></h2>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 48px"}}>파리에서 브랜드를 소개하는 기본 프로그램입니다.</p>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 48px"}}>참여 방법</h2>
 
-          <div style={{display:"flex",flexDirection:"column",gap:24}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:24,alignItems:"start",marginBottom:36}}>
 
-            {/* Launch Program */}
-            <div style={{background:"rgba(255,255,255,0.04)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
+            {/* Launch Partner */}
+            <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.25)"}}>
+              <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Launch Partner</p>
+              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 24px"}}>런칭 파트너</p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
@@ -3277,7 +3284,7 @@ function ForBrandsPage() {
               </div>
 
               <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>프로그램 포함 사항</p>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 12px",marginBottom:24}}>
+              <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
                 {["Paris Launch Week 참여","최대 10개 살롱 동시 운영","브랜드 소개 카드 제작","QR 브랜드 페이지 연결","파리 런칭 콘텐츠 제공","운영 현황 공유"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
@@ -3288,13 +3295,41 @@ function ForBrandsPage() {
 
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
                 <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>79만원</p>
-                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,lineHeight:1.6,margin:"0 0 20px"}}>Founding Brand 특별 참가비<br/>선착순 10개 브랜드 한정</p>
-                <a href="mailto:hello@thebeautypause.com"
-                  style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-                  파리에서 브랜드 런칭하기 →
-                </a>
+                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,lineHeight:1.6,margin:0}}>Founding Brand 특별 참가비<br/>선착순 10개 브랜드 한정</p>
               </div>
             </div>
+
+            {/* Network Partner */}
+            <div style={{background:"rgba(255,255,255,0.03)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
+              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.4)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Network Partner</p>
+              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 24px"}}>네트워크 파트너</p>
+
+              <div style={{display:"flex",flexDirection:"column",gap:0}}>
+                {["살롱 네트워크 운영","제품 배치 및 체험","운영 현황 공유"].map(i=>(
+                  <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
+                    <span style={{color:"rgba(255,255,255,0.3)",fontSize:"12px",flexShrink:0}}>·</span>
+                    <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",margin:"6px 0"}}>{i}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{textAlign:"center"}}>
+            <a href="mailto:hello@thebeautypause.com"
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+              파트너 참여 문의하기 →
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section style={{background:"#0d0d0d",padding:"0 clamp(24px,6vw,80px) 80px"}}>
+        <div style={{maxWidth:760,margin:"0 auto"}}>
+
+          <div style={{display:"flex",flexDirection:"column",gap:24}}>
 
             {/* 선택 옵션 (Add-ons) */}
             <div style={{background:"rgba(255,255,255,0.03)",borderRadius:20,padding:"40px 36px",border:"1px solid rgba(255,255,255,0.08)"}}>
@@ -3865,6 +3900,233 @@ function ForManufacturersPage() {
   );
 }
 
+// ── NEWSLETTER PAGE (운영현황 · monthly update, edited manually by Sulah) ────
+function NewsletterPage() {
+  const navigate = useNavigate();
+
+  const newsletterBody = `
+    <div class="header">
+      <div class="logo">THE <span>BEAUTY PAUSE</span></div>
+      <div class="header-tag">JULY 2025</div>
+    </div>
+    <div class="hero">
+      <div class="hero-eyebrow">Monthly Update</div>
+      <h1>파리에서<br><em>많은 일이 일어나고 있습니다.</em></h1>
+      <p>이번 달 TBP 파리 살롱 네트워크 운영 현황을 공유드립니다.</p>
+    </div>
+    <div class="big-stats">
+      <div class="big-stat">
+        <div class="n">25</div>
+        <div class="l">파트너 살롱</div>
+        <div class="sub">▲ 이번 달 3곳 추가</div>
+      </div>
+      <div class="big-stat">
+        <div class="n">4+</div>
+        <div class="l">참여 브랜드</div>
+        <div class="sub">유료·제품 파트너</div>
+      </div>
+      <div class="big-stat">
+        <div class="n">20</div>
+        <div class="l">이번 달 판매 제품</div>
+        <div class="sub">▲ 첫 살롱 구매 발생</div>
+      </div>
+    </div>
+    <div class="feed">
+      <div class="feed-title">✦ 이번 달 일어난 일들</div>
+      <div class="news-card">
+        <div class="news-icon gold">🏠</div>
+        <div class="news-body">
+          <span class="news-tag">New Salon</span>
+          <div class="news-title">이번 달 파트너 살롱 3곳 추가</div>
+          <div class="news-desc">네일 2곳, 헤어 1곳이 새로 합류했습니다. 누적 25개 살롱 운영 중.</div>
+          <span class="news-pill">총 25개 살롱</span>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-icon green">🛍</div>
+        <div class="news-body">
+          <span class="news-tag">First Deal</span>
+          <div class="news-title">파리 살롱 첫 제품 구매 거래 성사</div>
+          <div class="news-desc">BelleGlamour Paris에서 고객 선물용 K-뷰티 제품 구매. 이번 달 총 20개 제품 판매.</div>
+          <span class="news-pill">20개 제품 판매</span>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-icon gold">💄</div>
+        <div class="news-body">
+          <span class="news-tag">First Contract</span>
+          <div class="news-title">유료 파트너 브랜드 첫 계약 성사</div>
+          <div class="news-desc">파리 런칭 위크 첫 유료 브랜드 계약이 완료됐습니다.</div>
+          <span class="news-pill">유료 브랜드 1호</span>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-icon blue">📸</div>
+        <div class="news-body">
+          <span class="news-tag">Collab</span>
+          <div class="news-title">살롱 콜라보 콘텐츠 3건 제작</div>
+          <div class="news-desc">파트너 살롱 3곳과 K-뷰티 브랜드 콜라보 콘텐츠를 촬영하고 SNS에 업로드했습니다.</div>
+          <span class="news-pill">콘텐츠 3건</span>
+        </div>
+      </div>
+    </div>
+    <div class="small-stats">
+      <div class="small-stat">
+        <div class="n">30 <span>건</span></div>
+        <div class="l">주간 QR 스캔</div>
+      </div>
+      <div class="small-stat">
+        <div class="n">3 <span>개</span></div>
+        <div class="l">운영 프로그램</div>
+      </div>
+      <div class="small-stat">
+        <div class="n">3 <span>건</span></div>
+        <div class="l">살롱 콜라보</div>
+      </div>
+      <div class="small-stat">
+        <div class="n">4 <span>개</span></div>
+        <div class="l">참여 브랜드</div>
+      </div>
+    </div>
+    <div class="programs">
+      <div class="programs-title">✦ 운영 프로그램</div>
+      <div class="prog-row">
+        <div class="prog-chip">
+          <span class="emoji">💆</span>
+          <div class="name">K 헤드스파</div>
+          <div class="status">운영 중</div>
+        </div>
+        <div class="prog-chip">
+          <span class="emoji">🧴</span>
+          <div class="name">K 샴푸잉</div>
+          <div class="status">운영 중</div>
+        </div>
+        <div class="prog-chip">
+          <span class="emoji">✨</span>
+          <div class="name">K 헤어팩</div>
+          <div class="status">운영 중</div>
+        </div>
+      </div>
+    </div>
+    <div class="brand-join">
+      <div class="brand-join-title">✦ 브랜드 참가 방법</div>
+      <div class="brand-options">
+        <div class="brand-option paid">
+          <span class="opt-badge">✦ Launch Partner</span>
+          <h4>런칭 파트너</h4>
+          <ul class="opt-list">
+            <li>파리 런칭 위크 운영</li>
+            <li>살롱 우선 매칭</li>
+            <li>QR 및 구매 연결</li>
+            <li>캠페인 · 콘텐츠 추가 가능</li>
+          </ul>
+        </div>
+        <div class="brand-option free">
+          <span class="opt-badge">✦ Product Partner</span>
+          <h4>제품 파트너</h4>
+          <ul class="opt-list">
+            <li>살롱 네트워크 운영</li>
+            <li>제품 배치 및 체험</li>
+            <li>운영 현황 공유</li>
+            <li>런칭 파트너 전환 가능</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="cta-area">
+      <a href="mailto:hello@thebeautypause.com?subject=브랜드 참가 문의" class="cta-main">브랜드 참가 문의 →</a>
+      <a href="mailto:hello@thebeautypause.com?subject=협업 문의" class="cta-sub">협업 문의 →</a>
+    </div>
+    <div class="cta-email">
+      <p>hello@thebeautypause.com · <a href="https://thebeautypause.com">thebeautypause.com</a></p>
+    </div>
+    <div class="footer">
+      <p>
+        The Beauty Pause · Paris<br>
+        수신을 원하지 않으시면 <a href="#">여기</a>를 클릭해 주세요.
+      </p>
+    </div>
+  `;
+
+  return (
+    <>
+      <style>{`
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { background: #f5f0eb; font-family: 'DM Sans', 'Apple SD Gothic Neo', sans-serif; }
+        .wrap { max-width: 600px; margin: 32px auto; background: #0d0d0d; border-radius: 16px; overflow: hidden; }
+        .header { padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .logo { font-size: 12px; letter-spacing: 2.5px; color: #f5f0eb; font-weight: 300; }
+        .logo span { color: #c9a96e; font-weight: 600; }
+        .header-tag { font-size: 10px; background: rgba(201,169,110,0.15); color: #c9a96e; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; }
+        .hero { padding: 32px 32px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .hero-eyebrow { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .hero h1 { font-size: 26px; color: #f5f0eb; font-weight: 500; line-height: 1.3; margin-bottom: 8px; }
+        .hero h1 em { color: #c9a96e; font-style: normal; }
+        .hero p { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.7; }
+        .big-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.06); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .big-stat { padding: 20px 16px; background: #0d0d0d; text-align: center; }
+        .big-stat .n { font-size: 32px; font-weight: 600; color: #c9a96e; line-height: 1; margin-bottom: 4px; }
+        .big-stat .l { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; line-height: 1.4; }
+        .big-stat .sub { font-size: 10px; color: rgba(201,169,110,0.6); margin-top: 2px; }
+        .feed { padding: 24px 32px; }
+        .feed-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+        .news-card { border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+        .news-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .news-icon.gold { background: rgba(201,169,110,0.12); }
+        .news-icon.green { background: rgba(100,200,150,0.1); }
+        .news-icon.blue { background: rgba(100,150,255,0.1); }
+        .news-body { flex: 1; }
+        .news-tag { font-size: 9px; color: #c9a96e; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .news-title { font-size: 14px; color: #f5f0eb; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
+        .news-desc { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.6; }
+        .news-pill { display: inline-block; font-size: 10px; background: rgba(201,169,110,0.1); color: #c9a96e; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
+        .small-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 0 32px 24px; }
+        .small-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; }
+        .small-stat .n { font-size: 22px; font-weight: 600; color: #f5f0eb; margin-bottom: 2px; }
+        .small-stat .n span { font-size: 13px; color: #c9a96e; margin-left: 2px; }
+        .small-stat .l { font-size: 11px; color: rgba(255,255,255,0.3); }
+        .programs { margin: 0 32px 24px; }
+        .programs-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .prog-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .prog-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; flex: 1; min-width: 140px; }
+        .prog-chip .emoji { font-size: 18px; margin-bottom: 6px; display: block; }
+        .prog-chip .name { font-size: 12px; color: #f5f0eb; font-weight: 500; }
+        .prog-chip .status { font-size: 10px; color: #c9a96e; margin-top: 2px; }
+        .brand-join { margin: 0 32px 20px; }
+        .brand-join-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .brand-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .brand-option { border-radius: 10px; padding: 18px; border: 1px solid rgba(255,255,255,0.07); }
+        .brand-option.paid { border-color: rgba(201,169,110,0.3); background: rgba(201,169,110,0.04); }
+        .brand-option.free { background: rgba(255,255,255,0.02); }
+        .opt-badge { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+        .brand-option.paid .opt-badge { color: #c9a96e; }
+        .brand-option.free .opt-badge { color: rgba(255,255,255,0.25); }
+        .brand-option h4 { font-size: 13px; color: #f5f0eb; font-weight: 600; margin-bottom: 12px; }
+        .opt-list { list-style: none; }
+        .opt-list li { font-size: 11px; color: rgba(255,255,255,0.4); padding: 3px 0; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+        .brand-option.paid .opt-list li::before { content: "✦"; color: #c9a96e; flex-shrink: 0; font-size: 9px; margin-top: 2px; }
+        .brand-option.free .opt-list li::before { content: "·"; color: rgba(255,255,255,0.2); flex-shrink: 0; }
+        .cta-area { margin: 0 32px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .cta-main { display: block; background: linear-gradient(135deg, #c9a96e, #b8944d); color: #0d0d0d; font-size: 12px; font-weight: 700; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
+        .cta-sub { display: block; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
+        .cta-email { margin: 0 32px 28px; text-align: center; padding-top: 10px; }
+        .cta-email p { font-size: 11px; color: rgba(255,255,255,0.2); }
+        .cta-email a { color: rgba(201,169,110,0.5); text-decoration: none; }
+        .footer { padding: 20px 32px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .footer p { font-size: 10px; color: rgba(255,255,255,0.15); line-height: 1.8; }
+        .footer a { color: rgba(201,169,110,0.4); text-decoration: none; }
+      `}</style>
+      <div style={{maxWidth:600,margin:"20px auto 0",padding:"0 16px"}}>
+        <button onClick={()=>navigate("/brands")}
+          style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,color:"#8a8a8a",padding:"6px 0",display:"flex",alignItems:"center",gap:6}}>
+          ← 브랜드 페이지로
+        </button>
+      </div>
+      <div className="wrap" dangerouslySetInnerHTML={{ __html: newsletterBody }} />
+    </>
+  );
+}
+
 export default function App() {
   const [lang,setLang]=useState("fr");
   const {salons,allProducts,loading}=useData();
@@ -3954,6 +4216,7 @@ export default function App() {
         <Route path="/brands" element={<ForBrandsPage />} />
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
+        <Route path="/newsletter" element={<NewsletterPage />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
