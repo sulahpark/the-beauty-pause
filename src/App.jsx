@@ -3272,20 +3272,21 @@ function ForBrandsPage() {
             {/* Launch Partner */}
             <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.25)"}}>
               <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Launch Partner</p>
-              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 24px"}}>런칭 파트너</p>
+              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>런칭 파트너</p>
+              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>Paris Launch Week를 통해 파리에서 브랜드를 공식 런칭합니다.</p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
                   ✦ PARIS LAUNCH WEEK ✦
                 </p>
                 <p style={{...SS,fontSize:"12px",color:"#c9a96e",fontWeight:600,margin:0,textAlign:"center",letterSpacing:"0.3px"}}>
-                  10 Beauty Salons · 2 Weeks · QR Experience · Lucky Draw
+                  10 Beauty Salons · 2 Weeks · QR Experience · Event
                 </p>
               </div>
 
               <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>프로그램 포함 사항</p>
               <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
-                {["Paris Launch Week 참여","최대 10개 살롱 동시 운영","브랜드 소개 카드 제작","QR 브랜드 페이지 연결","파리 런칭 콘텐츠 제공","운영 현황 공유"].map(i=>(
+                {["10개+ 살롱 2주+ 운영","파리 런칭 사진/영상 제공","제품 체험 및 브랜드 노출","제품 소개 카드 제작","QR 제품 정보 및 이벤트 운영","운영 현황 공유"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
@@ -3295,22 +3296,28 @@ function ForBrandsPage() {
 
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
                 <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>79만원</p>
-                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,lineHeight:1.6,margin:0}}>Founding Brand 특별 참가비<br/>선착순 10개 브랜드 한정</p>
+                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,lineHeight:1.6,margin:0}}>Founding Brand 특별 참가비</p>
               </div>
             </div>
 
-            {/* Network Partner */}
+            {/* Seeding Partner */}
             <div style={{background:"rgba(255,255,255,0.03)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
-              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.4)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Network Partner</p>
-              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 24px"}}>네트워크 파트너</p>
+              <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.4)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Seeding Partner</p>
+              <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>시딩 파트너</p>
+              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>제품을 제공하고, 파리 파트너 살롱 네트워크에서 브랜드를 소개합니다.</p>
 
-              <div style={{display:"flex",flexDirection:"column",gap:0}}>
-                {["살롱 네트워크 운영","제품 배치 및 체험","운영 현황 공유"].map(i=>(
+              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>포함 사항</p>
+              <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
+                {["살롱 운영","제품 체험 및 브랜드 노출","QR 제품 정보 연결","운영 현황 일부 공유"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
-                    <span style={{color:"rgba(255,255,255,0.3)",fontSize:"12px",flexShrink:0}}>·</span>
+                    <span style={{color:"rgba(255,255,255,0.4)",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",margin:"6px 0"}}>{i}</p>
                   </div>
                 ))}
+              </div>
+
+              <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
+                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>제품 제공으로 참여<br/>(별도 참가비 없음)</p>
               </div>
             </div>
           </div>
@@ -3339,17 +3346,23 @@ function ForBrandsPage() {
 
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
                 {[
-                  {n:"①",t:"살롱 협업 캠페인",d:["브랜드와 살롱이 함께하는 협업 캠페인을 기획하고 운영합니다."]},
-                  {n:"②",t:"제품 수량 확장",d:["더 많은 제품을 배치하여 운영 규모를 확대합니다."]},
-                  {n:"③",t:"살롱 네트워크 확장",d:["더 많은 파트너 살롱으로 브랜드 소개를 확대합니다."]},
-                  {n:"④",t:"현지 구매 인프라",d:["파리 현지에서 브랜드 제품을 구매할 수 있는 환경을 구축합니다.","주문, 결제, 배송 등 구매 구조를 연결합니다."]},
-                ].map(({n,t,d})=>(
+                  {n:"①",t:"살롱 콜라보 캠페인",d:"브랜드와 파트너 살롱이 함께하는 협업 캠페인을 기획하고 운영합니다.",label:"예시",items:["Korean Hair Care Month","Hand Care Week","Seasonal Campaign"]},
+                  {n:"②",t:"확장 운영",d:"더 많은 제품과 더 많은 파트너 살롱으로 운영 규모를 확장합니다.",items:["제품 수량 확대","참여 살롱 확대","운영 기간 확대"]},
+                  {n:"③",t:"현지 구매 구조",d:"파리 현지에서 제품을 구매할 수 있는 환경을 구축합니다.",items:["현지 보관","배송 대행","위탁 판매 운영"]},
+                ].map(({n,t,d,label,items})=>(
                   <div key={t} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"20px 18px"}}>
                     <p style={{...CG,fontSize:"20px",color:"#c9a96e",fontWeight:600,margin:"0 0 8px"}}>{n}</p>
                     <p style={{...KR,fontSize:"14px",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px"}}>{t}</p>
-                    {d.map((line,i)=>(
-                      <p key={i} style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.5)",lineHeight:1.7,margin:i===0?"0 0 4px":0}}>{line}</p>
-                    ))}
+                    <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.5)",lineHeight:1.7,margin:"0 0 14px"}}>{d}</p>
+                    {label&&<p style={{...KR,fontSize:"10px",color:"rgba(255,255,255,0.3)",letterSpacing:"1px",margin:"0 0 8px"}}>{label}</p>}
+                    <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                      {items.map(it=>(
+                        <div key={it} style={{display:"flex",gap:6,alignItems:"flex-start"}}>
+                          <span style={{color:"#c9a96e",fontSize:"11px",flexShrink:0,marginTop:2}}>·</span>
+                          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>{it}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
