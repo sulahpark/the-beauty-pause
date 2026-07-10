@@ -3313,7 +3313,7 @@ function ForBrandsPage() {
                   {icon:"📰",label:"기사 작성 자료"},
                   {icon:"🎖️",label:"파리 런칭 배지"},
                 ].map(({icon,label})=>(
-                  <div key={label} style={{background:"linear-gradient(160deg,rgba(201,169,110,0.12),rgba(255,255,255,0.02))",border:"1px solid rgba(201,169,110,0.3)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",gap:5,minHeight:78}}>
+                  <div key={label} style={{background:"linear-gradient(160deg,rgba(201,169,110,0.12),rgba(255,255,255,0.02))",border:"1px solid rgba(201,169,110,0.3)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,minHeight:78}}>
                     <span style={{fontSize:20,lineHeight:1}}>{icon}</span>
                     <p style={{...KR,fontSize:9,color:"rgba(255,255,255,0.65)",lineHeight:1.35,margin:0}}>{label}</p>
                   </div>
@@ -3349,7 +3349,7 @@ function ForBrandsPage() {
                   {icon:"📢",label:"TBP SNS 홍보"},
                   {icon:"🏅",label:"파트너 브랜드 배지"},
                 ].map(({icon,label})=>(
-                  <div key={label} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",gap:5,minHeight:78}}>
+                  <div key={label} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,minHeight:78}}>
                     <span style={{fontSize:20,lineHeight:1}}>{icon}</span>
                     <p style={{...KR,fontSize:9,color:"rgba(255,255,255,0.55)",lineHeight:1.35,margin:0}}>{label}</p>
                   </div>
