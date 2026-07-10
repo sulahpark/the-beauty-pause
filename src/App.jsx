@@ -3273,7 +3273,7 @@ function ForBrandsPage() {
             <div style={{background:"rgba(201,169,110,0.06)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(201,169,110,0.25)"}}>
               <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Launch Partner</p>
               <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>런칭 파트너</p>
-              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>Paris Launch Week를 통해 파리에서 브랜드를 공식 런칭합니다.</p>
+              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>브랜드를 파리에서 공식 런칭합니다.</p>
 
               <div style={{background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",borderRadius:12,padding:"16px 18px",marginBottom:24}}>
                 <p style={{...KR,fontSize:"13px",color:"#c9a96e",fontWeight:700,margin:"0 0 10px",textAlign:"center",letterSpacing:"1px"}}>
@@ -3284,12 +3284,38 @@ function ForBrandsPage() {
                 </p>
               </div>
 
-              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>프로그램 포함 사항</p>
-              <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
-                {["10개+ 살롱 운영","2주+ 운영","파리 런칭 사진/영상 제공","제품 체험 및 브랜드 노출","QR 제품 정보 및 이벤트 운영","운영 현황 공유"].map(i=>(
+              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>운영 내용</p>
+              <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:10}}>
+                {["파트너 살롱 제품 운영","브랜드 카드 및 QR 운영","TBP 웹사이트 등록","TBP 공식 SNS 소개"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
+                {["파리 런칭 캠페인 운영","브랜드 콘텐츠 제작","기사용 콘텐츠 제작"].map(i=>(
+                  <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
+                    <span style={{color:"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
+                    <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.55)",margin:"6px 0"}}>{i}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>브랜드가 얻는 것</p>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(78px,1fr))",gap:8,marginBottom:24}}>
+                {[
+                  {icon:"🌍",label:"TBP 브랜드 페이지"},
+                  {icon:"📱",label:"TBP 공식 SNS 소개"},
+                  {icon:"🏷️",label:"Officially Launched in Paris 런칭 배지"},
+                  {icon:"🏷️",label:"The Beauty Pause 파트너 브랜드 배지"},
+                  {icon:"📸",label:"파리 런칭 사진 패키지"},
+                  {icon:"🎥",label:"SNS용 릴스 영상"},
+                  {icon:"📰",label:"기사 작성용 콘텐츠 패키지"},
+                ].map(({icon,label})=>(
+                  <div key={label} style={{background:"linear-gradient(160deg,rgba(201,169,110,0.12),rgba(255,255,255,0.02))",border:"1px solid rgba(201,169,110,0.3)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",gap:5,minHeight:78}}>
+                    <span style={{fontSize:20,lineHeight:1}}>{icon}</span>
+                    <p style={{...KR,fontSize:9,color:"rgba(255,255,255,0.65)",lineHeight:1.35,margin:0}}>{label}</p>
                   </div>
                 ))}
               </div>
@@ -3304,14 +3330,28 @@ function ForBrandsPage() {
             <div style={{background:"rgba(255,255,255,0.03)",borderRadius:20,padding:"36px 32px",border:"1px solid rgba(255,255,255,0.08)"}}>
               <p style={{...SS,fontSize:"10px",color:"rgba(255,255,255,0.4)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>✦ Seeding Partner</p>
               <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>시딩 파트너</p>
-              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>제품을 제공하고, 파리 파트너 살롱 네트워크에서 브랜드를 소개합니다.</p>
+              <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:"0 0 24px"}}>제품을 먼저 파리 시장에 소개해봅니다.</p>
 
-              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>포함 사항</p>
+              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>운영 내용</p>
               <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24}}>
-                {["살롱 운영","제품 체험 및 브랜드 노출","QR 제품 정보 연결","운영 현황 일부 공유"].map(i=>(
+                {["파트너 살롱 제품 운영","브랜드 카드 및 QR 운영","TBP 웹사이트 등록","TBP 공식 SNS 소개"].map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
                     <span style={{color:"rgba(255,255,255,0.4)",fontSize:"12px",flexShrink:0}}>✓</span>
                     <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",margin:"6px 0"}}>{i}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>브랜드가 얻는 것</p>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(78px,1fr))",gap:8,marginBottom:24}}>
+                {[
+                  {icon:"🌍",label:"TBP 브랜드 페이지"},
+                  {icon:"📱",label:"TBP 공식 SNS 소개"},
+                  {icon:"🏷️",label:"The Beauty Pause 파트너 브랜드 배지"},
+                ].map(({icon,label})=>(
+                  <div key={label} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",gap:5,minHeight:78}}>
+                    <span style={{fontSize:20,lineHeight:1}}>{icon}</span>
+                    <p style={{...KR,fontSize:9,color:"rgba(255,255,255,0.55)",lineHeight:1.35,margin:0}}>{label}</p>
                   </div>
                 ))}
               </div>
@@ -3322,16 +3362,12 @@ function ForBrandsPage() {
             </div>
           </div>
 
-          <div style={{textAlign:"center",marginBottom:16}}>
+          <div style={{textAlign:"center"}}>
             <a href="mailto:hello@thebeautypause.com"
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
               파트너 참여 문의하기 →
             </a>
           </div>
-
-          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",lineHeight:1.8,margin:0,textAlign:"center"}}>
-            ※ TBP는 프로그램 운영 이후, 브랜드와의 협업을 지속적으로 검토합니다. 운영 결과와 시장 상황에 따라 추가적인 협업이나 유통 기회가 논의될 수 있습니다.
-          </p>
 
         </div>
       </section>
@@ -3341,7 +3377,8 @@ function ForBrandsPage() {
         <div style={{maxWidth:760,margin:"0 auto"}}>
 
           <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>Optional Add-ons</p>
-          <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 28px"}}>선택 옵션</p>
+          <p style={{...KR,fontSize:"20px",color:"#f5f0eb",fontWeight:700,margin:"0 0 8px"}}>선택 옵션</p>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:"0 0 28px"}}>필요에 따라 추가할 수 있는 선택 서비스입니다.</p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12,marginBottom:28}}>
             {[
@@ -3366,12 +3403,16 @@ function ForBrandsPage() {
             ))}
           </div>
 
-          <div style={{marginBottom:0}}>
+          <div style={{marginBottom:24}}>
             <a href="mailto:hello@thebeautypause.com"
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
               선택 옵션 문의하기 →
             </a>
           </div>
+
+          <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.3)",lineHeight:1.8,margin:0}}>
+            ※ TBP는 프로그램 운영 이후, 브랜드와의 협업을 지속적으로 검토합니다. 운영 결과와 시장 상황에 따라 추가적인 협업이나 유통 기회가 논의될 수 있습니다.
+          </p>
 
         </div>
       </section>
@@ -3381,16 +3422,20 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Founding Brand</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>초기 파트너 브랜드</h2>
-          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
-            The Beauty Pause와 초기에 함께하는 브랜드에게 제공되는 혜택입니다.
+          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 20px"}}>파리 네트워크의 초기 파트너 브랜드</h2>
+          <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.9,margin:"0 0 8px",maxWidth:600}}>
+            The Beauty Pause와 함께 파리의 오프라인 뷰티 네트워크를 만들어갈 브랜드를 모집합니다.
+          </p>
+          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 36px",maxWidth:600}}>
+            초기 파트너 브랜드는 네트워크 성장과 함께 다양한 우선 참여 혜택을 제공합니다.
           </p>
 
-          <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>혜택</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20,marginBottom:32}}>
             {[
-              {n:"①",t:"Founding Brand 참가비 유지",d:"향후 참가비가 변경되어도 현재 참가비로 재참여할 수 있습니다."},
-              {n:"②",t:"우선 운영 기회",d:"신규 살롱, 이벤트, 콜라보 및 추천 제품 운영 시 우선 검토됩니다."},
+              {n:"①",t:"초기 파트너 가격",d:"현재 적용되는 초기 파트너 가격으로 참여할 수 있으며, 향후 가격이 변경되어도 기존 조건이 유지됩니다."},
+              {n:"②",t:"우선 참여 혜택",d:"신규 살롱, 도시 확장, 신규 프로그램 운영 시 우선 참여 기회가 제공됩니다."},
+              {n:"③",t:"초기 파트너 자격",d:"초기 파트너 배지가 부여되며, 향후 추가되는 브랜드 콘텐츠, 프로그램 및 신규 기능에 우선 참여할 수 있습니다."},
+              {n:"④",t:"네트워크 성장 혜택",d:"네트워크가 확장될수록 더 많은 살롱과 고객 접점이 만들어지며, 초기 파트너는 그 혜택을 가장 먼저 누릴 수 있습니다."},
             ].map(({n,t,d})=>(
               <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
                 <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 10px"}}>{n}</p>
@@ -3401,7 +3446,7 @@ function ForBrandsPage() {
           </div>
 
           <p style={{...KR,fontSize:"13px",color:"#999",fontStyle:"italic",margin:0}}>
-            ※ Founding Brand 혜택은 선착순 10개 브랜드까지 제공됩니다.
+            ※ 초기 파트너 브랜드 모집은 선착순 10개 브랜드로 마감됩니다.
           </p>
         </div>
       </section>
@@ -3927,14 +3972,14 @@ function NewsletterPage() {
         <div class="sub">▲ 이번 달 3곳 추가</div>
       </div>
       <div class="big-stat">
-        <div class="n">7+</div>
-        <div class="l">소개된 브랜드</div>
-        <div class="sub">▲ 신규 3개 추가</div>
+        <div class="n">4+</div>
+        <div class="l">참여 브랜드</div>
+        <div class="sub">유료·제품 파트너</div>
       </div>
       <div class="big-stat">
-        <div class="n">17</div>
-        <div class="l">운영 중인 제품 종류</div>
-        <div class="sub">네일 · 헤어 · 스킨</div>
+        <div class="n">20</div>
+        <div class="l">이번 달 판매 제품</div>
+        <div class="sub">▲ 첫 살롱 구매 발생</div>
       </div>
     </div>
     <div class="feed">
@@ -3949,73 +3994,70 @@ function NewsletterPage() {
         </div>
       </div>
       <div class="news-card">
-        <div class="news-icon gold">💄</div>
-        <div class="news-body">
-          <span class="news-tag">New Brands</span>
-          <div class="news-title">신규 브랜드 파트너 3곳 합류</div>
-          <div class="news-desc">이번 달 새로운 브랜드 파트너 3곳이 추가됐습니다. 누적 소개된 브랜드 7개+.</div>
-          <span class="news-pill">총 7개+ 브랜드</span>
-        </div>
-      </div>
-      <div class="news-card">
         <div class="news-icon green">🛍</div>
         <div class="news-body">
           <span class="news-tag">First Deal</span>
           <div class="news-title">파리 살롱 첫 제품 구매 거래 성사</div>
-          <div class="news-desc">속눈썹 연장 전문 살롱에서 고객 선물용 K-뷰티 제품 구매가 성사됐습니다.</div>
-          <span class="news-pill">살롱 구매 성사</span>
+          <div class="news-desc">BelleGlamour Paris에서 고객 선물용 K-뷰티 제품 구매. 이번 달 총 20개 제품 판매.</div>
+          <span class="news-pill">20개 제품 판매</span>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-icon gold">💄</div>
+        <div class="news-body">
+          <span class="news-tag">First Contract</span>
+          <div class="news-title">유료 파트너 브랜드 첫 계약 성사</div>
+          <div class="news-desc">파리 런칭 위크 첫 유료 브랜드 계약이 완료됐습니다.</div>
+          <span class="news-pill">유료 브랜드 1호</span>
         </div>
       </div>
       <div class="news-card">
         <div class="news-icon blue">📸</div>
         <div class="news-body">
-          <span class="news-tag">Coming Soon</span>
-          <div class="news-title">살롱 콜라보 콘텐츠 2건 기획 중</div>
-          <div class="news-desc">파트너 살롱 2곳과 K-뷰티 브랜드 콜라보 콘텐츠를 제작할 예정입니다.</div>
-          <span class="news-pill">콘텐츠 2건 준비 중</span>
-        </div>
-      </div>
-      <div class="news-card">
-        <div class="news-icon pink">🎁</div>
-        <div class="news-body">
-          <span class="news-tag">Event</span>
-          <div class="news-title">K-뷰티 이벤트 참가 6명</div>
-          <div class="news-desc">이번 달 K-뷰티 이벤트에 6명이 참가했으며, 그 중 2명이 선물을 받았습니다.</div>
-          <span class="news-pill">참가 6명 · 선물 2명</span>
+          <span class="news-tag">Collab</span>
+          <div class="news-title">살롱 콜라보 콘텐츠 3건 제작</div>
+          <div class="news-desc">파트너 살롱 3곳과 K-뷰티 브랜드 콜라보 콘텐츠를 촬영하고 SNS에 업로드했습니다.</div>
+          <span class="news-pill">콘텐츠 3건</span>
         </div>
       </div>
     </div>
     <div class="small-stats">
       <div class="small-stat">
-        <div class="n">25 <span>곳</span></div>
-        <div class="l">파트너 살롱</div>
+        <div class="n">30 <span>건</span></div>
+        <div class="l">주간 QR 스캔</div>
       </div>
       <div class="small-stat">
-        <div class="n">7+ <span>개</span></div>
-        <div class="l">소개된 브랜드</div>
+        <div class="n">3 <span>개</span></div>
+        <div class="l">운영 프로그램</div>
       </div>
       <div class="small-stat">
-        <div class="n">17 <span>종</span></div>
-        <div class="l">운영 제품</div>
+        <div class="n">3 <span>건</span></div>
+        <div class="l">살롱 콜라보</div>
       </div>
       <div class="small-stat">
-        <div class="n">6 <span>명</span></div>
-        <div class="l">이벤트 참가</div>
+        <div class="n">4 <span>개</span></div>
+        <div class="l">참여 브랜드</div>
       </div>
     </div>
-    <div class="inquiry">
-      <div class="inquiry-title">✦ 제품 파트너 모집 중</div>
-      <div class="inq-row">
-        <div class="inq-item">
-          <div class="inq-label">거래 가능성 제품군</div>
-          <div class="inq-val">마스크팩, 아이패치</div>
+    <div class="programs">
+      <div class="programs-title">✦ 운영 프로그램</div>
+      <div class="prog-row">
+        <div class="prog-chip">
+          <span class="emoji">💆</span>
+          <div class="name">K 헤드스파</div>
+          <div class="status">운영 중</div>
         </div>
-        <div class="inq-item">
-          <div class="inq-label">현재 필요한 제품군</div>
-          <div class="inq-val">헤어 제품 (우선 모집)</div>
+        <div class="prog-chip">
+          <span class="emoji">🧴</span>
+          <div class="name">K 샴푸잉</div>
+          <div class="status">운영 중</div>
+        </div>
+        <div class="prog-chip">
+          <span class="emoji">✨</span>
+          <div class="name">K 헤어팩</div>
+          <div class="status">운영 중</div>
         </div>
       </div>
-      <div class="inq-note">해당 제품 보유 브랜드는 문의 주세요 :)</div>
     </div>
     <div class="brand-join">
       <div class="brand-join-title">✦ 브랜드 참가 방법</div>
@@ -4050,7 +4092,10 @@ function NewsletterPage() {
       <p>hello@thebeautypause.com · <a href="https://thebeautypause.com">thebeautypause.com</a></p>
     </div>
     <div class="footer">
-      <p>The Beauty Pause · Paris<br>수신을 원하지 않으시면 <a href="#">여기</a>를 클릭해 주세요.</p>
+      <p>
+        The Beauty Pause · Paris<br>
+        수신을 원하지 않으시면 <a href="#">여기</a>를 클릭해 주세요.
+      </p>
     </div>
   `;
 
@@ -4065,61 +4110,61 @@ function NewsletterPage() {
         .logo span { color: #c9a96e; font-weight: 600; }
         .header-tag { font-size: 10px; background: rgba(201,169,110,0.15); color: #c9a96e; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; }
         .hero { padding: 32px 32px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .hero-eyebrow { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .hero-eyebrow { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
         .hero h1 { font-size: 26px; color: #f5f0eb; font-weight: 500; line-height: 1.3; margin-bottom: 8px; }
         .hero h1 em { color: #c9a96e; font-style: normal; }
-        .hero p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+        .hero p { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.7; }
         .big-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.06); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
         .big-stat { padding: 20px 16px; background: #0d0d0d; text-align: center; }
         .big-stat .n { font-size: 32px; font-weight: 600; color: #c9a96e; line-height: 1; margin-bottom: 4px; }
-        .big-stat .l { font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; line-height: 1.4; }
-        .big-stat .sub { font-size: 10px; color: rgba(201,169,110,0.7); margin-top: 2px; }
+        .big-stat .l { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; line-height: 1.4; }
+        .big-stat .sub { font-size: 10px; color: rgba(201,169,110,0.6); margin-top: 2px; }
         .feed { padding: 24px 32px; }
-        .feed-title { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+        .feed-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
         .news-card { border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
         .news-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
         .news-icon.gold { background: rgba(201,169,110,0.12); }
         .news-icon.green { background: rgba(100,200,150,0.1); }
         .news-icon.blue { background: rgba(100,150,255,0.1); }
-        .news-icon.pink { background: rgba(255,150,180,0.1); }
         .news-body { flex: 1; }
         .news-tag { font-size: 9px; color: #c9a96e; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
         .news-title { font-size: 14px; color: #f5f0eb; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
-        .news-desc { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+        .news-desc { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.6; }
         .news-pill { display: inline-block; font-size: 10px; background: rgba(201,169,110,0.1); color: #c9a96e; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
         .small-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 0 32px 24px; }
         .small-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; }
         .small-stat .n { font-size: 22px; font-weight: 600; color: #f5f0eb; margin-bottom: 2px; }
         .small-stat .n span { font-size: 13px; color: #c9a96e; margin-left: 2px; }
-        .small-stat .l { font-size: 11px; color: rgba(255,255,255,0.6); }
-        .inquiry { margin: 0 32px 24px; border: 1px solid rgba(201,169,110,0.15); border-radius: 12px; padding: 18px; background: rgba(255,255,255,0.02); }
-        .inquiry-title { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
-        .inq-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .inq-label { font-size: 10px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-        .inq-val { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.5; }
-        .inq-note { font-size: 11px; color: rgba(201,169,110,0.7); margin-top: 12px; }
+        .small-stat .l { font-size: 11px; color: rgba(255,255,255,0.3); }
+        .programs { margin: 0 32px 24px; }
+        .programs-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .prog-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .prog-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; flex: 1; min-width: 140px; }
+        .prog-chip .emoji { font-size: 18px; margin-bottom: 6px; display: block; }
+        .prog-chip .name { font-size: 12px; color: #f5f0eb; font-weight: 500; }
+        .prog-chip .status { font-size: 10px; color: #c9a96e; margin-top: 2px; }
         .brand-join { margin: 0 32px 20px; }
-        .brand-join-title { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .brand-join-title { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
         .brand-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .brand-option { border-radius: 10px; padding: 18px; border: 1px solid rgba(255,255,255,0.07); }
         .brand-option.paid { border-color: rgba(201,169,110,0.3); background: rgba(201,169,110,0.04); }
         .brand-option.free { background: rgba(255,255,255,0.02); }
         .opt-badge { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
         .brand-option.paid .opt-badge { color: #c9a96e; }
-        .brand-option.free .opt-badge { color: rgba(255,255,255,0.45); }
+        .brand-option.free .opt-badge { color: rgba(255,255,255,0.25); }
         .brand-option h4 { font-size: 13px; color: #f5f0eb; font-weight: 600; margin-bottom: 12px; }
         .opt-list { list-style: none; }
-        .opt-list li { font-size: 11px; color: rgba(255,255,255,0.65); padding: 3px 0; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+        .opt-list li { font-size: 11px; color: rgba(255,255,255,0.4); padding: 3px 0; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
         .brand-option.paid .opt-list li::before { content: "✦"; color: #c9a96e; flex-shrink: 0; font-size: 9px; margin-top: 2px; }
-        .brand-option.free .opt-list li::before { content: "·"; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+        .brand-option.free .opt-list li::before { content: "·"; color: rgba(255,255,255,0.2); flex-shrink: 0; }
         .cta-area { margin: 0 32px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .cta-main { display: block; background: linear-gradient(135deg, #c9a96e, #b8944d); color: #0d0d0d; font-size: 12px; font-weight: 700; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
-        .cta-sub { display: block; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
+        .cta-sub { display: block; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; padding: 13px 16px; border-radius: 8px; text-decoration: none; text-align: center; line-height: 1.4; }
         .cta-email { margin: 0 32px 28px; text-align: center; padding-top: 10px; }
-        .cta-email p { font-size: 11px; color: rgba(255,255,255,0.4); }
-        .cta-email a { color: rgba(201,169,110,0.6); text-decoration: none; }
+        .cta-email p { font-size: 11px; color: rgba(255,255,255,0.2); }
+        .cta-email a { color: rgba(201,169,110,0.5); text-decoration: none; }
         .footer { padding: 20px 32px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
-        .footer p { font-size: 10px; color: rgba(255,255,255,0.35); line-height: 1.8; }
+        .footer p { font-size: 10px; color: rgba(255,255,255,0.15); line-height: 1.8; }
         .footer a { color: rgba(201,169,110,0.4); text-decoration: none; }
       `}</style>
       <div style={{maxWidth:600,margin:"20px auto 0",padding:"0 16px"}}>
