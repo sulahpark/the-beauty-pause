@@ -3305,13 +3305,13 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>브랜드가 얻는 것</p>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(78px,1fr))",gap:8,marginBottom:24}}>
                 {[
-                  {icon:"🌍",label:"TBP 브랜드 페이지"},
-                  {icon:"📱",label:"TBP 공식 SNS 소개"},
-                  {icon:"🏷️",label:"Officially Launched in Paris 런칭 배지"},
-                  {icon:"🏷️",label:"The Beauty Pause 파트너 브랜드 배지"},
-                  {icon:"📸",label:"파리 런칭 사진 패키지"},
-                  {icon:"🎥",label:"SNS용 릴스 영상"},
-                  {icon:"📰",label:"기사 작성용 콘텐츠 패키지"},
+                  {icon:"🔗",label:"파리 런칭 페이지"},
+                  {icon:"📢",label:"TBP SNS 홍보"},
+                  {icon:"🏷️",label:"파트너 브랜드 배지"},
+                  {icon:"📸",label:"파리 런칭 사진"},
+                  {icon:"🎬",label:"릴스 영상 제작"},
+                  {icon:"📰",label:"기사 작성 자료"},
+                  {icon:"🎖️",label:"파리 런칭 배지"},
                 ].map(({icon,label})=>(
                   <div key={label} style={{background:"linear-gradient(160deg,rgba(201,169,110,0.12),rgba(255,255,255,0.02))",border:"1px solid rgba(201,169,110,0.3)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",gap:5,minHeight:78}}>
                     <span style={{fontSize:20,lineHeight:1}}>{icon}</span>
@@ -3345,8 +3345,8 @@ function ForBrandsPage() {
               <p style={{...KR,fontSize:"11px",color:"rgba(255,255,255,0.35)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>브랜드가 얻는 것</p>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(78px,1fr))",gap:8,marginBottom:24}}>
                 {[
-                  {icon:"🌍",label:"TBP 브랜드 페이지"},
-                  {icon:"📱",label:"TBP 공식 SNS 소개"},
+                  {icon:"🔗",label:"TBP 브랜드 페이지"},
+                  {icon:"📢",label:"TBP 공식 SNS 소개"},
                   {icon:"🏷️",label:"The Beauty Pause 파트너 브랜드 배지"},
                 ].map(({icon,label})=>(
                   <div key={label} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:12,padding:"10px 6px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",gap:5,minHeight:78}}>
