@@ -1304,7 +1304,7 @@ function MobileTabBar({active}) {
     const onScroll = () => {
       setVisible(true);
       if (hideTimer.current) clearTimeout(hideTimer.current);
-      hideTimer.current = setTimeout(()=>setVisible(false), 900);
+      hideTimer.current = setTimeout(()=>setVisible(false), 2500);
     };
     window.addEventListener("scroll", onScroll, {passive:true});
     return () => { window.removeEventListener("scroll", onScroll); if (hideTimer.current) clearTimeout(hideTimer.current); };
@@ -1326,7 +1326,7 @@ function MobileTabBar({active}) {
   ];
 
   return (
-    <div style={{position:"fixed",bottom:visible?20:-90,left:"50%",transform:"translateX(-50%)",transition:"bottom 0.35s cubic-bezier(0.32,0.72,0,1)",width:"calc(100% - 40px)",maxWidth:400,zIndex:600}}>
+    <div style={{position:"fixed",bottom:visible?20:-90,left:"50%",transform:"translateX(-50%)",transition:"bottom 0.7s cubic-bezier(0.22,0.61,0.36,1)",width:"calc(100% - 40px)",maxWidth:400,zIndex:600}}>
       <div style={{background:"#1a1a1a",borderRadius:32,padding:10,display:"flex",alignItems:"center",justifyContent:"space-around",boxShadow:"0 10px 30px rgba(0,0,0,0.25)"}}>
         {tabs.map(t=>(
           <button key={t.key} onClick={()=>navigate(t.path)}
@@ -1569,6 +1569,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
 // ── SALONS PAGE ───────────────────────────────────────────────────────────────
 function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onAuthClick}) {
   const t=T[lang]; const isMobile=window.innerWidth<768;
+  const location=useLocation();
   const [sf,setSf]=useState({tier:[],area:"All",brand:"All",categories:[],kbeautyOnly:true});
   const [sortBy,setSortBy]=useState("az");
   const [search,setSearch]=useState("");
@@ -1582,6 +1583,12 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   const [selSalon,setSelSalon]=useState(null);
   const [lr,setLr]=useState(!!window.L);
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
+  useEffect(()=>{
+    if (location.state?.selectSalonId) {
+      const s = salons.find(x=>x.id===location.state.selectSalonId);
+      if (s) setSelSalon(s);
+    }
+  },[location.state,salons]);
   useEffect(()=>{
     let r=[...salons];
     if(sf.categories.length>0)r=r.filter(s=>sf.categories.map(c=>c.toLowerCase()).includes((s.category||"").toLowerCase()));
@@ -4397,7 +4404,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
 
         {/* HEADER */}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
-          <div>
+          <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
             <span style={{...CG,fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
             <span style={{...CG,fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
           </div>
@@ -4445,14 +4452,14 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
         <div style={{marginBottom:32}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
             <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Explore Salons</p>
-            <button style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 20px"}}>
             {loading
               ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>불러오는 중…</p>
               : exploreSalons.map((s,i)=>(
                   <div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.03}s both`}}>
-                    <ProgramSalonCard salon={s} featured={s._featured} onClick={()=>{}}/>
+                    <ProgramSalonCard salon={s} featured={s._featured} onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
                   </div>
                 ))
             }
@@ -4464,7 +4471,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           <div>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
               <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Meet the Brands</p>
-              <button style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+              <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
             </div>
             <div className="hide-scrollbar" style={{display:"flex",gap:16,overflowX:"auto",padding:"0 20px 4px"}}>
               {brandCards.map(({brand,img})=>(
@@ -4680,11 +4687,15 @@ function SearchPage({ salons, allProducts, programs }) {
   useEffect(()=>{ inputRef.current?.focus(); },[]);
 
   const query = q.trim().toLowerCase();
-  const matchedPrograms = query ? (programs||[]).filter(p=>p.name?.toLowerCase().includes(query)) : [];
+  const matchedPrograms = query ? (programs||[]).filter(p=>{
+    if (p.name?.toLowerCase().includes(query)) return true;
+    const pSalonNames = (p.salonIds||[]).map(id=>(salons||[]).find(s=>s.id===id)?.name).filter(Boolean);
+    return pSalonNames.some(n=>n.toLowerCase().includes(query));
+  }) : [];
   const matchedSalons = query ? (salons||[]).filter(s=>s.name?.toLowerCase().includes(query)) : [];
   const matchedProducts = query ? (allProducts||[]).filter(p=>{
-    const brand = typeof p.brand==="string" ? p.brand : (p.brand_name||"");
-    return p.product_name?.toLowerCase().includes(query) || brand.toLowerCase().includes(query);
+    const brand = p.brand_name || (Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null)) || "";
+    return p.product_name?.toLowerCase().includes(query) || String(brand).toLowerCase().includes(query);
   }) : [];
   const totalResults = matchedPrograms.length + matchedSalons.length + matchedProducts.length;
 
@@ -4752,7 +4763,7 @@ function SearchPage({ salons, allProducts, programs }) {
               {matchedProducts.length>0&&(
                 <Section title="Products" count={matchedProducts.length}>
                   {matchedProducts.map(p=>(
-                    <ResultRow key={p.id} img={getProdImg(p)} title={p.product_name} subtitle={typeof p.brand==="string"?p.brand:p.brand_name}
+                    <ResultRow key={p.id} img={getProdImg(p)} title={p.product_name} subtitle={p.brand_name || (Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null)) || ""}
                       onClick={()=>navigate("/products")}/>
                   ))}
                 </Section>
@@ -5091,7 +5102,7 @@ export default function App() {
   return (
     <LocationAwareErrorBoundary>
       <Routes>
-        <Route path="/" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
+        <Route path="/" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} />} />
@@ -5106,7 +5117,7 @@ export default function App() {
         <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="/search" element={<SearchPage salons={salons} allProducts={allProducts} programs={programs} />} />
         <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
-        <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
+        <Route path="*" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
       <CookieBanner/>
