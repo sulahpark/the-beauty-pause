@@ -1184,7 +1184,7 @@ function useProgramsData() {
     (async () => {
       setLoadingPrograms(true);
       try {
-        const records = await fetchAll(TBL_PROGRAMS, "");
+        const records = await fetchAll(TBL_PROGRAMS, "{status}='launch'");
         const getAttachmentUrl = (val) => {
           if (!val) return null;
           if (Array.isArray(val)) {
@@ -4452,9 +4452,9 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
 // fallback sample salons — used when live Airtable data doesn't yet contain
 // salons matching a program's salonNames (so the reservation flow can be demoed)
 const SAMPLE_SALONS = [
-  { id: "sample-1", name: "Aura Beauté Paris", area: "Le Marais", salon_image: "/images/aurabeaute04.jpeg", rdv: "https://www.planity.com", _products: [] },
-  { id: "sample-2", name: "BelleGlamour Paris", area: "Saint-Germain", salon_image: "/images/IMG_0189.jpeg", rdv: "https://www.planity.com", _products: [] },
-  { id: "sample-3", name: "Salon Rêve", area: "Bastille", salon_image: "/images/IMG_0175.jpeg", rdv: "https://www.planity.com", _products: [] },
+  { id: "sample-1", name: "Aura Beauté Paris", area: "Le Marais", latitude: 48.859, longitude: 2.362, salon_image: "/images/aurabeaute04.jpeg", rdv: "https://www.planity.com", _products: [] },
+  { id: "sample-2", name: "BelleGlamour Paris", area: "Saint-Germain", latitude: 48.853, longitude: 2.334, salon_image: "/images/IMG_0189.jpeg", rdv: "https://www.planity.com", _products: [] },
+  { id: "sample-3", name: "Salon Rêve", area: "Bastille", latitude: 48.853, longitude: 2.372, salon_image: "/images/IMG_0175.jpeg", rdv: "https://www.planity.com", _products: [] },
 ];
 
 // ── PROGRAMS LIST PAGE (전체보기 — swipeable carousel + synced map) ─────────
@@ -4504,13 +4504,27 @@ function ProgramsListPage({ salons, programs, loadingPrograms }) {
         ) : (
           <>
             {/* CAROUSEL */}
-            <div ref={scrollRef} onScroll={handleScroll} className="hide-scrollbar"
-              style={{display:"flex",gap:GAP,overflowX:"auto",scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",padding:`28px calc(50% - ${CARD_W/2}px) 18px`}}>
-              {programs.map((p,i)=>(
-                <div key={p.id} style={{flexShrink:0,scrollSnapAlign:"center",transition:"opacity 0.25s ease, transform 0.25s ease",opacity:i===centerIndex?1:0.35,transform:i===centerIndex?"scale(1)":"scale(0.9)"}}>
-                  <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
-                </div>
-              ))}
+            <div style={{position:"relative"}}>
+              <div ref={scrollRef} onScroll={handleScroll} className="hide-scrollbar"
+                style={{display:"flex",gap:GAP,overflowX:"auto",scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",padding:`28px calc(50% - ${CARD_W/2}px) 18px`}}>
+                {programs.map((p,i)=>(
+                  <div key={p.id} style={{flexShrink:0,scrollSnapAlign:"center",transition:"opacity 0.25s ease, transform 0.25s ease",opacity:i===centerIndex?1:0.35,transform:i===centerIndex?"scale(1)":"scale(0.9)"}}>
+                    <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
+                  </div>
+                ))}
+              </div>
+              {programs.length>1&&(
+                <>
+                  <button onClick={()=>scrollRef.current?.scrollBy({left:-STEP,behavior:"smooth"})}
+                    style={{position:"absolute",left:6,top:"calc(50% - 5px)",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <button onClick={()=>scrollRef.current?.scrollBy({left:STEP,behavior:"smooth"})}
+                    style={{position:"absolute",right:6,top:"calc(50% - 5px)",transform:"translateY(-50%)",width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                  </button>
+                </>
+              )}
             </div>
 
             {/* DOTS */}
@@ -4521,30 +4535,15 @@ function ProgramsListPage({ salons, programs, loadingPrograms }) {
             </div>
 
             {/* SYNCED MAP */}
-            <div style={{margin:"0 20px 16px",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:240}}>
-              {lr
-                ? <SalonMap salons={activeSalons} fitToSalons={activeSalons} />
-                : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>}
+            <div style={{margin:"0 20px 40px",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
+              {!lr ? (
+                <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>
+              ) : activeSalons.length===0 ? (
+                <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>표시할 살롱 위치가 없어요</div>
+              ) : (
+                <SalonMap salons={activeSalons} fitToSalons={activeSalons} />
+              )}
             </div>
-
-            {/* ACTIVE PROGRAM QUICK INFO */}
-            {activeProgram&&(
-              <div style={{padding:"0 20px 40px"}}>
-                <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>
-                  {activeSalons.length>1 ? `${activeSalons.length}개 살롱에서 진행` : activeSalons[0]?.name}
-                </p>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
-                  <div style={{minWidth:0}}>
-                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{activeProgram.name}</p>
-                    <p style={{...SS,fontSize:12,color:"#999",margin:0}}>€{activeProgram.price} · {activeProgram.duration}</p>
-                  </div>
-                  <button onClick={()=>navigate(`/program/${activeProgram.id}`)}
-                    style={{flexShrink:0,padding:"10px 18px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:10,cursor:"pointer",...KR,fontSize:12,fontWeight:700,whiteSpace:"nowrap"}}>
-                    자세히 보기 →
-                  </button>
-                </div>
-              </div>
-            )}
           </>
         )}
       </div>
