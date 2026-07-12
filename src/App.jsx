@@ -4363,11 +4363,12 @@ function ProgramSalonCard({ salon, onClick, featured }) {
   );
 }
 
-function ProgramHomePage({ salons, allProducts, loading, programs, loadingPrograms }) {
+function ProgramHomePage({ salons, allProducts, loading, programs, loadingPrograms, user, onAuthClick }) {
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const isMobile = window.innerWidth<768;
   const programScrollRef = useRef(null);
   const exploreSalons = useMemo(()=>{
     const featuredIds = new Set((programs||[]).flatMap(p=>p.salonIds||[]));
@@ -4377,8 +4378,8 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
       const bF = featuredIds.has(b.id) ? 0 : 1;
       return aF - bF;
     });
-    return list.slice(0,4).map(s=>({ ...s, _featured: featuredIds.has(s.id) }));
-  }, [salons, programs]);
+    return list.slice(0,isMobile?4:8).map(s=>({ ...s, _featured: featuredIds.has(s.id) }));
+  }, [salons, programs, isMobile]);
 
   // build a brand -> product-photo list, pick one random photo per brand (re-picked each mount)
   const brandCards = useState(()=>{
@@ -4396,100 +4397,219 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
     }));
   })[0];
 
+  const NAV_LINKS = [
+    {label:"Home", path:"/program-home"},
+    {label:"Programs", path:"/programs"},
+    {label:"Salons", path:"/salons"},
+    {label:"Products", path:"/products"},
+  ];
+
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.hide-scrollbar::-webkit-scrollbar{display:none}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
 
-      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:96,position:"relative"}}>
+      {isMobile ? (
+        <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:96,position:"relative"}}>
 
-        {/* HEADER */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
-          <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
-            <span style={{...CG,fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
-            <span style={{...CG,fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+          {/* HEADER */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
+            <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+              <span style={{...CG,fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
+              <span style={{...CG,fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+            </div>
+            <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
           </div>
-          <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </button>
-        </div>
 
-        {/* GREETING */}
-        <div style={{padding:"14px 20px 24px"}}>
-          <p style={{...KR,fontSize:20,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.4}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</p>
-        </div>
-
-        {/* FEATURED PROGRAMS */}
-        <div style={{marginBottom:32,position:"relative"}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-            <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Featured Programs</p>
-            <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+          {/* GREETING */}
+          <div style={{padding:"14px 20px 24px"}}>
+            <p style={{...KR,fontSize:20,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.4}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</p>
           </div>
-          <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px",scrollBehavior:"smooth"}}>
-            {loadingPrograms
-              ? <p style={{...KR,fontSize:13,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
-              : programs.map((p,i)=>(
-                  <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
-                    <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
+
+          {/* FEATURED PROGRAMS */}
+          <div style={{marginBottom:32,position:"relative"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
+              <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Featured Programs</p>
+              <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            </div>
+            <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px",scrollBehavior:"smooth"}}>
+              {loadingPrograms
+                ? <p style={{...KR,fontSize:13,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+                : programs.map((p,i)=>(
+                    <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
+                      <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
+                    </div>
+                  ))
+              }
+            </div>
+            {!loadingPrograms&&programs.length>1&&(
+              <>
+                <button onClick={()=>programScrollRef.current?.scrollBy({left:-236,behavior:"smooth"})}
+                  style={{position:"absolute",left:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button onClick={()=>programScrollRef.current?.scrollBy({left:236,behavior:"smooth"})}
+                  style={{position:"absolute",right:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* EXPLORE SALONS */}
+          <div style={{marginBottom:32}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
+              <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Explore Salons</p>
+              <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 20px"}}>
+              {loading
+                ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>불러오는 중…</p>
+                : exploreSalons.map((s,i)=>(
+                    <div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.03}s both`}}>
+                      <ProgramSalonCard salon={s} featured={s._featured} onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
+                    </div>
+                  ))
+              }
+            </div>
+          </div>
+
+          {/* MEET THE BRANDS */}
+          {brandCards.length>0&&(
+            <div>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
+                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Meet the Brands</p>
+                <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+              </div>
+              <div className="hide-scrollbar" style={{display:"flex",gap:16,overflowX:"auto",padding:"0 20px 4px"}}>
+                {brandCards.map(({brand,img})=>(
+                  <div key={brand} style={{flexShrink:0,width:64,textAlign:"center"}}>
+                    <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",border:"2px solid #e8d9b8",marginBottom:6}}>
+                      <img src={img} alt={brand} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                    </div>
+                    <p style={{...SS,fontSize:10,color:"#555",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{brand}</p>
                   </div>
-                ))
-            }
-          </div>
-          {!loadingPrograms&&programs.length>1&&(
-            <>
-              <button onClick={()=>programScrollRef.current?.scrollBy({left:-236,behavior:"smooth"})}
-                style={{position:"absolute",left:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-              </button>
-              <button onClick={()=>programScrollRef.current?.scrollBy({left:236,behavior:"smooth"})}
-                style={{position:"absolute",right:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-              </button>
-            </>
+                ))}
+              </div>
+            </div>
           )}
-        </div>
 
-        {/* EXPLORE SALONS */}
-        <div style={{marginBottom:32}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-            <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Explore Salons</p>
-            <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
-          </div>
-          <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 20px"}}>
-            {loading
-              ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>불러오는 중…</p>
-              : exploreSalons.map((s,i)=>(
+          {/* BOTTOM NAV */}
+          <MobileTabBar active="/program-home"/>
+
+        </div>
+      ) : (
+        <div style={{background:"#ffffff",minHeight:"100vh"}}>
+
+          {/* DESKTOP NAV */}
+          <nav style={{background:"#0d0d0d",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(24px,4vw,56px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+            <div onClick={()=>navigate("/")} style={{cursor:"pointer",flexShrink:0}}>
+              <span style={{...CG,fontSize:17,color:"#f5f0eb",letterSpacing:2,fontWeight:300}}>THE</span>
+              <span style={{...CG,fontSize:17,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
+            </div>
+            <div style={{display:"flex",gap:36}}>
+              {NAV_LINKS.map(l=>(
+                <button key={l.path} onClick={()=>navigate(l.path)} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:13,color:"rgba(255,255,255,0.65)",fontWeight:500}}>{l.label}</button>
+              ))}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:14,flexShrink:0}}>
+              <button onClick={()=>navigate("/search")} style={{width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+              {user
+                ? <button onClick={()=>navigate("/account")} style={{padding:"8px 18px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",...SS,fontSize:12,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase",borderRadius:20}}>✦ Account</button>
+                : <button onClick={()=>onAuthClick?.("login")} style={{padding:"8px 18px",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:12,fontWeight:700,letterSpacing:0.5,textTransform:"uppercase",borderRadius:20}}>Sign in</button>
+              }
+            </div>
+          </nav>
+
+          {/* HERO */}
+          <section style={{padding:"clamp(48px,6vw,88px) clamp(24px,4vw,56px) clamp(32px,4vw,48px)",maxWidth:1240,margin:"0 auto"}}>
+            <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>✦ The Beauty Pause</p>
+            <h1 style={{...KR,fontSize:"clamp(28px,3.4vw,44px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px",lineHeight:1.3,maxWidth:640}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</h1>
+            <p style={{...KR,fontSize:15,color:"#888",lineHeight:1.8,maxWidth:520}}>파트너 살롱과 함께 기획한 K-뷰티 프로그램을 신청하고, 살롱에서 직접 즐겨보세요.</p>
+          </section>
+
+          {/* FEATURED PROGRAMS */}
+          <section style={{padding:"0 clamp(24px,4vw,56px) 56px",maxWidth:1240,margin:"0 auto",position:"relative"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+              <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Featured Programs</p>
+              <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
+            </div>
+            <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:20,overflowX:"auto",paddingBottom:4}}>
+              {loadingPrograms
+                ? <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+                : programs.length===0
+                  ? <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>준비 중인 프로그램이 없어요.</p>
+                  : programs.map((p,i)=>(
+                      <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
+                        <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
+                      </div>
+                    ))
+              }
+            </div>
+          </section>
+
+          {/* EXPLORE SALONS */}
+          <section style={{padding:"0 clamp(24px,4vw,56px) 56px",maxWidth:1240,margin:"0 auto"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+              <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Explore Salons</p>
+              <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
+            </div>
+            {loading ? (
+              <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+            ) : (
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:16}}>
+                {exploreSalons.map((s,i)=>(
                   <div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.03}s both`}}>
                     <ProgramSalonCard salon={s} featured={s._featured} onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
                   </div>
-                ))
-            }
-          </div>
-        </div>
+                ))}
+              </div>
+            )}
+          </section>
 
-        {/* MEET THE BRANDS */}
-        {brandCards.length>0&&(
-          <div>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-              <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Meet the Brands</p>
-              <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
-            </div>
-            <div className="hide-scrollbar" style={{display:"flex",gap:16,overflowX:"auto",padding:"0 20px 4px"}}>
-              {brandCards.map(({brand,img})=>(
-                <div key={brand} style={{flexShrink:0,width:64,textAlign:"center"}}>
-                  <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",border:"2px solid #e8d9b8",marginBottom:6}}>
-                    <img src={img} alt={brand} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+          {/* MEET THE BRANDS */}
+          {brandCards.length>0&&(
+            <section style={{padding:"0 clamp(24px,4vw,56px) 80px",maxWidth:1240,margin:"0 auto"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:24}}>
+                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Meet the Brands</p>
+                <button onClick={()=>navigate("/products")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
+              </div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:28}}>
+                {brandCards.map(({brand,img})=>(
+                  <div key={brand} style={{width:84,textAlign:"center"}}>
+                    <div style={{width:84,height:84,borderRadius:"50%",overflow:"hidden",border:"2px solid #e8d9b8",marginBottom:8}}>
+                      <img src={img} alt={brand} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                    </div>
+                    <p style={{...SS,fontSize:11,color:"#555",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{brand}</p>
                   </div>
-                  <p style={{...SS,fontSize:10,color:"#555",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{brand}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* FOOTER */}
+          <footer style={{background:"#0d0d0d",padding:"32px clamp(24px,4vw,56px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+            <div>
+              <div style={{marginBottom:4}}>
+                <span style={{...CG,fontSize:14,color:"#f5f0eb",letterSpacing:3,fontWeight:300}}>THE</span>
+                <span style={{...CG,fontSize:14,color:"#c9a96e",letterSpacing:3,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+              </div>
+              <p style={{...SS,fontSize:10,color:"#333",margin:0}}>© 2026 The Beauty Pause</p>
             </div>
-          </div>
-        )}
+            <div style={{display:"flex",gap:16,alignItems:"center"}}>
+              <a href="/privacy" style={{...SS,fontSize:11,color:"#444",textDecoration:"none"}}>Privacy</a>
+              <span style={{color:"#222"}}>·</span>
+              <a href="/legal" style={{...SS,fontSize:11,color:"#444",textDecoration:"none"}}>Legal</a>
+              <span style={{color:"#222"}}>·</span>
+              <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:11,color:"#444",textDecoration:"none"}}>Contact</a>
+            </div>
+          </footer>
 
-        {/* BOTTOM NAV */}
-        <MobileTabBar active="/program-home"/>
-
-      </div>
+        </div>
+      )}
     </>
   );
 }
@@ -5102,7 +5222,7 @@ export default function App() {
   return (
     <LocationAwareErrorBoundary>
       <Routes>
-        <Route path="/" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} />} />
@@ -5113,11 +5233,11 @@ export default function App() {
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
-        <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="/search" element={<SearchPage salons={salons} allProducts={allProducts} programs={programs} />} />
         <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
-        <Route path="*" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="*" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
       <CookieBanner/>
