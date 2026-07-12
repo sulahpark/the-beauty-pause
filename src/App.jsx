@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Component, Fragment } from "react";
+import { useState, useEffect, useMemo, useRef, Component, Fragment } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
@@ -622,7 +622,7 @@ function ProductModal({ prod, salonsWithProd, allProducts, onClose, onSalonClick
                   );
                 })}
                 {salonsWithProd.length>3&&!showAllSalons&&(
-                  <button onClick={()=>setShowAllSalons(true)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#fb5607",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"8px 0",borderRadius:8,textAlign:"center",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#fff3ee";}} onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
+                  <button onClick={()=>setShowAllSalons(true)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#fb5607",background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"8px 0",borderRadius:8,textAlign:"center",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.background="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
                     + {salonsWithProd.length-3} more salon{salonsWithProd.length-3>1?"s":""}
                   </button>
                 )}
@@ -1384,7 +1384,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
                           const isNew=p._badge==="new"; const prodImg=getProdImg(p);
                           const brandD=p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||"";
                           return (
-                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:9,background:isNew?"#fdf8ee":"#fff3ee",padding:"7px 10px",borderRadius:10,border:`1px solid ${isNew?"#e8d9b8":"#ffd5c2"}`}}>
+                            <div key={p.id} style={{display:"flex",alignItems:"center",gap:9,background:isNew?"#fdf8ee":"#fff",padding:"7px 10px",borderRadius:10,border:`1px solid ${isNew?"#e8d9b8":"#ffd5c2"}`}}>
                               {prodImg&&<img src={prodImg} alt="" style={{width:48,height:48,borderRadius:8,objectFit:"cover",flexShrink:0}}/>}
                               <div style={{minWidth:0}}>
                                 <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:isNew?"#a07832":"#fb5607",fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",margin:"0 0 2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{brandD}</p>
@@ -4191,47 +4191,53 @@ const FEATURED_PROGRAMS = [
   {
     id: "p1",
     name: "K-헤드스파 시그니처",
-    salonName: "Aura Beauté Paris",
-    salonId: null,
+    salonNames: ["Aura Beauté Paris", "BelleGlamour Paris"],
     image: "/images/aurabeaute04.jpeg",
     duration: "60분",
     priceOriginal: 65,
     price: 49,
     tag: "인기",
+    periodLabel: "2026.07.15 – 2026.08.14",
     description: "한국식 두피 스케일링과 헤드 마사지를 결합한 시그니처 프로그램입니다. 두피 진단 후 맞춤 스케일링, 프리미엄 헤어 트리트먼트, 릴랙싱 마사지까지 이어집니다.",
     includes: ["두피 진단 및 상담","K-스타일 두피 스케일링","프리미엄 헤어 트리트먼트","헤드 & 숄더 마사지"],
+    product: { brand: "Aura Botanica", name: "스칼프 스케일링 세럼", image: "/images/IMG_0189.jpeg" },
   },
   {
     id: "p2",
     name: "글로우 스킨 부스터",
-    salonName: "BelleGlamour Paris",
-    salonId: null,
+    salonNames: ["BelleGlamour Paris"],
     image: "/images/IMG_0189.jpeg",
     duration: "45분",
     priceOriginal: 55,
     price: 39,
     tag: "신규",
+    periodLabel: "2026.07.15 – 2026.08.14",
     description: "한국 스킨케어 루틴을 기반으로 한 페이셜 프로그램입니다. 딥 클렌징부터 K-뷰티 앰플 부스팅, 마스크팩까지 한 번에 경험할 수 있어요.",
     includes: ["딥 클렌징 & 각질 케어","K-뷰티 앰플 부스팅","시트 마스크팩","페이셜 마사지"],
+    product: { brand: "Glow Lab", name: "비타 글로우 부스팅 앰플", image: "/images/IMG_0175.jpeg" },
   },
   {
     id: "p3",
     name: "K-헤어팩 트리트먼트",
-    salonName: "Salon Rêve",
-    salonId: null,
+    salonNames: ["Salon Rêve"],
     image: "/images/IMG_0175.jpeg",
     duration: "50분",
     priceOriginal: 60,
     price: 45,
     tag: null,
+    periodLabel: "2026.07.15 – 2026.08.14",
     description: "손상된 모발에 집중 영양을 공급하는 한국식 헤어팩 트리트먼트입니다. 모발 진단 후 맞춤 팩을 도포하고, 스팀 케어로 흡수율을 높입니다.",
     includes: ["모발 진단","맞춤 K-헤어팩 도포","스팀 케어","마무리 스타일링"],
+    product: { brand: "Rêve Hair", name: "케라틴 헤어팩", image: "/images/IMG_0183.jpeg" },
   },
 ];
 
 function ProgramCard({ program, onClick }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const salonLabel = (program.salonNames||[]).length>1
+    ? `${program.salonNames[0]} 외 ${program.salonNames.length-1}곳`
+    : program.salonNames?.[0];
   return (
     <div onClick={onClick} style={{flexShrink:0,width:220,cursor:"pointer"}}>
       <div style={{position:"relative",width:220,height:260,borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
@@ -4239,8 +4245,9 @@ function ProgramCard({ program, onClick }) {
         <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.75) 0%,rgba(13,13,13,0.05) 45%,transparent 70%)"}}/>
         {program.tag&&<div style={{position:"absolute",top:12,left:12,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"4px 10px",borderRadius:20}}>{program.tag}</div>}
         <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"16px 16px 18px"}}>
-          <p style={{...SS,fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:1,textTransform:"uppercase",margin:"0 0 4px"}}>{program.salonName}</p>
-          <p style={{...KR,fontSize:17,fontWeight:700,color:"#fff",margin:"0 0 8px",lineHeight:1.3}}>{program.name}</p>
+          <p style={{...SS,fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:1,textTransform:"uppercase",margin:"0 0 4px"}}>{salonLabel}</p>
+          <p style={{...KR,fontSize:17,fontWeight:700,color:"#fff",margin:"0 0 6px",lineHeight:1.3}}>{program.name}</p>
+          <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.45)",margin:"0 0 8px"}}>{program.periodLabel}</p>
           <div style={{display:"flex",alignItems:"baseline",gap:6}}>
             {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.45)",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
             <span style={{...SS,fontSize:16,color:"#c9a96e",fontWeight:700}}>€{program.price}</span>
@@ -4252,19 +4259,20 @@ function ProgramCard({ program, onClick }) {
   );
 }
 
-function ProgramSalonCard({ salon, onClick }) {
+function ProgramSalonCard({ salon, onClick, featured }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const img = getSalonImg(salon);
   const prods = salon._products || [];
   return (
-    <div onClick={onClick} style={{display:"flex",gap:14,alignItems:"center",background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:12,cursor:"pointer"}}>
+    <div onClick={onClick} style={{display:"flex",gap:14,alignItems:"center",background:"#fff",border:featured?"1px solid #e8d9b8":"1px solid #f0e9dc",borderRadius:16,padding:12,cursor:"pointer"}}>
       <div style={{width:64,height:64,borderRadius:14,overflow:"hidden",flexShrink:0,background:"#f0ebe2"}}>
         {img
           ? <img src={img} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
           : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,color:"#c9a96e"}}>{salon.name?.[0]}</span></div>}
       </div>
       <div style={{flex:1,minWidth:0}}>
+        {featured&&<span style={{display:"inline-block",...SS,fontSize:9,color:"#c9a96e",fontWeight:700,letterSpacing:0.3,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:20,padding:"2px 8px",marginBottom:5}}>✦ Featured Program 운영중</span>}
         <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</p>
         <p style={{...SS,fontSize:11,color:"#aaa",margin:"0 0 6px"}}>{salon.area || "Paris"}</p>
         {prods.length>0&&(
@@ -4287,7 +4295,16 @@ function ProgramHomePage({ salons, allProducts, loading }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
-  const exploreSalons = (salons||[]).slice(0, 8);
+  const exploreSalons = useMemo(()=>{
+    const featuredNames = new Set(FEATURED_PROGRAMS.flatMap(p=>p.salonNames||[]));
+    const list = [...(salons||[])];
+    list.sort((a,b)=>{
+      const aF = featuredNames.has(a.name) ? 0 : 1;
+      const bF = featuredNames.has(b.name) ? 0 : 1;
+      return aF - bF;
+    });
+    return list.slice(0,4).map(s=>({ ...s, _featured: featuredNames.has(s.name) }));
+  }, [salons]);
 
   // build a brand -> product-photo list, pick one random photo per brand (re-picked each mount)
   const brandCards = useState(()=>{
@@ -4353,7 +4370,7 @@ function ProgramHomePage({ salons, allProducts, loading }) {
               ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>불러오는 중…</p>
               : exploreSalons.map((s,i)=>(
                   <div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.03}s both`}}>
-                    <ProgramSalonCard salon={s} onClick={()=>{}}/>
+                    <ProgramSalonCard salon={s} featured={s._featured} onClick={()=>{}}/>
                   </div>
                 ))
             }
@@ -4410,7 +4427,7 @@ function ProgramDetailPage({ salons }) {
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
 
   const program = FEATURED_PROGRAMS.find(p=>p.id===programId);
-  const salon = (salons||[]).find(s=>s.name===program?.salonName);
+  const programSalons = (salons||[]).filter(s=>(program?.salonNames||[]).includes(s.name));
   const [payMethod, setPayMethod] = useState(null); // "online" | "onsite"
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -4446,12 +4463,16 @@ function ProgramDetailPage({ salons }) {
 
         {/* INFO */}
         <div style={{padding:"22px 20px 0"}}>
-          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>{program.salonName}</p>
+          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
+            {(program.salonNames||[]).length>1 ? `${program.salonNames.length}개 살롱에서 진행` : program.salonNames?.[0]}
+          </p>
           <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
             <span style={{...SS,fontSize:12,color:"#999"}}>⏱ {program.duration}</span>
-            {salon?.area&&<><span style={{color:"#e5ddc8"}}>·</span><span style={{...SS,fontSize:12,color:"#999"}}>📍 {salon.area}</span></>}
+            <span style={{color:"#e5ddc8"}}>·</span>
+            <span style={{...SS,fontSize:12,color:"#999"}}>📅 {program.periodLabel}</span>
           </div>
+          <p style={{...SS,fontSize:11,color:"#c9a96e",fontWeight:600,margin:"0 0 20px"}}>매월 진행되는 프로그램이에요</p>
 
           {/* price */}
           <div style={{display:"flex",alignItems:"baseline",gap:10,padding:"16px 0",borderTop:"1px solid #f0e5cf",borderBottom:"1px solid #f0e5cf",marginBottom:20}}>
@@ -4474,11 +4495,31 @@ function ProgramDetailPage({ salons }) {
             ))}
           </div>
 
-          {/* salon mini card */}
-          {salon&&(
+          {/* collab product — circular card */}
+          {program.product&&(
             <div style={{marginBottom:28}}>
-              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>진행 살롱</p>
-              <ProgramSalonCard salon={salon} onClick={()=>{}}/>
+              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>콜라보 제품</p>
+              <div style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14}}>
+                <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
+                  <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                </div>
+                <div style={{minWidth:0}}>
+                  <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{program.product.brand}</p>
+                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.3}}>{program.product.name}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* salons running this program */}
+          {programSalons.length>0&&(
+            <div style={{marginBottom:28}}>
+              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>진행 살롱 {programSalons.length>1&&`(${programSalons.length}곳)`}</p>
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {programSalons.map(s=>(
+                  <ProgramSalonCard key={s.id} salon={s} onClick={()=>{}}/>
+                ))}
+              </div>
             </div>
           )}
         </div>
