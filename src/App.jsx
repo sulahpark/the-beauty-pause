@@ -1322,20 +1322,21 @@ function MobileTabBar({active}) {
     : "";
 
   const tabs = [
-    {key:"home",    path:"/program-home", icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>},
-    {key:"program", path:"/programs",     icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>},
-    {key:"salon",   path:"/salons",       icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 10l9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>},
-    {key:"product", path:"/products",     icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.5 7.5 12 3 3.5 7.5 12 12l8.5-4.5Z"/><path d="M3.5 7.5v9L12 21l8.5-4.5v-9"/><path d="M12 12v9"/></svg>},
-    {key:"account", path:"/account",      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>},
+    {key:"home",    label:"Home",    path:"/program-home", icon:<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>},
+    {key:"program", label:"Program", path:"/programs",     icon:<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>},
+    {key:"salon",   label:"Salon",   path:"/salons",       icon:<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 10l9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>},
+    {key:"product", label:"Product", path:"/products",     icon:<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.5 7.5 12 3 3.5 7.5 12 12l8.5-4.5Z"/><path d="M3.5 7.5v9L12 21l8.5-4.5v-9"/><path d="M12 12v9"/></svg>},
+    {key:"account", label:"Account", path:"/account",      icon:<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>},
   ];
 
   return (
-    <div style={{position:"fixed",bottom:visible?20:-90,left:"50%",transform:"translateX(-50%)",transition:"bottom 0.7s cubic-bezier(0.22,0.61,0.36,1)",width:"calc(100% - 40px)",maxWidth:400,zIndex:600}}>
-      <div style={{background:"#1a1a1a",borderRadius:32,padding:10,display:"flex",alignItems:"center",justifyContent:"space-around",boxShadow:"0 10px 30px rgba(0,0,0,0.25)"}}>
+    <div style={{position:"fixed",bottom:visible?20:-90,left:"50%",transform:"translateX(-50%)",transition:"bottom 0.7s cubic-bezier(0.22,0.61,0.36,1)",width:"calc(100% - 32px)",maxWidth:420,zIndex:600}}>
+      <div style={{background:"#1a1a1a",borderRadius:26,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"space-around",boxShadow:"0 10px 30px rgba(0,0,0,0.25)"}}>
         {tabs.map(t=>(
           <button key={t.key} onClick={()=>navigate(t.path)}
-            style={{width:44,height:44,borderRadius:"50%",background:activeKey===t.key?"#fff":"transparent",color:activeKey===t.key?"#0d0d0d":"rgba(255,255,255,0.5)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            style={{flex:1,padding:"7px 2px",borderRadius:16,background:activeKey===t.key?"rgba(255,255,255,0.1)":"transparent",color:activeKey===t.key?"#fff":"rgba(255,255,255,0.5)",border:"none",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3,cursor:"pointer"}}>
             {t.icon}
+            <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:9,fontWeight:600,letterSpacing:0.2}}>{t.label}</span>
           </button>
         ))}
       </div>
@@ -1573,6 +1574,7 @@ function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
 // ── SALONS PAGE ───────────────────────────────────────────────────────────────
 function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onAuthClick}) {
   const t=T[lang]; const isMobile=window.innerWidth<768;
+  const navigate=useNavigate();
   const location=useLocation();
   const [sf,setSf]=useState({tier:[],area:"All",brand:"All",categories:[],kbeautyOnly:true});
   const [sortBy,setSortBy]=useState("az");
@@ -1611,10 +1613,10 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   const afc=[sf.tier.length>0,sf.area!=="All",sf.brand!=="All",sf.categories.length>0,sf.kbeautyOnly].filter(Boolean).length;
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
-      {!isMobile&&<Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />}
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
+      {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>}
       {/* filter — desktop only (mobile has it inside fixed container) */}
-      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:56,zIndex:399,flexWrap:"nowrap"}}>
+      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:64,zIndex:399,flexWrap:"nowrap"}}>
         <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${afc>0?"#1a1a1a":"#ede8e2"}`,background:afc>0?"#1a1a1a":"#fff",color:afc>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
           {t.filter}{afc>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{afc}</span>}
@@ -1627,9 +1629,17 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
       {/* content */}
       {isMobile?(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column",transition:"all 0.34s cubic-bezier(0.32,0.72,0,1)"}}>
-          {/* nav only — slides up when expanded */}
-          <div id="salon-nav" style={{flexShrink:0,overflow:"hidden",maxHeight:sheetExpanded?0:56,transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",background:"#0d0d0d"}}>
-            <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
+          {/* light header — slides up when sheet expanded */}
+          <div id="salon-nav" style={{flexShrink:0,overflow:"hidden",maxHeight:sheetExpanded?0:60,transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",background:"#fff",borderBottom:"1px solid #f0e5cf"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
+              <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+              </div>
+              <button onClick={()=>navigate("/search")} style={{width:34,height:34,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+            </div>
           </div>
           {/* filterbar — always visible */}
           <div style={{flexShrink:0,background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap",zIndex:2}}>
@@ -1646,9 +1656,10 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
             <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
             <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} user={user} favourites={favourites} onToggleFav={onToggleFav} />
           </div>
+          {!sheetExpanded&&<MobileTabBar active="/salons"/>}
         </div>
       ):(
-        <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
+        <div style={{display:"flex",height:"calc(100vh - 64px - 44px)",overflow:"hidden"}}>
           <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
             {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>:<>
               <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>
@@ -1902,6 +1913,7 @@ function ProductCardSlim({ p, t, SS, onClick, onDetail, user, favourites, onTogg
 
 function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,onToggleFav,onAuthClick}) {
   const t=T[lang]; const isMobile=window.innerWidth<768;
+  const navigate=useNavigate();
   const [prodSearch,setProdSearch]=useState("");
   const [prodCats,setProdCats]=useState([]); // multi-select array
   const [inSalonOnly,setInSalonOnly]=useState(false);
@@ -1913,6 +1925,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
   const [selSalon,setSelSalon]=useState(null);
   const [mapSalons,setMapSalons]=useState([]);
   const [prodVisibleIds,setProdVisibleIds]=useState(null);
+  const [prodSheetExpanded,setProdSheetExpanded]=useState(false);
   const [lr,setLr]=useState(!!window.L);
 
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
@@ -1951,12 +1964,12 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
-      {!isMobile&&<Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />}
-      {isMobile&&<MobileTabBar lang={lang} active="/products" user={user} />}
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
+      {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>}
+      {isMobile&&!prodSheetExpanded&&<MobileTabBar active="/products"/>}
 
       {/* FILTER BAR — desktop only, mobile has it inside fixed container */}
-      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:56,zIndex:399,flexWrap:"nowrap"}}>
+      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:64,zIndex:399,flexWrap:"nowrap"}}>
         {/* filter modal button */}
         <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:"12px",fontWeight:500,borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
@@ -1982,8 +1995,16 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
         /* mobile: fixed fullscreen container */
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column"}}>
           {/* nav — hides on full */}
-          <div id="prod-nav" style={{flexShrink:0,overflow:"hidden",background:"#0d0d0d",transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",maxHeight:56}}>
-            <Nav lang={lang} setLang={setLang} onJoin={()=>setShowJoin(true)} user={user} onAuthClick={onAuthClick} />
+          <div id="prod-nav" style={{flexShrink:0,overflow:"hidden",background:"#fff",borderBottom:"1px solid #f0e5cf",transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",maxHeight:60}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
+              <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+              </div>
+              <button onClick={()=>navigate("/search")} style={{width:34,height:34,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+            </div>
           </div>
           {/* filterbar — always visible */}
           <div style={{flexShrink:0,background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px 14px",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap",zIndex:2}}>
@@ -2018,7 +2039,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
                   salons={salons} mapSalons={mapSalons} onSalonClick={setSelSalon}
                   onExpandChange={(full)=>{
                     const el=document.getElementById("prod-nav");
-                    if(el) el.style.maxHeight=full?"0px":"56px";
+                    if(el) el.style.maxHeight=full?"0px":"60px";
+                    setProdSheetExpanded(full);
                   }}
                   onModalProd={setModalProd}
                   visibleProdCount={null}
@@ -2028,7 +2050,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
           </div>
         </div>
       ) : (
-        <div style={{display:"flex",height:"calc(100vh - 56px - 44px)",overflow:"hidden"}}>
+        <div style={{display:"flex",height:"calc(100vh - 64px - 44px)",overflow:"hidden"}}>
           {/* LEFT: product list */}
           <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
             {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
@@ -2209,9 +2231,21 @@ function AccountPage({lang,setLang,salons,allProducts}) {
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}`}</style>
-      <Nav lang={lang} setLang={setLang} onJoin={()=>{}} />
-      {isMobile&&<MobileTabBar lang={lang} active="/account" />}
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}`}</style>
+      {isMobile ? (
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
+          <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+          </div>
+          <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      ) : (
+        <ProgramDesktopNav user={userId?{}:null}/>
+      )}
+      {isMobile&&<MobileTabBar active="/account"/>}
       <main style={{maxWidth:700,margin:"0 auto",padding:"40px clamp(16px,4vw,32px) 80px"}}>
         <div style={{marginBottom:32,animation:"fadeUp 0.6s ease both"}}>
           <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"4px",textTransform:"uppercase",marginBottom:8}}>✦ My account</p>
