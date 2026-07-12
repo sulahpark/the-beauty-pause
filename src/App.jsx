@@ -44,6 +44,8 @@ const TBL_PRODUCTS = "tblQkdtqAA9kC0n1w";
 const TBL_SLOTS    = "tblpLTlKSizL7y3W6";
 const TBL_MEMBERS  = "tbl6qPdK6BcW6t4ji";
 const TBL_SPOTS    = "tblszhTyIaNUyDClw";
+const TBL_PROGRAMS = "tblwAdaAwBALcZ7Oy";
+const TBL_PROGRAM_SIGNUPS = "tblTxTsVmR2tnGO5b";
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 const T = {
@@ -1172,6 +1174,58 @@ function useData() {
     })();
   },[]);
   return {salons,allProducts,loading};
+}
+
+// ── PROGRAMS DATA (from Airtable Program table) ──────────────────────────────
+function useProgramsData() {
+  const [programs, setPrograms] = useState([]);
+  const [loadingPrograms, setLoadingPrograms] = useState(true);
+  useEffect(() => {
+    (async () => {
+      setLoadingPrograms(true);
+      try {
+        const records = await fetchAll(TBL_PROGRAMS, "");
+        const getAttachmentUrl = (val) => {
+          if (!val) return null;
+          if (Array.isArray(val)) {
+            const first = val[0];
+            if (Array.isArray(first)) return first[0]?.url || null; // lookup-of-attachment
+            if (first && typeof first === "object") return first.url || null; // plain attachment
+          }
+          return null;
+        };
+        const firstOf = (val) => Array.isArray(val) ? val[0] : val;
+        const parsed = records.map(r => {
+          const periodLabel = (r.period_start && r.period_end)
+            ? `${String(r.period_start).replaceAll("-",".")} – ${String(r.period_end).replaceAll("-",".")}`
+            : "";
+          const includes = typeof r.includes === "string"
+            ? r.includes.split("\n").map(s=>s.trim()).filter(Boolean)
+            : [];
+          const productBrand = firstOf(r.product_brand);
+          const productName = firstOf(r.product_name);
+          const productImg = getAttachmentUrl(r.product_image);
+          return {
+            id: r.id,
+            name: r.name || "",
+            salonIds: Array.isArray(r.salons) ? r.salons : [],
+            image: getAttachmentUrl(r.image),
+            duration: r.duration || "",
+            priceOriginal: r.price_original || null,
+            price: r.price || null,
+            tag: r.tag || null,
+            periodLabel,
+            description: r.description || "",
+            includes,
+            product: (productBrand || productName) ? { brand: productBrand, name: productName, image: productImg } : null,
+          };
+        });
+        setPrograms(parsed);
+      } catch(e) { console.error("Programs fetch error:", e); }
+      setLoadingPrograms(false);
+    })();
+  }, []);
+  return { programs, loadingPrograms };
 }
 
 // ── SHARED NAV ────────────────────────────────────────────────────────────────
@@ -4187,61 +4241,21 @@ function NewsletterPage() {
 // ══════════════════════════════════════════════════════════════════════════
 
 // placeholder program data — small number of programs, hand-maintained for now
-const FEATURED_PROGRAMS = [
-  {
-    id: "p1",
-    name: "K-헤드스파 시그니처",
-    salonNames: ["Aura Beauté Paris", "BelleGlamour Paris"],
-    image: "/images/aurabeaute04.jpeg",
-    duration: "60분",
-    priceOriginal: 65,
-    price: 49,
-    tag: "인기",
-    periodLabel: "2026.07.15 – 2026.08.14",
-    description: "한국식 두피 스케일링과 헤드 마사지를 결합한 시그니처 프로그램입니다. 두피 진단 후 맞춤 스케일링, 프리미엄 헤어 트리트먼트, 릴랙싱 마사지까지 이어집니다.",
-    includes: ["두피 진단 및 상담","K-스타일 두피 스케일링","프리미엄 헤어 트리트먼트","헤드 & 숄더 마사지"],
-    product: { brand: "Aura Botanica", name: "스칼프 스케일링 세럼", image: "/images/IMG_0189.jpeg" },
-  },
-  {
-    id: "p2",
-    name: "글로우 스킨 부스터",
-    salonNames: ["BelleGlamour Paris"],
-    image: "/images/IMG_0189.jpeg",
-    duration: "45분",
-    priceOriginal: 55,
-    price: 39,
-    tag: "신규",
-    periodLabel: "2026.07.15 – 2026.08.14",
-    description: "한국 스킨케어 루틴을 기반으로 한 페이셜 프로그램입니다. 딥 클렌징부터 K-뷰티 앰플 부스팅, 마스크팩까지 한 번에 경험할 수 있어요.",
-    includes: ["딥 클렌징 & 각질 케어","K-뷰티 앰플 부스팅","시트 마스크팩","페이셜 마사지"],
-    product: { brand: "Glow Lab", name: "비타 글로우 부스팅 앰플", image: "/images/IMG_0175.jpeg" },
-  },
-  {
-    id: "p3",
-    name: "K-헤어팩 트리트먼트",
-    salonNames: ["Salon Rêve"],
-    image: "/images/IMG_0175.jpeg",
-    duration: "50분",
-    priceOriginal: 60,
-    price: 45,
-    tag: null,
-    periodLabel: "2026.07.15 – 2026.08.14",
-    description: "손상된 모발에 집중 영양을 공급하는 한국식 헤어팩 트리트먼트입니다. 모발 진단 후 맞춤 팩을 도포하고, 스팀 케어로 흡수율을 높입니다.",
-    includes: ["모발 진단","맞춤 K-헤어팩 도포","스팀 케어","마무리 스타일링"],
-    product: { brand: "Rêve Hair", name: "케라틴 헤어팩", image: "/images/IMG_0183.jpeg" },
-  },
-];
+// Program data now comes live from Airtable (see useProgramsData / TBL_PROGRAMS above).
 
-function ProgramCard({ program, onClick }) {
+function ProgramCard({ program, salons, onClick }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
-  const salonLabel = (program.salonNames||[]).length>1
-    ? `${program.salonNames[0]} 외 ${program.salonNames.length-1}곳`
-    : program.salonNames?.[0];
+  const matchedNames = (program.salonIds||[]).map(id=>(salons||[]).find(s=>s.id===id)?.name).filter(Boolean);
+  const salonLabel = matchedNames.length>1
+    ? `${matchedNames[0]} 외 ${matchedNames.length-1}곳`
+    : matchedNames[0];
   return (
     <div onClick={onClick} style={{flexShrink:0,width:220,cursor:"pointer"}}>
       <div style={{position:"relative",width:220,height:260,borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
-        <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+        {program.image
+          ? <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+          : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:"#c9a96e"}}>✦</span></div>}
         <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.75) 0%,rgba(13,13,13,0.05) 45%,transparent 70%)"}}/>
         {program.tag&&<div style={{position:"absolute",top:12,left:12,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"4px 10px",borderRadius:20}}>{program.tag}</div>}
         <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"16px 16px 18px"}}>
@@ -4290,21 +4304,21 @@ function ProgramSalonCard({ salon, onClick, featured }) {
   );
 }
 
-function ProgramHomePage({ salons, allProducts, loading }) {
+function ProgramHomePage({ salons, allProducts, loading, programs, loadingPrograms }) {
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
   const exploreSalons = useMemo(()=>{
-    const featuredNames = new Set(FEATURED_PROGRAMS.flatMap(p=>p.salonNames||[]));
+    const featuredIds = new Set((programs||[]).flatMap(p=>p.salonIds||[]));
     const list = [...(salons||[])];
     list.sort((a,b)=>{
-      const aF = featuredNames.has(a.name) ? 0 : 1;
-      const bF = featuredNames.has(b.name) ? 0 : 1;
+      const aF = featuredIds.has(a.id) ? 0 : 1;
+      const bF = featuredIds.has(b.id) ? 0 : 1;
       return aF - bF;
     });
-    return list.slice(0,4).map(s=>({ ...s, _featured: featuredNames.has(s.name) }));
-  }, [salons]);
+    return list.slice(0,4).map(s=>({ ...s, _featured: featuredIds.has(s.id) }));
+  }, [salons, programs]);
 
   // build a brand -> product-photo list, pick one random photo per brand (re-picked each mount)
   const brandCards = useState(()=>{
@@ -4351,11 +4365,14 @@ function ProgramHomePage({ salons, allProducts, loading }) {
             <button style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
           </div>
           <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px"}}>
-            {FEATURED_PROGRAMS.map((p,i)=>(
-              <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
-                <ProgramCard program={p} onClick={()=>navigate(`/program/${p.id}`)}/>
-              </div>
-            ))}
+            {loadingPrograms
+              ? <p style={{...KR,fontSize:13,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+              : programs.map((p,i)=>(
+                  <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
+                    <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
+                  </div>
+                ))
+            }
           </div>
         </div>
 
@@ -4427,19 +4444,24 @@ const SAMPLE_SALONS = [
   { id: "sample-3", name: "Salon Rêve", area: "Bastille", salon_image: "/images/IMG_0175.jpeg", rdv: "https://www.planity.com", _products: [] },
 ];
 
-function ProgramDetailPage({ salons, user, onAuthClick }) {
+function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingPrograms }) {
   const { programId } = useParams();
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
 
-  const program = FEATURED_PROGRAMS.find(p=>p.id===programId);
-  const liveSalons = (salons||[]).filter(s=>(program?.salonNames||[]).includes(s.name));
-  const programSalons = liveSalons.length>0 ? liveSalons : SAMPLE_SALONS.filter(s=>(program?.salonNames||[]).includes(s.name));
+  const program = (programs||[]).find(p=>p.id===programId);
+  const liveSalons = (salons||[]).filter(s=>(program?.salonIds||[]).includes(s.id));
+  const programSalons = liveSalons.length>0 ? liveSalons : SAMPLE_SALONS.slice(0,2);
   const [step, setStep] = useState("idle"); // idle | select-salon | payment | confirmed
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [orderId, setOrderId] = useState(null);
+  const [submitError, setSubmitError] = useState("");
+
+  if (loadingPrograms) return (
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Noto Sans KR',sans-serif",color:"#bbb",fontSize:14}}>불러오는 중…</div>
+  );
 
   if (!program) return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,fontFamily:"'Noto Sans KR',sans-serif"}}>
@@ -4448,7 +4470,38 @@ function ProgramDetailPage({ salons, user, onAuthClick }) {
     </div>
   );
 
-  // TODO: 예약 완료 시점에 Airtable에 예약 요청 기록 (럭키드로우 제출 패턴과 동일하게)
+  const submitApplication = async () => {
+    const newOrderId = `TBP${Date.now().toString(36).toUpperCase()}`;
+    setOrderId(newOrderId);
+    setSubmitError("");
+    try {
+      const fields = {
+        program: [program.id],
+        salon: selectedSalon?.id && !selectedSalon.id.startsWith("sample-") ? [selectedSalon.id] : undefined,
+        program_name: program.name,
+        salon_name: selectedSalon?.name,
+        user_email: user?.email,
+        user_name: user?.user_metadata?.first_name || "",
+        payment_method: "onsite",
+        order_id: newOrderId,
+        status: "confirmed",
+      };
+      Object.keys(fields).forEach(k=>fields[k]===undefined&&delete fields[k]);
+      if (TBL_PROGRAM_SIGNUPS && TBL_PROGRAM_SIGNUPS !== "REPLACE_WITH_REAL_TABLE_ID") {
+        await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_PROGRAM_SIGNUPS}`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ records: [{ fields }] }),
+        });
+      } else {
+        console.log("Program signup table not configured yet — skipping Airtable write.", fields);
+      }
+    } catch(e) {
+      console.error("Program signup error:", e);
+      setSubmitError("신청 기록 저장 중 문제가 있었지만, 신청 자체는 완료됐어요.");
+    }
+    setStep("confirmed");
+  };
 
   return (
     <>
@@ -4535,8 +4588,8 @@ function ProgramDetailPage({ salons, user, onAuthClick }) {
 
         {/* RESERVATION FLOW — MODAL */}
         {step!=="idle" && (
-          <div onClick={()=>{ if(step!=="confirmed") setStep("idle"); }} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.75)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-            <div onClick={e=>e.stopPropagation()} style={{background:"#fff",width:"100%",maxWidth:480,maxHeight:"88vh",overflowY:"auto",borderRadius:"20px 20px 0 0",padding:"20px 20px calc(20px + env(safe-area-inset-bottom))"}}>
+          <div onClick={()=>{ if(step!=="confirmed") setStep("idle"); }} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.75)",backdropFilter:"blur(6px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+            <div onClick={e=>e.stopPropagation()} style={{background:"#fff",width:"100%",maxWidth:420,maxHeight:"85vh",overflowY:"auto",borderRadius:20,padding:"20px 20px calc(20px + env(safe-area-inset-bottom))"}}>
 
               {step==="select-salon" && (
                 <>
@@ -4559,7 +4612,7 @@ function ProgramDetailPage({ salons, user, onAuthClick }) {
                     <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>결제 방식</p>
                   </div>
                   <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name}에서 방문 당일 직접 결제하시면 돼요.</p>
-                  <button onClick={()=>{ setOrderId(`TBP${program.id.toUpperCase()}${Math.floor(1000+Math.random()*9000)}`); setStep("confirmed"); }}
+                  <button onClick={submitApplication}
                     style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
                     살롱에서 직접 결제 · 신청 확정
                   </button>
@@ -4569,6 +4622,7 @@ function ProgramDetailPage({ salons, user, onAuthClick }) {
               {step==="confirmed" && (
                 <>
                   <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ 신청이 완료되었습니다</p>
+                  {submitError&&<p style={{...KR,fontSize:11,color:"#fb5607",margin:"0 0 12px",textAlign:"center"}}>{submitError}</p>}
 
                   {/* E-TICKET — gold background, framed photo */}
                   <div style={{position:"relative",borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#e8d9b8,#c9a96e)",marginBottom:14,padding:16}}>
@@ -4632,6 +4686,7 @@ function ProgramDetailPage({ salons, user, onAuthClick }) {
 export default function App() {
   const [lang,setLang]=useState("fr");
   const {salons,allProducts,loading}=useData();
+  const {programs,loadingPrograms}=useProgramsData();
   const [user,setUser]=useState(null);
   const [favourites,setFavourites]=useState([]);
   const [showAuth,setShowAuth]=useState(false);
@@ -4719,8 +4774,8 @@ export default function App() {
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
-        <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} />} />
-        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
+        <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
