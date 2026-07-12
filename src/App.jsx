@@ -1296,7 +1296,48 @@ function Nav({lang,setLang,onJoin,user,onAuthClick}) {
   );
 }
 
-function MobileTabBar({lang,active,user}) { return null; }
+function MobileTabBar({active}) {
+  const navigate = useNavigate();
+  const [visible, setVisible] = useState(false);
+  const hideTimer = useRef(null);
+  useEffect(() => {
+    const onScroll = () => {
+      setVisible(true);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(()=>setVisible(false), 900);
+    };
+    window.addEventListener("scroll", onScroll, {passive:true});
+    return () => { window.removeEventListener("scroll", onScroll); if (hideTimer.current) clearTimeout(hideTimer.current); };
+  }, []);
+
+  const activeKey = (active==="/"||active==="/program-home") ? "home"
+    : active?.startsWith("/program") ? "program"
+    : active?.startsWith("/salons") ? "salon"
+    : active?.startsWith("/products") ? "product"
+    : active?.startsWith("/account") ? "account"
+    : "";
+
+  const tabs = [
+    {key:"home",    path:"/program-home", icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>},
+    {key:"program", path:"/programs",     icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>},
+    {key:"salon",   path:"/salons",       icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 10l9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>},
+    {key:"product", path:"/products",     icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.5 7.5 12 3 3.5 7.5 12 12l8.5-4.5Z"/><path d="M3.5 7.5v9L12 21l8.5-4.5v-9"/><path d="M12 12v9"/></svg>},
+    {key:"account", path:"/account",      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>},
+  ];
+
+  return (
+    <div style={{position:"fixed",bottom:visible?20:-90,left:"50%",transform:"translateX(-50%)",transition:"bottom 0.35s cubic-bezier(0.32,0.72,0,1)",width:"calc(100% - 40px)",maxWidth:400,zIndex:600}}>
+      <div style={{background:"#1a1a1a",borderRadius:32,padding:10,display:"flex",alignItems:"center",justifyContent:"space-around",boxShadow:"0 10px 30px rgba(0,0,0,0.25)"}}>
+        {tabs.map(t=>(
+          <button key={t.key} onClick={()=>navigate(t.path)}
+            style={{width:44,height:44,borderRadius:"50%",background:activeKey===t.key?"#fff":"transparent",color:activeKey===t.key?"#0d0d0d":"rgba(255,255,255,0.5)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            {t.icon}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ── LANDING PAGE ──────────────────────────────────────────────────────────────
 function LandingPage({lang,setLang,salons,allProducts,user,onAuthClick}) {
@@ -4360,7 +4401,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
             <span style={{...CG,fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
             <span style={{...CG,fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
           </div>
-          <button style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+          <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </button>
         </div>
@@ -4439,20 +4480,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
         )}
 
         {/* BOTTOM NAV */}
-        <div style={{position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",width:"calc(100% - 40px)",maxWidth:400,zIndex:500}}>
-          <div style={{background:"#1a1a1a",borderRadius:32,padding:"10px 14px",display:"flex",alignItems:"center",justifyContent:"space-around",boxShadow:"0 10px 30px rgba(0,0,0,0.25)"}}>
-            {[
-              {icon:<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>, active:true},
-              {icon:<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>, active:false},
-              {icon:<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>, active:false},
-              {icon:<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>, active:false},
-            ].map((tab,i)=>(
-              <button key={i} style={{width:44,height:44,borderRadius:"50%",background:tab.active?"#fff":"transparent",color:tab.active?"#0d0d0d":"rgba(255,255,255,0.5)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-                {tab.icon}
-              </button>
-            ))}
-          </div>
-        </div>
+        <MobileTabBar active="/program-home"/>
 
       </div>
     </>
@@ -4634,6 +4662,104 @@ function ProgramsListPage({ salons, programs, loadingPrograms }) {
             </div>
           </>
         )}
+        <div style={{height:80}}/>
+      </div>
+      <MobileTabBar active="/programs"/>
+    </>
+  );
+}
+
+// ── SEARCH PAGE ───────────────────────────────────────────────────────────────
+function SearchPage({ salons, allProducts, programs }) {
+  const navigate = useNavigate();
+  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const [q, setQ] = useState("");
+  const inputRef = useRef(null);
+  useEffect(()=>{ inputRef.current?.focus(); },[]);
+
+  const query = q.trim().toLowerCase();
+  const matchedPrograms = query ? (programs||[]).filter(p=>p.name?.toLowerCase().includes(query)) : [];
+  const matchedSalons = query ? (salons||[]).filter(s=>s.name?.toLowerCase().includes(query)) : [];
+  const matchedProducts = query ? (allProducts||[]).filter(p=>{
+    const brand = typeof p.brand==="string" ? p.brand : (p.brand_name||"");
+    return p.product_name?.toLowerCase().includes(query) || brand.toLowerCase().includes(query);
+  }) : [];
+  const totalResults = matchedPrograms.length + matchedSalons.length + matchedProducts.length;
+
+  const ResultRow = ({ img, title, subtitle, onClick }) => (
+    <div onClick={onClick} style={{display:"flex",gap:12,alignItems:"center",background:"#fff",border:"1px solid #f0e9dc",borderRadius:14,padding:10,cursor:"pointer"}}>
+      <div style={{width:48,height:48,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f0ebe2"}}>
+        {img
+          ? <img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+          : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,color:"#c9a96e"}}>✦</span></div>}
+      </div>
+      <div style={{flex:1,minWidth:0}}>
+        <p style={{...KR,fontSize:13,fontWeight:700,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{title}</p>
+        {subtitle&&<p style={{...SS,fontSize:11,color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{subtitle}</p>}
+      </div>
+      <span style={{color:"#ddd",fontSize:16,flexShrink:0}}>›</span>
+    </div>
+  );
+
+  const Section = ({ title, count, children }) => (
+    <div style={{marginBottom:24}}>
+      <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}>{title} ({count})</p>
+      <div style={{display:"flex",flexDirection:"column",gap:8}}>{children}</div>
+    </div>
+  );
+
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}`}</style>
+      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:40}}>
+
+        {/* HEADER + SEARCH INPUT */}
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"20px 20px 16px"}}>
+          <button onClick={()=>navigate(-1)} style={{width:36,height:36,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div style={{flex:1,position:"relative"}}>
+            <input ref={inputRef} value={q} onChange={e=>setQ(e.target.value)} placeholder="프로그램, 살롱, 제품 검색…"
+              style={{width:"100%",padding:"11px 14px",border:"1px solid #f0e5cf",borderRadius:20,background:"#faf7f4",...SS,fontSize:13,color:"#1a1a1a",outline:"none",boxSizing:"border-box"}}/>
+          </div>
+        </div>
+
+        <div style={{padding:"0 20px"}}>
+          {!query ? (
+            <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"40px 0"}}>검색어를 입력해보세요.</p>
+          ) : totalResults===0 ? (
+            <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"40px 0"}}>"{q}"에 대한 검색 결과가 없어요.</p>
+          ) : (
+            <>
+              {matchedPrograms.length>0&&(
+                <Section title="Programs" count={matchedPrograms.length}>
+                  {matchedPrograms.map(p=>(
+                    <ResultRow key={p.id} img={p.image} title={p.name} subtitle={p.price?`€${p.price} · ${p.duration}`:p.duration}
+                      onClick={()=>navigate(`/program/${p.id}`)}/>
+                  ))}
+                </Section>
+              )}
+              {matchedSalons.length>0&&(
+                <Section title="Salons" count={matchedSalons.length}>
+                  {matchedSalons.map(s=>(
+                    <ResultRow key={s.id} img={getSalonImg(s)} title={s.name} subtitle={s.area||"Paris"}
+                      onClick={()=>navigate("/salons")}/>
+                  ))}
+                </Section>
+              )}
+              {matchedProducts.length>0&&(
+                <Section title="Products" count={matchedProducts.length}>
+                  {matchedProducts.map(p=>(
+                    <ResultRow key={p.id} img={getProdImg(p)} title={p.product_name} subtitle={typeof p.brand==="string"?p.brand:p.brand_name}
+                      onClick={()=>navigate("/products")}/>
+                  ))}
+                </Section>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </>
   );
@@ -4978,6 +5104,7 @@ export default function App() {
         <Route path="/newsletter" element={<NewsletterPage />} />
         <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/search" element={<SearchPage salons={salons} allProducts={allProducts} programs={programs} />} />
         <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
