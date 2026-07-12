@@ -4309,6 +4309,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const programScrollRef = useRef(null);
   const exploreSalons = useMemo(()=>{
     const featuredIds = new Set((programs||[]).flatMap(p=>p.salonIds||[]));
     const list = [...(salons||[])];
@@ -4359,12 +4360,12 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
         </div>
 
         {/* FEATURED PROGRAMS */}
-        <div style={{marginBottom:32}}>
+        <div style={{marginBottom:32,position:"relative"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
             <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Featured Programs</p>
-            <button style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
           </div>
-          <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px"}}>
+          <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px",scrollBehavior:"smooth"}}>
             {loadingPrograms
               ? <p style={{...KR,fontSize:13,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
               : programs.map((p,i)=>(
@@ -4374,6 +4375,18 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
                 ))
             }
           </div>
+          {!loadingPrograms&&programs.length>1&&(
+            <>
+              <button onClick={()=>programScrollRef.current?.scrollBy({left:-236,behavior:"smooth"})}
+                style={{position:"absolute",left:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button onClick={()=>programScrollRef.current?.scrollBy({left:236,behavior:"smooth"})}
+                style={{position:"absolute",right:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </>
+          )}
         </div>
 
         {/* EXPLORE SALONS */}
@@ -4444,6 +4457,101 @@ const SAMPLE_SALONS = [
   { id: "sample-3", name: "Salon Rêve", area: "Bastille", salon_image: "/images/IMG_0175.jpeg", rdv: "https://www.planity.com", _products: [] },
 ];
 
+// ── PROGRAMS LIST PAGE (전체보기 — swipeable carousel + synced map) ─────────
+function ProgramsListPage({ salons, programs, loadingPrograms }) {
+  const navigate = useNavigate();
+  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const CG = {fontFamily:"'Cormorant Garamond',serif"};
+  const CARD_W = 220, GAP = 16, STEP = CARD_W+GAP;
+
+  const scrollRef = useRef(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const [lr, setLr] = useState(!!window.L);
+  useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
+
+  const handleScroll = () => {
+    const el = scrollRef.current; if (!el) return;
+    const idx = Math.round(el.scrollLeft / STEP);
+    setCenterIndex(Math.max(0, Math.min((programs||[]).length-1, idx)));
+  };
+
+  const activeProgram = (programs||[])[centerIndex];
+  const activeSalons = useMemo(()=>{
+    if (!activeProgram) return [];
+    const live = (salons||[]).filter(s=>(activeProgram.salonIds||[]).includes(s.id));
+    return live.length>0 ? live : SAMPLE_SALONS.slice(0,2);
+  }, [activeProgram, salons]);
+
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.hide-scrollbar::-webkit-scrollbar{display:none}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
+
+      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff"}}>
+
+        {/* NAV */}
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"20px 20px 4px"}}>
+          <button onClick={()=>navigate("/program-home")} style={{width:36,height:36,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Featured Programs</p>
+        </div>
+
+        {loadingPrograms ? (
+          <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>불러오는 중…</p>
+        ) : (programs||[]).length===0 ? (
+          <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>준비 중인 프로그램이 없어요.</p>
+        ) : (
+          <>
+            {/* CAROUSEL */}
+            <div ref={scrollRef} onScroll={handleScroll} className="hide-scrollbar"
+              style={{display:"flex",gap:GAP,overflowX:"auto",scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",padding:`28px calc(50% - ${CARD_W/2}px) 18px`}}>
+              {programs.map((p,i)=>(
+                <div key={p.id} style={{flexShrink:0,scrollSnapAlign:"center",transition:"opacity 0.25s ease, transform 0.25s ease",opacity:i===centerIndex?1:0.35,transform:i===centerIndex?"scale(1)":"scale(0.9)"}}>
+                  <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
+                </div>
+              ))}
+            </div>
+
+            {/* DOTS */}
+            <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:22}}>
+              {programs.map((_,i)=>(
+                <div key={i} style={{width:i===centerIndex?16:6,height:6,borderRadius:3,background:i===centerIndex?"#c9a96e":"#e5ddc8",transition:"width 0.2s"}}/>
+              ))}
+            </div>
+
+            {/* SYNCED MAP */}
+            <div style={{margin:"0 20px 16px",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:240}}>
+              {lr
+                ? <SalonMap salons={activeSalons} fitToSalons={activeSalons} />
+                : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>}
+            </div>
+
+            {/* ACTIVE PROGRAM QUICK INFO */}
+            {activeProgram&&(
+              <div style={{padding:"0 20px 40px"}}>
+                <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>
+                  {activeSalons.length>1 ? `${activeSalons.length}개 살롱에서 진행` : activeSalons[0]?.name}
+                </p>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+                  <div style={{minWidth:0}}>
+                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{activeProgram.name}</p>
+                    <p style={{...SS,fontSize:12,color:"#999",margin:0}}>€{activeProgram.price} · {activeProgram.duration}</p>
+                  </div>
+                  <button onClick={()=>navigate(`/program/${activeProgram.id}`)}
+                    style={{flexShrink:0,padding:"10px 18px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:10,cursor:"pointer",...KR,fontSize:12,fontWeight:700,whiteSpace:"nowrap"}}>
+                    자세히 보기 →
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
 function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingPrograms }) {
   const { programId } = useParams();
   const navigate = useNavigate();
@@ -4458,6 +4566,8 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [submitError, setSubmitError] = useState("");
+  const [lr, setLr] = useState(!!window.L);
+  useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
   if (loadingPrograms) return (
     <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Noto Sans KR',sans-serif",color:"#bbb",fontSize:14}}>불러오는 중…</div>
@@ -4565,10 +4675,15 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
           {programSalons.length>0&&(
             <div style={{marginBottom:28}}>
               <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>진행 살롱 {programSalons.length>1&&`(${programSalons.length}곳)`}</p>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:14}}>
                 {programSalons.map(s=>(
                   <ProgramSalonCard key={s.id} salon={s} onClick={()=>{}}/>
                 ))}
+              </div>
+              <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:200}}>
+                {lr
+                  ? <SalonMap salons={programSalons} mini={true} />
+                  : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>}
               </div>
             </div>
           )}
@@ -4775,6 +4890,7 @@ export default function App() {
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
         <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
