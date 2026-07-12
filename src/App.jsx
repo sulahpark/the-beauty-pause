@@ -4419,7 +4419,15 @@ function ProgramHomePage({ salons, allProducts, loading }) {
 }
 
 // ── PROGRAM DETAIL PAGE ──────────────────────────────────────────────────────
-function ProgramDetailPage({ salons }) {
+// fallback sample salons — used when live Airtable data doesn't yet contain
+// salons matching a program's salonNames (so the reservation flow can be demoed)
+const SAMPLE_SALONS = [
+  { id: "sample-1", name: "Aura Beauté Paris", area: "Le Marais", salon_image: "/images/aurabeaute04.jpeg", rdv: "https://www.planity.com", _products: [] },
+  { id: "sample-2", name: "BelleGlamour Paris", area: "Saint-Germain", salon_image: "/images/IMG_0189.jpeg", rdv: "https://www.planity.com", _products: [] },
+  { id: "sample-3", name: "Salon Rêve", area: "Bastille", salon_image: "/images/IMG_0175.jpeg", rdv: "https://www.planity.com", _products: [] },
+];
+
+function ProgramDetailPage({ salons, user, onAuthClick }) {
   const { programId } = useParams();
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
@@ -4427,9 +4435,11 @@ function ProgramDetailPage({ salons }) {
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
 
   const program = FEATURED_PROGRAMS.find(p=>p.id===programId);
-  const programSalons = (salons||[]).filter(s=>(program?.salonNames||[]).includes(s.name));
+  const liveSalons = (salons||[]).filter(s=>(program?.salonNames||[]).includes(s.name));
+  const programSalons = liveSalons.length>0 ? liveSalons : SAMPLE_SALONS.filter(s=>(program?.salonNames||[]).includes(s.name));
   const [step, setStep] = useState("idle"); // idle | select-salon | payment | confirmed
   const [selectedSalon, setSelectedSalon] = useState(null);
+  const [orderId, setOrderId] = useState(null);
 
   if (!program) return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,fontFamily:"'Noto Sans KR',sans-serif"}}>
@@ -4458,9 +4468,6 @@ function ProgramDetailPage({ salons }) {
 
         {/* INFO */}
         <div style={{padding:"22px 20px 0"}}>
-          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>
-            {(program.salonNames||[]).length>1 ? `${program.salonNames.length}개 살롱에서 진행` : program.salonNames?.[0]}
-          </p>
           <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
           <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>이용 가능 기간 📅 {program.periodLabel}</p>
 
@@ -4519,9 +4526,9 @@ function ProgramDetailPage({ salons }) {
           <div style={{maxWidth:480,margin:"0 auto"}}>
 
             {step==="idle" && (
-              <button onClick={()=>setStep("select-salon")}
+              <button onClick={()=>{ if (!user) { onAuthClick?.("login"); return; } setStep("select-salon"); }}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
-                프로그램 예약하기
+                {user ? "프로그램 예약하기" : "로그인하고 예약하기"}
               </button>
             )}
 
@@ -4546,7 +4553,7 @@ function ProgramDetailPage({ salons }) {
                   <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0}}>결제 방식</p>
                 </div>
                 <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name}에서 방문 시 직접 결제하시면 돼요.</p>
-                <button onClick={()=>setStep("confirmed")}
+                <button onClick={()=>{ setOrderId(`TBP${program.id.toUpperCase()}${Math.floor(1000+Math.random()*9000)}`); setStep("confirmed"); }}
                   style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
                   살롱에서 직접 결제 · 예약 확정
                 </button>
@@ -4556,20 +4563,49 @@ function ProgramDetailPage({ salons }) {
             {step==="confirmed" && (
               <>
                 <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ 예약이 완료되었습니다</p>
-                <div style={{background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:14,padding:16,marginBottom:14}}>
-                  <p style={{...SS,fontSize:9,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>예약 프로그램</p>
-                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>{program.name}</p>
-                  <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                    <p style={{...KR,fontSize:12,color:"#666",margin:0}}>살롱: {selectedSalon?.name}</p>
-                    <p style={{...KR,fontSize:12,color:"#666",margin:0}}>기간: {program.periodLabel}</p>
-                    <p style={{...KR,fontSize:12,color:"#666",margin:0}}>결제: 살롱에서 직접 결제</p>
+
+                {/* E-TICKET */}
+                <div style={{position:"relative",borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#1a1a1a,#2a2218)",marginBottom:14}}>
+                  <div style={{height:110,overflow:"hidden"}}>
+                    <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                   </div>
+                  <div style={{padding:"16px 18px 20px"}}>
+                    <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",letterSpacing:0.5,textTransform:"uppercase",margin:"0 0 4px"}}>The Beauty Pause</p>
+                    <p style={{...KR,fontSize:17,fontWeight:700,color:"#fff",margin:"0 0 16px"}}>{program.name}</p>
+
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px 10px",marginBottom:14}}>
+                      <div>
+                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>이용 기간</p>
+                        <p style={{...KR,fontSize:12,color:"#fff",margin:0}}>{program.periodLabel}</p>
+                      </div>
+                      <div>
+                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>결제 방식</p>
+                        <p style={{...KR,fontSize:12,color:"#fff",margin:0}}>살롱 결제</p>
+                      </div>
+                      <div>
+                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>예약 살롱</p>
+                        <p style={{...KR,fontSize:12,color:"#fff",margin:0}}>{selectedSalon?.name}</p>
+                      </div>
+                      <div>
+                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>예약 번호</p>
+                        <p style={{...SS,fontSize:12,color:"#c9a96e",margin:0}}>{orderId}</p>
+                      </div>
+                    </div>
+
+                    <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>장소</p>
+                    <p style={{...KR,fontSize:12,color:"#fff",margin:"0 0 16px",lineHeight:1.5}}>{selectedSalon?.name}, {selectedSalon?.area || "Paris"}</p>
+
+                    <div style={{borderTop:"1px dashed rgba(255,255,255,0.25)"}}/>
+                  </div>
+                  <div style={{position:"absolute",top:110,left:-10,width:20,height:20,borderRadius:"50%",background:"#fff"}}/>
+                  <div style={{position:"absolute",top:110,right:-10,width:20,height:20,borderRadius:"50%",background:"#fff"}}/>
                 </div>
-                <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px"}}>방문 날짜와 시간은 살롱 예약 시스템에서 선택해주세요.</p>
+
+                <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px",textAlign:"center"}}>방문 날짜와 시간은 살롱 예약 시스템에서 선택해주세요.</p>
                 {selectedSalon?.rdv ? (
                   <a href={selectedSalon.rdv} target="_blank" rel="noopener noreferrer"
                     style={{display:"block",width:"100%",padding:"15px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:12,textDecoration:"none",textAlign:"center",...KR,fontSize:14,fontWeight:700,boxSizing:"border-box"}}>
-                    살롱 시간 예약하기 →
+                    살롱 예약하러가기 →
                   </a>
                 ) : (
                   <button disabled style={{width:"100%",padding:"15px",background:"#eee",color:"#aaa",border:"none",borderRadius:12,...KR,fontSize:14,fontWeight:700}}>
@@ -4678,7 +4714,7 @@ export default function App() {
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
         <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} />} />
-        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} />} />
+        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
