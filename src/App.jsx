@@ -4324,9 +4324,9 @@ function ProgramHomePage({ salons, allProducts, loading }) {
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#fdfaf5}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.hide-scrollbar::-webkit-scrollbar{display:none}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.hide-scrollbar::-webkit-scrollbar{display:none}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
 
-      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#fdfaf5",paddingBottom:96,position:"relative"}}>
+      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:96,position:"relative"}}>
 
         {/* HEADER */}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
@@ -4428,8 +4428,8 @@ function ProgramDetailPage({ salons }) {
 
   const program = FEATURED_PROGRAMS.find(p=>p.id===programId);
   const programSalons = (salons||[]).filter(s=>(program?.salonNames||[]).includes(s.name));
-  const [payMethod, setPayMethod] = useState(null); // "online" | "onsite"
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [step, setStep] = useState("idle"); // idle | select-salon | payment | confirmed
+  const [selectedSalon, setSelectedSalon] = useState(null);
 
   if (!program) return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,fontFamily:"'Noto Sans KR',sans-serif"}}>
@@ -4438,18 +4438,13 @@ function ProgramDetailPage({ salons }) {
     </div>
   );
 
-  const handleReserve = (method) => {
-    setPayMethod(method);
-    setShowConfirm(true);
-    // TODO: "online" → Stripe checkout (재사용: /api/create-checkout 참고해 프로그램용 엔드포인트 연결)
-    // TODO: "onsite" → Airtable에 예약 요청 기록 (럭키드로우 제출 패턴과 동일), Planity 예약 링크 안내
-  };
+  // TODO: 예약 완료 시점에 Airtable에 예약 요청 기록 (럭키드로우 제출 패턴과 동일하게)
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#fdfaf5}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
 
-      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#fdfaf5",paddingBottom:110,position:"relative",animation:"fadeUp 0.4s ease both"}}>
+      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:110,position:"relative",animation:"fadeUp 0.4s ease both"}}>
 
         {/* HERO IMAGE */}
         <div style={{position:"relative",width:"100%",height:320,overflow:"hidden",background:"#eee2c8"}}>
@@ -4467,19 +4462,30 @@ function ProgramDetailPage({ salons }) {
             {(program.salonNames||[]).length>1 ? `${program.salonNames.length}개 살롱에서 진행` : program.salonNames?.[0]}
           </p>
           <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
-            <span style={{...SS,fontSize:12,color:"#999"}}>⏱ {program.duration}</span>
-            <span style={{color:"#e5ddc8"}}>·</span>
-            <span style={{...SS,fontSize:12,color:"#999"}}>📅 {program.periodLabel}</span>
-          </div>
-          <p style={{...SS,fontSize:11,color:"#c9a96e",fontWeight:600,margin:"0 0 20px"}}>매월 진행되는 프로그램이에요</p>
+          <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>이용 가능 기간 📅 {program.periodLabel}</p>
 
           {/* price */}
           <div style={{display:"flex",alignItems:"baseline",gap:10,padding:"16px 0",borderTop:"1px solid #f0e5cf",borderBottom:"1px solid #f0e5cf",marginBottom:20}}>
             {program.priceOriginal&&<span style={{...SS,fontSize:14,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
             <span style={{...KR,fontSize:26,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
-            <span style={{...KR,fontSize:12,color:"#999",marginLeft:"auto"}}>1인 기준</span>
+            <span style={{...SS,fontSize:12,color:"#999",marginLeft:"auto"}}>⏱ {program.duration}</span>
           </div>
+
+          {/* collab product — circular card (right under price, product matters most) */}
+          {program.product&&(
+            <div style={{marginBottom:24}}>
+              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>콜라보 제품</p>
+              <div style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14}}>
+                <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
+                  <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                </div>
+                <div style={{minWidth:0}}>
+                  <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{program.product.brand}</p>
+                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.3}}>{program.product.name}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* description */}
           <p style={{...KR,fontSize:13,color:"#666",lineHeight:1.8,marginBottom:24}}>{program.description}</p>
@@ -4495,22 +4501,6 @@ function ProgramDetailPage({ salons }) {
             ))}
           </div>
 
-          {/* collab product — circular card */}
-          {program.product&&(
-            <div style={{marginBottom:28}}>
-              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>콜라보 제품</p>
-              <div style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14}}>
-                <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
-                  <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-                </div>
-                <div style={{minWidth:0}}>
-                  <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{program.product.brand}</p>
-                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.3}}>{program.product.name}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* salons running this program */}
           {programSalons.length>0&&(
             <div style={{marginBottom:28}}>
@@ -4524,28 +4514,71 @@ function ProgramDetailPage({ salons }) {
           )}
         </div>
 
-        {/* RESERVE CONFIRMATION (inline, appears after choosing a method) */}
-        {showConfirm&&(
-          <div style={{margin:"0 20px 20px",background:"#fff",border:"1px solid #e8d9b8",borderRadius:16,padding:18}}>
-            {payMethod==="online" ? (
-              <p style={{...KR,fontSize:13,color:"#555",lineHeight:1.7,margin:0}}>온라인 결제 페이지로 곧 연결돼요. (Stripe 결제 연동 준비 중)</p>
-            ) : (
-              <p style={{...KR,fontSize:13,color:"#555",lineHeight:1.7,margin:0}}>예약 요청이 접수됐어요. 실제 방문 시간 예약은 <strong>Planity</strong>에서 진행되며, 결제는 살롱 현장에서 하시면 돼요. (연동 준비 중)</p>
-            )}
-          </div>
-        )}
+        {/* RESERVATION FLOW PANEL */}
+        <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#fff",borderTop:"1px solid #f0e5cf",padding:"16px 20px calc(16px + env(safe-area-inset-bottom))",maxHeight:"70vh",overflowY:"auto"}}>
+          <div style={{maxWidth:480,margin:"0 auto"}}>
 
-        {/* FIXED CTA */}
-        <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#fdfaf5",borderTop:"1px solid #f0e5cf",padding:"14px 20px calc(14px + env(safe-area-inset-bottom))"}}>
-          <div style={{maxWidth:480,margin:"0 auto",display:"flex",gap:10}}>
-            <button onClick={()=>handleReserve("onsite")}
-              style={{flex:1,padding:"14px",background:"#fff",color:"#1a1a1a",border:"1px solid #ddd",borderRadius:12,cursor:"pointer",...KR,fontSize:13,fontWeight:700}}>
-              살롱에서 결제
-            </button>
-            <button onClick={()=>handleReserve("online")}
-              style={{flex:1,padding:"14px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:13,fontWeight:700}}>
-              온라인 결제 · €{program.price}
-            </button>
+            {step==="idle" && (
+              <button onClick={()=>setStep("select-salon")}
+                style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
+                프로그램 예약하기
+              </button>
+            )}
+
+            {step==="select-salon" && (
+              <>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                  <button onClick={()=>setStep("idle")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:16}}>‹</button>
+                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0}}>살롱을 선택해주세요</p>
+                </div>
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {programSalons.map(s=>(
+                    <ProgramSalonCard key={s.id} salon={s} onClick={()=>{setSelectedSalon(s);setStep("payment");}}/>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {step==="payment" && (
+              <>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                  <button onClick={()=>setStep("select-salon")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:16}}>‹</button>
+                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0}}>결제 방식</p>
+                </div>
+                <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name}에서 방문 시 직접 결제하시면 돼요.</p>
+                <button onClick={()=>setStep("confirmed")}
+                  style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
+                  살롱에서 직접 결제 · 예약 확정
+                </button>
+              </>
+            )}
+
+            {step==="confirmed" && (
+              <>
+                <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ 예약이 완료되었습니다</p>
+                <div style={{background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:14,padding:16,marginBottom:14}}>
+                  <p style={{...SS,fontSize:9,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>예약 프로그램</p>
+                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>{program.name}</p>
+                  <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                    <p style={{...KR,fontSize:12,color:"#666",margin:0}}>살롱: {selectedSalon?.name}</p>
+                    <p style={{...KR,fontSize:12,color:"#666",margin:0}}>기간: {program.periodLabel}</p>
+                    <p style={{...KR,fontSize:12,color:"#666",margin:0}}>결제: 살롱에서 직접 결제</p>
+                  </div>
+                </div>
+                <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px"}}>방문 날짜와 시간은 살롱 예약 시스템에서 선택해주세요.</p>
+                {selectedSalon?.rdv ? (
+                  <a href={selectedSalon.rdv} target="_blank" rel="noopener noreferrer"
+                    style={{display:"block",width:"100%",padding:"15px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:12,textDecoration:"none",textAlign:"center",...KR,fontSize:14,fontWeight:700,boxSizing:"border-box"}}>
+                    살롱 시간 예약하기 →
+                  </a>
+                ) : (
+                  <button disabled style={{width:"100%",padding:"15px",background:"#eee",color:"#aaa",border:"none",borderRadius:12,...KR,fontSize:14,fontWeight:700}}>
+                    살롱 예약 링크 준비 중
+                  </button>
+                )}
+              </>
+            )}
+
           </div>
         </div>
 
