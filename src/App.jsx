@@ -4521,102 +4521,108 @@ function ProgramDetailPage({ salons, user, onAuthClick }) {
           )}
         </div>
 
-        {/* RESERVATION FLOW PANEL */}
-        <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#fff",borderTop:"1px solid #f0e5cf",padding:"16px 20px calc(16px + env(safe-area-inset-bottom))",maxHeight:"70vh",overflowY:"auto"}}>
-          <div style={{maxWidth:480,margin:"0 auto"}}>
-
-            {step==="idle" && (
+        {/* FIXED CTA (idle only) */}
+        {step==="idle" && (
+          <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#fff",borderTop:"1px solid #f0e5cf",padding:"16px 20px calc(16px + env(safe-area-inset-bottom))"}}>
+            <div style={{maxWidth:480,margin:"0 auto"}}>
               <button onClick={()=>{ if (!user) { onAuthClick?.("login"); return; } setStep("select-salon"); }}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
-                {user ? "프로그램 예약하기" : "로그인하고 예약하기"}
+                {user ? "프로그램 신청하기" : "로그인하고 신청하기"}
               </button>
-            )}
+            </div>
+          </div>
+        )}
 
-            {step==="select-salon" && (
-              <>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-                  <button onClick={()=>setStep("idle")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:16}}>‹</button>
-                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0}}>살롱을 선택해주세요</p>
-                </div>
-                <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                  {programSalons.map(s=>(
-                    <ProgramSalonCard key={s.id} salon={s} onClick={()=>{setSelectedSalon(s);setStep("payment");}}/>
-                  ))}
-                </div>
-              </>
-            )}
+        {/* RESERVATION FLOW — MODAL */}
+        {step!=="idle" && (
+          <div onClick={()=>{ if(step!=="confirmed") setStep("idle"); }} style={{position:"fixed",inset:0,zIndex:2000,background:"rgba(8,6,4,0.75)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+            <div onClick={e=>e.stopPropagation()} style={{background:"#fff",width:"100%",maxWidth:480,maxHeight:"88vh",overflowY:"auto",borderRadius:"20px 20px 0 0",padding:"20px 20px calc(20px + env(safe-area-inset-bottom))"}}>
 
-            {step==="payment" && (
-              <>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-                  <button onClick={()=>setStep("select-salon")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:16}}>‹</button>
-                  <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0}}>결제 방식</p>
-                </div>
-                <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name}에서 방문 시 직접 결제하시면 돼요.</p>
-                <button onClick={()=>{ setOrderId(`TBP${program.id.toUpperCase()}${Math.floor(1000+Math.random()*9000)}`); setStep("confirmed"); }}
-                  style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
-                  살롱에서 직접 결제 · 예약 확정
-                </button>
-              </>
-            )}
-
-            {step==="confirmed" && (
-              <>
-                <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ 예약이 완료되었습니다</p>
-
-                {/* E-TICKET */}
-                <div style={{position:"relative",borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#1a1a1a,#2a2218)",marginBottom:14}}>
-                  <div style={{height:110,overflow:"hidden"}}>
-                    <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+              {step==="select-salon" && (
+                <>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
+                    <button onClick={()=>setStep("idle")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:18}}>‹</button>
+                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>살롱을 선택해주세요</p>
                   </div>
-                  <div style={{padding:"16px 18px 20px"}}>
-                    <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",letterSpacing:0.5,textTransform:"uppercase",margin:"0 0 4px"}}>The Beauty Pause</p>
-                    <p style={{...KR,fontSize:17,fontWeight:700,color:"#fff",margin:"0 0 16px"}}>{program.name}</p>
+                  <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                    {programSalons.map(s=>(
+                      <ProgramSalonCard key={s.id} salon={s} onClick={()=>{setSelectedSalon(s);setStep("payment");}}/>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {step==="payment" && (
+                <>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
+                    <button onClick={()=>setStep("select-salon")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:18}}>‹</button>
+                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>결제 방식</p>
+                  </div>
+                  <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name}에서 방문 당일 직접 결제하시면 돼요.</p>
+                  <button onClick={()=>{ setOrderId(`TBP${program.id.toUpperCase()}${Math.floor(1000+Math.random()*9000)}`); setStep("confirmed"); }}
+                    style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
+                    살롱에서 직접 결제 · 신청 확정
+                  </button>
+                </>
+              )}
+
+              {step==="confirmed" && (
+                <>
+                  <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ 신청이 완료되었습니다</p>
+
+                  {/* E-TICKET — gold background, framed photo */}
+                  <div style={{position:"relative",borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#e8d9b8,#c9a96e)",marginBottom:14,padding:16}}>
+                    <div style={{borderRadius:14,overflow:"hidden",marginBottom:16,border:"3px solid rgba(255,255,255,0.5)"}}>
+                      <img src={program.image} alt={program.name} style={{width:"100%",height:130,objectFit:"cover",display:"block"}}/>
+                    </div>
+
+                    <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.5)",letterSpacing:0.5,textTransform:"uppercase",margin:"0 0 4px"}}>The Beauty Pause</p>
+                    <p style={{...KR,fontSize:17,fontWeight:700,color:"#1a1a1a",margin:"0 0 16px"}}>{program.name}</p>
 
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px 10px",marginBottom:14}}>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>이용 기간</p>
-                        <p style={{...KR,fontSize:12,color:"#fff",margin:0}}>{program.periodLabel}</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>이용 기간</p>
+                        <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>{program.periodLabel}</p>
                       </div>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>결제 방식</p>
-                        <p style={{...KR,fontSize:12,color:"#fff",margin:0}}>살롱 결제</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>결제 방식</p>
+                        <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>살롱에서 직접 결제<br/>(방문 당일)</p>
                       </div>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>예약 살롱</p>
-                        <p style={{...KR,fontSize:12,color:"#fff",margin:0}}>{selectedSalon?.name}</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>신청 살롱</p>
+                        <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>{selectedSalon?.name}</p>
                       </div>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>예약 번호</p>
-                        <p style={{...SS,fontSize:12,color:"#c9a96e",margin:0}}>{orderId}</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>신청 번호</p>
+                        <p style={{...SS,fontSize:12,color:"#1a1a1a",fontWeight:700,margin:0}}>{orderId}</p>
                       </div>
                     </div>
 
-                    <p style={{...SS,fontSize:9,color:"rgba(255,255,255,0.4)",margin:"0 0 3px"}}>장소</p>
-                    <p style={{...KR,fontSize:12,color:"#fff",margin:"0 0 16px",lineHeight:1.5}}>{selectedSalon?.name}, {selectedSalon?.area || "Paris"}</p>
-
-                    <div style={{borderTop:"1px dashed rgba(255,255,255,0.25)"}}/>
+                    <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>장소</p>
+                    <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0,lineHeight:1.5}}>{selectedSalon?.name}, {selectedSalon?.area || "Paris"}</p>
                   </div>
-                  <div style={{position:"absolute",top:110,left:-10,width:20,height:20,borderRadius:"50%",background:"#fff"}}/>
-                  <div style={{position:"absolute",top:110,right:-10,width:20,height:20,borderRadius:"50%",background:"#fff"}}/>
-                </div>
 
-                <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px",textAlign:"center"}}>방문 날짜와 시간은 살롱 예약 시스템에서 선택해주세요.</p>
-                {selectedSalon?.rdv ? (
-                  <a href={selectedSalon.rdv} target="_blank" rel="noopener noreferrer"
-                    style={{display:"block",width:"100%",padding:"15px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:12,textDecoration:"none",textAlign:"center",...KR,fontSize:14,fontWeight:700,boxSizing:"border-box"}}>
-                    살롱 예약하러가기 →
-                  </a>
-                ) : (
-                  <button disabled style={{width:"100%",padding:"15px",background:"#eee",color:"#aaa",border:"none",borderRadius:12,...KR,fontSize:14,fontWeight:700}}>
-                    살롱 예약 링크 준비 중
+                  <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px",textAlign:"center"}}>방문 날짜와 시간은 살롱 예약 시스템에서 선택해주세요.</p>
+                  {selectedSalon?.rdv ? (
+                    <a href={selectedSalon.rdv} target="_blank" rel="noopener noreferrer"
+                      style={{display:"block",width:"100%",padding:"15px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:12,textDecoration:"none",textAlign:"center",...KR,fontSize:14,fontWeight:700,boxSizing:"border-box",marginBottom:10}}>
+                      살롱 예약하러가기 →
+                    </a>
+                  ) : (
+                    <button disabled style={{width:"100%",padding:"15px",background:"#eee",color:"#aaa",border:"none",borderRadius:12,...KR,fontSize:14,fontWeight:700,marginBottom:10}}>
+                      살롱 예약 링크 준비 중
+                    </button>
+                  )}
+                  <button onClick={()=>{setStep("idle");navigate("/program-home");}}
+                    style={{width:"100%",padding:"13px",background:"none",color:"#999",border:"none",cursor:"pointer",...KR,fontSize:12}}>
+                    홈으로 돌아가기
                   </button>
-                )}
-              </>
-            )}
+                </>
+              )}
 
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </>
