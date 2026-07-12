@@ -3360,7 +3360,7 @@ function ForBrandsPage() {
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
                 <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 4px",textDecoration:"line-through"}}>99,000원</p>
                 <p style={{...KR,fontSize:"28px",color:"#f5f0eb",margin:"0 0 8px",fontWeight:700}}>무료</p>
-                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>얼리 파트너 혜택<br/>(7월 20일까지 신청 브랜드)</p>
+                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>얼리 파트너 혜택<br/>(7월 17일까지 신청 브랜드)</p>
               </div>
             </div>
           </div>
