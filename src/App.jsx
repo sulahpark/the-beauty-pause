@@ -3321,8 +3321,9 @@ function ForBrandsPage() {
               </div>
 
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
-                <p style={{...KR,fontSize:"24px",color:"#f5f0eb",margin:"0 0 6px",fontWeight:700}}>79만원</p>
-                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,lineHeight:1.6,margin:0}}>Founding Brand 특별 참가비</p>
+                <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 4px",textDecoration:"line-through"}}>1,790,000원</p>
+                <p style={{...KR,fontSize:"28px",color:"#f5f0eb",margin:"0 0 8px",fontWeight:700}}>790,000원</p>
+                <p style={{...KR,fontSize:"12px",color:"#c9a96e",fontWeight:600,lineHeight:1.6,margin:0}}>초기 파트너 한정 참가비<br/>(10개 브랜드 이후 종료 예정)</p>
               </div>
             </div>
 
@@ -3357,7 +3358,9 @@ function ForBrandsPage() {
               </div>
 
               <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:24}}>
-                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>제품 제공으로 참여<br/>(별도 참가비 없음)</p>
+                <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",margin:"0 0 4px",textDecoration:"line-through"}}>99,000원</p>
+                <p style={{...KR,fontSize:"28px",color:"#f5f0eb",margin:"0 0 8px",fontWeight:700}}>무료</p>
+                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.5)",lineHeight:1.6,margin:0}}>얼리 파트너 혜택<br/>(7월 20일까지 신청 브랜드)</p>
               </div>
             </div>
           </div>
