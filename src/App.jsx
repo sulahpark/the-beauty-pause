@@ -164,7 +164,7 @@ function TierBadge({ tier, size=14 }) {
 }
 
 // ── LEAFLET MAP (split/mobile) ────────────────────────────────────────────────
-function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToSalons, highlightId }) {
+function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToSalons, highlightId, compact }) {
   const uid = useRef(`map-${Math.random().toString(36).slice(2)}`);
   const map  = useRef(null);
   const marks = useRef([]);
@@ -198,13 +198,17 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     map.current = m;
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:'<span style="font-size:8px;opacity:0.4;filter:grayscale(1)">© OSM © CARTO</span>',maxZoom:19}).addTo(m);
     // fit to salon markers on first load
-    if (!focusSalon && !mini) {
+    if (!focusSalon && (!mini || compact)) {
       const pts = salRef.current.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
       if (pts.length>0) setTimeout(()=>{
         try{
-          const VH = window.innerHeight;
-          const bottomPad = window.innerWidth < 768 ? Math.round(VH * 0.52) : 40;
-          m.fitBounds(pts,{paddingTopLeft:[40,40],paddingBottomRight:[40,bottomPad+40],maxZoom:14});
+          if (compact) {
+            m.fitBounds(pts,{padding:[28,28],maxZoom:15});
+          } else {
+            const VH = window.innerHeight;
+            const bottomPad = window.innerWidth < 768 ? Math.round(VH * 0.52) : 40;
+            m.fitBounds(pts,{paddingTopLeft:[40,40],paddingBottomRight:[40,bottomPad+40],maxZoom:14});
+          }
         }catch(e){}
       },300);
     }
@@ -222,9 +226,15 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     if (!fitToSalons || !map.current || !window.L) return;
     const pts = fitToSalons.filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
     if (pts.length>0) {
-      const VH = window.visualViewport?.height || window.innerHeight;
-      const sheetH = Math.round(VH * 0.46); // mid snap height
-      try { map.current.fitBounds(pts, {paddingTopLeft:[40,40], paddingBottomRight:[40, sheetH+60], maxZoom:14}); } catch(e){}
+      try {
+        if (compact) {
+          map.current.fitBounds(pts, {padding:[28,28], maxZoom:15});
+        } else {
+          const VH = window.visualViewport?.height || window.innerHeight;
+          const sheetH = Math.round(VH * 0.46); // mid snap height
+          map.current.fitBounds(pts, {paddingTopLeft:[40,40], paddingBottomRight:[40, sheetH+60], maxZoom:14});
+        }
+      } catch(e){}
     }
   },[fitToSalons]);
 
@@ -1214,6 +1224,7 @@ function useProgramsData() {
             priceOriginal: r.price_original || null,
             price: r.price || null,
             tag: r.tag || null,
+            category: r.category || null,
             periodLabel,
             description: r.description || "",
             includes,
@@ -4483,6 +4494,37 @@ function ProgramsListPage({ salons, programs, loadingPrograms }) {
     return live.length>0 ? live : SAMPLE_SALONS.slice(0,2);
   }, [activeProgram, salons]);
 
+  // list-view filters
+  const [catFilter, setCatFilter] = useState("All");
+  const [areaFilter, setAreaFilter] = useState("All");
+  const categories = ["All","Hair","Nail","Skin","Body"];
+
+  const programSalonsMap = useMemo(()=>{
+    const map = {};
+    (programs||[]).forEach(p=>{
+      const live = (salons||[]).filter(s=>(p.salonIds||[]).includes(s.id));
+      map[p.id] = live.length>0 ? live : SAMPLE_SALONS.slice(0,2);
+    });
+    return map;
+  }, [programs, salons]);
+
+  const areas = useMemo(()=>{
+    const set = new Set();
+    Object.values(programSalonsMap).forEach(list=>list.forEach(s=>{ if (s.area) set.add(s.area); }));
+    return ["All", ...Array.from(set).sort()];
+  }, [programSalonsMap]);
+
+  const filteredPrograms = useMemo(()=>{
+    return (programs||[]).filter(p=>{
+      if (catFilter!=="All" && p.category!==catFilter) return false;
+      if (areaFilter!=="All") {
+        const areasForP = (programSalonsMap[p.id]||[]).map(s=>s.area);
+        if (!areasForP.includes(areaFilter)) return false;
+      }
+      return true;
+    });
+  }, [programs, catFilter, areaFilter, programSalonsMap]);
+
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.hide-scrollbar::-webkit-scrollbar{display:none}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
@@ -4535,14 +4577,60 @@ function ProgramsListPage({ salons, programs, loadingPrograms }) {
             </div>
 
             {/* SYNCED MAP */}
-            <div style={{margin:"0 20px 40px",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
+            <div style={{margin:"0 20px 32px",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
               {!lr ? (
                 <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>
               ) : activeSalons.length===0 ? (
                 <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>표시할 살롱 위치가 없어요</div>
               ) : (
-                <SalonMap salons={activeSalons} fitToSalons={activeSalons} />
+                <SalonMap salons={activeSalons} fitToSalons={activeSalons} compact={true} />
               )}
+            </div>
+
+            {/* FILTERS */}
+            <div style={{padding:"0 20px",marginBottom:14}}>
+              <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>전체 프로그램</p>
+              <div className="hide-scrollbar" style={{display:"flex",gap:8,overflowX:"auto",marginBottom:10,paddingBottom:2}}>
+                {categories.map(c=>{
+                  const active = catFilter===c;
+                  return (
+                    <button key={c} onClick={()=>setCatFilter(c)}
+                      style={{flexShrink:0,padding:"7px 14px",borderRadius:20,border:`1.5px solid ${active?"#1a1a1a":"#f0e5cf"}`,background:active?"#1a1a1a":"#fff",color:active?"#fff":"#666",cursor:"pointer",...SS,fontSize:12,fontWeight:500}}>
+                      {c==="All"?"전체":c}
+                    </button>
+                  );
+                })}
+              </div>
+              <select value={areaFilter} onChange={e=>setAreaFilter(e.target.value)}
+                style={{width:"100%",padding:"9px 12px",border:"1px solid #f0e5cf",borderRadius:10,background:"#fff",...SS,fontSize:12,color:"#555",outline:"none"}}>
+                {areas.map(a=><option key={a} value={a}>{a==="All"?"모든 지역":a}</option>)}
+              </select>
+            </div>
+
+            {/* LIST */}
+            <div style={{padding:"0 20px 40px",display:"flex",flexDirection:"column",gap:8}}>
+              {filteredPrograms.length===0 ? (
+                <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"32px 0"}}>조건에 맞는 프로그램이 없어요.</p>
+              ) : filteredPrograms.map(p=>{
+                const pSalons = programSalonsMap[p.id]||[];
+                const salonLabel = pSalons.length>1 ? `${pSalons[0]?.name} 외 ${pSalons.length-1}곳` : pSalons[0]?.name;
+                return (
+                  <div key={p.id} onClick={()=>navigate(`/program/${p.id}`)}
+                    style={{display:"flex",gap:12,alignItems:"center",background:"#fff",border:"1px solid #f0e9dc",borderRadius:14,padding:10,cursor:"pointer"}}>
+                    <div style={{width:56,height:56,borderRadius:10,overflow:"hidden",flexShrink:0,background:"#f0ebe2"}}>
+                      {p.image
+                        ? <img src={p.image} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                        : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:18,color:"#c9a96e"}}>✦</span></div>}
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <p style={{...KR,fontSize:13,fontWeight:700,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</p>
+                      <p style={{...SS,fontSize:10,color:"#aaa",margin:"0 0 4px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salonLabel}</p>
+                      <p style={{...SS,fontSize:11,color:"#c9a96e",fontWeight:700,margin:0}}>€{p.price} · {p.duration}</p>
+                    </div>
+                    <span style={{color:"#ddd",fontSize:16,flexShrink:0}}>›</span>
+                  </div>
+                );
+              })}
             </div>
           </>
         )}
@@ -4681,7 +4769,7 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
               </div>
               <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:200}}>
                 {lr
-                  ? <SalonMap salons={programSalons} mini={true} />
+                  ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} />
                   : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>}
               </div>
             </div>
