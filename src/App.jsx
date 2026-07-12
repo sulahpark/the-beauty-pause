@@ -1614,18 +1614,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
-      {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>}
-      {/* filter — desktop only (mobile has it inside fixed container) */}
-      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:64,zIndex:399,flexWrap:"nowrap"}}>
-        <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${afc>0?"#1a1a1a":"#ede8e2"}`,background:afc>0?"#1a1a1a":"#fff",color:afc>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          {t.filter}{afc>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{afc}</span>}
-        </button>
-        <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-        <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"7px 13px",border:`1.5px solid ${sf.kbeautyOnly?"#c9a96e":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf8ee":"#fff",color:sf.kbeautyOnly?"#c9a96e":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>✦ K-Beauty</button>
-        {["Nail","Beauty","Hair","Spa"].map(cat=>{const a=sf.categories.includes(cat);return<button key={cat} onClick={()=>setSf(f=>({...f,categories:toggleArr(f.categories,cat)}))} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;})}
-        <input placeholder={t.search_salon} value={search} onChange={e=>setSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:200,marginLeft:"auto",flexShrink:0}}/>
-      </div>}
+      {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>}
       {/* content */}
       {isMobile?(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column",transition:"all 0.34s cubic-bezier(0.32,0.72,0,1)"}}>
@@ -1659,26 +1648,47 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
           {!sheetExpanded&&<MobileTabBar active="/salons"/>}
         </div>
       ):(
-        <div style={{display:"flex",height:"calc(100vh - 64px - 44px)",overflow:"hidden"}}>
-          <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
-            {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>:<>
-              <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>
-                {(visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered).length} {t.salons_count}
-              </p>
-              {(()=>{const list=visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered; return list.length===0
-                ?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
-                :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
-                  {list.map((s,i)=><div key={s.id}
-                    onMouseEnter={()=>setHoveredSalonId(s.id)}
-                    onMouseLeave={()=>setHoveredSalonId(null)}
-                    style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}>
-                    <SalonCard salon={s} onClick={setSelSalon} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} />
-                  </div>)}
-                </div>;
-              })()}
-            </>}
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"24px clamp(24px,4vw,56px) 60px"}}>
+
+          {/* FILTER BAR */}
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:24,flexWrap:"wrap"}}>
+            <button onClick={()=>setShowFilter(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"8px 16px",border:`1.5px solid ${afc>0?"#1a1a1a":"#ede8e2"}`,background:afc>0?"#1a1a1a":"#fff",color:afc>0?"#fff":"#555",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,borderRadius:20,transition:"all 0.2s"}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+              {t.filter}{afc>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{afc}</span>}
+            </button>
+            <div style={{width:1,height:20,background:"#ede8e2"}} />
+            <button onClick={()=>setSf(f=>({...f,kbeautyOnly:!f.kbeautyOnly}))} style={{padding:"8px 16px",border:`1.5px solid ${sf.kbeautyOnly?"#c9a96e":"#ede8e2"}`,background:sf.kbeautyOnly?"#fdf8ee":"#fff",color:sf.kbeautyOnly?"#c9a96e":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,fontWeight:sf.kbeautyOnly?600:400,borderRadius:20,whiteSpace:"nowrap"}}>✦ K-Beauty</button>
+            {["Nail","Beauty","Hair","Spa"].map(cat=>{const a=sf.categories.includes(cat);return<button key={cat} onClick={()=>setSf(f=>({...f,categories:toggleArr(f.categories,cat)}))} style={{padding:"8px 16px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,borderRadius:20,whiteSpace:"nowrap"}}>{cat}</button>;})}
+            <input placeholder={t.search_salon} value={search} onChange={e=>setSearch(e.target.value)} style={{padding:"8px 14px",border:"1px solid #ede8e2",background:"#fff",fontFamily:"'DM Sans',sans-serif",fontSize:13,color:"#555",outline:"none",borderRadius:20,width:200,marginLeft:"auto"}}/>
           </div>
-          <div style={{flex:1,position:"sticky",top:0,height:"100%"}}>{lr?<SalonMap salons={filtered} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} highlightId={hoveredSalonId} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
+
+          {/* SPLIT: LIST + MAP */}
+          <div style={{display:"flex",gap:28}}>
+            {/* LEFT: salon list */}
+            <div style={{flex:"1 1 55%",minWidth:0}}>
+              {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>:<>
+                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"12px",color:"#aaa",marginBottom:16}}>
+                  {(visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered).length} {t.salons_count}
+                </p>
+                {(()=>{const list=visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered; return list.length===0
+                  ?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.no_salons}</div>
+                  :<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20}}>
+                    {list.map((s,i)=><div key={s.id}
+                      onMouseEnter={()=>setHoveredSalonId(s.id)}
+                      onMouseLeave={()=>setHoveredSalonId(null)}
+                      style={{animation:`fadeUp 0.4s ease ${i*0.04}s both`}}>
+                      <SalonCard salon={s} onClick={setSelSalon} lang={lang} user={user} favourites={favourites} onToggleFav={onToggleFav} />
+                    </div>)}
+                  </div>;
+                })()}
+              </>}
+            </div>
+
+            {/* RIGHT: sticky map */}
+            <div style={{flex:"1 1 45%",position:"sticky",top:84,alignSelf:"flex-start",height:"calc(100vh - 120px)",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc"}}>
+              {lr?<SalonMap salons={filtered} onPinClick={setSelSalon} onBoundsChange={setVisibleIds} highlightId={hoveredSalonId} compact={true} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}
+            </div>
+          </div>
         </div>
       )}
       {showFilter&&<FilterModal onClose={()=>setShowFilter(false)} lang={lang} filters={sf} setFilters={setSf} areas={areas} brands={brands} sortBy={sortBy} setSortBy={setSortBy} />}
@@ -1965,30 +1975,8 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
-      {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>}
+      {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>}
       {isMobile&&!prodSheetExpanded&&<MobileTabBar active="/products"/>}
-
-      {/* FILTER BAR — desktop only, mobile has it inside fixed container */}
-      {!isMobile&&<div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",position:"sticky",top:64,zIndex:399,flexWrap:"nowrap"}}>
-        {/* filter modal button */}
-        <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"7px 13px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:"12px",fontWeight:500,borderRadius:20,flexShrink:0,transition:"all 0.2s"}}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          {t.filter}
-          {activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
-        </button>
-        <div style={{width:1,height:18,background:"#ede8e2",flexShrink:0}} />
-        {/* in salon button */}
-        <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"7px 13px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:"12px",fontWeight:inSalonOnly?600:400,borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>
-          📍 In salon
-        </button>
-        {/* category chips — top 4 only */}
-        {cats.filter(c=>c!=="All").slice(0,4).map(cat=>{
-          const a=prodCats.includes(cat);
-          return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"7px 13px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:"12px",borderRadius:20,flexShrink:0,transition:"all 0.2s",whiteSpace:"nowrap"}}>{cat}</button>;
-        })}
-        {/* search */}
-        <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"7px 13px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:"12px",color:"#555",outline:"none",borderRadius:20,width:200,marginLeft:"auto",flexShrink:0}}/>
-      </div>}
 
       {/* SPLIT LAYOUT */}
       {isMobile ? (
@@ -2050,53 +2038,75 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
           </div>
         </div>
       ) : (
-        <div style={{display:"flex",height:"calc(100vh - 64px - 44px)",overflow:"hidden"}}>
-          {/* LEFT: product list */}
-          <div style={{width:"52%",overflowY:"auto",padding:"20px 16px 40px 20px"}}>
-            {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
-            :<>
-              {(()=>{
-                const visibleFp = prodVisibleIds ? fp.filter(p=>(p._salons||[]).some(s=>prodVisibleIds.includes(s.id))) : fp;
-                return <>
-                  <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:16}}>
-                    {visibleFp.length} products
-                    {selProd&&` · Showing ${(selProd._salons||[]).length} salon${(selProd._salons||[]).length!==1?"s":""} on map`}
-                  </p>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
-                    {visibleFp.map((p,i)=>(
-                      <ProductCard key={p.id} p={p} i={i} t={t}
-                        onClick={()=>handleProdClick(p)}
-                        onDetail={handleProdDetail}
-                        user={user} favourites={favourites} onToggleFav={onToggleFav}
-                        isSelected={selProd?.id===p.id}
-                      />
-                    ))}
-                  </div>
-                </>;
-              })()}
-            </>}
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"24px clamp(24px,4vw,56px) 60px"}}>
+
+          {/* FILTER BAR */}
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:24,flexWrap:"wrap"}}>
+            <button onClick={()=>setShowFilterModal(true)} style={{display:"flex",alignItems:"center",gap:5,padding:"8px 16px",border:`1.5px solid ${activeFilterCount>0?"#1a1a1a":"#ede8e2"}`,background:activeFilterCount>0?"#1a1a1a":"#fff",color:activeFilterCount>0?"#fff":"#555",cursor:"pointer",...SS,fontSize:13,borderRadius:20,transition:"all 0.2s"}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+              {t.filter}{activeFilterCount>0&&<span style={{background:"#c9a96e",color:"#0d0d0d",borderRadius:"50%",width:19,height:19,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:700}}>{activeFilterCount}</span>}
+            </button>
+            <div style={{width:1,height:20,background:"#ede8e2"}} />
+            <button onClick={()=>setInSalonOnly(v=>!v)} style={{padding:"8px 16px",border:`1.5px solid ${inSalonOnly?"#c9a96e":"#ede8e2"}`,background:inSalonOnly?"#fdf8ee":"#fff",color:inSalonOnly?"#c9a96e":"#666",cursor:"pointer",...SS,fontSize:13,fontWeight:inSalonOnly?600:400,borderRadius:20,whiteSpace:"nowrap"}}>
+              📍 In salon
+            </button>
+            {cats.filter(c=>c!=="All").slice(0,4).map(cat=>{
+              const a=prodCats.includes(cat);
+              return <button key={cat} onClick={()=>setProdCats(prev=>prev.includes(cat)?prev.filter(x=>x!==cat):[...prev,cat])} style={{padding:"8px 16px",border:`1.5px solid ${a?"#1a1a1a":"#ede8e2"}`,background:a?"#1a1a1a":"#fff",color:a?"#fff":"#666",cursor:"pointer",...SS,fontSize:13,borderRadius:20,whiteSpace:"nowrap"}}>{cat}</button>;
+            })}
+            <input placeholder={t.search_product} value={prodSearch} onChange={e=>setProdSearch(e.target.value)} style={{padding:"8px 14px",border:"1px solid #ede8e2",background:"#fff",...SS,fontSize:13,color:"#555",outline:"none",borderRadius:20,width:200,marginLeft:"auto"}}/>
           </div>
-          {/* RIGHT: map */}
-          <div style={{flex:1,position:"sticky",top:0,height:"100%",display:"flex",flexDirection:"column"}}>
-            {/* map hint */}
-            <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px 16px",display:"flex",alignItems:"center",gap:10,flexShrink:0,minHeight:60}}>
-              {selProd ? (
-                <>
-                  {(()=>{const img=getProdImg(selProd);return img&&<div style={{width:40,height:40,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>;})()}
-                  <div style={{flex:1,minWidth:0}}>
-                    <p style={{...SS,fontSize:"12px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{selProd.product_name}</p>
-                    <p style={{...SS,fontSize:"11px",color:"#c9a96e",margin:0}}>📍 Salons where you can discover this product ({(selProd._salons||[]).length})</p>
-                  </div>
-                  <button onClick={()=>{setSelProd(null);setMapSalons([]);setProdVisibleIds(null);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:"18px",lineHeight:1,flexShrink:0}}>×</button>
-                </>
-              ) : (
-                <><span style={{fontSize:"14px"}}>💡</span><span style={{...SS,fontSize:"12px",color:"#aaa"}}>Click a product to see where it's available</span></>
-              )}
+
+          {/* SPLIT: LIST + MAP */}
+          <div style={{display:"flex",gap:28}}>
+            {/* LEFT: product list */}
+            <div style={{flex:"1 1 55%",minWidth:0}}>
+              {loading?<div style={{textAlign:"center",padding:"60px 0",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:"#ccc"}}>{t.loading}</div>
+              :<>
+                {(()=>{
+                  const visibleFp = prodVisibleIds ? fp.filter(p=>(p._salons||[]).some(s=>prodVisibleIds.includes(s.id))) : fp;
+                  return <>
+                    <p style={{...SS,fontSize:"12px",color:"#aaa",marginBottom:16}}>
+                      {visibleFp.length} products
+                      {selProd&&` · Showing ${(selProd._salons||[]).length} salon${(selProd._salons||[]).length!==1?"s":""} on map`}
+                    </p>
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
+                      {visibleFp.map((p,i)=>(
+                        <ProductCard key={p.id} p={p} i={i} t={t}
+                          onClick={()=>handleProdClick(p)}
+                          onDetail={handleProdDetail}
+                          user={user} favourites={favourites} onToggleFav={onToggleFav}
+                          isSelected={selProd?.id===p.id}
+                        />
+                      ))}
+                    </div>
+                  </>;
+                })()}
+              </>}
             </div>
-            {lr
-              ? <SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} onBoundsChange={setProdVisibleIds} />
-              : <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>
-            }
+
+            {/* RIGHT: sticky map */}
+            <div style={{flex:"1 1 45%",position:"sticky",top:84,alignSelf:"flex-start",height:"calc(100vh - 120px)",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",display:"flex",flexDirection:"column"}}>
+              {/* map hint */}
+              <div style={{background:"#fff",borderBottom:"1px solid #ede8e2",padding:"10px 16px",display:"flex",alignItems:"center",gap:10,flexShrink:0,minHeight:60}}>
+                {selProd ? (
+                  <>
+                    {(()=>{const img=getProdImg(selProd);return img&&<div style={{width:40,height:40,borderRadius:8,overflow:"hidden",flexShrink:0}}><img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>;})()}
+                    <div style={{flex:1,minWidth:0}}>
+                      <p style={{...SS,fontSize:"12px",fontWeight:600,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{selProd.product_name}</p>
+                      <p style={{...SS,fontSize:"11px",color:"#c9a96e",margin:0}}>📍 Salons where you can discover this product ({(selProd._salons||[]).length})</p>
+                    </div>
+                    <button onClick={()=>{setSelProd(null);setMapSalons([]);setProdVisibleIds(null);}} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:"18px",lineHeight:1,flexShrink:0}}>×</button>
+                  </>
+                ) : (
+                  <><span style={{fontSize:"14px"}}>💡</span><span style={{...SS,fontSize:"12px",color:"#aaa"}}>Click a product to see where it's available</span></>
+                )}
+              </div>
+              {lr
+                ? <SalonMap salons={mapSalons.length>0?mapSalons:salons} onPinClick={setSelSalon} onBoundsChange={setProdVisibleIds} fitToSalons={mapSalons.length>0?mapSalons:null} compact={true} />
+                : <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",...SS,color:"#aaa"}}>{t.loading}</div>
+              }
+            </div>
           </div>
         </div>
       )}
@@ -2243,7 +2253,7 @@ function AccountPage({lang,setLang,salons,allProducts}) {
           </button>
         </div>
       ) : (
-        <ProgramDesktopNav user={userId?{}:null}/>
+        <ProgramDesktopNav user={userId?{}:null} lang={lang} setLang={setLang}/>
       )}
       {isMobile&&<MobileTabBar active="/account"/>}
       <main style={{maxWidth:700,margin:"0 auto",padding:"40px clamp(16px,4vw,32px) 80px"}}>
@@ -4399,12 +4409,11 @@ function ProgramSalonCard({ salon, onClick, featured }) {
   );
 }
 
-function ProgramDesktopNav({ user, onAuthClick }) {
+function ProgramDesktopNav({ user, onAuthClick, lang, setLang }) {
   const navigate = useNavigate();
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const NAV_LINKS = [
-    {label:"Home", path:"/program-home"},
     {label:"Programs", path:"/programs"},
     {label:"Salons", path:"/salons"},
     {label:"Products", path:"/products"},
@@ -4421,6 +4430,11 @@ function ProgramDesktopNav({ user, onAuthClick }) {
         ))}
       </div>
       <div style={{display:"flex",alignItems:"center",gap:14,flexShrink:0}}>
+        {lang&&setLang&&(
+          <div style={{display:"flex",border:"1px solid #333",borderRadius:20,overflow:"hidden"}}>
+            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"4px 9px",border:"none",cursor:"pointer",...SS,fontSize:11,fontWeight:600,color:lang===l?"#0d0d0d":"#777",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+          </div>
+        )}
         <button onClick={()=>navigate("/search")} style={{width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
@@ -4434,6 +4448,7 @@ function ProgramDesktopNav({ user, onAuthClick }) {
 }
 
 function ProgramHomePage({ salons, allProducts, loading, programs, loadingPrograms, user, onAuthClick }) {
+  const [lang, setLang] = useState("fr");
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
@@ -4566,7 +4581,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
         <div style={{background:"#ffffff",minHeight:"100vh"}}>
 
           {/* DESKTOP NAV */}
-          <ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>
+          <ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>
 
           {/* HERO */}
           <section style={{padding:"clamp(48px,6vw,88px) clamp(24px,4vw,56px) clamp(32px,4vw,48px)",maxWidth:1240,margin:"0 auto"}}>
@@ -4669,6 +4684,7 @@ const SAMPLE_SALONS = [
 
 // ── PROGRAMS LIST PAGE (전체보기 — swipeable carousel + synced map) ─────────
 function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick }) {
+  const [lang, setLang] = useState("fr");
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
@@ -4857,7 +4873,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
       </div>
       ) : (
         <div style={{background:"#ffffff",minHeight:"100vh"}}>
-          <ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>
+          <ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>
 
           <div style={{padding:"32px clamp(24px,4vw,56px) 8px",maxWidth:1280,margin:"0 auto"}}>
             <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Featured Programs</p>
