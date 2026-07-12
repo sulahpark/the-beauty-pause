@@ -4198,6 +4198,8 @@ const FEATURED_PROGRAMS = [
     priceOriginal: 65,
     price: 49,
     tag: "인기",
+    description: "한국식 두피 스케일링과 헤드 마사지를 결합한 시그니처 프로그램입니다. 두피 진단 후 맞춤 스케일링, 프리미엄 헤어 트리트먼트, 릴랙싱 마사지까지 이어집니다.",
+    includes: ["두피 진단 및 상담","K-스타일 두피 스케일링","프리미엄 헤어 트리트먼트","헤드 & 숄더 마사지"],
   },
   {
     id: "p2",
@@ -4209,6 +4211,8 @@ const FEATURED_PROGRAMS = [
     priceOriginal: 55,
     price: 39,
     tag: "신규",
+    description: "한국 스킨케어 루틴을 기반으로 한 페이셜 프로그램입니다. 딥 클렌징부터 K-뷰티 앰플 부스팅, 마스크팩까지 한 번에 경험할 수 있어요.",
+    includes: ["딥 클렌징 & 각질 케어","K-뷰티 앰플 부스팅","시트 마스크팩","페이셜 마사지"],
   },
   {
     id: "p3",
@@ -4220,6 +4224,8 @@ const FEATURED_PROGRAMS = [
     priceOriginal: 60,
     price: 45,
     tag: null,
+    description: "손상된 모발에 집중 영양을 공급하는 한국식 헤어팩 트리트먼트입니다. 모발 진단 후 맞춤 팩을 도포하고, 스팀 케어로 흡수율을 높입니다.",
+    includes: ["모발 진단","맞춤 K-헤어팩 도포","스팀 케어","마무리 스타일링"],
   },
 ];
 
@@ -4276,12 +4282,28 @@ function ProgramSalonCard({ salon, onClick }) {
   );
 }
 
-function ProgramHomePage({ salons, loading }) {
+function ProgramHomePage({ salons, allProducts, loading }) {
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
-  const partnerSalons = (salons||[]).slice(0, 8);
+  const exploreSalons = (salons||[]).slice(0, 8);
+
+  // build a brand -> product-photo list, pick one random photo per brand (re-picked each mount)
+  const brandCards = useState(()=>{
+    const byBrand = {};
+    (allProducts||[]).forEach(p=>{
+      const brand = p.brand_name || (Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null));
+      if (!brand) return;
+      const img = getProdImg(p);
+      if (!img) return;
+      if (!byBrand[brand]) byBrand[brand]=[];
+      byBrand[brand].push(img);
+    });
+    return Object.entries(byBrand).map(([brand,imgs])=>({
+      brand, img: imgs[Math.floor(Math.random()*imgs.length)]
+    }));
+  })[0];
 
   return (
     <>
@@ -4314,22 +4336,22 @@ function ProgramHomePage({ salons, loading }) {
           <div className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px"}}>
             {FEATURED_PROGRAMS.map((p,i)=>(
               <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
-                <ProgramCard program={p} onClick={()=>{}}/>
+                <ProgramCard program={p} onClick={()=>navigate(`/program/${p.id}`)}/>
               </div>
             ))}
           </div>
         </div>
 
-        {/* PARTNER SALONS */}
-        <div>
+        {/* EXPLORE SALONS */}
+        <div style={{marginBottom:32}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-            <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Partner Salons</p>
+            <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Explore Salons</p>
             <button style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 20px"}}>
             {loading
               ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>불러오는 중…</p>
-              : partnerSalons.map((s,i)=>(
+              : exploreSalons.map((s,i)=>(
                   <div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.03}s both`}}>
                     <ProgramSalonCard salon={s} onClick={()=>{}}/>
                   </div>
@@ -4337,6 +4359,26 @@ function ProgramHomePage({ salons, loading }) {
             }
           </div>
         </div>
+
+        {/* MEET THE BRANDS */}
+        {brandCards.length>0&&(
+          <div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
+              <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}>✦ Meet the Brands</p>
+              <button style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            </div>
+            <div className="hide-scrollbar" style={{display:"flex",gap:16,overflowX:"auto",padding:"0 20px 4px"}}>
+              {brandCards.map(({brand,img})=>(
+                <div key={brand} style={{flexShrink:0,width:64,textAlign:"center"}}>
+                  <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",border:"2px solid #e8d9b8",marginBottom:6}}>
+                    <img src={img} alt={brand} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                  </div>
+                  <p style={{...SS,fontSize:10,color:"#555",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{brand}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* BOTTOM NAV */}
         <div style={{position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",width:"calc(100% - 40px)",maxWidth:400,zIndex:500}}>
@@ -4351,6 +4393,118 @@ function ProgramHomePage({ salons, loading }) {
                 {tab.icon}
               </button>
             ))}
+          </div>
+        </div>
+
+      </div>
+    </>
+  );
+}
+
+// ── PROGRAM DETAIL PAGE ──────────────────────────────────────────────────────
+function ProgramDetailPage({ salons }) {
+  const { programId } = useParams();
+  const navigate = useNavigate();
+  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const CG = {fontFamily:"'Cormorant Garamond',serif"};
+
+  const program = FEATURED_PROGRAMS.find(p=>p.id===programId);
+  const salon = (salons||[]).find(s=>s.name===program?.salonName);
+  const [payMethod, setPayMethod] = useState(null); // "online" | "onsite"
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  if (!program) return (
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,fontFamily:"'Noto Sans KR',sans-serif"}}>
+      <p style={{fontSize:16,color:"#888"}}>프로그램을 찾을 수 없어요.</p>
+      <button onClick={()=>navigate("/program-home")} style={{padding:"10px 20px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:10,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13}}>홈으로</button>
+    </div>
+  );
+
+  const handleReserve = (method) => {
+    setPayMethod(method);
+    setShowConfirm(true);
+    // TODO: "online" → Stripe checkout (재사용: /api/create-checkout 참고해 프로그램용 엔드포인트 연결)
+    // TODO: "onsite" → Airtable에 예약 요청 기록 (럭키드로우 제출 패턴과 동일), Planity 예약 링크 안내
+  };
+
+  return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#fdfaf5}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
+
+      <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#fdfaf5",paddingBottom:110,position:"relative",animation:"fadeUp 0.4s ease both"}}>
+
+        {/* HERO IMAGE */}
+        <div style={{position:"relative",width:"100%",height:320,overflow:"hidden",background:"#eee2c8"}}>
+          <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.55) 0%,transparent 40%)"}}/>
+          <button onClick={()=>navigate(-1)} style={{position:"absolute",top:18,left:18,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          {program.tag&&<div style={{position:"absolute",top:18,right:18,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"5px 12px",borderRadius:20}}>{program.tag}</div>}
+        </div>
+
+        {/* INFO */}
+        <div style={{padding:"22px 20px 0"}}>
+          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 6px"}}>{program.salonName}</p>
+          <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+            <span style={{...SS,fontSize:12,color:"#999"}}>⏱ {program.duration}</span>
+            {salon?.area&&<><span style={{color:"#e5ddc8"}}>·</span><span style={{...SS,fontSize:12,color:"#999"}}>📍 {salon.area}</span></>}
+          </div>
+
+          {/* price */}
+          <div style={{display:"flex",alignItems:"baseline",gap:10,padding:"16px 0",borderTop:"1px solid #f0e5cf",borderBottom:"1px solid #f0e5cf",marginBottom:20}}>
+            {program.priceOriginal&&<span style={{...SS,fontSize:14,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
+            <span style={{...KR,fontSize:26,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+            <span style={{...KR,fontSize:12,color:"#999",marginLeft:"auto"}}>1인 기준</span>
+          </div>
+
+          {/* description */}
+          <p style={{...KR,fontSize:13,color:"#666",lineHeight:1.8,marginBottom:24}}>{program.description}</p>
+
+          {/* includes */}
+          <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>포함 내용</p>
+          <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:28}}>
+            {program.includes.map(i=>(
+              <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
+                <span style={{color:"#c9a96e",fontSize:12,flexShrink:0}}>✓</span>
+                <p style={{...KR,fontSize:13,color:"#555",margin:"7px 0"}}>{i}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* salon mini card */}
+          {salon&&(
+            <div style={{marginBottom:28}}>
+              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>진행 살롱</p>
+              <ProgramSalonCard salon={salon} onClick={()=>{}}/>
+            </div>
+          )}
+        </div>
+
+        {/* RESERVE CONFIRMATION (inline, appears after choosing a method) */}
+        {showConfirm&&(
+          <div style={{margin:"0 20px 20px",background:"#fff",border:"1px solid #e8d9b8",borderRadius:16,padding:18}}>
+            {payMethod==="online" ? (
+              <p style={{...KR,fontSize:13,color:"#555",lineHeight:1.7,margin:0}}>온라인 결제 페이지로 곧 연결돼요. (Stripe 결제 연동 준비 중)</p>
+            ) : (
+              <p style={{...KR,fontSize:13,color:"#555",lineHeight:1.7,margin:0}}>예약 요청이 접수됐어요. 실제 방문 시간 예약은 <strong>Planity</strong>에서 진행되며, 결제는 살롱 현장에서 하시면 돼요. (연동 준비 중)</p>
+            )}
+          </div>
+        )}
+
+        {/* FIXED CTA */}
+        <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#fdfaf5",borderTop:"1px solid #f0e5cf",padding:"14px 20px calc(14px + env(safe-area-inset-bottom))"}}>
+          <div style={{maxWidth:480,margin:"0 auto",display:"flex",gap:10}}>
+            <button onClick={()=>handleReserve("onsite")}
+              style={{flex:1,padding:"14px",background:"#fff",color:"#1a1a1a",border:"1px solid #ddd",borderRadius:12,cursor:"pointer",...KR,fontSize:13,fontWeight:700}}>
+              살롱에서 결제
+            </button>
+            <button onClick={()=>handleReserve("online")}
+              style={{flex:1,padding:"14px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:13,fontWeight:700}}>
+              온라인 결제 · €{program.price}
+            </button>
           </div>
         </div>
 
@@ -4449,7 +4603,8 @@ export default function App() {
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
-        <Route path="/program-home" element={<ProgramHomePage salons={salons} loading={loading} />} />
+        <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} />} />
+        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} />} />
         <Route path="*" element={<LandingPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
