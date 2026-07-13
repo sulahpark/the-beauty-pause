@@ -171,6 +171,8 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
   const markMap = useRef({}); // salonId -> marker element
   const salRef = useRef(salons);
   salRef.current = salons;
+  const fitRef = useRef(fitToSalons);
+  fitRef.current = fitToSalons;
 
   // highlight effect when highlightId changes
   useEffect(()=>{
@@ -221,7 +223,20 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     }
     const onResize = () => { try{ m.invalidateSize(); }catch(e){} };
     window.addEventListener("resize", onResize);
-    return ()=>{ window.removeEventListener("resize", onResize); m.remove(); map.current=null; marks.current=[]; };
+    let ro = null;
+    if (compact && window.ResizeObserver) {
+      ro = new ResizeObserver(()=>{
+        try {
+          m.invalidateSize();
+          const list = fitRef.current || salRef.current;
+          const pts = (list||[]).filter(s=>+s.latitude&&+s.longitude).map(s=>[+s.latitude,+s.longitude]);
+          if (pts.length>0) m.fitBounds(pts,{padding:[28,28],maxZoom:15});
+        } catch(e){}
+      });
+      const el = document.getElementById(uid.current);
+      if (el) ro.observe(el);
+    }
+    return ()=>{ window.removeEventListener("resize", onResize); if(ro) ro.disconnect(); m.remove(); map.current=null; marks.current=[]; };
   },[]);
 
   // fitBounds when fitToSalons prop changes (e.g. product selected)
@@ -1221,7 +1236,7 @@ function useProgramsData() {
           const productImg = getAttachmentUrl(r.product_image);
           return {
             id: r.id,
-            name: r.name || "",
+            name: r.name || r.Name || r.program_name || "",
             salonIds: Array.isArray(r.salons) ? r.salons : [],
             image: getAttachmentUrl(r.image),
             duration: r.duration || "",
@@ -4426,7 +4441,7 @@ function ProgramCard({ program, salons, onClick }) {
   );
 }
 
-function ProgramSalonCard({ salon, onClick, featured }) {
+function ProgramSalonCard({ salon, onClick, featured, showAddress }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const img = getSalonImg(salon);
@@ -4441,15 +4456,21 @@ function ProgramSalonCard({ salon, onClick, featured }) {
       <div style={{flex:1,minWidth:0}}>
         {featured&&<span style={{display:"inline-block",...SS,fontSize:9,color:"#c9a96e",fontWeight:700,letterSpacing:0.3,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:20,padding:"2px 8px",marginBottom:5}}>✦ Featured Program 운영중</span>}
         <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</p>
-        <p style={{...SS,fontSize:11,color:"#aaa",margin:"0 0 6px"}}>{salon.area || "Paris"}</p>
-        {prods.length>0&&(
-          <div style={{display:"flex",gap:4,alignItems:"center"}}>
-            {prods.slice(0,4).map(p=>{
-              const pi=getProdImg(p);
-              return pi?<div key={p.id} style={{width:20,height:20,borderRadius:5,overflow:"hidden",border:"1px solid #f0e5cf"}}><img src={pi} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;
-            })}
-            <span style={{...SS,fontSize:9,color:"#c9a96e",fontWeight:700,marginLeft:2}}>+{prods.length} K-Beauty</span>
-          </div>
+        {showAddress ? (
+          <p style={{...SS,fontSize:11,color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.address || salon.area || "Paris"}</p>
+        ) : (
+          <>
+            <p style={{...SS,fontSize:11,color:"#aaa",margin:"0 0 6px"}}>{salon.area || "Paris"}</p>
+            {prods.length>0&&(
+              <div style={{display:"flex",gap:4,alignItems:"center"}}>
+                {prods.slice(0,4).map(p=>{
+                  const pi=getProdImg(p);
+                  return pi?<div key={p.id} style={{width:20,height:20,borderRadius:5,overflow:"hidden",border:"1px solid #f0e5cf"}}><img src={pi} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;
+                })}
+                <span style={{...SS,fontSize:9,color:"#c9a96e",fontWeight:700,marginLeft:2}}>+{prods.length} K-Beauty</span>
+              </div>
+            )}
+          </>
         )}
       </div>
       <span style={{color:"#ddd",fontSize:18,flexShrink:0}}>›</span>
@@ -5125,7 +5146,7 @@ function SearchPage({ salons, allProducts, programs }) {
   );
 }
 
-function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingPrograms }) {
+function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, loadingPrograms }) {
   const { programId } = useParams();
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
@@ -5134,6 +5155,7 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
   const isMobile = window.innerWidth<768;
 
   const program = (programs||[]).find(p=>p.id===programId);
+  const matchedProduct = program?.product ? (allProducts||[]).find(p=>p.product_name===program.product.name) : null;
   const liveSalons = (salons||[]).filter(s=>(program?.salonIds||[]).includes(s.id));
   const programSalons = liveSalons.length>0 ? liveSalons : SAMPLE_SALONS.slice(0,2);
   const [step, setStep] = useState("idle"); // idle | select-salon | payment | confirmed
@@ -5213,14 +5235,16 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
           {program.product&&(
             <div style={{marginBottom:24}}>
               <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>콜라보 제품</p>
-              <div style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14}}>
+              <div onClick={()=>navigate("/products", matchedProduct?{state:{selectProductId:matchedProduct.id}}:undefined)}
+                style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14,cursor:"pointer"}}>
                 <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
                   <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                 </div>
-                <div style={{minWidth:0}}>
+                <div style={{minWidth:0,flex:1}}>
                   <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{program.product.brand}</p>
                   <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.3}}>{program.product.name}</p>
                 </div>
+                <span style={{color:"#ddd",fontSize:18,flexShrink:0}}>›</span>
               </div>
             </div>
           )}
@@ -5252,7 +5276,7 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
               <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>진행 살롱 {programSalons.length>1&&`(${programSalons.length}곳)`}</p>
               <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:14}}>
                 {programSalons.map(s=>(
-                  <ProgramSalonCard key={s.id} salon={s} onClick={()=>{}}/>
+                  <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
                 ))}
               </div>
               <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:200}}>
@@ -5299,14 +5323,16 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
               {program.product&&(
                 <div style={{marginBottom:28,maxWidth:600}}>
                   <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>콜라보 제품</p>
-                  <div style={{display:"flex",alignItems:"center",gap:14,background:"#faf7f4",border:"1px solid #f0e9dc",borderRadius:16,padding:14}}>
+                  <div onClick={()=>navigate("/products", matchedProduct?{state:{selectProductId:matchedProduct.id}}:undefined)}
+                    style={{display:"flex",alignItems:"center",gap:14,background:"#faf7f4",border:"1px solid #f0e9dc",borderRadius:16,padding:14,cursor:"pointer"}}>
                     <div style={{width:60,height:60,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
                       <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                     </div>
-                    <div style={{minWidth:0}}>
+                    <div style={{minWidth:0,flex:1}}>
                       <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:0.5,textTransform:"uppercase",fontWeight:700,margin:"0 0 3px"}}>{program.product.brand}</p>
                       <p style={{...KR,fontSize:14,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.3}}>{program.product.name}</p>
                     </div>
+                    <span style={{color:"#ddd",fontSize:18,flexShrink:0}}>›</span>
                   </div>
                 </div>
               )}
@@ -5328,7 +5354,7 @@ function ProgramDetailPage({ salons, user, onAuthClick, programs, loadingProgram
                   <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>진행 살롱 {programSalons.length>1&&`(${programSalons.length}곳)`}</p>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
                     {programSalons.map(s=>(
-                      <ProgramSalonCard key={s.id} salon={s} onClick={()=>{}}/>
+                      <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
                     ))}
                   </div>
                   <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
@@ -5550,7 +5576,7 @@ export default function App() {
         <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/search" element={<SearchPage salons={salons} allProducts={allProducts} programs={programs} />} />
-        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
         <Route path="*" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
