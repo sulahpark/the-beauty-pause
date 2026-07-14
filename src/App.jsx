@@ -1231,14 +1231,15 @@ function useProgramsData() {
           const includes = typeof r.includes === "string"
             ? r.includes.split("\n").map(s=>s.trim()).filter(Boolean)
             : [];
-          const productBrand = firstOf(r.product_brand);
-          const productName = firstOf(r.product_name);
-          const productImg = getAttachmentUrl(r.product_image);
+          const salonsField = r.salons || r.Salons || r.salon || r.Salon;
+          const productBrand = firstOf(r.product_brand || r.Product_brand || r.brand);
+          const productName = firstOf(r.product_name || r.Product_name);
+          const productImg = getAttachmentUrl(r.product_image || r.Product_image);
           return {
             id: r.id,
             name: r.name || r.Name || r.program_name || "",
-            salonIds: Array.isArray(r.salons) ? r.salons : [],
-            image: getAttachmentUrl(r.image),
+            salonIds: Array.isArray(salonsField) ? salonsField : [],
+            image: getAttachmentUrl(r.image || r.Image),
             duration: r.duration || "",
             priceOriginal: r.price_original || null,
             price: r.price || null,
@@ -4435,19 +4436,18 @@ function ProgramCard({ program, salons, onClick }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   return (
-    <div onClick={onClick} style={{flexShrink:0,width:220,cursor:"pointer"}}>
-      <div style={{position:"relative",width:220,height:260,borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
+    <div onClick={onClick} style={{flexShrink:0,width:296,cursor:"pointer"}}>
+      <div style={{position:"relative",width:296,height:176,borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
         {program.image
           ? <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
           : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:"#c9a96e"}}>✦</span></div>}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.78) 0%,rgba(13,13,13,0.1) 48%,transparent 72%)"}}/>
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.8) 0%,rgba(13,13,13,0.15) 44%,transparent 68%)"}}/>
         <div style={{position:"absolute",top:12,left:12,right:12,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           {program.category&&<div style={{background:"rgba(255,255,255,0.92)",color:"#1a1a1a",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,textTransform:"uppercase",padding:"4px 10px",borderRadius:20}}>{program.category}</div>}
           {program.tag&&<div style={{background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"4px 10px",borderRadius:20}}>{program.tag}</div>}
         </div>
-        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"16px 16px 18px"}}>
-          <p style={{...KR,fontSize:20,fontWeight:700,color:"#fff",margin:"0 0 8px",lineHeight:1.3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.name}</p>
-          <p style={{...SS,fontSize:10,color:"rgba(255,255,255,0.5)",margin:"0 0 8px"}}>{program.periodLabel}</p>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"14px 16px 16px"}}>
+          <p style={{...KR,fontSize:21,fontWeight:700,color:"#fff",margin:"0 0 8px",lineHeight:1.25,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.name}</p>
           <div style={{display:"flex",alignItems:"baseline",gap:6}}>
             {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.45)",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
             <span style={{...SS,fontSize:16,color:"#c9a96e",fontWeight:700}}>€{program.price}</span>
@@ -4598,14 +4598,18 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           {/* GREETING */}
           <div style={{padding:"36px 20px 40px",background:"linear-gradient(135deg,#faf3e6,#f0dfb8)"}}>
             <p style={{...SS,fontSize:11,color:"#a8823f",letterSpacing:2,textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}><Star size={13}/> The Beauty Pause</p>
-            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.4}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</p>
+            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.4}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</p>
+            <p style={{...KR,fontSize:13,color:"#6b5a3a",lineHeight:1.7,margin:0}}>파트너 살롱과 함께 운영하는 K-뷰티 프로그램을 신청하고, 새로운 뷰티 경험을 즐겨보세요.</p>
           </div>
 
           {/* FEATURED PROGRAMS */}
           <div style={{marginBottom:32,position:"relative"}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-              <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Featured Programs</p>
-              <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            <div style={{padding:"0 20px",marginBottom:14}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Featured Programs</p>
+                <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+              </div>
+              <p style={{...KR,fontSize:12,color:"#999",margin:0}}>다양한 K-뷰티 프로그램을 만나보세요.</p>
             </div>
             <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px",scrollBehavior:"smooth"}}>
               {loadingPrograms
@@ -4619,12 +4623,12 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
             </div>
             {!loadingPrograms&&programs.length>1&&(
               <>
-                <button onClick={()=>programScrollRef.current?.scrollBy({left:-236,behavior:"smooth"})}
-                  style={{position:"absolute",left:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                <button onClick={()=>programScrollRef.current?.scrollBy({left:-310,behavior:"smooth"})}
+                  style={{position:"absolute",left:6,top:"calc(50% + 14px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
-                <button onClick={()=>programScrollRef.current?.scrollBy({left:236,behavior:"smooth"})}
-                  style={{position:"absolute",right:6,top:"calc(50% + 7px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                <button onClick={()=>programScrollRef.current?.scrollBy({left:310,behavior:"smooth"})}
+                  style={{position:"absolute",right:6,top:"calc(50% + 14px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
               </>
@@ -4633,9 +4637,12 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
 
           {/* EXPLORE SALONS */}
           <div style={{marginBottom:32}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-              <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Explore Salons</p>
-              <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+            <div style={{padding:"0 20px",marginBottom:14}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Explore Salons</p>
+                <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+              </div>
+              <p style={{...KR,fontSize:12,color:"#999",margin:0}}>파리 살롱에서 K-뷰티를 만나보세요.</p>
             </div>
             <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 20px"}}>
               {loading
@@ -4652,9 +4659,12 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           {/* MEET THE BRANDS */}
           {brandCards.length>0&&(
             <div>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",marginBottom:14}}>
-                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Meet the Brands</p>
-                <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+              <div style={{padding:"0 20px",marginBottom:14}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                  <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Meet the Brands</p>
+                  <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+                </div>
+                <p style={{...KR,fontSize:12,color:"#999",margin:0}}>파리에 런칭한 K-뷰티 브랜드를 만나보세요.</p>
               </div>
               <div className="hide-scrollbar" style={{display:"flex",gap:16,overflowX:"auto",padding:"0 20px 4px"}}>
                 {brandCards.map(({brand,img})=>(
@@ -4684,14 +4694,17 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
             <div style={{maxWidth:1240,margin:"0 auto"}}>
               <p style={{...SS,fontSize:11,color:"#a8823f",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}><Star size={14}/> The Beauty Pause</p>
               <h1 style={{...KR,fontSize:"clamp(28px,3.4vw,44px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px",lineHeight:1.3,maxWidth:640}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</h1>
-              <p style={{...KR,fontSize:15,color:"#6b5a3a",lineHeight:1.8,maxWidth:520}}>파트너 살롱과 함께 기획한 K-뷰티 프로그램을 신청하고, 살롱에서 직접 즐겨보세요.</p>
+              <p style={{...KR,fontSize:15,color:"#6b5a3a",lineHeight:1.8,maxWidth:520}}>파트너 살롱과 함께 운영하는 K-뷰티 프로그램을 신청하고, 새로운 뷰티 경험을 즐겨보세요.</p>
             </div>
           </section>
 
           {/* FEATURED PROGRAMS */}
           <section style={{padding:"48px clamp(24px,4vw,56px) 56px",maxWidth:1240,margin:"0 auto",position:"relative"}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
-              <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={20}/> Featured Programs</p>
+            <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:20}}>
+              <div>
+                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> Featured Programs</p>
+                <p style={{...KR,fontSize:13,color:"#999",margin:0}}>다양한 K-뷰티 프로그램을 만나보세요.</p>
+              </div>
               <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
             </div>
             <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:20,overflowX:"auto",paddingBottom:4}}>
@@ -4710,8 +4723,11 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
 
           {/* EXPLORE SALONS */}
           <section style={{padding:"0 clamp(24px,4vw,56px) 56px",maxWidth:1240,margin:"0 auto"}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
-              <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={20}/> Explore Salons</p>
+            <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:20}}>
+              <div>
+                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> Explore Salons</p>
+                <p style={{...KR,fontSize:13,color:"#999",margin:0}}>파리 살롱에서 K-뷰티를 만나보세요.</p>
+              </div>
               <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
             </div>
             {loading ? (
@@ -4730,8 +4746,11 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           {/* MEET THE BRANDS */}
           {brandCards.length>0&&(
             <section style={{padding:"0 clamp(24px,4vw,56px) 80px",maxWidth:1240,margin:"0 auto"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:24}}>
-                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={20}/> Meet the Brands</p>
+              <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:24}}>
+                <div>
+                  <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> Meet the Brands</p>
+                  <p style={{...KR,fontSize:13,color:"#999",margin:0}}>파리에 런칭한 K-뷰티 브랜드를 만나보세요.</p>
+                </div>
                 <button onClick={()=>navigate("/products")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
               </div>
               <div style={{display:"flex",flexWrap:"wrap",gap:28}}>
@@ -4772,13 +4791,6 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
 }
 
 // ── PROGRAM DETAIL PAGE ──────────────────────────────────────────────────────
-// fallback sample salons — used when live Airtable data doesn't yet contain
-// salons matching a program's salonNames (so the reservation flow can be demoed)
-const SAMPLE_SALONS = [
-  { id: "sample-1", name: "Aura Beauté Paris", area: "Le Marais", latitude: 48.859, longitude: 2.362, salon_image: "/images/aurabeaute04.jpeg", rdv: "https://www.planity.com", _products: [] },
-  { id: "sample-2", name: "BelleGlamour Paris", area: "Saint-Germain", latitude: 48.853, longitude: 2.334, salon_image: "/images/IMG_0189.jpeg", rdv: "https://www.planity.com", _products: [] },
-  { id: "sample-3", name: "Salon Rêve", area: "Bastille", latitude: 48.853, longitude: 2.372, salon_image: "/images/IMG_0175.jpeg", rdv: "https://www.planity.com", _products: [] },
-];
 
 // ── PROGRAMS LIST PAGE (전체보기 — swipeable carousel + synced map) ─────────
 function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick }) {
@@ -4788,7 +4800,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
   const isMobile = window.innerWidth<768;
-  const CARD_W = 220, GAP = 16, STEP = CARD_W+GAP;
+  const CARD_W = 296, GAP = 14, STEP = CARD_W+GAP;
 
   const scrollRef = useRef(null);
   const [centerIndex, setCenterIndex] = useState(0);
@@ -4813,7 +4825,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
   const activeSalons = useMemo(()=>{
     if (!activeProgram) return [];
     const live = (salons||[]).filter(s=>(activeProgram.salonIds||[]).includes(s.id));
-    return live.length>0 ? live : SAMPLE_SALONS.slice(0,2);
+    return live;
   }, [activeProgram, salons]);
 
   // list-view filters
@@ -4825,7 +4837,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
     const map = {};
     (programs||[]).forEach(p=>{
       const live = (salons||[]).filter(s=>(p.salonIds||[]).includes(s.id));
-      map[p.id] = live.length>0 ? live : SAMPLE_SALONS.slice(0,2);
+      map[p.id] = live;
     });
     return map;
   }, [programs, salons]);
@@ -5175,7 +5187,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
   const program = (programs||[]).find(p=>p.id===programId);
   const matchedProduct = program?.product ? (allProducts||[]).find(p=>p.product_name===program.product.name) : null;
   const liveSalons = (salons||[]).filter(s=>(program?.salonIds||[]).includes(s.id));
-  const programSalons = liveSalons.length>0 ? liveSalons : SAMPLE_SALONS.slice(0,2);
+  const programSalons = liveSalons;
   const [step, setStep] = useState("idle"); // idle | select-salon | payment | confirmed
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [orderId, setOrderId] = useState(null);
