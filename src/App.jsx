@@ -1316,11 +1316,12 @@ function Nav({lang,setLang,onJoin,user,onAuthClick}) {
   );
 }
 
-function MobileTabBar({active}) {
+function MobileTabBar({active, alwaysVisible}) {
   const navigate = useNavigate();
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(!!alwaysVisible);
   const hideTimer = useRef(null);
   useEffect(() => {
+    if (alwaysVisible) return; // no scroll-based hide — page has no window-level scroll (e.g. fixed map layout)
     const onScroll = () => {
       setVisible(true);
       if (hideTimer.current) clearTimeout(hideTimer.current);
@@ -1328,7 +1329,7 @@ function MobileTabBar({active}) {
     };
     window.addEventListener("scroll", onScroll, {passive:true});
     return () => { window.removeEventListener("scroll", onScroll); if (hideTimer.current) clearTimeout(hideTimer.current); };
-  }, []);
+  }, [alwaysVisible]);
 
   const activeKey = (active==="/"||active==="/program-home") ? "home"
     : active?.startsWith("/program") ? "program"
@@ -1661,7 +1662,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
             <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
             <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} user={user} favourites={favourites} onToggleFav={onToggleFav} />
           </div>
-          {!sheetExpanded&&<MobileTabBar active="/salons"/>}
+          {!sheetExpanded&&<MobileTabBar active="/salons" alwaysVisible/>}
         </div>
       ):(
         <div style={{maxWidth:1280,margin:"0 auto"}}>
@@ -1996,7 +1997,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
       {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>}
-      {isMobile&&!prodSheetExpanded&&<MobileTabBar active="/products"/>}
+      {isMobile&&!prodSheetExpanded&&<MobileTabBar active="/products" alwaysVisible/>}
 
       {/* SPLIT LAYOUT */}
       {isMobile ? (
@@ -4584,7 +4585,7 @@ function ProgramDesktopNav({ user, onAuthClick, lang, setLang }) {
       <button onClick={()=>navigate("/search")}
         style={{flex:1,maxWidth:420,display:"flex",alignItems:"center",gap:8,padding:"9px 16px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,cursor:"pointer",textAlign:"left"}}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" style={{flexShrink:0}}><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.4)"}}>프로그램, 살롱, 제품을 검색해보세요</span>
+        <span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.4)"}}>{PT[lang||"en"].searchPlaceholder}</span>
       </button>
       <div style={{display:"flex",alignItems:"center",gap:14,flexShrink:0,marginLeft:"auto"}}>
         {user
@@ -4624,7 +4625,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
   }, [salons, programs, isMobile]);
 
   // build a brand -> product-photo list, pick one random photo per brand (re-picked each mount)
-  const brandCards = useState(()=>{
+  const brandCards = useMemo(()=>{
     const byBrand = {};
     (allProducts||[]).forEach(p=>{
       const brand = p.brand_name || (Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null));
@@ -4637,7 +4638,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
     return Object.entries(byBrand).map(([brand,imgs])=>({
       brand, img: imgs[Math.floor(Math.random()*imgs.length)]
     }));
-  })[0];
+  }, [allProducts]);
 
   return (
     <>
@@ -4670,7 +4671,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           </div>
 
           {/* FEATURED PROGRAMS */}
-          <div style={{marginBottom:32,position:"relative"}}>
+          <div style={{marginTop:28,marginBottom:32,position:"relative"}}>
             <div style={{padding:"0 20px",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
                 <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> {pt.featuredPrograms}</p>
