@@ -2215,6 +2215,7 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
 // ── ACCOUNT PAGE ─────────────────────────────────────────────────────────────
 function AccountPage({lang,setLang,salons,allProducts}) {
   const navigate=useNavigate();
+  const pt = PT[lang==="fr"?"fr":"en"];
   const [profile,setProfile]=useState({first_name:"",email:"",area:""});
   const [favs,setFavs]=useState([]);
   const [programApps,setProgramApps]=useState([]);
@@ -2333,9 +2334,9 @@ function AccountPage({lang,setLang,salons,allProducts}) {
             <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:"11px",color:"#c9a96e",background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Browse →</button>
           </div>
           {loadingApps
-            ? <p style={{...KR,fontSize:"13px",color:"#ccc",textAlign:"center",padding:"16px 0"}}>불러오는 중…</p>
+            ? <p style={{...KR,fontSize:"13px",color:"#ccc",textAlign:"center",padding:"16px 0"}}>{pt.loading}</p>
             : programApps.length===0
-              ? <p style={{...KR,fontSize:"13px",color:"#ccc",textAlign:"center",padding:"16px 0"}}>아직 신청한 프로그램이 없어요.</p>
+              ? <p style={{...KR,fontSize:"13px",color:"#ccc",textAlign:"center",padding:"16px 0"}}>{pt.myProgramsEmpty}</p>
               : <div style={{display:"flex",flexDirection:"column",gap:10}}>
                   {programApps.map(a=>(
                     <div key={a.id} style={{border:"1px solid #f0e9dc",borderRadius:14,padding:"14px 16px"}}>
@@ -2343,8 +2344,8 @@ function AccountPage({lang,setLang,salons,allProducts}) {
                         <p style={{...SS,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.3}}>{a.program_name}</p>
                         <span style={{...SS,fontSize:"9px",color:"#c9a96e",fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"4px 10px",borderRadius:20,flexShrink:0}}>{a.status||"pending"}</span>
                       </div>
-                      <p style={{...KR,fontSize:"12px",color:"#888",margin:"0 0 3px"}}>살롱: {a.salon_name||"미정"}</p>
-                      <p style={{...SS,fontSize:"11px",color:"#bbb",margin:0}}>{a.payment_method==="onsite"?"살롱에서 직접 결제":a.payment_method} · {a.order_id}</p>
+                      <p style={{...KR,fontSize:"12px",color:"#888",margin:"0 0 3px"}}>{pt.applicationSalon}: {a.salon_name||"TBD"}</p>
+                      <p style={{...SS,fontSize:"11px",color:"#bbb",margin:0}}>{a.payment_method==="onsite"?pt.payAtSalon:a.payment_method} · {a.order_id}</p>
                     </div>
                   ))}
                 </div>
@@ -4472,7 +4473,7 @@ function ProgramSalonCard({ salon, onClick, featured, showAddress }) {
           : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,color:"#c9a96e"}}>{salon.name?.[0]}</span></div>}
       </div>
       <div style={{flex:1,minWidth:0}}>
-        {featured&&<span style={{display:"inline-block",...SS,fontSize:9,color:"#c9a96e",fontWeight:700,letterSpacing:0.3,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:20,padding:"2px 8px",marginBottom:5}}>✦ Featured Program 운영중</span>}
+        {featured&&<span style={{display:"inline-block",...SS,fontSize:9,color:"#c9a96e",fontWeight:700,letterSpacing:0.3,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:20,padding:"2px 8px",marginBottom:5}}>✦ Featured Program</span>}
         <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</p>
         {showAddress ? (
           <p style={{...SS,fontSize:11,color:"#aaa",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.address || salon.area || "Paris"}</p>
@@ -4495,6 +4496,66 @@ function ProgramSalonCard({ salon, onClick, featured, showAddress }) {
     </div>
   );
 }
+
+// ── PROGRAM SITE TRANSLATIONS (en default, fr on toggle) ────────────────────
+const PT = {
+  en: {
+    heroTitle1:"Discover K-Beauty", heroTitle2:"programs in Paris salons",
+    heroSub:"Book a K-Beauty program run with our partner salons, and enjoy a new beauty experience.",
+    featuredPrograms:"Featured Programs", featuredProgramsSub:"Discover a range of K-Beauty programs.",
+    exploreSalons:"Explore Salons", exploreSalonsSub:"Meet K-Beauty at Paris salons.",
+    meetBrands:"Meet the Brands", meetBrandsSub:"Meet the K-Beauty brands launched in Paris.",
+    seeAll:"See all", loading:"Loading…", noPrograms:"No programs available yet.",
+    searchPlaceholder:"Search programs, salons, products",
+    period:"Available period", program:"program", programsCount:"programs",
+    filter:"Filter", allCategories:"All", allAreas:"All areas",
+    noMatch:"No matches found.",
+    collabProduct:"Collab Product", included:"What's Included",
+    runningSalons:"Salons", locations:"locations",
+    mapLoading:"Loading map…", noLocation:"No salon location to show",
+    applyNow:"Apply for this program", loginAndApply:"Log in to apply",
+    selectSalonTitle:"Select a salon", paymentMethodTitle:"Payment method",
+    payAtSalonNote:"salon", payAtSalonDesc:"you'll pay directly when you visit.",
+    confirmPay:"Pay at salon · Confirm application",
+    applicationComplete:"Application complete", paymentMethodLabel:"Payment method",
+    payAtSalon:"Pay at salon (on visit)", applicationSalon:"Salon",
+    applicationNumber:"Application no.", place:"Place",
+    visitNote:"Please choose your visit date and time on the salon's booking system.",
+    bookSalon:"Book your salon visit →", linkPending:"Booking link coming soon",
+    backHome:"Back to home", notFound:"Program not found.",
+    searchHint:"Start typing to search…", searchNoResults:"No results for",
+    duration:"Duration", price:"Price", back:"Back",
+    myProgramsEmpty:"No programs applied yet.",
+  },
+  fr: {
+    heroTitle1:"Découvrez le K-Beauty", heroTitle2:"dans les salons parisiens",
+    heroSub:"Réservez un programme K-Beauty avec nos salons partenaires, et profitez d'une nouvelle expérience beauté.",
+    featuredPrograms:"Programmes en vedette", featuredProgramsSub:"Découvrez nos programmes K-Beauty.",
+    exploreSalons:"Explorer les salons", exploreSalonsSub:"Découvrez le K-Beauty dans les salons parisiens.",
+    meetBrands:"Découvrir les marques", meetBrandsSub:"Découvrez les marques K-Beauty lancées à Paris.",
+    seeAll:"Voir tout", loading:"Chargement…", noPrograms:"Aucun programme disponible pour le moment.",
+    searchPlaceholder:"Rechercher programmes, salons, produits",
+    period:"Période disponible", program:"programme", programsCount:"programmes",
+    filter:"Filtrer", allCategories:"Tous", allAreas:"Tous les quartiers",
+    noMatch:"Aucun résultat.",
+    collabProduct:"Produit associé", included:"Ce qui est inclus",
+    runningSalons:"Salons", locations:"salons",
+    mapLoading:"Chargement de la carte…", noLocation:"Aucun salon à afficher",
+    applyNow:"Réserver ce programme", loginAndApply:"Se connecter pour réserver",
+    selectSalonTitle:"Choisissez un salon", paymentMethodTitle:"Mode de paiement",
+    payAtSalonNote:"salon", payAtSalonDesc:"vous payez directement sur place.",
+    confirmPay:"Payer sur place · Confirmer",
+    applicationComplete:"Réservation confirmée", paymentMethodLabel:"Mode de paiement",
+    payAtSalon:"Paiement sur place", applicationSalon:"Salon",
+    applicationNumber:"N° de réservation", place:"Lieu",
+    visitNote:"Choisissez votre date et heure de visite sur le système de réservation du salon.",
+    bookSalon:"Réserver un créneau →", linkPending:"Lien de réservation à venir",
+    backHome:"Retour à l'accueil", notFound:"Programme introuvable.",
+    searchHint:"Commencez à taper pour rechercher…", searchNoResults:"Aucun résultat pour",
+    duration:"Durée", price:"Prix", back:"Retour",
+    myProgramsEmpty:"Aucun programme réservé pour l'instant.",
+  },
+};
 
 function Star({size=16}) {
   return <span style={{background:"linear-gradient(135deg,#f0e2c0,#c9a96e 55%,#9c7830)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",fontSize:size,display:"inline-block"}}>✦</span>;
@@ -4541,7 +4602,8 @@ function ProgramDesktopNav({ user, onAuthClick, lang, setLang }) {
 }
 
 function ProgramHomePage({ salons, allProducts, loading, programs, loadingPrograms, user, onAuthClick }) {
-  const [lang, setLang] = useState("fr");
+  const [lang, setLang] = useState("en");
+  const pt = PT[lang];
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
@@ -4585,35 +4647,40 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
         <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:96,position:"relative"}}>
 
           {/* HEADER */}
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px",gap:10}}>
             <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
               <span style={{...CG,fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
               <span style={{...CG,fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
             </div>
-            <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </button>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginLeft:"auto"}}>
+              <div style={{display:"flex",border:"1px solid #f0e5cf",borderRadius:20,overflow:"hidden"}}>
+                {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"6px 9px",border:"none",cursor:"pointer",...SS,fontSize:10,fontWeight:600,color:lang===l?"#0d0d0d":"#999",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+              </div>
+              <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+            </div>
           </div>
 
           {/* GREETING */}
           <div style={{padding:"36px 20px 40px",background:"linear-gradient(135deg,#faf3e6,#f0dfb8)"}}>
             <p style={{...SS,fontSize:11,color:"#a8823f",letterSpacing:2,textTransform:"uppercase",fontWeight:700,margin:"0 0 10px"}}><Star size={13}/> The Beauty Pause</p>
-            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.4}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</p>
-            <p style={{...KR,fontSize:13,color:"#6b5a3a",lineHeight:1.7,margin:0}}>파트너 살롱과 함께 운영하는 K-뷰티 프로그램을 신청하고, 새로운 뷰티 경험을 즐겨보세요.</p>
+            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.4}}>{pt.heroTitle1}<br/>{pt.heroTitle2}</p>
+            <p style={{...KR,fontSize:13,color:"#6b5a3a",lineHeight:1.7,margin:0}}>{pt.heroSub}</p>
           </div>
 
           {/* FEATURED PROGRAMS */}
           <div style={{marginBottom:32,position:"relative"}}>
             <div style={{padding:"0 20px",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Featured Programs</p>
-                <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> {pt.featuredPrograms}</p>
+                <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>{pt.seeAll}</button>
               </div>
-              <p style={{...KR,fontSize:12,color:"#999",margin:0}}>다양한 K-뷰티 프로그램을 만나보세요.</p>
+              <p style={{...KR,fontSize:12,color:"#999",margin:0}}>{pt.featuredProgramsSub}</p>
             </div>
             <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:14,overflowX:"auto",padding:"0 20px 4px",scrollBehavior:"smooth"}}>
               {loadingPrograms
-                ? <p style={{...KR,fontSize:13,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+                ? <p style={{...KR,fontSize:13,color:"#bbb",padding:"24px 0"}}>{pt.loading}</p>
                 : programs.map((p,i)=>(
                     <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
                       <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
@@ -4639,14 +4706,14 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           <div style={{marginBottom:32}}>
             <div style={{padding:"0 20px",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Explore Salons</p>
-                <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+                <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> {pt.exploreSalons}</p>
+                <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>{pt.seeAll}</button>
               </div>
-              <p style={{...KR,fontSize:12,color:"#999",margin:0}}>파리 살롱에서 K-뷰티를 만나보세요.</p>
+              <p style={{...KR,fontSize:12,color:"#999",margin:0}}>{pt.exploreSalonsSub}</p>
             </div>
             <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 20px"}}>
               {loading
-                ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>불러오는 중…</p>
+                ? <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"24px 0"}}>{pt.loading}</p>
                 : exploreSalons.map((s,i)=>(
                     <div key={s.id} style={{animation:`fadeUp 0.4s ease ${i*0.03}s both`}}>
                       <ProgramSalonCard salon={s} featured={s._featured} onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
@@ -4661,10 +4728,10 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
             <div>
               <div style={{padding:"0 20px",marginBottom:14}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                  <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Meet the Brands</p>
-                  <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>전체보기</button>
+                  <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> {pt.meetBrands}</p>
+                  <button onClick={()=>navigate("/products")} style={{...SS,fontSize:12,color:"#c9a96e",fontWeight:600,background:"none",border:"none",cursor:"pointer"}}>{pt.seeAll}</button>
                 </div>
-                <p style={{...KR,fontSize:12,color:"#999",margin:0}}>파리에 런칭한 K-뷰티 브랜드를 만나보세요.</p>
+                <p style={{...KR,fontSize:12,color:"#999",margin:0}}>{pt.meetBrandsSub}</p>
               </div>
               <div className="hide-scrollbar" style={{display:"flex",gap:16,overflowX:"auto",padding:"0 20px 4px"}}>
                 {brandCards.map(({brand,img})=>(
@@ -4693,8 +4760,8 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           <section style={{background:"linear-gradient(135deg,#faf3e6,#f0dfb8)",padding:"clamp(56px,7vw,96px) clamp(24px,4vw,56px) clamp(48px,6vw,72px)"}}>
             <div style={{maxWidth:1240,margin:"0 auto"}}>
               <p style={{...SS,fontSize:11,color:"#a8823f",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}><Star size={14}/> The Beauty Pause</p>
-              <h1 style={{...KR,fontSize:"clamp(28px,3.4vw,44px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px",lineHeight:1.3,maxWidth:640}}>파리 살롱에서<br/>K-뷰티 프로그램을 만나보세요</h1>
-              <p style={{...KR,fontSize:15,color:"#6b5a3a",lineHeight:1.8,maxWidth:520}}>파트너 살롱과 함께 운영하는 K-뷰티 프로그램을 신청하고, 새로운 뷰티 경험을 즐겨보세요.</p>
+              <h1 style={{...KR,fontSize:"clamp(28px,3.4vw,44px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px",lineHeight:1.3,maxWidth:640}}>{pt.heroTitle1}<br/>{pt.heroTitle2}</h1>
+              <p style={{...KR,fontSize:15,color:"#6b5a3a",lineHeight:1.8,maxWidth:520}}>{pt.heroSub}</p>
             </div>
           </section>
 
@@ -4702,16 +4769,16 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           <section style={{padding:"48px clamp(24px,4vw,56px) 56px",maxWidth:1240,margin:"0 auto",position:"relative"}}>
             <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:20}}>
               <div>
-                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> Featured Programs</p>
-                <p style={{...KR,fontSize:13,color:"#999",margin:0}}>다양한 K-뷰티 프로그램을 만나보세요.</p>
+                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> {pt.featuredPrograms}</p>
+                <p style={{...KR,fontSize:13,color:"#999",margin:0}}>{pt.featuredProgramsSub}</p>
               </div>
-              <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
+              <button onClick={()=>navigate("/programs")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>{pt.seeAll} →</button>
             </div>
             <div ref={programScrollRef} className="hide-scrollbar" style={{display:"flex",gap:20,overflowX:"auto",paddingBottom:4}}>
               {loadingPrograms
-                ? <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+                ? <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>{pt.loading}</p>
                 : programs.length===0
-                  ? <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>준비 중인 프로그램이 없어요.</p>
+                  ? <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>{pt.noPrograms}</p>
                   : programs.map((p,i)=>(
                       <div key={p.id} style={{animation:`fadeUp 0.4s ease ${i*0.05}s both`}}>
                         <ProgramCard program={p} salons={salons} onClick={()=>navigate(`/program/${p.id}`)}/>
@@ -4725,13 +4792,13 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
           <section style={{padding:"0 clamp(24px,4vw,56px) 56px",maxWidth:1240,margin:"0 auto"}}>
             <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:20}}>
               <div>
-                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> Explore Salons</p>
-                <p style={{...KR,fontSize:13,color:"#999",margin:0}}>파리 살롱에서 K-뷰티를 만나보세요.</p>
+                <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> {pt.exploreSalons}</p>
+                <p style={{...KR,fontSize:13,color:"#999",margin:0}}>{pt.exploreSalonsSub}</p>
               </div>
-              <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
+              <button onClick={()=>navigate("/salons")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>{pt.seeAll} →</button>
             </div>
             {loading ? (
-              <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>불러오는 중…</p>
+              <p style={{...KR,fontSize:14,color:"#bbb",padding:"24px 0"}}>{pt.loading}</p>
             ) : (
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16}}>
                 {exploreSalons.map((s,i)=>(
@@ -4748,10 +4815,10 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
             <section style={{padding:"0 clamp(24px,4vw,56px) 80px",maxWidth:1240,margin:"0 auto"}}>
               <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:24}}>
                 <div>
-                  <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> Meet the Brands</p>
-                  <p style={{...KR,fontSize:13,color:"#999",margin:0}}>파리에 런칭한 K-뷰티 브랜드를 만나보세요.</p>
+                  <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}><Star size={20}/> {pt.meetBrands}</p>
+                  <p style={{...KR,fontSize:13,color:"#999",margin:0}}>{pt.meetBrandsSub}</p>
                 </div>
-                <button onClick={()=>navigate("/products")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>전체보기 →</button>
+                <button onClick={()=>navigate("/products")} style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,background:"none",border:"1px solid #f0d0d0",cursor:"pointer",padding:"7px 16px",borderRadius:20}}>{pt.seeAll} →</button>
               </div>
               <div style={{display:"flex",flexWrap:"wrap",gap:28}}>
                 {brandCards.map(({brand,img})=>(
@@ -4794,7 +4861,8 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
 
 // ── PROGRAMS LIST PAGE (전체보기 — swipeable carousel + synced map) ─────────
 function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick }) {
-  const [lang, setLang] = useState("fr");
+  const [lang, setLang] = useState("en");
+  const pt = PT[lang];
   const navigate = useNavigate();
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
@@ -4880,13 +4948,16 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
           <button onClick={()=>navigate("/program-home")} style={{width:36,height:36,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> Featured Programs</p>
+          <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> {pt.featuredPrograms}</p>
+          <div style={{display:"flex",border:"1px solid #f0e5cf",borderRadius:20,overflow:"hidden",marginLeft:"auto"}}>
+            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"6px 9px",border:"none",cursor:"pointer",...SS,fontSize:10,fontWeight:600,color:lang===l?"#0d0d0d":"#999",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+          </div>
         </div>
 
         {loadingPrograms ? (
-          <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>불러오는 중…</p>
+          <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>{pt.loading}</p>
         ) : (programs||[]).length===0 ? (
-          <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>준비 중인 프로그램이 없어요.</p>
+          <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>{pt.noPrograms}</p>
         ) : (
           <>
             {/* CAROUSEL */}
@@ -4923,9 +4994,9 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
             {/* SYNCED MAP */}
             <div style={{margin:"0 20px 32px",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
               {!lr ? (
-                <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>
+                <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>{pt.mapLoading}</div>
               ) : activeSalons.length===0 ? (
-                <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>표시할 살롱 위치가 없어요</div>
+                <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>{pt.noLocation}</div>
               ) : (
                 <SalonMap salons={activeSalons} fitToSalons={activeSalons} compact={true} />
               )}
@@ -4933,31 +5004,31 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
 
             {/* FILTERS */}
             <div style={{padding:"0 20px",marginBottom:14}}>
-              <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>전체 프로그램</p>
+              <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>{pt.featuredPrograms}</p>
               <div className="hide-scrollbar" style={{display:"flex",gap:8,overflowX:"auto",marginBottom:10,paddingBottom:2}}>
                 {categories.map(c=>{
                   const active = catFilter===c;
                   return (
                     <button key={c} onClick={()=>setCatFilter(c)}
                       style={{flexShrink:0,padding:"7px 14px",borderRadius:20,border:`1.5px solid ${active?"#1a1a1a":"#f0e5cf"}`,background:active?"#1a1a1a":"#fff",color:active?"#fff":"#666",cursor:"pointer",...SS,fontSize:12,fontWeight:500}}>
-                      {c==="All"?"전체":c}
+                      {c==="All"?pt.allCategories:c}
                     </button>
                   );
                 })}
               </div>
               <select value={areaFilter} onChange={e=>setAreaFilter(e.target.value)}
                 style={{width:"100%",padding:"9px 12px",border:"1px solid #f0e5cf",borderRadius:10,background:"#fff",...SS,fontSize:12,color:"#555",outline:"none"}}>
-                {areas.map(a=><option key={a} value={a}>{a==="All"?"모든 지역":a}</option>)}
+                {areas.map(a=><option key={a} value={a}>{a==="All"?pt.allAreas:a}</option>)}
               </select>
             </div>
 
             {/* LIST */}
             <div style={{padding:"0 20px 40px",display:"flex",flexDirection:"column",gap:8}}>
               {filteredPrograms.length===0 ? (
-                <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"32px 0"}}>조건에 맞는 프로그램이 없어요.</p>
+                <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"32px 0"}}>{pt.noMatch}</p>
               ) : filteredPrograms.map(p=>{
                 const pSalons = programSalonsMap[p.id]||[];
-                const salonLabel = pSalons.length>1 ? `${pSalons[0]?.name} 외 ${pSalons.length-1}곳` : pSalons[0]?.name;
+                const salonLabel = pSalons.length>1 ? `${pSalons[0]?.name} +${pSalons.length-1}` : pSalons[0]?.name;
                 return (
                   <div key={p.id} onClick={()=>navigate(`/program/${p.id}`)}
                     style={{display:"flex",gap:12,alignItems:"center",background:"#fff",border:"1px solid #f0e9dc",borderRadius:14,padding:10,cursor:"pointer"}}>
@@ -4986,13 +5057,13 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
           <ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>
 
           <div style={{padding:"32px clamp(24px,4vw,56px) 8px",maxWidth:1280,margin:"0 auto"}}>
-            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={22}/> Featured Programs</p>
+            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={22}/> {pt.featuredPrograms}</p>
           </div>
 
           {loadingPrograms ? (
-            <p style={{...KR,fontSize:14,color:"#bbb",textAlign:"center",padding:"80px 0"}}>불러오는 중…</p>
+            <p style={{...KR,fontSize:14,color:"#bbb",textAlign:"center",padding:"80px 0"}}>{pt.loading}</p>
           ) : (programs||[]).length===0 ? (
-            <p style={{...KR,fontSize:14,color:"#bbb",textAlign:"center",padding:"80px 0"}}>준비 중인 프로그램이 없어요.</p>
+            <p style={{...KR,fontSize:14,color:"#bbb",textAlign:"center",padding:"80px 0"}}>{pt.noPrograms}</p>
           ) : (
             <div style={{maxWidth:1280,margin:"0 auto",padding:"16px clamp(24px,4vw,56px) 60px"}}>
 
@@ -5003,14 +5074,14 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                   return (
                     <button key={c} onClick={()=>setCatFilter(c)}
                       style={{padding:"8px 16px",borderRadius:20,border:`1.5px solid ${active?"#1a1a1a":"#ede8e2"}`,background:active?"#1a1a1a":"#fff",color:active?"#fff":"#666",cursor:"pointer",...SS,fontSize:13,fontWeight:500}}>
-                      {c==="All"?"전체":c}
+                      {c==="All"?pt.allCategories:c}
                     </button>
                   );
                 })}
                 <div style={{width:1,height:20,background:"#ede8e2"}}/>
                 <select value={areaFilter} onChange={e=>setAreaFilter(e.target.value)}
                   style={{padding:"8px 14px",border:"1px solid #ede8e2",borderRadius:10,background:"#fff",...SS,fontSize:13,color:"#555",outline:"none",cursor:"pointer"}}>
-                  {areas.map(a=><option key={a} value={a}>{a==="All"?"모든 지역":a}</option>)}
+                  {areas.map(a=><option key={a} value={a}>{a==="All"?pt.allAreas:a}</option>)}
                 </select>
               </div>
 
@@ -5020,12 +5091,12 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                 <div style={{flex:"1 1 55%",minWidth:0}}>
                   <p style={{...SS,fontSize:12,color:"#aaa",margin:"0 0 16px"}}>{filteredPrograms.length} programs</p>
                   {filteredPrograms.length===0 ? (
-                    <p style={{...KR,fontSize:14,color:"#bbb",textAlign:"center",padding:"60px 0"}}>조건에 맞는 프로그램이 없어요.</p>
+                    <p style={{...KR,fontSize:14,color:"#bbb",textAlign:"center",padding:"60px 0"}}>{pt.noMatch}</p>
                   ) : (
                     <div style={{display:"flex",flexDirection:"column",gap:14}}>
                       {filteredPrograms.map(p=>{
                         const pSalons = programSalonsMap[p.id]||[];
-                        const salonLabel = pSalons.length>1 ? `${pSalons[0]?.name} 외 ${pSalons.length-1}곳` : pSalons[0]?.name;
+                        const salonLabel = pSalons.length>1 ? `${pSalons[0]?.name} +${pSalons.length-1}` : pSalons[0]?.name;
                         return (
                           <div key={p.id} onClick={()=>navigate(`/program/${p.id}`)}
                             onMouseEnter={()=>setHoveredProgramId(p.id)} onMouseLeave={()=>setHoveredProgramId(null)}
@@ -5060,9 +5131,9 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                 {/* RIGHT: sticky map */}
                 <div style={{flex:"1 1 45%",position:"sticky",top:84,alignSelf:"flex-start",height:"calc(100vh - 120px)",borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc"}}>
                   {!lr ? (
-                    <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>지도 불러오는 중…</div>
+                    <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>{pt.mapLoading}</div>
                   ) : desktopMapSalons.length===0 ? (
-                    <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>표시할 살롱 위치가 없어요</div>
+                    <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>{pt.noLocation}</div>
                   ) : (
                     <SalonMap salons={desktopMapSalons} fitToSalons={desktopMapSalons} highlightId={hoveredProgramId?desktopMapSalons[0]?.id:null} compact={true} />
                   )}
@@ -5079,6 +5150,8 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
 // ── SEARCH PAGE ───────────────────────────────────────────────────────────────
 function SearchPage({ salons, allProducts, programs }) {
   const navigate = useNavigate();
+  const [lang,setLang] = useState("en");
+  const pt = PT[lang];
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
@@ -5132,16 +5205,19 @@ function SearchPage({ salons, allProducts, programs }) {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div style={{flex:1,position:"relative"}}>
-            <input ref={inputRef} value={q} onChange={e=>setQ(e.target.value)} placeholder="프로그램, 살롱, 제품 검색…"
+            <input ref={inputRef} value={q} onChange={e=>setQ(e.target.value)} placeholder={pt.searchPlaceholder}
               style={{width:"100%",padding:"11px 14px",border:"1px solid #f0e5cf",borderRadius:20,background:"#faf7f4",...SS,fontSize:13,color:"#1a1a1a",outline:"none",boxSizing:"border-box"}}/>
+          </div>
+          <div style={{display:"flex",border:"1px solid #f0e5cf",borderRadius:20,overflow:"hidden",flexShrink:0}}>
+            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"6px 9px",border:"none",cursor:"pointer",...SS,fontSize:10,fontWeight:600,color:lang===l?"#0d0d0d":"#999",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
           </div>
         </div>
 
         <div style={{padding:"0 20px"}}>
           {!query ? (
-            <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"40px 0"}}>검색어를 입력해보세요.</p>
+            <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"40px 0"}}>{pt.searchHint}</p>
           ) : totalResults===0 ? (
-            <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"40px 0"}}>"{q}"에 대한 검색 결과가 없어요.</p>
+            <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"40px 0"}}>{pt.searchNoResults} "{q}"</p>
           ) : (
             <>
               {matchedPrograms.length>0&&(
@@ -5179,6 +5255,8 @@ function SearchPage({ salons, allProducts, programs }) {
 function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, loadingPrograms }) {
   const { programId } = useParams();
   const navigate = useNavigate();
+  const [lang, setLang] = useState("en");
+  const pt = PT[lang];
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
@@ -5196,13 +5274,13 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
   if (loadingPrograms) return (
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Noto Sans KR',sans-serif",color:"#bbb",fontSize:14}}>불러오는 중…</div>
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Noto Sans KR',sans-serif",color:"#bbb",fontSize:14}}>{pt.loading}</div>
   );
 
   if (!program) return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,fontFamily:"'Noto Sans KR',sans-serif"}}>
-      <p style={{fontSize:16,color:"#888"}}>프로그램을 찾을 수 없어요.</p>
-      <button onClick={()=>navigate("/program-home")} style={{padding:"10px 20px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:10,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13}}>홈으로</button>
+      <p style={{fontSize:16,color:"#888"}}>{pt.notFound}</p>
+      <button onClick={()=>navigate("/program-home")} style={{padding:"10px 20px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:10,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13}}>{pt.backHome}</button>
     </div>
   );
 
@@ -5234,7 +5312,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
       }
     } catch(e) {
       console.error("Program signup error:", e);
-      setSubmitError("신청 기록 저장 중 문제가 있었지만, 신청 자체는 완료됐어요.");
+      setSubmitError("There was an issue saving your application, but it went through.");
     }
     setStep("confirmed");
   };
@@ -5253,18 +5331,21 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
           <button onClick={()=>navigate(-1)} style={{position:"absolute",top:18,left:18,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
+          <div style={{position:"absolute",top:18,left:64,display:"flex",border:"1px solid rgba(255,255,255,0.4)",borderRadius:20,overflow:"hidden",background:"rgba(0,0,0,0.3)"}}>
+            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"7px 10px",border:"none",cursor:"pointer",...SS,fontSize:10,fontWeight:600,color:lang===l?"#0d0d0d":"#fff",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
+          </div>
           {program.tag&&<div style={{position:"absolute",top:18,right:18,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"5px 12px",borderRadius:20}}>{program.tag}</div>}
         </div>
 
         {/* INFO */}
         <div style={{padding:"22px 20px 0"}}>
           <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
-          <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>이용 가능 기간 📅 {program.periodLabel}</p>
+          <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>{pt.period} 📅 {program.periodLabel}</p>
 
           {/* collab product — circular card (right under period, product matters most) */}
           {program.product&&(
             <div style={{marginBottom:24}}>
-              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>콜라보 제품</p>
+              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>{pt.collabProduct}</p>
               <div onClick={()=>navigate("/products", matchedProduct?{state:{selectProductId:matchedProduct.id}}:undefined)}
                 style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14,cursor:"pointer"}}>
                 <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
@@ -5290,7 +5371,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
           <p style={{...KR,fontSize:13,color:"#666",lineHeight:1.8,marginBottom:24}}>{program.description}</p>
 
           {/* includes */}
-          <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>포함 내용</p>
+          <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>{pt.included}</p>
           <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:28}}>
             {program.includes.map(i=>(
               <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -5303,7 +5384,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
           {/* salons running this program */}
           {programSalons.length>0&&(
             <div style={{marginBottom:28}}>
-              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>진행 살롱 {programSalons.length>1&&`(${programSalons.length}곳)`}</p>
+              <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>{pt.runningSalons} {programSalons.length>1&&`(${programSalons.length} ${pt.locations})`}</p>
               <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:14}}>
                 {programSalons.map(s=>(
                   <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
@@ -5312,7 +5393,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:200}}>
                 {lr
                   ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} />
-                  : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>지도 불러오는 중…</div>}
+                  : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>{pt.mapLoading}</div>}
               </div>
             </div>
           )}
@@ -5324,7 +5405,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
             <div style={{maxWidth:480,margin:"0 auto"}}>
               <button onClick={()=>{ if (!user) { onAuthClick?.("login"); return; } setStep("select-salon"); }}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
-                {user ? "프로그램 신청하기" : "로그인하고 신청하기"}
+                {user ? pt.applyNow : pt.loginAndApply}
               </button>
             </div>
           </div>
@@ -5332,14 +5413,14 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
       </div>
       ) : (
         <div style={{background:"#ffffff",minHeight:"100vh"}}>
-          <ProgramDesktopNav user={user} onAuthClick={onAuthClick}/>
+          <ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>
 
           <div style={{maxWidth:1200,margin:"0 auto",padding:"40px clamp(24px,4vw,56px) 80px",display:"flex",gap:40}}>
 
             {/* LEFT: content */}
             <div style={{flex:"1 1 60%",minWidth:0}}>
               <button onClick={()=>navigate(-1)} style={{background:"none",border:"none",cursor:"pointer",...SS,fontSize:13,color:"#999",padding:0,marginBottom:20,display:"flex",alignItems:"center",gap:6}}>
-                ‹ 뒤로가기
+                ‹ {pt.back}
               </button>
 
               <div style={{position:"relative",width:"100%",height:380,borderRadius:20,overflow:"hidden",background:"#eee2c8",marginBottom:28}}>
@@ -5348,11 +5429,11 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               </div>
 
               <p style={{...KR,fontSize:28,fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3}}>{program.name}</p>
-              <p style={{...SS,fontSize:13,color:"#999",margin:"0 0 24px"}}>이용 가능 기간 📅 {program.periodLabel}</p>
+              <p style={{...SS,fontSize:13,color:"#999",margin:"0 0 24px"}}>{pt.period} 📅 {program.periodLabel}</p>
 
               {program.product&&(
                 <div style={{marginBottom:28,maxWidth:600}}>
-                  <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>콜라보 제품</p>
+                  <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.collabProduct}</p>
                   <div onClick={()=>navigate("/products", matchedProduct?{state:{selectProductId:matchedProduct.id}}:undefined)}
                     style={{display:"flex",alignItems:"center",gap:14,background:"#faf7f4",border:"1px solid #f0e9dc",borderRadius:16,padding:14,cursor:"pointer"}}>
                     <div style={{width:60,height:60,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
@@ -5369,7 +5450,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
               <p style={{...KR,fontSize:15,color:"#666",lineHeight:1.9,marginBottom:28,maxWidth:600}}>{program.description}</p>
 
-              <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>포함 내용</p>
+              <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.included}</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 24px",marginBottom:32,maxWidth:600}}>
                 {program.includes.map(i=>(
                   <div key={i} style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -5381,7 +5462,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
               {programSalons.length>0&&(
                 <div>
-                  <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>진행 살롱 {programSalons.length>1&&`(${programSalons.length}곳)`}</p>
+                  <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.runningSalons} {programSalons.length>1&&`(${programSalons.length} ${pt.locations})`}</p>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
                     {programSalons.map(s=>(
                       <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
@@ -5390,7 +5471,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                   <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
                     {lr
                       ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} />
-                      : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>지도 불러오는 중…</div>}
+                      : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>{pt.mapLoading}</div>}
                   </div>
                 </div>
               )}
@@ -5407,7 +5488,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
                 <button onClick={()=>{ if (!user) { onAuthClick?.("login"); return; } setStep("select-salon"); }}
                   style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
-                  {user ? "프로그램 신청하기" : "로그인하고 신청하기"}
+                  {user ? pt.applyNow : pt.loginAndApply}
                 </button>
               </div>
             </div>
@@ -5425,7 +5506,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                 <>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
                     <button onClick={()=>setStep("idle")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:18}}>‹</button>
-                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>살롱을 선택해주세요</p>
+                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>{pt.selectSalonTitle}</p>
                   </div>
                   <div style={{display:"flex",flexDirection:"column",gap:8}}>
                     {programSalons.map(s=>(
@@ -5439,19 +5520,19 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                 <>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
                     <button onClick={()=>setStep("select-salon")} style={{background:"none",border:"none",cursor:"pointer",padding:0,color:"#aaa",fontSize:18}}>‹</button>
-                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>결제 방식</p>
+                    <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:0}}>{pt.paymentMethodTitle}</p>
                   </div>
-                  <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name}에서 방문 당일 직접 결제하시면 돼요.</p>
+                  <p style={{...KR,fontSize:12,color:"#999",lineHeight:1.6,margin:"0 0 14px"}}>{selectedSalon?.name} — {pt.payAtSalonDesc}</p>
                   <button onClick={submitApplication}
                     style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
-                    살롱에서 직접 결제 · 신청 확정
+                    {pt.confirmPay}
                   </button>
                 </>
               )}
 
               {step==="confirmed" && (
                 <>
-                  <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ 신청이 완료되었습니다</p>
+                  <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 14px",textAlign:"center"}}>✦ {pt.applicationComplete}</p>
                   {submitError&&<p style={{...KR,fontSize:11,color:"#fb5607",margin:"0 0 12px",textAlign:"center"}}>{submitError}</p>}
 
                   {/* E-TICKET — gold background, framed photo */}
@@ -5465,41 +5546,41 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px 10px",marginBottom:14}}>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>이용 기간</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>{pt.period}</p>
                         <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>{program.periodLabel}</p>
                       </div>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>결제 방식</p>
-                        <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>살롱에서 직접 결제<br/>(방문 당일)</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>{pt.paymentMethodTitle}</p>
+                        <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>{pt.payAtSalon}</p>
                       </div>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>신청 살롱</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>{pt.applicationSalon}</p>
                         <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0}}>{selectedSalon?.name}</p>
                       </div>
                       <div>
-                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>신청 번호</p>
+                        <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>{pt.applicationNumber}</p>
                         <p style={{...SS,fontSize:12,color:"#1a1a1a",fontWeight:700,margin:0}}>{orderId}</p>
                       </div>
                     </div>
 
-                    <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>장소</p>
+                    <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.45)",margin:"0 0 3px"}}>{pt.place}</p>
                     <p style={{...KR,fontSize:12,color:"#1a1a1a",margin:0,lineHeight:1.5}}>{selectedSalon?.name}, {selectedSalon?.area || "Paris"}</p>
                   </div>
 
-                  <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px",textAlign:"center"}}>방문 날짜와 시간은 살롱 예약 시스템에서 선택해주세요.</p>
+                  <p style={{...KR,fontSize:11,color:"#999",lineHeight:1.6,margin:"0 0 12px",textAlign:"center"}}>{pt.visitNote}</p>
                   {selectedSalon?.rdv ? (
                     <a href={selectedSalon.rdv} target="_blank" rel="noopener noreferrer"
                       style={{display:"block",width:"100%",padding:"15px",background:"#1a1a1a",color:"#fff",border:"none",borderRadius:12,textDecoration:"none",textAlign:"center",...KR,fontSize:14,fontWeight:700,boxSizing:"border-box",marginBottom:10}}>
-                      살롱 예약하러가기 →
+                      {pt.bookSalon}
                     </a>
                   ) : (
                     <button disabled style={{width:"100%",padding:"15px",background:"#eee",color:"#aaa",border:"none",borderRadius:12,...KR,fontSize:14,fontWeight:700,marginBottom:10}}>
-                      살롱 예약 링크 준비 중
+                      {pt.linkPending}
                     </button>
                   )}
                   <button onClick={()=>{setStep("idle");navigate("/program-home");}}
                     style={{width:"100%",padding:"13px",background:"none",color:"#999",border:"none",cursor:"pointer",...KR,fontSize:12}}>
-                    홈으로 돌아가기
+                    {pt.backHome}
                   </button>
                 </>
               )}
