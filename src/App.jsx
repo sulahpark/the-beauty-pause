@@ -4439,7 +4439,7 @@ function ProgramCard({ program, salons, onClick }) {
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   return (
     <div onClick={onClick} style={{flexShrink:0,width:296,cursor:"pointer"}}>
-      <div style={{position:"relative",width:296,height:176,borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
+      <div style={{position:"relative",width:296,aspectRatio:"5/3",borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
         {program.image
           ? <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
           : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:"#c9a96e"}}>✦</span></div>}
@@ -5326,7 +5326,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
       <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:110,position:"relative",animation:"fadeUp 0.4s ease both"}}>
 
         {/* HERO IMAGE */}
-        <div style={{position:"relative",width:"100%",height:320,overflow:"hidden",background:"#eee2c8"}}>
+        <div style={{position:"relative",width:"100%",aspectRatio:"5/3",overflow:"hidden",background:"#eee2c8"}}>
           <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.55) 0%,transparent 40%)"}}/>
           <button onClick={()=>navigate(-1)} style={{position:"absolute",top:18,left:18,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.9)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
@@ -5424,7 +5424,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                 ‹ {pt.back}
               </button>
 
-              <div style={{position:"relative",width:"100%",height:380,borderRadius:20,overflow:"hidden",background:"#eee2c8",marginBottom:28}}>
+              <div style={{position:"relative",width:"100%",aspectRatio:"5/3",borderRadius:20,overflow:"hidden",background:"#eee2c8",marginBottom:28}}>
                 <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                 {program.tag&&<div style={{position:"absolute",top:18,left:18,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:11,fontWeight:700,letterSpacing:0.5,padding:"6px 14px",borderRadius:20}}>{program.tag}</div>}
               </div>
@@ -5539,7 +5539,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                   {/* E-TICKET — gold background, framed photo */}
                   <div style={{position:"relative",borderRadius:20,overflow:"hidden",background:"linear-gradient(160deg,#e8d9b8,#c9a96e)",marginBottom:14,padding:16}}>
                     <div style={{borderRadius:14,overflow:"hidden",marginBottom:16,border:"3px solid rgba(255,255,255,0.5)"}}>
-                      <img src={program.image} alt={program.name} style={{width:"100%",height:130,objectFit:"cover",display:"block"}}/>
+                      <img src={program.image} alt={program.name} style={{width:"100%",aspectRatio:"5/3",objectFit:"cover",display:"block"}}/>
                     </div>
 
                     <p style={{...SS,fontSize:9,color:"rgba(13,13,13,0.5)",letterSpacing:0.5,textTransform:"uppercase",margin:"0 0 4px"}}>The Beauty Pause</p>
