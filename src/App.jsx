@@ -792,7 +792,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
   const SNAP_MID = Math.round(VH * 0.44);
   const SNAP_FULL = VH;
 
-  const [sheetH, setSheetH] = useState(SNAP_COLLAPSED);
+  const [sheetH, setSheetH] = useState(SNAP_MID);
   const [pinned, setPinned] = useState(null);
   const listRef = useRef(null);
   const handleStartY = useRef(null);
@@ -1637,15 +1637,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column",transition:"all 0.34s cubic-bezier(0.32,0.72,0,1)"}}>
           {/* light header — slides up when sheet expanded */}
           <div id="salon-nav" style={{flexShrink:0,overflow:"hidden",maxHeight:sheetExpanded?0:60,transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",background:"#fff",borderBottom:"1px solid #f0e5cf"}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
-              <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
-              </div>
-              <button onClick={()=>navigate("/search")} style={{width:34,height:34,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
-            </div>
+            <ProgramMobileHeader lang={lang} setLang={setLang}/>
           </div>
           {/* filterbar — always visible */}
           <div style={{flexShrink:0,background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px clamp(12px,3vw,20px)",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap",zIndex:2}}>
@@ -1998,15 +1990,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:300,display:"flex",flexDirection:"column"}}>
           {/* nav — hides on full */}
           <div id="prod-nav" style={{flexShrink:0,overflow:"hidden",background:"#fff",borderBottom:"1px solid #f0e5cf",transition:"max-height 0.34s cubic-bezier(0.32,0.72,0,1)",maxHeight:60}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
-              <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
-              </div>
-              <button onClick={()=>navigate("/search")} style={{width:34,height:34,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
-            </div>
+            <ProgramMobileHeader lang={lang} setLang={setLang}/>
           </div>
           {/* filterbar — always visible */}
           <div style={{flexShrink:0,background:"#fff",borderBottom:"1px solid #ede8e2",padding:"9px 14px",display:"flex",alignItems:"center",gap:8,overflowX:"auto",flexWrap:"nowrap",zIndex:2}}>
@@ -4521,6 +4505,7 @@ const PT = {
     searchHint:"Start typing to search…", searchNoResults:"No results for",
     duration:"Duration", price:"Price", back:"Back",
     myProgramsEmpty:"No programs applied yet.",
+    allPrograms:"All Programs",
   },
   fr: {
     heroTitle1:"Découvrez le K-Beauty", heroTitle2:"dans les salons parisiens",
@@ -4549,11 +4534,54 @@ const PT = {
     searchHint:"Commencez à taper pour rechercher…", searchNoResults:"Aucun résultat pour",
     duration:"Durée", price:"Prix", back:"Retour",
     myProgramsEmpty:"Aucun programme réservé pour l'instant.",
+    allPrograms:"Tous les programmes",
   },
 };
 
 function Star({size=16}) {
   return <span style={{background:"linear-gradient(135deg,#f0e2c0,#c9a96e 55%,#9c7830)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",fontSize:size,display:"inline-block"}}>✦</span>;
+}
+
+// shared mobile top bar for Program/Salon/Product listing pages: logo left, search + compact language dropdown right
+function ProgramMobileHeader({ lang, setLang }) {
+  const navigate = useNavigate();
+  const [langOpen, setLangOpen] = useState(false);
+  const SS = {fontFamily:"'DM Sans',sans-serif"};
+  return (
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
+      <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+        <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
+        <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <button onClick={()=>navigate("/search")} style={{width:34,height:34,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        {lang&&setLang&&(
+          <div style={{position:"relative"}}>
+            <button onClick={()=>setLangOpen(o=>!o)}
+              style={{display:"flex",alignItems:"center",gap:3,padding:"8px 10px",border:"1px solid #f0e5cf",borderRadius:20,background:"#fff",...SS,fontSize:10,fontWeight:700,color:"#1a1a1a",cursor:"pointer"}}>
+              {lang.toUpperCase()}
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="3"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            {langOpen&&(
+              <>
+                <div onClick={()=>setLangOpen(false)} style={{position:"fixed",inset:0,zIndex:40}}/>
+                <div style={{position:"absolute",top:"120%",right:0,background:"#fff",border:"1px solid #f0e5cf",borderRadius:12,overflow:"hidden",boxShadow:"0 8px 24px rgba(0,0,0,0.14)",zIndex:50,minWidth:60}}>
+                  {["en","fr"].map(l=>(
+                    <button key={l} onClick={()=>{setLang(l);setLangOpen(false);}}
+                      style={{display:"block",width:"100%",padding:"9px 14px",border:"none",background:lang===l?"#fdf8ee":"#fff",color:lang===l?"#c9a96e":"#555",...SS,fontSize:11,fontWeight:600,textAlign:"left",cursor:"pointer"}}>
+                      {l.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function ProgramDesktopNav({ user, onAuthClick, lang, setLang }) {
@@ -4642,20 +4670,7 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
         <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff",paddingBottom:96,position:"relative"}}>
 
           {/* HEADER */}
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px",gap:10}}>
-            <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
-              <span style={{...CG,fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
-              <span style={{...CG,fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
-            </div>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginLeft:"auto"}}>
-              <div style={{display:"flex",border:"1px solid #f0e5cf",borderRadius:20,overflow:"hidden"}}>
-                {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"6px 9px",border:"none",cursor:"pointer",...SS,fontSize:10,fontWeight:600,color:lang===l?"#0d0d0d":"#999",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
-              </div>
-              <button onClick={()=>navigate("/search")} style={{width:38,height:38,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
-            </div>
-          </div>
+          <ProgramMobileHeader lang={lang} setLang={setLang}/>
 
           {/* GREETING */}
           <div style={{padding:"36px 20px 40px",background:"linear-gradient(135deg,#faf3e6,#f0dfb8)"}}>
@@ -4939,15 +4954,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
       {isMobile ? (
       <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff"}}>
         {/* NAV */}
-        <div style={{display:"flex",alignItems:"center",gap:10,padding:"20px 20px 4px"}}>
-          <button onClick={()=>navigate("/program-home")} style={{width:36,height:36,borderRadius:"50%",background:"#fff",border:"1px solid #f0e5cf",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          <p style={{...KR,fontSize:16,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={15}/> {pt.featuredPrograms}</p>
-          <div style={{display:"flex",border:"1px solid #f0e5cf",borderRadius:20,overflow:"hidden",marginLeft:"auto"}}>
-            {["en","fr"].map(l=><button key={l} onClick={()=>setLang(l)} style={{padding:"6px 9px",border:"none",cursor:"pointer",...SS,fontSize:10,fontWeight:600,color:lang===l?"#0d0d0d":"#999",background:lang===l?"#c9a96e":"transparent",textTransform:"uppercase"}}>{l}</button>)}
-          </div>
-        </div>
+        <ProgramMobileHeader lang={lang} setLang={setLang}/>
 
         {loadingPrograms ? (
           <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>{pt.loading}</p>
@@ -4999,7 +5006,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
 
             {/* FILTERS */}
             <div style={{padding:"0 20px",marginBottom:14}}>
-              <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>{pt.featuredPrograms}</p>
+              <p style={{...KR,fontSize:15,fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>{pt.allPrograms}</p>
               <div className="hide-scrollbar" style={{display:"flex",gap:8,overflowX:"auto",marginBottom:10,paddingBottom:2}}>
                 {categories.map(c=>{
                   const active = catFilter===c;
@@ -5052,7 +5059,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
           <ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>
 
           <div style={{padding:"32px clamp(24px,4vw,56px) 8px",maxWidth:1280,margin:"0 auto"}}>
-            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={22}/> {pt.featuredPrograms}</p>
+            <p style={{...KR,fontSize:24,fontWeight:700,color:"#1a1a1a",margin:0}}><Star size={22}/> {pt.allPrograms}</p>
           </div>
 
           {loadingPrograms ? (
