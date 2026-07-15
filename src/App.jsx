@@ -320,43 +320,31 @@ function CardImg({ salon, onClick }) {
 function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
   const t=T[lang]; const [hov,setHov]=useState(false);
   const prods=salon._products||[];
+  const img=getSalonImg(salon);
   return (
-    <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:"#fff",borderRadius:16,overflow:"hidden",border:`1.5px solid ${hov?"#c9a96e":"#f0e9dc"}`,transition:"border-color 0.15s",cursor:"pointer"}}>
-      <div style={{position:"relative"}}>
-        <CardImg salon={salon} onClick={()=>onClick(salon)} />
-        {/* heart btn */}
-        {onToggleFav&&<div style={{position:"absolute",top:10,right:salon.salon_tier?38:10,zIndex:2}}>
-          <FavBtn type="salon" item={salon} user={user} favourites={favourites} onToggle={onToggleFav} size={18}/>
-        </div>}
+    <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>onClick(salon)}
+      style={{display:"flex",background:"#fff",borderRadius:16,overflow:"hidden",border:`1.5px solid ${hov?"#c9a96e":"#f0e9dc"}`,transition:"border-color 0.15s",cursor:"pointer"}}>
+      {/* LEFT: photo */}
+      <div style={{position:"relative",width:112,aspectRatio:"1",flexShrink:0,background:"#1a1a1a"}}>
+        {img
+          ? <img src={img} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+          : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(201,169,110,0.3)"}}>{salon.name?.[0]}</span></div>}
+        {salon.salon_tier&&<div style={{position:"absolute",top:6,left:6}}><TierBadge tier={salon.salon_tier} size={11}/></div>}
       </div>
-      <div style={{padding:"12px 14px 14px"}} onClick={()=>onClick(salon)}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:3}}>
-          <h3 style={{margin:0,fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",fontWeight:600,color:"#1a1a1a",lineHeight:1.2}}>{salon.name}</h3>
-          {salon.area&&<span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",marginLeft:8,flexShrink:0}}>{salon.area}</span>}
-        </div>
-        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 8px"}}>{salon.address}</p>
-        {salon.salon_bio&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#888",margin:"0 0 8px",fontStyle:"italic",lineHeight:1.5}}>"{salon.salon_bio}"</p>}
+      {/* RIGHT: info + products */}
+      <div style={{flex:1,minWidth:0,padding:"10px 34px 10px 12px",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative"}}>
+        {onToggleFav&&<div style={{position:"absolute",top:8,right:8,zIndex:2}} onClick={e=>e.stopPropagation()}>
+          <FavBtn type="salon" item={salon} user={user} favourites={favourites} onToggle={onToggleFav} size={16}/>
+        </div>}
+        <h3 style={{margin:"0 0 2px",fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontWeight:600,color:"#1a1a1a",lineHeight:1.25,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</h3>
+        <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#bbb",margin:"0 0 9px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.area||salon.address||"Paris"}</p>
         {prods.length>0&&(
-          <div style={{display:"flex",gap:6,borderTop:"1px solid #f5f0f0",paddingTop:8,alignItems:"center"}}>
+          <div style={{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}}>
             {prods.slice(0,3).map(p=>{
-              const isNew=p._badge==="new"; const img=getProdImg(p);
-              return (
-                <div key={p.id} style={{flexShrink:0,width:60}}>
-                  <div style={{width:60,height:60,borderRadius:8,overflow:"hidden",background:"#f5f0eb",marginBottom:3,position:"relative",border:`1.5px solid ${isNew?"#e8d9b8":"#ffd5c2"}`}}>
-                    {img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} />:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px"}}>✨</div>}
-                    <div style={{position:"absolute",top:2,right:2,width:7,height:7,borderRadius:"50%",background:"#c9a96e",border:"1.5px solid #fff"}} />
-                  </div>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:"#a07832",fontWeight:700,textTransform:"uppercase",margin:"0 0 1px",letterSpacing:"0.5px"}}>{isNew?t.new_in:t.top_pick}</p>
-                  <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"8px",color:"#888",margin:0,lineHeight:1.2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.brand_name||(Array.isArray(p.brand)?null:(!p.brand?.startsWith?.("rec")?p.brand:null))||""}</p>
-                </div>
-              );
+              const pimg=getProdImg(p);
+              return pimg?<div key={p.id} style={{width:26,height:26,borderRadius:6,overflow:"hidden",border:"1px solid #f0e5cf",flexShrink:0}}><img src={pimg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;
             })}
-            {prods.length>3&&(
-              <div style={{flexShrink:0,width:44,height:60,borderRadius:8,background:"#f5f0eb",border:"1px solid #ede8e2",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:0,textAlign:"center",fontWeight:600}}>+{prods.length-3}</p>
-              </div>
-            )}
+            <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"9px",color:"#c9a96e",fontWeight:700,marginLeft:2,whiteSpace:"nowrap"}}>+{prods.length} K-Beauty</span>
           </div>
         )}
       </div>
@@ -797,7 +785,7 @@ function FilterModal({ onClose, lang, filters, setFilters, areas, brands, sortBy
 }
 
 // ── MOBILE BOTTOM SHEET ───────────────────────────────────────────────────────
-function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpandChange, user, favourites, onToggleFav }) {
+function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpandChange, onInteract, user, favourites, onToggleFav }) {
   const t=T[lang];
   const VH = window.innerHeight;
   const SNAP_COLLAPSED = 88;
@@ -828,12 +816,14 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
       navEl.style.maxHeight = full ? "0px" : "56px";
     }
     onExpandChange?.(full);
+    onInteract?.();
   }, [sheetH]);
 
   const onHandleTouchStart = (e) => {
     handleStartY.current = e.touches[0].clientY;
     startH.current = sheetH;
     if (sheetRef.current) sheetRef.current.style.transition = "none";
+    onInteract?.();
   };
   const onHandleTouchMove = (e) => {
     const dy = handleStartY.current - e.touches[0].clientY;
@@ -848,7 +838,7 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
   };
 
   const listStartY = useRef(null);
-  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
+  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; onInteract?.(); };
   const onListTouchEnd = (e) => {
     if (!listRef.current) return;
     const dy = listStartY.current - e.changedTouches[0].clientY;
@@ -949,15 +939,6 @@ function BottomSheet({ salons, loading, onSalonClick, lang, visibleCount, onExpa
           </div>
         )}
       </div>
-      {/* Floating Map button */}
-      {isFull&&(
-        <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",zIndex:500}}>
-          <button onClick={()=>{snapTo(SNAP_COLLAPSED);setPinned(null);}}
-            style={{fontFamily:"'DM Sans',sans-serif",fontSize:"13px",fontWeight:700,padding:"12px 24px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",borderRadius:30,boxShadow:"0 4px 20px rgba(0,0,0,0.3)",display:"flex",alignItems:"center",gap:6}}>
-            🗺 Map
-          </button>
-        </div>
-      )}
     </>
   );
 }
@@ -1316,20 +1297,38 @@ function Nav({lang,setLang,onJoin,user,onAuthClick}) {
   );
 }
 
-function MobileTabBar({active, alwaysVisible}) {
+function MobileTabBar({active, alwaysVisible, pingSignal}) {
   const navigate = useNavigate();
-  const [visible, setVisible] = useState(!!alwaysVisible);
+  const [visible, setVisible] = useState(true);
   const hideTimer = useRef(null);
+  const startHideTimer = () => {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(()=>setVisible(false), 2500);
+  };
+
+  // normal pages: window scrolls — show on scroll-up, hide on scroll-down (like most native apps)
   useEffect(() => {
-    if (alwaysVisible) return; // no scroll-based hide — page has no window-level scroll (e.g. fixed map layout)
+    if (alwaysVisible || pingSignal !== undefined) return;
+    let lastY = window.scrollY;
     const onScroll = () => {
-      setVisible(true);
-      if (hideTimer.current) clearTimeout(hideTimer.current);
-      hideTimer.current = setTimeout(()=>setVisible(false), 2500);
+      const y = window.scrollY;
+      if (y < 16) setVisible(true);
+      else if (y < lastY - 4) setVisible(true);
+      else if (y > lastY + 4) setVisible(false);
+      lastY = y;
     };
     window.addEventListener("scroll", onScroll, {passive:true});
-    return () => { window.removeEventListener("scroll", onScroll); if (hideTimer.current) clearTimeout(hideTimer.current); };
-  }, [alwaysVisible]);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [alwaysVisible, pingSignal]);
+
+  // fixed map+sheet pages: window doesn't scroll, so visibility is "pinged" externally
+  // (on mount, and whenever the sheet is dragged/touched) — peeks in, then fades after idle
+  useEffect(() => {
+    if (pingSignal === undefined) return;
+    setVisible(true);
+    startHideTimer();
+    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
+  }, [pingSignal]);
 
   const activeKey = (active==="/"||active==="/program-home") ? "home"
     : active?.startsWith("/program") ? "program"
@@ -1598,6 +1597,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
   const [search,setSearch]=useState("");
   const [visibleIds,setVisibleIds]=useState(null);
   const [sheetExpanded,setSheetExpanded]=useState(false);
+  const [navPing,setNavPing]=useState(0);
   const [hoveredSalonId,setHoveredSalonId]=useState(null);
   const activeFilters=[sf.kbeautyOnly,(sf.categories||[]).length>0,sf.area,search].filter(Boolean).length;
   const [filtered,setFiltered]=useState(salons);
@@ -1660,9 +1660,9 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
           {/* map */}
           <div style={{flex:1,position:"relative",overflow:"hidden",touchAction:"pan-x pan-y"}}>
             <div style={{position:"absolute",inset:0}}>{lr?<SalonMap salons={filtered} onPinClick={s=>{if(BottomSheet._setPinned)BottomSheet._setPinned(s);}} onBoundsChange={setVisibleIds} />:<div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",color:"#aaa"}}>{t.loading}</div>}</div>
-            <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} user={user} favourites={favourites} onToggleFav={onToggleFav} />
+            <BottomSheet salons={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)):filtered} loading={loading} onSalonClick={setSelSalon} lang={lang} visibleCount={visibleIds?filtered.filter(s=>visibleIds.includes(s.id)).length:filtered.length} onExpandChange={setSheetExpanded} onInteract={()=>setNavPing(p=>p+1)} user={user} favourites={favourites} onToggleFav={onToggleFav} />
           </div>
-          {!sheetExpanded&&<MobileTabBar active="/salons" alwaysVisible/>}
+          {!sheetExpanded&&<MobileTabBar active="/salons" pingSignal={navPing}/>}
         </div>
       ):(
         <div style={{maxWidth:1280,margin:"0 auto"}}>
@@ -1721,7 +1721,7 @@ function SalonsPage({lang,setLang,salons,loading,user,favourites,onToggleFav,onA
 
 // ── PRODUCTS PAGE ─────────────────────────────────────────────────────────────
 // ── PRODUCT BOTTOM SHEET (mobile) ────────────────────────────────────────────
-function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick, onExpandChange, onModalProd, visibleProdCount }) {
+function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail, user, favourites, onToggleFav, onClear, salons, mapSalons, onSalonClick, onExpandChange, onInteract, onModalProd, visibleProdCount }) {
   const VH = window.visualViewport?.height || window.innerHeight;
   const SNAP_COLLAPSED = 88;
   const SNAP_MID = Math.round(VH * 0.46);
@@ -1747,6 +1747,7 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
       navEl.style.overflow = "hidden";
     }
     onExpandChange?.(full);
+    onInteract?.();
   }, [sheetH]);
 
   const snapTo = (h) => {
@@ -1758,6 +1759,7 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
     handleStartY.current = e.touches[0].clientY;
     startSheetH.current = sheetH;
     if (sheetRef.current) sheetRef.current.style.transition = "none";
+    onInteract?.();
   };
   const onHandleTouchMove = (e) => {
     const dy = handleStartY.current - e.touches[0].clientY;
@@ -1773,7 +1775,7 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
   };
 
   const listStartY = useRef(null);
-  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; };
+  const onListTouchStart = (e) => { listStartY.current = e.touches[0].clientY; onInteract?.(); };
   const onListTouchEnd = (e) => {
     if (!listRef.current) return;
     const dy = listStartY.current - e.changedTouches[0].clientY;
@@ -1888,16 +1890,6 @@ function ProductBottomSheet({ fp, loading, t, SS, selProd, onProdClick, onDetail
           </div>
         )}
       </div>
-
-      {/* Floating Map button — fixed bottom center, only when full */}
-      {isFull&&(
-        <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",zIndex:600}}>
-          <button onClick={()=>snapTo(SNAP_MID)}
-            style={{...SS,fontSize:"13px",fontWeight:700,padding:"12px 28px",background:"#0d0d0d",color:"#fff",border:"none",cursor:"pointer",borderRadius:30,boxShadow:"0 4px 20px rgba(0,0,0,0.35)",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap"}}>
-            🗺 Map
-          </button>
-        </div>
-      )}
     </>
   );
 }
@@ -1957,6 +1949,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
   const [mapSalons,setMapSalons]=useState([]);
   const [prodVisibleIds,setProdVisibleIds]=useState(null);
   const [prodSheetExpanded,setProdSheetExpanded]=useState(false);
+  const [navPing,setNavPing]=useState(0);
   const [lr,setLr]=useState(!!window.L);
 
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
@@ -1997,7 +1990,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff;height:100%;overscroll-behavior:none}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}.leaflet-tooltip{background:#fff;border:1px solid #ede8e2;border-radius:8px;padding:6px 10px}`}</style>
       {!isMobile&&<ProgramDesktopNav user={user} onAuthClick={onAuthClick} lang={lang} setLang={setLang}/>}
-      {isMobile&&!prodSheetExpanded&&<MobileTabBar active="/products" alwaysVisible/>}
+      {isMobile&&!prodSheetExpanded&&<MobileTabBar active="/products" pingSignal={navPing}/>}
 
       {/* SPLIT LAYOUT */}
       {isMobile ? (
@@ -2051,6 +2044,7 @@ function ProductsPage({lang,setLang,allProducts,salons,loading,user,favourites,o
                     if(el) el.style.maxHeight=full?"0px":"60px";
                     setProdSheetExpanded(full);
                   }}
+                  onInteract={()=>setNavPing(p=>p+1)}
                   onModalProd={setModalProd}
                   visibleProdCount={null}
                 />
