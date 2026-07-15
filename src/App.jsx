@@ -2192,7 +2192,7 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
 }
 
 // ── ACCOUNT PAGE ─────────────────────────────────────────────────────────────
-function AccountPage({lang,setLang,salons,allProducts}) {
+function AccountPage({lang,setLang,salons,allProducts,onAuthClick}) {
   const navigate=useNavigate();
   const pt = PT[lang==="fr"?"fr":"en"];
   const [profile,setProfile]=useState({first_name:"",email:"",area:""});
@@ -2211,7 +2211,7 @@ function AccountPage({lang,setLang,salons,allProducts}) {
   useEffect(()=>{
     if (!supabase) return;
     supabase.auth.getUser().then(({data:{user}})=>{
-      if (!user){navigate("/");return;}
+      if (!user){navigate("/");onAuthClick?.("login");return;}
       setUserId(user.id);
       // load profile
       supabase.from("profiles").select("*").eq("id",user.id).single()
@@ -4955,6 +4955,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
       <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:"#ffffff"}}>
         {/* NAV */}
         <ProgramMobileHeader lang={lang} setLang={setLang}/>
+        <div style={{height:1,background:"#f0e5cf",margin:"0 20px 4px"}}/>
 
         {loadingPrograms ? (
           <p style={{...KR,fontSize:13,color:"#bbb",textAlign:"center",padding:"60px 0"}}>{pt.loading}</p>
@@ -5678,7 +5679,7 @@ export default function App() {
         <Route path="/" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
-        <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} />} />
+        <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/spot/:spotId" element={<SpotPage lang={lang} setLang={setLang} />} />
         <Route path="/privacy" element={<PrivacyPage lang={lang} setLang={setLang} />} />
         <Route path="/legal" element={<LegalPage lang={lang} setLang={setLang} />} />
