@@ -286,7 +286,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     });
   },[salons,focusSalon]);
 
-  return <div id={uid.current} style={{width:"100%",height:mini?"200px":"100%",zIndex:1}} />;
+  return <div id={uid.current} style={{width:"100%",height:"100%",zIndex:1}} />;
 }
 
 // ── SALON CARD IMAGE ──────────────────────────────────────────────────────────
@@ -443,7 +443,9 @@ function SalonModal({ salon, onClose, leafletReady, lang }) {
                   🗺 View on Google
                 </a>}
               </div>
-              <SalonMap salons={[salon]} focusSalon={salon} mini={true} />
+              <div style={{height:200}}>
+                <SalonMap salons={[salon]} focusSalon={salon} mini={true} />
+              </div>
             </div>
           )}
         </div>
