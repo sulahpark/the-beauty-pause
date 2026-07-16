@@ -2215,7 +2215,7 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
   );
   if (noWrapper) return inner;
   return (
-    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+    <div onClick={e=>onDetail?.(e,p)} onMouseEnter={()=>{setHov(true);onClick?.();}} onMouseLeave={()=>setHov(false)}
       style={{background:"#fff",border:`1.5px solid ${(isSelected||hov)?"#c9a96e":"#f0e9dc"}`,overflow:"hidden",borderRadius:16,cursor:"pointer",transition:"border-color 0.15s",animation:`fadeUp 0.4s ease ${i*0.03}s both`,position:"relative"}}>
       {inner}
     </div>
