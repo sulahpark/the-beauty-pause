@@ -5310,6 +5310,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
   const [orderId, setOrderId] = useState(null);
   const [submitError, setSubmitError] = useState("");
   const [modalProduct, setModalProduct] = useState(null);
+  const [modalSalon, setModalSalon] = useState(null);
   const [lr, setLr] = useState(!!window.L);
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
@@ -5427,7 +5428,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>{pt.runningSalons} {programSalons.length>1&&`(${programSalons.length} ${pt.locations})`}</p>
               <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:14}}>
                 {programSalons.map(s=>(
-                  <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
+                  <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>setModalSalon(s)}/>
                 ))}
               </div>
               <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:200}}>
@@ -5505,7 +5506,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                   <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.runningSalons} {programSalons.length>1&&`(${programSalons.length} ${pt.locations})`}</p>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
                     {programSalons.map(s=>(
-                      <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>navigate("/salons",{state:{selectSalonId:s.id}})}/>
+                      <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>setModalSalon(s)}/>
                     ))}
                   </div>
                   <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
@@ -5627,6 +5628,15 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
             </div>
           </div>
+        )}
+
+        {modalSalon && (
+          <SalonModal
+            salon={modalSalon}
+            onClose={()=>setModalSalon(null)}
+            leafletReady={lr}
+            lang={lang}
+          />
         )}
 
         {modalProduct && (
