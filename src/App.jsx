@@ -321,6 +321,41 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
   const t=T[lang]; const [hov,setHov]=useState(false);
   const prods=salon._products||[];
   const img=getSalonImg(salon);
+  const isMobile=window.innerWidth<768;
+
+  if (!isMobile) {
+    // DESKTOP: square-ish card, photo on top, info below
+    return (
+      <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>onClick(salon)}
+        style={{background:"#fff",borderRadius:16,overflow:"hidden",border:`1.5px solid ${hov?"#c9a96e":"#f0e9dc"}`,transition:"border-color 0.15s",cursor:"pointer"}}>
+        <div style={{position:"relative",width:"100%",aspectRatio:"1",background:"#1a1a1a"}}>
+          {img
+            ? <img src={img} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+            : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:"rgba(201,169,110,0.3)"}}>{salon.name?.[0]}</span></div>}
+          {salon.salon_tier&&<div style={{position:"absolute",top:10,left:10}}><TierBadge tier={salon.salon_tier}/></div>}
+          {onToggleFav&&<div style={{position:"absolute",top:10,right:10,zIndex:2}} onClick={e=>e.stopPropagation()}>
+            <FavBtn type="salon" item={salon} user={user} favourites={favourites} onToggle={onToggleFav} size={18}/>
+          </div>}
+          {salon.category&&<div style={{position:"absolute",bottom:10,left:10,background:"rgba(255,255,255,0.92)",color:"#1a1a1a",fontFamily:"'DM Sans',sans-serif",fontSize:"10px",fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20}}>{salon.category}</div>}
+        </div>
+        <div style={{padding:"14px 16px 16px"}}>
+          <h3 style={{margin:"0 0 3px",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",fontWeight:600,color:"#1a1a1a",lineHeight:1.25,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.name}</h3>
+          <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 12px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.area||salon.address||"Paris"}</p>
+          {prods.length>0&&(
+            <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap",borderTop:"1px solid #f5f0f0",paddingTop:12}}>
+              {prods.slice(0,4).map(p=>{
+                const pimg=getProdImg(p);
+                return pimg?<div key={p.id} style={{width:30,height:30,borderRadius:7,overflow:"hidden",border:"1px solid #f0e5cf",flexShrink:0}}><img src={pimg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;
+              })}
+              <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",fontWeight:700,marginLeft:2,whiteSpace:"nowrap"}}>+{prods.length} K-Beauty</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // MOBILE: compact horizontal card (photo left, info right)
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>onClick(salon)}
       style={{display:"flex",background:"#fff",borderRadius:16,overflow:"hidden",border:`1.5px solid ${hov?"#c9a96e":"#f0e9dc"}`,transition:"border-color 0.15s",cursor:"pointer"}}>
