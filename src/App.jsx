@@ -343,11 +343,10 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
           <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"11px",color:"#bbb",margin:"0 0 12px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salon.area||salon.address||"Paris"}</p>
           {prods.length>0&&(
             <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap",borderTop:"1px solid #f5f0f0",paddingTop:12}}>
-              {prods.slice(0,4).map(p=>{
+              {prods.slice(0,7).map(p=>{
                 const pimg=getProdImg(p);
                 return pimg?<div key={p.id} style={{width:30,height:30,borderRadius:7,overflow:"hidden",border:"1px solid #f0e5cf",flexShrink:0}}><img src={pimg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>:null;
               })}
-              <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",fontWeight:700,marginLeft:2,whiteSpace:"nowrap"}}>+{prods.length} K-Beauty</span>
             </div>
           )}
         </div>
@@ -2211,9 +2210,6 @@ function ProductCard({ p, i, t, onClick, onDetail, user, favourites, onToggleFav
         <p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#aaa",margin:"0 0 5px"}}>{p.category}</p>
         {p.price_customer&&<p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:"#1a1a1a",margin:"0 0 6px",fontWeight:600}}>€{p.price_customer}</p>}
         {(p._salons||[]).length>0&&<p style={{fontFamily:"'DM Sans',sans-serif",fontSize:"10px",color:"#c9a96e",margin:"0 0 8px"}}>📍 {(p._salons||[]).length} salon{(p._salons||[]).length!==1?"s":""}</p>}
-        {onDetail&&<button onClick={e=>{e.stopPropagation();onDetail(e,p);}} style={{width:"100%",padding:"5px 0",background:"transparent",color:"#c9a96e",border:"1px solid #e8d9b8",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:"1px",textTransform:"uppercase",borderRadius:6,transition:"all 0.2s",marginTop:4}} onMouseEnter={e=>{e.currentTarget.style.background="#c9a96e";e.currentTarget.style.color="#fff";}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#c9a96e";}}>
-          ✦ View details
-        </button>}
       </div>
     </>
   );
@@ -5138,8 +5134,8 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                         return (
                           <div key={p.id} onClick={()=>navigate(`/program/${p.id}`)}
                             onMouseEnter={()=>setHoveredProgramId(p.id)} onMouseLeave={()=>setHoveredProgramId(null)}
-                            style={{display:"flex",background:"#fff",border:`1.5px solid ${hoveredProgramId===p.id?"#c9a96e":"#f0e9dc"}`,borderRadius:18,overflow:"hidden",cursor:"pointer",transition:"border-color 0.15s",height:176}}>
-                            <div style={{width:220,flexShrink:0,position:"relative",background:"#f0ebe2"}}>
+                            style={{display:"flex",background:"#fff",border:`1.5px solid ${hoveredProgramId===p.id?"#c9a96e":"#f0e9dc"}`,borderRadius:18,overflow:"hidden",cursor:"pointer",transition:"border-color 0.15s"}}>
+                            <div style={{width:220,aspectRatio:"5/3",flexShrink:0,position:"relative",background:"#f0ebe2"}}>
                               {p.image
                                 ? <img src={p.image} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                                 : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><Star size={32}/></div>}
@@ -5148,7 +5144,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                             </div>
                             <div style={{flex:1,minWidth:0,padding:"20px 24px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
                               <p style={{...SS,fontSize:11,color:"#aaa",margin:"0 0 6px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salonLabel}</p>
-                              <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</p>
+                              <p style={{...KR,fontSize:20,fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.name}</p>
                               <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 14px"}}>{p.periodLabel}</p>
                               <div style={{display:"flex",alignItems:"baseline",gap:8}}>
                                 {p.priceOriginal&&<span style={{...SS,fontSize:13,color:"#bbb",textDecoration:"line-through"}}>€{p.priceOriginal}</span>}
