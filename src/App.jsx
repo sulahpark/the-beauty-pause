@@ -328,7 +328,7 @@ function SalonCard({ salon, onClick, lang, user, favourites=[], onToggleFav }) {
     return (
       <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>onClick(salon)}
         style={{background:"#fff",borderRadius:16,overflow:"hidden",border:`1.5px solid ${hov?"#c9a96e":"#f0e9dc"}`,transition:"border-color 0.15s",cursor:"pointer"}}>
-        <div style={{position:"relative",width:"100%",aspectRatio:"1",background:"#1a1a1a"}}>
+        <div style={{position:"relative",width:"100%",aspectRatio:"4/3",background:"#1a1a1a"}}>
           {img
             ? <img src={img} alt={salon.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
             : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:"rgba(201,169,110,0.3)"}}>{salon.name?.[0]}</span></div>}
