@@ -4448,25 +4448,28 @@ function NewsletterPage() {
 function ProgramCard({ program, salons, onClick }) {
   const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif"};
   const SS = {fontFamily:"'DM Sans',sans-serif"};
+  const matchedNames = (program.salonIds||[]).map(id=>(salons||[]).find(s=>s.id===id)?.name).filter(Boolean);
+  const salonLabel = matchedNames.length>1
+    ? `${matchedNames[0]} +${matchedNames.length-1}`
+    : matchedNames[0];
   return (
     <div onClick={onClick} style={{flexShrink:0,width:296,cursor:"pointer"}}>
       <div style={{position:"relative",width:296,aspectRatio:"5/3",borderRadius:20,overflow:"hidden",background:"#f0ebe2"}}>
         {program.image
           ? <img src={program.image} alt={program.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
           : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:"#c9a96e"}}>✦</span></div>}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(13,13,13,0.8) 0%,rgba(13,13,13,0.15) 44%,transparent 68%)"}}/>
-        <div style={{position:"absolute",top:12,left:12,right:12,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-          {program.category&&<div style={{background:"rgba(255,255,255,0.92)",color:"#1a1a1a",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,textTransform:"uppercase",padding:"4px 10px",borderRadius:20}}>{program.category}</div>}
-          {program.tag&&<div style={{background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"4px 10px",borderRadius:20}}>{program.tag}</div>}
+        {program.tag&&<div style={{position:"absolute",top:12,right:12,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:10,fontWeight:700,letterSpacing:0.5,padding:"4px 10px",borderRadius:20}}>{program.tag}</div>}
+      </div>
+      <div style={{padding:"12px 2px 0"}}>
+        {program.category&&<p style={{...SS,fontSize:10,color:"#c9a96e",fontWeight:700,letterSpacing:0.5,textTransform:"uppercase",margin:"0 0 6px"}}>{program.category}</p>}
+        <p style={{...KR,fontSize:17,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.name}</p>
+        <p style={{...SS,fontSize:11,color:"#999",margin:"0 0 8px"}}>{program.periodLabel}</p>
+        <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:6}}>
+          {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
+          <span style={{...SS,fontSize:16,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+          <span style={{...KR,fontSize:11,color:"#999",marginLeft:"auto"}}>{program.duration}</span>
         </div>
-        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"14px 16px 16px"}}>
-          <p style={{...KR,fontSize:21,fontWeight:700,color:"#fff",margin:"0 0 8px",lineHeight:1.25,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.name}</p>
-          <div style={{display:"flex",alignItems:"baseline",gap:6}}>
-            {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.45)",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
-            <span style={{...SS,fontSize:16,color:"#c9a96e",fontWeight:700}}>€{program.price}</span>
-            <span style={{...KR,fontSize:11,color:"rgba(255,255,255,0.55)",marginLeft:"auto"}}>{program.duration}</span>
-          </div>
-        </div>
+        {salonLabel&&<p style={{...SS,fontSize:11,color:"#999",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍 {salonLabel}</p>}
       </div>
     </div>
   );
@@ -4523,7 +4526,7 @@ const PT = {
     filter:"Filter", allCategories:"All", allAreas:"All areas",
     noMatch:"No matches found.",
     collabProduct:"Collab Product", included:"What's Included",
-    runningSalons:"Salons", locations:"locations",
+    runningSalons:"Location", locations:"locations",
     mapLoading:"Loading map…", noLocation:"No salon location to show",
     applyNow:"Apply for this program", loginAndApply:"Log in to apply",
     selectSalonTitle:"Select a salon", paymentMethodTitle:"Payment method",
@@ -4552,7 +4555,7 @@ const PT = {
     filter:"Filtrer", allCategories:"Tous", allAreas:"Tous les quartiers",
     noMatch:"Aucun résultat.",
     collabProduct:"Produit associé", included:"Ce qui est inclus",
-    runningSalons:"Salons", locations:"salons",
+    runningSalons:"Emplacement", locations:"salons",
     mapLoading:"Chargement de la carte…", noLocation:"Aucun salon à afficher",
     applyNow:"Réserver ce programme", loginAndApply:"Se connecter pour réserver",
     selectSalonTitle:"Choisissez un salon", paymentMethodTitle:"Mode de paiement",
@@ -4734,11 +4737,11 @@ function ProgramHomePage({ salons, allProducts, loading, programs, loadingProgra
             {!loadingPrograms&&programs.length>1&&(
               <>
                 <button onClick={()=>programScrollRef.current?.scrollBy({left:-310,behavior:"smooth"})}
-                  style={{position:"absolute",left:6,top:"calc(50% + 14px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                  style={{position:"absolute",left:6,top:149,transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
                 <button onClick={()=>programScrollRef.current?.scrollBy({left:310,behavior:"smooth"})}
-                  style={{position:"absolute",right:6,top:"calc(50% + 14px)",transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
+                  style={{position:"absolute",right:6,top:149,transform:"translateY(-50%)",width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.92)",border:"1px solid #f0e5cf",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:2}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
               </>
@@ -5288,7 +5291,7 @@ function SearchPage({ salons, allProducts, programs }) {
   );
 }
 
-function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, loadingPrograms }) {
+function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, loadingPrograms, favourites, onToggleFav }) {
   const { programId } = useParams();
   const navigate = useNavigate();
   const [lang, setLang] = useState("en");
@@ -5306,6 +5309,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [submitError, setSubmitError] = useState("");
+  const [modalProduct, setModalProduct] = useState(null);
   const [lr, setLr] = useState(!!window.L);
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
@@ -5376,13 +5380,13 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
         {/* INFO */}
         <div style={{padding:"22px 20px 0"}}>
           <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
-          <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>{pt.period} 📅 {program.periodLabel}</p>
+          <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>📅 {program.periodLabel}</p>
 
           {/* collab product — circular card (right under period, product matters most) */}
           {program.product&&(
             <div style={{marginBottom:24}}>
               <p style={{...KR,fontSize:11,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 12px"}}>{pt.collabProduct}</p>
-              <div onClick={()=>navigate("/products", matchedProduct?{state:{selectProductId:matchedProduct.id}}:undefined)}
+              <div onClick={()=>matchedProduct ? setModalProduct(matchedProduct) : navigate("/products")}
                 style={{display:"flex",alignItems:"center",gap:14,background:"#fff",border:"1px solid #f0e9dc",borderRadius:16,padding:14,cursor:"pointer"}}>
                 <div style={{width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
                   <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
@@ -5465,12 +5469,12 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               </div>
 
               <p style={{...KR,fontSize:28,fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3}}>{program.name}</p>
-              <p style={{...SS,fontSize:13,color:"#999",margin:"0 0 24px"}}>{pt.period} 📅 {program.periodLabel}</p>
+              <p style={{...SS,fontSize:13,color:"#999",margin:"0 0 24px"}}>📅 {program.periodLabel}</p>
 
               {program.product&&(
                 <div style={{marginBottom:28,maxWidth:600}}>
                   <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.collabProduct}</p>
-                  <div onClick={()=>navigate("/products", matchedProduct?{state:{selectProductId:matchedProduct.id}}:undefined)}
+                  <div onClick={()=>matchedProduct ? setModalProduct(matchedProduct) : navigate("/products")}
                     style={{display:"flex",alignItems:"center",gap:14,background:"#faf7f4",border:"1px solid #f0e9dc",borderRadius:16,padding:14,cursor:"pointer"}}>
                     <div style={{width:60,height:60,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid #e8d9b8"}}>
                       <img src={program.product.image} alt={program.product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
@@ -5625,6 +5629,20 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
           </div>
         )}
 
+        {modalProduct && (
+          <ProductModal
+            prod={modalProduct}
+            salonsWithProd={modalProduct._salons||[]}
+            allProducts={allProducts}
+            onClose={()=>setModalProduct(null)}
+            onSalonClick={(s)=>{setModalProduct(null);navigate("/salons",{state:{selectSalonId:s.id}});}}
+            lang={lang}
+            user={user}
+            favourites={favourites}
+            onToggleFav={onToggleFav}
+          />
+        )}
+
     </>
   );
 }
@@ -5723,7 +5741,7 @@ export default function App() {
         <Route path="/program-home" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/search" element={<SearchPage salons={salons} allProducts={allProducts} programs={programs} />} />
-        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} />} />
+        <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} favourites={favourites} onToggleFav={toggleFavourite} />} />
         <Route path="*" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
