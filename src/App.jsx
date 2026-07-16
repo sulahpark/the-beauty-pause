@@ -5135,7 +5135,7 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                           <div key={p.id} onClick={()=>navigate(`/program/${p.id}`)}
                             onMouseEnter={()=>setHoveredProgramId(p.id)} onMouseLeave={()=>setHoveredProgramId(null)}
                             style={{display:"flex",background:"#fff",border:`1.5px solid ${hoveredProgramId===p.id?"#c9a96e":"#f0e9dc"}`,borderRadius:18,overflow:"hidden",cursor:"pointer",transition:"border-color 0.15s"}}>
-                            <div style={{width:220,aspectRatio:"5/3",flexShrink:0,position:"relative",background:"#f0ebe2"}}>
+                            <div style={{width:300,aspectRatio:"5/3",flexShrink:0,position:"relative",background:"#f0ebe2"}}>
                               {p.image
                                 ? <img src={p.image} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                                 : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}><Star size={32}/></div>}
