@@ -2573,29 +2573,6 @@ function SpotPage({ lang, setLang }) {
                 </div>
               </div>
 
-              {/* discount code — same box, below product row */}
-              {product.discount_code&&(
-                <div style={{borderTop:"1px solid #f0ebe2",padding:"16px 20px",background:"#fdf8ee"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-                    <span style={{fontSize:"16px"}}>🎉</span>
-                    <p style={{...SS,fontSize:"11px",color:"#a07832",fontWeight:700,letterSpacing:"0.5px",margin:0}}>
-                      {lang==="fr"?"Vous avez débloqué une réduction !":"You've unlocked a discount!"}
-                    </p>
-                  </div>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"#fff",border:"1px dashed #c9a96e",borderRadius:10,padding:"12px 16px"}}>
-                    <span style={{...SS,fontSize:"18px",fontWeight:800,color:"#1a1a1a",letterSpacing:"1px"}}>{product.discount_code}</span>
-                    <button onClick={(e)=>{e.stopPropagation();navigator.clipboard?.writeText(product.discount_code);}}
-                      style={{...SS,fontSize:"11px",fontWeight:700,color:"#fff",background:"#1a1a1a",border:"none",padding:"7px 14px",borderRadius:8,cursor:"pointer"}}>
-                      {lang==="fr"?"Copier":"Copy"}
-                    </button>
-                  </div>
-                  <p style={{...SS,fontSize:"10px",color:"#bbb",margin:"8px 0 0"}}>
-                    {lang==="fr"
-                      ?"Valable sur tous nos produits, pas seulement celui-ci. Faites une capture d'écran."
-                      :"Valid on all products, not just this one. Screenshot this to save it."}
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -2616,19 +2593,28 @@ function SpotPage({ lang, setLang }) {
                   </p>
                 </div>
               </div>
-              <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5vw,28px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 8px",lineHeight:1.2}}>
-                {lang==="fr"?"Tournez la roue,\ngagnez à coup sûr":"Spin the wheel,\nwin every time"}
+              <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5vw,28px)",fontWeight:400,color:"#f5f0eb",margin:"0 0 14px",lineHeight:1.2}}>
+                {lang==="fr"?"Envoyez une photo,\nparticipez au tirage":"Upload a photo,\njoin the Lucky Draw"}
               </h2>
+
+              <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+                <span style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.7)",background:"rgba(255,255,255,0.08)",padding:"5px 10px",borderRadius:20}}>📸 {lang==="fr"?"Photo":"Upload"}</span>
+                <span style={{color:"#c9a96e",fontSize:"11px"}}>→</span>
+                <span style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.7)",background:"rgba(255,255,255,0.08)",padding:"5px 10px",borderRadius:20}}>🎁 {lang==="fr"?"Participation":"Enter draw"}</span>
+                <span style={{color:"#c9a96e",fontSize:"11px"}}>→</span>
+                <span style={{...SS,fontSize:"11px",color:"#0d0d0d",background:"#c9a96e",fontWeight:700,padding:"5px 10px",borderRadius:20}}>🏆 {lang==="fr"?"Ce produit offert":"Win this product"}</span>
+              </div>
+
               <p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.5)",margin:"0 0 20px",lineHeight:1.5}}>
                 {lang==="fr"
-                  ? "Une seule participation par personne · Résultat immédiat"
-                  : "One spin per person · Instant result"}
+                  ? "Une seule participation par personne"
+                  : "One entry per person"}
               </p>
               <button onClick={()=>setScreen("lucky")}
                 style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"14px",fontWeight:700,letterSpacing:"0.5px",borderRadius:12,boxShadow:"0 4px 20px rgba(201,169,110,0.4)",transition:"opacity 0.2s"}}
                 onTouchStart={e=>e.currentTarget.style.opacity="0.85"}
                 onTouchEnd={e=>e.currentTarget.style.opacity="1"}>
-                {lang==="fr"?"✦ Tourner la roue":"✦ Spin the wheel"}
+                {lang==="fr"?"✦ Participer":"✦ Enter the draw"}
               </button>
             </div>
           </div>
