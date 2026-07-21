@@ -2598,7 +2598,7 @@ function SpotPage({ lang, setLang }) {
               </h2>
 
               <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:16,flexWrap:"wrap"}}>
-                <span style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.7)",background:"rgba(255,255,255,0.08)",padding:"5px 10px",borderRadius:20}}>📸 {lang==="fr"?"Photo":"Upload"}</span>
+                <span style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.7)",background:"rgba(255,255,255,0.08)",padding:"5px 10px",borderRadius:20}}>📸 {lang==="fr"?"Photo du look":"Photo of your K-look"}</span>
                 <span style={{color:"#c9a96e",fontSize:"11px"}}>→</span>
                 <span style={{...SS,fontSize:"11px",color:"rgba(255,255,255,0.7)",background:"rgba(255,255,255,0.08)",padding:"5px 10px",borderRadius:20}}>🎁 {lang==="fr"?"Participation":"Enter draw"}</span>
                 <span style={{color:"#c9a96e",fontSize:"11px"}}>→</span>
@@ -2816,12 +2816,12 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 56px)",padding:"40px 24px",textAlign:"center"}}>
         <div style={{fontSize:"48px",marginBottom:16}}>🎉</div>
         <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"28px",fontWeight:400,color:"#f5f0eb",marginBottom:14}}>
-          {lang==="fr"?"Merci pour votre avis !":"Thanks for your review!"}
+          {lang==="fr"?"Merci pour votre photo !":"Thanks for sharing your look!"}
         </h2>
         <p style={{...SS,fontSize:"14px",color:"#aaa",lineHeight:1.8,marginBottom:28,maxWidth:360}}>
           {lang==="fr"
-            ? "Nous vérifions votre photo et vous enverrons votre récompense par email sous 24 à 48h."
-            : "We're verifying your photo and will send your reward by email within 24–48 hours."}
+            ? "Vous êtes inscrit(e) au tirage au sort. Les gagnants seront tirés au sort et recevront un email fin de mois."
+            : "You're entered in the draw. Winners will be picked and notified by email at the end of the month."}
         </p>
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
           <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
