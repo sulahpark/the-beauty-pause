@@ -5344,12 +5344,12 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
           {/* lucky draw */}
           {program.luckydraw&&(
-            <div style={{marginBottom:28,background:"linear-gradient(160deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"20px 22px"}}>
+            <div style={{marginBottom:28,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:16,padding:"20px 22px"}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
                 <span style={{fontSize:18}}>🎁</span>
-                <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
+                <p style={{...SS,fontSize:10,color:"#a07832",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
               </div>
-              <p style={{...KR,fontSize:13,color:"#e5ddc8",lineHeight:1.85,margin:0,whiteSpace:"pre-line"}}>{program.luckydraw}</p>
+              <p style={{...KR,fontSize:13,color:"#5c4a2a",lineHeight:1.85,margin:0,whiteSpace:"pre-line"}}>{program.luckydraw}</p>
             </div>
           )}
         </div>
@@ -5434,12 +5434,12 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
               {/* lucky draw */}
               {program.luckydraw&&(
-                <div style={{marginTop:28,maxWidth:600,background:"linear-gradient(160deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"22px 26px"}}>
+                <div style={{marginTop:28,maxWidth:600,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:16,padding:"22px 26px"}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
                     <span style={{fontSize:19}}>🎁</span>
-                    <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
+                    <p style={{...SS,fontSize:11,color:"#a07832",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
                   </div>
-                  <p style={{...KR,fontSize:14,color:"#e5ddc8",lineHeight:1.9,margin:0,whiteSpace:"pre-line"}}>{program.luckydraw}</p>
+                  <p style={{...KR,fontSize:14,color:"#5c4a2a",lineHeight:1.9,margin:0,whiteSpace:"pre-line"}}>{program.luckydraw}</p>
                 </div>
               )}
             </div>
