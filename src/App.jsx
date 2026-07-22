@@ -1255,6 +1255,7 @@ function useProgramsData() {
           return {
             id: r.id,
             name: r.name || r.Name || r.program_name || "",
+            subtitle: r.subtitle || r.Subtitle || "",
             salonIds: Array.isArray(salonsField) ? salonsField : [],
             image: getAttachmentUrl(r.image || r.Image),
             duration: r.duration || "",
@@ -1265,6 +1266,7 @@ function useProgramsData() {
             periodLabel,
             description: r.description || "",
             includes,
+            luckydraw: r.luckydraw || r.Luckydraw || r.lucky_draw || "",
             product: (productBrand || productName) ? { brand: productBrand, name: productName, image: productImg } : null,
           };
         });
@@ -4361,6 +4363,7 @@ function ProgramCard({ program, salons, onClick }) {
       <div style={{padding:"12px 2px 0"}}>
         {program.category&&<p style={{...SS,fontSize:10,color:"#c9a96e",fontWeight:700,letterSpacing:0.5,textTransform:"uppercase",margin:"0 0 6px"}}>{program.category}</p>}
         <p style={{...KR,fontSize:17,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.name}</p>
+        {program.subtitle&&<p style={{...KR,fontSize:12,color:"#a07832",margin:"0 0 6px",lineHeight:1.4,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.subtitle}</p>}
         <p style={{...SS,fontSize:11,color:"#999",margin:"0 0 8px"}}>{program.periodLabel}</p>
         <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:6}}>
           {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
@@ -5047,7 +5050,8 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                             </div>
                             <div style={{flex:1,minWidth:0,padding:"20px 24px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
                               <p style={{...SS,fontSize:11,color:"#aaa",margin:"0 0 6px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{salonLabel}</p>
-                              <p style={{...KR,fontSize:20,fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.name}</p>
+                              <p style={{...KR,fontSize:20,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px",lineHeight:1.3,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.name}</p>
+                              {p.subtitle&&<p style={{...KR,fontSize:13,color:"#a07832",margin:"0 0 8px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.subtitle}</p>}
                               <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 14px"}}>{p.periodLabel}</p>
                               <div style={{display:"flex",alignItems:"baseline",gap:8}}>
                                 {p.priceOriginal&&<span style={{...SS,fontSize:13,color:"#bbb",textDecoration:"line-through"}}>€{p.priceOriginal}</span>}
@@ -5278,7 +5282,8 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
         {/* INFO */}
         <div style={{padding:"22px 20px 0"}}>
-          <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.3}}>{program.name}</p>
+          <p style={{...KR,fontSize:22,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.3}}>{program.name}</p>
+          {program.subtitle&&<p style={{...KR,fontSize:14,color:"#a07832",margin:"0 0 12px",lineHeight:1.5}}>{program.subtitle}</p>}
           <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 20px"}}>📅 {program.periodLabel}</p>
 
           {/* collab product — circular card (right under period, product matters most) */}
@@ -5336,6 +5341,17 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               </div>
             </div>
           )}
+
+          {/* lucky draw */}
+          {program.luckydraw&&(
+            <div style={{marginBottom:28,background:"linear-gradient(160deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"20px 22px"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+                <span style={{fontSize:18}}>🎁</span>
+                <p style={{...SS,fontSize:10,color:"#c9a96e",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
+              </div>
+              <p style={{...KR,fontSize:13,color:"#e5ddc8",lineHeight:1.85,margin:0,whiteSpace:"pre-line"}}>{program.luckydraw}</p>
+            </div>
+          )}
         </div>
 
         {/* FIXED CTA (idle only) */}
@@ -5367,7 +5383,8 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                 {program.tag&&<div style={{position:"absolute",top:18,left:18,background:"#c9a96e",color:"#0d0d0d",...SS,fontSize:11,fontWeight:700,letterSpacing:0.5,padding:"6px 14px",borderRadius:20}}>{program.tag}</div>}
               </div>
 
-              <p style={{...KR,fontSize:28,fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3}}>{program.name}</p>
+              <p style={{...KR,fontSize:28,fontWeight:700,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.3}}>{program.name}</p>
+              {program.subtitle&&<p style={{...KR,fontSize:16,color:"#a07832",margin:"0 0 14px",lineHeight:1.5}}>{program.subtitle}</p>}
               <p style={{...SS,fontSize:13,color:"#999",margin:"0 0 24px"}}>📅 {program.periodLabel}</p>
 
               {program.product&&(
@@ -5412,6 +5429,17 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                       ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} />
                       : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>{pt.mapLoading}</div>}
                   </div>
+                </div>
+              )}
+
+              {/* lucky draw */}
+              {program.luckydraw&&(
+                <div style={{marginTop:28,maxWidth:600,background:"linear-gradient(160deg,#1a1a1a,#2a2218)",borderRadius:16,padding:"22px 26px"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                    <span style={{fontSize:19}}>🎁</span>
+                    <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
+                  </div>
+                  <p style={{...KR,fontSize:14,color:"#e5ddc8",lineHeight:1.9,margin:0,whiteSpace:"pre-line"}}>{program.luckydraw}</p>
                 </div>
               )}
             </div>
