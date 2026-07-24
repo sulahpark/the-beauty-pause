@@ -196,7 +196,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
     if (map.current || !window.L) return;
     const L = window.L;
     const center = focusSalon ? [+focusSalon.latitude,+focusSalon.longitude] : [48.8566,2.3522];
-    const m = L.map(uid.current,{zoomControl:!mini,scrollWheelZoom:!mini,dragging:!mini||true}).setView(center, focusSalon?15:13);
+    const m = L.map(uid.current,{zoomControl:compact||!mini,scrollWheelZoom:compact||!mini,dragging:!mini||true}).setView(center, focusSalon?15:13);
     map.current = m;
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:'<span style="font-size:8px;opacity:0.4;filter:grayscale(1)">© OSM © CARTO</span>',maxZoom:19}).addTo(m);
     // fit to salon markers on first load
@@ -1260,15 +1260,24 @@ function useProgramsData() {
             image: getAttachmentUrl(r.image || r.Image),
             duration: r.duration || "",
             priceOriginal: r.price_original || null,
+            priceMin: r.price_min || null,
+            priceMax: r.price_max || null,
             price: r.price || null,
             tag: r.tag || null,
             category: r.category || null,
+            periodStart: r.period_start || null,
             periodLabel,
             description: r.description || "",
             includes,
             luckydraw: r.luckydraw || r.Luckydraw || r.lucky_draw || "",
             product: (productBrand || productName) ? { brand: productBrand, name: productName, image: productImg } : null,
           };
+        });
+        // sort by period_start ascending — soonest-starting programs first
+        parsed.sort((a,b) => {
+          if (!a.periodStart) return 1;
+          if (!b.periodStart) return -1;
+          return a.periodStart.localeCompare(b.periodStart);
         });
         setPrograms(parsed);
       } catch(e) { console.error("Programs fetch error:", e); }
@@ -4366,8 +4375,12 @@ function ProgramCard({ program, salons, onClick }) {
         {program.subtitle&&<p style={{...KR,fontSize:12,color:"#a07832",margin:"0 0 6px",lineHeight:1.4,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{program.subtitle}</p>}
         <p style={{...SS,fontSize:11,color:"#999",margin:"0 0 8px"}}>{program.periodLabel}</p>
         <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:6}}>
-          {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
-          <span style={{...SS,fontSize:16,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+          {program.priceMin&&program.priceMax ? (
+            <span style={{...SS,fontSize:16,color:"#1a1a1a",fontWeight:700}}>€{program.priceMin}–{program.priceMax}</span>
+          ) : <>
+            {program.priceOriginal&&<span style={{...SS,fontSize:12,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
+            <span style={{...SS,fontSize:16,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+          </>}
           <span style={{...KR,fontSize:11,color:"#999",marginLeft:"auto"}}>{program.duration}</span>
         </div>
         {salonLabel&&<p style={{...SS,fontSize:11,color:"#999",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍 {salonLabel}</p>}
@@ -4442,7 +4455,7 @@ const PT = {
     searchHint:"Start typing to search…", searchNoResults:"No results for",
     duration:"Duration", price:"Price", back:"Back",
     myProgramsEmpty:"No programs applied yet.",
-    allPrograms:"All Programs",
+    allPrograms:"All Programs", priceVaries:"Price varies by salon",
   },
   fr: {
     heroTitle1:"Découvrez le K-Beauty", heroTitle2:"dans les salons parisiens",
@@ -4471,7 +4484,7 @@ const PT = {
     searchHint:"Commencez à taper pour rechercher…", searchNoResults:"Aucun résultat pour",
     duration:"Durée", price:"Prix", back:"Retour",
     myProgramsEmpty:"Aucun programme réservé pour l'instant.",
-    allPrograms:"Tous les programmes",
+    allPrograms:"Tous les programmes", priceVaries:"Le prix varie selon le salon",
   },
 };
 
@@ -5054,8 +5067,12 @@ function ProgramsListPage({ salons, programs, loadingPrograms, user, onAuthClick
                               {p.subtitle&&<p style={{...KR,fontSize:13,color:"#a07832",margin:"0 0 8px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.subtitle}</p>}
                               <p style={{...SS,fontSize:12,color:"#999",margin:"0 0 14px"}}>{p.periodLabel}</p>
                               <div style={{display:"flex",alignItems:"baseline",gap:8}}>
-                                {p.priceOriginal&&<span style={{...SS,fontSize:13,color:"#bbb",textDecoration:"line-through"}}>€{p.priceOriginal}</span>}
-                                <span style={{...KR,fontSize:20,color:"#1a1a1a",fontWeight:700}}>€{p.price}</span>
+                                {p.priceMin&&p.priceMax ? (
+                                  <span style={{...KR,fontSize:20,color:"#1a1a1a",fontWeight:700}}>€{p.priceMin}–{p.priceMax}</span>
+                                ) : <>
+                                  {p.priceOriginal&&<span style={{...SS,fontSize:13,color:"#bbb",textDecoration:"line-through"}}>€{p.priceOriginal}</span>}
+                                  <span style={{...KR,fontSize:20,color:"#1a1a1a",fontWeight:700}}>€{p.price}</span>
+                                </>}
                                 <span style={{...SS,fontSize:13,color:"#c9a96e",fontWeight:600,marginLeft:6}}>⏱ {p.duration}</span>
                               </div>
                             </div>
@@ -5213,6 +5230,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
   const [submitError, setSubmitError] = useState("");
   const [modalProduct, setModalProduct] = useState(null);
   const [modalSalon, setModalSalon] = useState(null);
+  const [salonPage, setSalonPage] = useState(0);
   const [lr, setLr] = useState(!!window.L);
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
@@ -5305,10 +5323,17 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
           )}
 
           {/* price */}
-          <div style={{display:"flex",alignItems:"baseline",gap:10,padding:"16px 0",borderTop:"1px solid #f0e5cf",borderBottom:"1px solid #f0e5cf",marginBottom:24}}>
-            {program.priceOriginal&&<span style={{...SS,fontSize:14,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
-            <span style={{...KR,fontSize:26,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
-            <span style={{...SS,fontSize:12,color:"#999",marginLeft:"auto"}}>⏱ {program.duration}</span>
+          <div style={{padding:"16px 0",borderTop:"1px solid #f0e5cf",borderBottom:"1px solid #f0e5cf",marginBottom:24}}>
+            <div style={{display:"flex",alignItems:"baseline",gap:10}}>
+              {program.priceMin&&program.priceMax ? (
+                <span style={{...KR,fontSize:26,color:"#1a1a1a",fontWeight:700}}>€{program.priceMin}–{program.priceMax}</span>
+              ) : <>
+                {program.priceOriginal&&<span style={{...SS,fontSize:14,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
+                <span style={{...KR,fontSize:26,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+              </>}
+              <span style={{...SS,fontSize:12,color:"#999",marginLeft:"auto"}}>⏱ {program.duration}</span>
+            </div>
+            {program.priceMin&&program.priceMax&&<p style={{...SS,fontSize:11,color:"#bbb",margin:"6px 0 0"}}>{pt.priceVaries}</p>}
           </div>
 
           {/* description */}
@@ -5336,7 +5361,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               </div>
               <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:200}}>
                 {lr
-                  ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} />
+                  ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} onPinClick={s=>setModalSalon(s)} />
                   : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:12,color:"#bbb"}}>{pt.mapLoading}</div>}
               </div>
             </div>
@@ -5419,14 +5444,24 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
               {programSalons.length>0&&(
                 <div>
                   <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.runningSalons} {programSalons.length>1&&`(${programSalons.length} ${pt.locations})`}</p>
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
-                    {programSalons.map(s=>(
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+                    {programSalons.slice(salonPage*4,salonPage*4+4).map(s=>(
                       <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>setModalSalon(s)}/>
                     ))}
                   </div>
+                  {programSalons.length>4&&(
+                    <div style={{display:"flex",gap:6,marginBottom:20}}>
+                      {Array.from({length:Math.ceil(programSalons.length/4)}).map((_,i)=>(
+                        <button key={i} onClick={()=>setSalonPage(i)}
+                          style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${salonPage===i?"#c9a96e":"#f0e9dc"}`,background:salonPage===i?"#c9a96e":"#fff",color:salonPage===i?"#0d0d0d":"#999",...SS,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                          {i+1}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
                     {lr
-                      ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} />
+                      ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} onPinClick={s=>setModalSalon(s)} />
                       : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>{pt.mapLoading}</div>}
                   </div>
                 </div>
@@ -5434,7 +5469,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
               {/* lucky draw */}
               {program.luckydraw&&(
-                <div style={{marginTop:28,maxWidth:600,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:16,padding:"22px 26px"}}>
+                <div style={{marginTop:28,background:"#fdf8ee",border:"1px solid #e8d9b8",borderRadius:16,padding:"22px 26px"}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
                     <span style={{fontSize:19}}>🎁</span>
                     <p style={{...SS,fontSize:11,color:"#a07832",letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,margin:0}}>Lucky Draw</p>
@@ -5447,11 +5482,16 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
             {/* RIGHT: sticky booking card — price, duration, CTA only */}
             <div style={{flex:"1 1 34%",maxWidth:340}}>
               <div style={{position:"sticky",top:96,background:"#fff",border:"1px solid #f0e9dc",borderRadius:20,padding:24}}>
-                <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:24}}>
-                  {program.priceOriginal&&<span style={{...SS,fontSize:14,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
-                  <span style={{...KR,fontSize:28,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+                <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:program.priceMin&&program.priceMax?8:24}}>
+                  {program.priceMin&&program.priceMax ? (
+                    <span style={{...KR,fontSize:28,color:"#1a1a1a",fontWeight:700}}>€{program.priceMin}–{program.priceMax}</span>
+                  ) : <>
+                    {program.priceOriginal&&<span style={{...SS,fontSize:14,color:"#bbb",textDecoration:"line-through"}}>€{program.priceOriginal}</span>}
+                    <span style={{...KR,fontSize:28,color:"#1a1a1a",fontWeight:700}}>€{program.price}</span>
+                  </>}
                   <span style={{...SS,fontSize:12,color:"#999",marginLeft:"auto"}}>⏱ {program.duration}</span>
                 </div>
+                {program.priceMin&&program.priceMax&&<p style={{...SS,fontSize:11,color:"#bbb",margin:"0 0 16px"}}>{pt.priceVaries}</p>}
 
                 <button onClick={()=>{ if (!user) { onAuthClick?.("login"); return; } setStep("select-salon"); }}
                   style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:14,fontWeight:700}}>
