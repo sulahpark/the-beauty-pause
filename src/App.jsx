@@ -281,6 +281,14 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
           : `<div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#1a1a1a">${s.name}</div>`;
         mk.bindTooltip(tooltip,{direction:"top",offset:[0,-10],className:"tbp-tooltip"});
         mk.on("click",()=>onPinClick?.(s));
+      } else {
+        // mini map: clicking a pin shows a small popup card with name + address
+        const popupHtml = `<div style="font-family:'DM Sans',sans-serif;padding:2px 2px;min-width:150px;max-width:200px">
+            <p style="font-size:13px;font-weight:700;color:#1a1a1a;margin:0 0 4px;line-height:1.3">${s.name}</p>
+            <p style="font-size:11px;color:#888;margin:0;line-height:1.5">${s.address||s.area||""}</p>
+          </div>`;
+        mk.bindPopup(popupHtml,{closeButton:true,maxWidth:220,className:"tbp-mini-popup"});
+        mk.on("click",()=>mk.openPopup());
       }
       marks.current.push(mk);
     });
@@ -5450,7 +5458,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                     ))}
                   </div>
                   {programSalons.length>4&&(
-                    <div style={{display:"flex",gap:6,marginBottom:20}}>
+                    <div style={{display:"flex",gap:6,marginBottom:20,justifyContent:"center"}}>
                       {Array.from({length:Math.ceil(programSalons.length/4)}).map((_,i)=>(
                         <button key={i} onClick={()=>setSalonPage(i)}
                           style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${salonPage===i?"#c9a96e":"#f0e9dc"}`,background:salonPage===i?"#c9a96e":"#fff",color:salonPage===i?"#0d0d0d":"#999",...SS,fontSize:12,fontWeight:700,cursor:"pointer"}}>
