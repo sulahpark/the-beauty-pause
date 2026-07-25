@@ -173,6 +173,7 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
   salRef.current = salons;
   const fitRef = useRef(fitToSalons);
   fitRef.current = fitToSalons;
+  const markerObjMap = useRef({}); // salonId -> leaflet marker instance
 
   // highlight effect when highlightId changes
   useEffect(()=>{
@@ -189,6 +190,11 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
       el.style.transform = isHL ? "scale(1.2)" : "scale(1)";
       el.style.zIndex = isHL ? "1000" : "";
       el.style.boxShadow = isHL ? "0 4px 16px rgba(0,0,0,0.35)" : "0 3px 12px rgba(0,0,0,0.25)";
+    });
+    // open the popup for the highlighted marker (mini maps only have popups bound)
+    Object.entries(markerObjMap.current).forEach(([id, mk])=>{
+      if (!mk.getPopup?.()) return;
+      if (id === highlightId) mk.openPopup(); else mk.closePopup();
     });
   },[highlightId]);
 
@@ -282,14 +288,18 @@ function SalonMap({ salons, onPinClick, onBoundsChange, focusSalon, mini, fitToS
         mk.bindTooltip(tooltip,{direction:"top",offset:[0,-10],className:"tbp-tooltip"});
         mk.on("click",()=>onPinClick?.(s));
       } else {
-        // mini map: clicking a pin shows a small popup card with name + address
+        // mini map: hover a pin (or the matching list row) shows a small popup card;
+        // clicking a pin opens the full salon modal
         const popupHtml = `<div style="font-family:'DM Sans',sans-serif;padding:2px 2px;min-width:150px;max-width:200px">
             <p style="font-size:13px;font-weight:700;color:#1a1a1a;margin:0 0 4px;line-height:1.3">${s.name}</p>
             <p style="font-size:11px;color:#888;margin:0;line-height:1.5">${s.address||s.area||""}</p>
           </div>`;
         mk.bindPopup(popupHtml,{closeButton:true,maxWidth:220,className:"tbp-mini-popup"});
-        mk.on("click",()=>mk.openPopup());
+        mk.on("mouseover",()=>mk.openPopup());
+        mk.on("mouseout",()=>mk.closePopup());
+        mk.on("click",()=>onPinClick?.(s));
       }
+      markerObjMap.current[s.id] = mk;
       marks.current.push(mk);
     });
   },[salons,focusSalon]);
@@ -5239,6 +5249,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
   const [modalProduct, setModalProduct] = useState(null);
   const [modalSalon, setModalSalon] = useState(null);
   const [salonPage, setSalonPage] = useState(0);
+  const [hoveredSalonId, setHoveredSalonId] = useState(null);
   const [lr, setLr] = useState(!!window.L);
   useEffect(()=>{if(window.L){setLr(true);return;}const lnk=document.createElement("link");lnk.rel="stylesheet";lnk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(lnk);const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);},[]);
 
@@ -5454,7 +5465,9 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                   <p style={{...KR,fontSize:12,color:"#c9a96e",letterSpacing:1,textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>{pt.runningSalons} {programSalons.length>1&&`(${programSalons.length} ${pt.locations})`}</p>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
                     {programSalons.slice(salonPage*4,salonPage*4+4).map(s=>(
-                      <ProgramSalonCard key={s.id} salon={s} showAddress onClick={()=>setModalSalon(s)}/>
+                      <div key={s.id} onMouseEnter={()=>setHoveredSalonId(s.id)} onMouseLeave={()=>setHoveredSalonId(null)}>
+                        <ProgramSalonCard salon={s} showAddress onClick={()=>setModalSalon(s)}/>
+                      </div>
                     ))}
                   </div>
                   {programSalons.length>4&&(
@@ -5469,7 +5482,7 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
                   )}
                   <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #f0e9dc",height:280}}>
                     {lr
-                      ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} onPinClick={s=>setModalSalon(s)} />
+                      ? <SalonMap salons={programSalons} mini={true} compact={true} fitToSalons={programSalons} onPinClick={s=>setModalSalon(s)} highlightId={hoveredSalonId} />
                       : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...KR,fontSize:13,color:"#bbb"}}>{pt.mapLoading}</div>}
                   </div>
                 </div>
