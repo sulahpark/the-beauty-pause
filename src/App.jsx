@@ -5240,8 +5240,10 @@ function ProgramDetailPage({ salons, allProducts, user, onAuthClick, programs, l
 
   const program = (programs||[]).find(p=>p.id===programId);
   const matchedProduct = program?.product ? (allProducts||[]).find(p=>p.product_name===program.product.name) : null;
-  const liveSalons = (salons||[]).filter(s=>(program?.salonIds||[]).includes(s.id));
-  const programSalons = liveSalons;
+  const programSalons = useMemo(
+    () => (salons||[]).filter(s=>(program?.salonIds||[]).includes(s.id)),
+    [salons, program]
+  );
   const [step, setStep] = useState("idle"); // idle | select-salon | payment | confirmed
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [orderId, setOrderId] = useState(null);
