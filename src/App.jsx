@@ -3227,10 +3227,9 @@ function ForBrandsPage() {
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ For Brands</Badge>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,52px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.25,margin:"0 0 28px"}}>
-            파리에서 브랜드의<br/>첫 오프라인 활동을 시작하세요.
+            파리 뷰티 공간에서<br/>브랜드 프로그램을 운영하는<br/>오프라인 디스커버리 플랫폼.
           </h1>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 12px"}}>The Beauty Pause는 파리의 뷰티 공간에서 브랜드가 현지 고객에게 발견되고 경험될 수 있도록 오프라인 브랜드 프로그램을 기획하고 운영합니다.</p>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 44px"}}>현지 팀이나 자체 매장을 만들지 않고도 적은 수량의 제품으로 파리에서 시작할 수 있습니다.</p>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 0 44px"}}>The Beauty Pause는 브랜드 제품을 파리의 뷰티 공간에 연결하고,<br/>현지 고객이 제품을 발견하고 경험할 수 있는<br/>오프라인 프로그램을 기획하고 운영합니다.</p>
           <a href="mailto:hello@thebeautypause.com"
             style={{display:"inline-flex",alignItems:"center",gap:10,padding:"15px 32px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
             브랜드 프로그램 문의하기 →
@@ -3242,51 +3241,76 @@ function ForBrandsPage() {
       <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)",borderBottom:"1px solid #ede8e2"}}>
         <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Paris Launch Campaign</Badge>
-          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",lineHeight:1.5,margin:"8px 0 16px"}}>
-            브랜드에 맞는 방식으로 파리 고객을 만나세요.
-          </h2>
-          <p style={{...KR,fontSize:"clamp(14px,2vw,16px)",color:"#666",lineHeight:1.9,margin:0}}>
-            The Beauty Pause는 브랜드와 제품의 특성에 따라<br/>두 가지 오프라인 프로그램을 운영합니다.
+          <p style={{...KR,fontSize:"clamp(15px,2.2vw,17px)",color:"#444",lineHeight:2,margin:"14px 0 0"}}>
+            제품을 여러 파트너 살롱에서 소개하는 <strong style={{color:"#a07832"}}>Discovery Program</strong>과<br/>제품을 실제 살롱 서비스에 적용하는 <strong style={{color:"#a07832"}}>Signature Program</strong>을 통해<br/>브랜드의 파리 오프라인 활동을 시작할 수 있습니다.
           </p>
         </div>
       </section>
 
-      {/* DISCOVERY PROGRAM */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+      {/* TWO PROGRAMS — side by side overview */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px) 56px"}}>
+        <div style={{maxWidth:1040,margin:"0 auto"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(380px,1fr))",gap:"48px 40px"}}>
+
+            {/* Discovery column */}
+            <div>
+              <p style={{...KR,fontSize:"clamp(24px,3vw,30px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.2}}>Discovery Program</p>
+              <p style={{...KR,fontSize:"13px",color:"#a07832",fontWeight:600,margin:"0 0 14px"}}>파리 살롱에서 브랜드를 소개합니다.</p>
+              <p style={{...KR,fontSize:"14px",color:"#666",lineHeight:1.8,margin:"0 0 16px"}}>제품을 파트너 살롱에 비치하고, QR 콘텐츠와 고객 이벤트를 통해 현지 고객이 브랜드를 자연스럽게 발견하도록 합니다.</p>
+              <span style={{...SS,fontSize:"12px",fontWeight:600,color:"#a07832",background:"#fff",border:"1px solid #e8d9b8",padding:"7px 14px",borderRadius:20,display:"inline-block",marginBottom:24}}>최대 10개 파트너 살롱에서 운영</span>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                {[
+                  {t:"Offline Exposure",s:"파리 오프라인 노출",d:"파트너 살롱에 제품과 소개물을 설치합니다."},
+                  {t:"Customer Program",s:"살롱 고객 프로그램",d:"QR, Lucky Draw 등 고객 참여 프로그램을 운영합니다."},
+                  {t:"Online Content",s:"파리 콘텐츠 제작",d:"현장의 모습을 사진·영상으로 기록합니다."},
+                  {t:"Purchase Connection",s:"판매 연결",d:"QR로 온라인 구매 페이지를 연결합니다."},
+                ].map(({t,s,d})=>(
+                  <div key={t} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:14,padding:"18px 16px"}}>
+                    <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"0.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{t}</p>
+                    <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3}}>{s}</p>
+                    <p style={{...KR,fontSize:"12px",color:"#888",lineHeight:1.6,margin:0}}>{d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Signature column */}
+            <div>
+              <p style={{...KR,fontSize:"clamp(24px,3vw,30px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px",lineHeight:1.2}}>Signature Program</p>
+              <p style={{...KR,fontSize:"13px",color:"#a07832",fontWeight:600,margin:"0 0 14px"}}>브랜드 제품을 실제 살롱 서비스로 만듭니다.</p>
+              <p style={{...KR,fontSize:"14px",color:"#666",lineHeight:1.8,margin:"0 0 16px"}}>헤어·마사지·페이셜 등 실제 살롱 서비스 안에서 고객이 제품을 경험할 수 있는 프로그램을 기획합니다.</p>
+              <span style={{...SS,fontSize:"12px",fontWeight:600,color:"#a07832",background:"#fff",border:"1px solid #e8d9b8",padding:"7px 14px",borderRadius:20,display:"inline-block",marginBottom:24}}>1개 파트너 살롱부터 맞춤 운영</span>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                {[
+                  {t:"Service Integration",s:"실제 살롱 서비스 적용",d:"브랜드 제품을 살롱의 전문 서비스에 적용합니다."},
+                  {t:"Program Development",s:"브랜드 프로그램 기획",d:"살롱과 함께 서비스 또는 캠페인을 기획합니다."},
+                  {t:"Professional Experience",s:"전문 고객 경험",d:"살롱 전문가가 제품을 직접 사용하고 소개합니다."},
+                  {t:"Campaign Content",s:"전용 콘텐츠 제작",d:"실제 서비스 현장을 사진·영상으로 담습니다."},
+                ].map(({t,s,d})=>(
+                  <div key={t} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:14,padding:"18px 16px"}}>
+                    <p style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"0.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 4px"}}>{t}</p>
+                    <p style={{...KR,fontSize:"13px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px",lineHeight:1.3}}>{s}</p>
+                    <p style={{...KR,fontSize:"12px",color:"#888",lineHeight:1.6,margin:0}}>{d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* DISCOVERY PROGRAM — details */}
+      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)",borderTop:"1px solid #ede8e2"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Discovery Program</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 14px"}}>파리 살롱에서 브랜드를 소개합니다.</h2>
-          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:600,margin:"0 0 20px"}}>
-            제품을 파트너 살롱에 비치하고, QR 콘텐츠와 고객 이벤트를 통해 현지 고객이 브랜드를 자연스럽게 발견하도록 합니다.
-          </p>
-          <span style={{...SS,fontSize:"13px",fontWeight:600,color:"#a07832",background:"#fff",border:"1px solid #e8d9b8",padding:"9px 16px",borderRadius:20,display:"inline-block",marginBottom:40}}>최대 10개 파트너 살롱에서 운영</span>
-
-          <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:48}}>
-            {[
-              {n:"01",t:"Offline Exposure — 파리 오프라인 노출",d1:"브랜드 제품과 소개물을 파리의 파트너 살롱에 설치합니다.",d2:"고객이 뷰티 서비스를 이용하며 머무는 시간 동안 브랜드와 제품을 자연스럽게 발견할 수 있습니다."},
-              {n:"02",t:"Customer Program — 살롱 고객 프로그램",d1:"QR, Lucky Draw, 제품 선물 등의 고객 참여 프로그램을 운영합니다.",d2:"제품을 단순히 진열하는 데서 끝나지 않고, 고객이 브랜드를 확인하고 참여할 이유를 만듭니다."},
-              {n:"03",t:"Online Content — 파리 콘텐츠 제작",d1:"브랜드가 파리에서 운영되는 모습을 사진과 영상 콘텐츠로 기록합니다.",d2:"제작된 콘텐츠는 브랜드의 SNS, 홈페이지, 해외 마케팅 및 영업 자료로 활용할 수 있습니다."},
-              {n:"04",t:"Purchase Connection — 판매 연결",d1:"QR을 통해 제품 정보와 온라인 구매 페이지를 연결합니다.",d2:"브랜드 자사몰 연결 또는 TBP의 현지 배송 지원을 통해 관심을 실제 구매 기회로 이어갈 수 있습니다."},
-            ].map(({n,t,d1,d2},i)=>(
-              <div key={n} style={{display:"grid",gridTemplateColumns:"60px 1fr",gap:"0 20px",padding:"24px 0",borderTop:`2px solid ${i===0?"#c9a96e":"#ede8e2"}`}}>
-                <p style={{...CG,fontSize:"32px",color:"rgba(201,169,110,0.3)",fontWeight:300,lineHeight:1,paddingTop:2}}>{n}</p>
-                <div>
-                  <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
-                  <p style={{...KR,fontSize:"13px",color:"#555",lineHeight:1.8,margin:"0 0 4px"}}>{d1}</p>
-                  <p style={{...KR,fontSize:"13px",color:"#888",lineHeight:1.8,margin:0}}>{d2}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 30px",marginBottom:32}}>
+          <div style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 30px",marginBottom:32}}>
             <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>기본 운영 범위</p>
             {["최대 10개 파트너 살롱","기본 운영 기간 2주","제품 및 브랜드 소개물 설치","QR 브랜드 페이지","고객 참여 이벤트","기본 사진 및 영상 콘텐츠","온라인 구매 페이지 연결","살롱 커뮤니케이션 및 현지 운영","기본 운영 현황 공유"].map(i=>(
               <CheckItem key={i}>{i}</CheckItem>
             ))}
           </div>
-
           <div style={{borderTop:"1px solid #ede8e2",paddingTop:28}}>
             <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 8px"}}>참가비</p>
             <p style={{...KR,fontSize:"32px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px"}}>790,000원</p>
@@ -3299,39 +3323,12 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* SIGNATURE PROGRAM */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+      {/* SIGNATURE PROGRAM — details */}
+      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px) 80px"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <Badge>✦ Signature Program</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 14px"}}>브랜드 제품을 실제 살롱 서비스로 만듭니다.</h2>
-          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:600,margin:"0 0 20px"}}>
-            제품을 단순히 소개하는 것을 넘어, 헤어·마사지·페이셜 등 실제 살롱 서비스 안에서 고객이 제품을 경험할 수 있는 프로그램을 기획합니다.
-          </p>
-          <span style={{...SS,fontSize:"13px",fontWeight:600,color:"#a07832",background:"#faf7f4",border:"1px solid #e8d9b8",padding:"9px 16px",borderRadius:20,display:"inline-block",marginBottom:40}}>1개 파트너 살롱부터 맞춤 운영</span>
-
-          <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:48}}>
-            {[
-              {n:"01",t:"Service Integration — 실제 살롱 서비스 적용",d1:"브랜드 제품을 살롱의 전문 서비스 과정에 적용합니다.",d2:"고객은 제품을 진열대에서 보는 것이 아니라, 실제 시술과 서비스를 통해 경험합니다.",tags:null},
-              {n:"02",t:"Program Development — 브랜드 프로그램 기획",d1:"제품 특성과 브랜드 콘셉트에 맞춰 살롱과 함께 서비스 또는 캠페인을 기획합니다.",d2:null,tags:["Korean Hair Treatment","Head Spa Program","Facial Ritual","Body & Massage Program","Korean Nail Collection","Lash Event"]},
-              {n:"03",t:"Professional Experience — 전문 고객 경험",d1:"살롱 전문가가 제품을 직접 사용하고 고객에게 제품과 프로그램을 소개합니다.",d2:"이를 통해 브랜드 제품이 실제 뷰티 서비스 환경에서 어떻게 경험될 수 있는지를 보여줍니다.",tags:null},
-              {n:"04",t:"Campaign Content — 전용 콘텐츠 제작",d1:"서비스가 진행되는 실제 현장을 중심으로 브랜드 프로그램 전용 사진과 영상 콘텐츠를 제작합니다.",d2:"제품 사용 장면, 고객 경험, 살롱 공간이 함께 담긴 보다 구체적인 해외 마케팅 콘텐츠를 확보할 수 있습니다.",tags:null},
-            ].map(({n,t,d1,d2,tags},i)=>(
-              <div key={n} style={{display:"grid",gridTemplateColumns:"60px 1fr",gap:"0 20px",padding:"24px 0",borderTop:`2px solid ${i===0?"#c9a96e":"#ede8e2"}`}}>
-                <p style={{...CG,fontSize:"32px",color:"rgba(201,169,110,0.3)",fontWeight:300,lineHeight:1,paddingTop:2}}>{n}</p>
-                <div>
-                  <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
-                  <p style={{...KR,fontSize:"13px",color:"#555",lineHeight:1.8,margin:d2?"0 0 4px":"0 0 12px"}}>{d1}</p>
-                  {d2&&<p style={{...KR,fontSize:"13px",color:"#888",lineHeight:1.8,margin:"0 0 12px"}}>{d2}</p>}
-                  {tags&&<div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {tags.map(tg=><span key={tg} style={{...SS,fontSize:"11px",color:"#a07832",background:"#faf7f4",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:16}}>{tg}</span>)}
-                  </div>}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 30px",marginBottom:32}}>
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 30px",marginBottom:32}}>
             <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>포함 가능한 운영 범위</p>
             {["적합한 파트너 살롱 선정","제품 및 서비스 적합성 검토","프로그램 콘셉트 기획","제품 사용 방식 및 운영 가이드","살롱과의 공동 프로그램 준비","필요 시 살롱 직원 안내 또는 교육","고객용 홍보물 제작","예약 또는 이벤트 운영 지원","현장 사진 및 영상 콘텐츠","현지 커뮤니케이션 및 운영 관리"].map(i=>(
               <CheckItem key={i}>{i}</CheckItem>
@@ -3359,6 +3356,7 @@ function ForBrandsPage() {
           </div>
         </div>
       </section>
+
 
       {/* WHICH PROGRAM FITS */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
