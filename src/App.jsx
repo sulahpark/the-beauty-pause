@@ -3102,6 +3102,8 @@ function ForBrandsPage() {
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   const CG = {fontFamily:"'Cormorant Garamond',serif"};
   const [showTop, setShowTop] = useState(false);
+  const [brandEmail, setBrandEmail] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(()=>{
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -3225,6 +3227,7 @@ function ForBrandsPage() {
       {/* 0. HERO */}
       <section style={{background:"#0d0d0d",padding:"110px clamp(24px,6vw,80px) 96px",animation:"fadeUp 0.5s ease both"}}>
         <div style={{maxWidth:760,margin:"0 auto",textAlign:"center"}}>
+          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>✦ K뷰티 유럽 오프라인 진출</p>
           <h1 style={{...KR,fontSize:"clamp(28px,5vw,48px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.35,margin:"0 0 28px"}}>
             파리의 실제 살롱에서<br/>브랜드를 소개하세요.
           </h1>
@@ -3254,7 +3257,7 @@ function ForBrandsPage() {
           <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:520,margin:"0 auto 48px"}}>
             대부분의 브랜드는 광고부터 시작합니다.<br/>TBP는 고객이 실제로 시간을 보내는 공간에서 브랜드를 소개합니다.
           </p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:24}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:24,marginBottom:48}}>
             {[
               {w:"salons",k:"파리의 실제 살롱 네트워크"},
               {w:"experiences",k:"실제 서비스 환경"},
@@ -3268,6 +3271,25 @@ function ForBrandsPage() {
               </div>
             ))}
           </div>
+
+          {emailSent ? (
+            <p style={{...KR,fontSize:"14px",color:"#a07832",fontWeight:600}}>✓ 감사합니다. 곧 연락드릴게요.</p>
+          ) : (
+            <form onSubmit={e=>{
+              e.preventDefault();
+              if (!brandEmail.trim()) return;
+              window.location.href = `mailto:hello@thebeautypause.com?subject=${encodeURIComponent("브랜드 프로그램 문의")}&body=${encodeURIComponent(`문의 이메일: ${brandEmail}`)}`;
+              setEmailSent(true);
+            }} style={{display:"flex",gap:8,maxWidth:420,margin:"0 auto",flexWrap:"wrap",justifyContent:"center"}}>
+              <input type="email" required placeholder="이메일을 남겨주시면 먼저 안내드릴게요"
+                value={brandEmail} onChange={e=>setBrandEmail(e.target.value)}
+                style={{flex:"1 1 240px",padding:"13px 16px",border:"1px solid #ede8e2",borderRadius:10,...SS,fontSize:"13px",color:"#1a1a1a",outline:"none"}}/>
+              <button type="submit"
+                style={{padding:"13px 22px",background:"#1a1a1a",color:"#f5f0eb",border:"none",borderRadius:10,cursor:"pointer",...KR,fontSize:"13px",fontWeight:700,whiteSpace:"nowrap"}}>
+                문의받기 →
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
@@ -3313,15 +3335,33 @@ function ForBrandsPage() {
       </section>
 
       {/* 3. DISCOVERY */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Discovery</Badge>
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px) 24px"}}>
+        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Two Ways to Start</Badge>
           <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:520,margin:"0 auto"}}>
+            TBP는 두 가지 방식으로 브랜드를 파리에 소개합니다.<br/>대부분의 브랜드는 <strong style={{color:"#a07832"}}>Discovery</strong>로 시작하고, 이후 <strong style={{color:"#a07832"}}>Signature</strong>로 확장합니다.
+          </p>
+        </div>
+      </section>
+
+      <section style={{background:"#fff",padding:"24px clamp(24px,6vw,80px) 80px"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          <span style={{...SS,fontSize:11,color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>OPTION 1 OF 2 · 대부분 여기서 시작합니다</span>
           <p style={{...KR,fontSize:"clamp(24px,3.5vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>Discovery</p>
           <p style={{...KR,fontSize:"15px",color:"#a07832",fontWeight:600,margin:"0 0 28px"}}>브랜드의 첫 번째 파리 오프라인 활동</p>
 
-          <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #ede8e2",marginBottom:36}}>
-            <img src="/images/aurabeaute04.jpeg" alt="Discovery Program in a partner salon" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:36}}>
+            <div style={{borderRadius:14,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
+              <img src="/images/aurabeaute04.jpeg" alt="Discovery Program in a partner salon" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:8}}>
+              {["/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
+                <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
+                  <img src={src} alt="Discovery Program detail" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+                </div>
+              ))}
+            </div>
           </div>
 
           <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>운영 규모</p>
@@ -3372,8 +3412,7 @@ function ForBrandsPage() {
       {/* 4. SIGNATURE */}
       <section style={{background:"#1a1a1a",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Signature</Badge>
-          <Divider/>
+          <span style={{...SS,fontSize:11,color:"#0d0d0d",background:"#c9a96e",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>OPTION 2 OF 2 · Discovery 이후 확장 단계</span>
           <p style={{...KR,fontSize:"clamp(24px,3.5vw,32px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px"}}>Signature</p>
           <p style={{...KR,fontSize:"15px",color:"#c9a96e",fontWeight:600,margin:"0 0 28px"}}>제품을 실제 서비스 안에 통합합니다.</p>
 
