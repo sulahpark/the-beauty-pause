@@ -3257,19 +3257,26 @@ function ForBrandsPage() {
           <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:520,margin:"0 auto 48px"}}>
             대부분의 브랜드는 광고부터 시작합니다.<br/>TBP는 고객이 실제로 시간을 보내는 공간에서 브랜드를 소개합니다.
           </p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:24,marginBottom:48}}>
+          <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",marginBottom:48}}>
             {[
               {w:"salons",k:"파리의 실제 살롱 네트워크"},
               {w:"experiences",k:"실제 서비스 환경"},
               {w:"content",k:"실제 현장 콘텐츠"},
               {w:"opportunities",k:"실제 구매 기회"},
-            ].map(({w,k})=>(
-              <div key={w}>
-                <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 2px"}}>Real</p>
-                <p style={{...SS,fontSize:"14px",color:"#1a1a1a",fontWeight:600,margin:"0 0 10px"}}>{w}</p>
-                <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.6,margin:0}}>{k}</p>
+            ].map(({w,k},i,arr)=>(
+              <div key={w} style={{display:"flex",alignItems:"stretch"}}>
+                <div style={{padding:"0 28px",minWidth:150}}>
+                  <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 2px"}}>Real</p>
+                  <p style={{...SS,fontSize:"14px",color:"#1a1a1a",fontWeight:600,margin:"0 0 10px"}}>{w}</p>
+                  <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.6,margin:0}}>{k}</p>
+                </div>
+                {i<arr.length-1&&<div style={{width:1,background:"linear-gradient(to bottom,transparent,#eee 20%,#eee 80%,transparent)"}}/>}
               </div>
             ))}
+          </div>
+
+          <div style={{borderRadius:16,overflow:"hidden",marginBottom:36}}>
+            <img src="/images/how-it-works-illustration.png" alt="How TBP works illustration" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
           </div>
 
           {emailSent ? (
@@ -3347,7 +3354,7 @@ function ForBrandsPage() {
 
       <section style={{background:"#fff",padding:"24px clamp(24px,6vw,80px) 80px"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          <span style={{...SS,fontSize:11,color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>OPTION 1 OF 2 · 대부분 여기서 시작합니다</span>
+          <span style={{...SS,fontSize:11,color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>프로그램 1</span>
           <p style={{...KR,fontSize:"clamp(24px,3.5vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>Discovery</p>
           <p style={{...KR,fontSize:"15px",color:"#a07832",fontWeight:600,margin:"0 0 28px"}}>브랜드의 첫 번째 파리 오프라인 활동</p>
 
@@ -3412,7 +3419,7 @@ function ForBrandsPage() {
       {/* 4. SIGNATURE */}
       <section style={{background:"#1a1a1a",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          <span style={{...SS,fontSize:11,color:"#0d0d0d",background:"#c9a96e",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>OPTION 2 OF 2 · Discovery 이후 확장 단계</span>
+          <span style={{...SS,fontSize:11,color:"#0d0d0d",background:"#c9a96e",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>프로그램 2</span>
           <p style={{...KR,fontSize:"clamp(24px,3.5vw,32px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px"}}>Signature</p>
           <p style={{...KR,fontSize:"15px",color:"#c9a96e",fontWeight:600,margin:"0 0 28px"}}>제품을 실제 서비스 안에 통합합니다.</p>
 
