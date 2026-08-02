@@ -3224,302 +3224,243 @@ function ForBrandsPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}`}</style>
       <BrandsNav/>
 
-      {/* 0. HERO */}
+      {/* 01. HERO */}
       <section style={{background:"#0d0d0d",padding:"110px clamp(24px,6vw,80px) 96px",animation:"fadeUp 0.5s ease both"}}>
         <div style={{maxWidth:760,margin:"0 auto",textAlign:"center"}}>
           <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>✦ K뷰티 유럽 오프라인 진출</p>
-          <h1 style={{...KR,fontSize:"clamp(28px,5vw,48px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.35,margin:"0 0 28px"}}>
-            파리의 실제 살롱에서<br/>브랜드를 소개하세요.
+          <h1 style={{...KR,fontSize:"clamp(26px,4.6vw,44px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 28px"}}>
+            파리 살롱에서 한국 제품을 활용한<br/>뷰티 프로그램을 운영합니다.
           </h1>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 auto 44px"}}>
-            수출 계약도, 현지 팀도, 팝업 스토어도 필요하지 않습니다.<br/>
-            TBP는 파리의 실제 살롱 네트워크를 기반으로 브랜드 경험을 설계하고 운영합니다.<br/>
-            그 과정에서 콘텐츠, 신뢰, 고객 접점, 그리고 구매 기회를 만듭니다.
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 auto 12px"}}>
+            TBP는 프로그램을 기획하고, 파리 살롱에서 직접 운영합니다.<br/>
+            고객은 살롱 서비스 안에서 제품을 경험하고, QR로 브랜드를 발견하고, 살롱이나 온라인에서 구매까지 이어갑니다.
+          </p>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.35)",lineHeight:1.9,margin:"0 0 44px"}}>
+            지금 운영 중이거나 곧 시작하는 프로그램에 브랜드가 참여할 수 있습니다.
           </p>
           <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-            <a href="mailto:hello@thebeautypause.com?subject=프로그램 문의"
+            <a href="mailto:hello@thebeautypause.com?subject=프로그램 신청"
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
-              프로그램 문의하기 →
+              프로그램 신청하기 →
             </a>
-            <a href="mailto:hello@thebeautypause.com?subject=브랜드 신청"
-              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.25)",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none"}}>
-              브랜드 신청하기
-            </a>
+            <button onClick={()=>{navigate("/programs");window.scrollTo(0,0);}}
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.25)",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,cursor:"pointer"}}>
+              진행 중인 프로그램 보기
+            </button>
           </div>
         </div>
       </section>
 
-      {/* 1. WHY TBP */}
+      {/* 02. PROGRAM LINEUP */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:820,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Why TBP</Badge>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"8px 0 16px"}}>왜 살롱에서 시작할까요?</h2>
-          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:520,margin:"0 auto 48px"}}>
-            대부분의 브랜드는 광고부터 시작합니다.<br/>TBP는 고객이 실제로 시간을 보내는 공간에서 브랜드를 소개합니다.
-          </p>
-          <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",marginBottom:48}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Program Lineup</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>프로그램 라인업</h2>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20}}>
             {[
-              {w:"salons",k:"파리의 실제 살롱 네트워크"},
-              {w:"experiences",k:"실제 서비스 환경"},
-              {w:"content",k:"실제 현장 콘텐츠"},
-              {w:"opportunities",k:"실제 구매 기회"},
-            ].map(({w,k},i,arr)=>(
-              <div key={w} style={{display:"flex",alignItems:"stretch"}}>
-                <div style={{padding:"0 28px",minWidth:150}}>
-                  <p style={{...CG,fontSize:"22px",color:"#c9a96e",fontWeight:600,margin:"0 0 2px"}}>Real</p>
-                  <p style={{...SS,fontSize:"14px",color:"#1a1a1a",fontWeight:600,margin:"0 0 10px"}}>{w}</p>
-                  <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.6,margin:0}}>{k}</p>
-                </div>
-                {i<arr.length-1&&<div style={{width:1,background:"linear-gradient(to bottom,transparent,#eee 20%,#eee 80%,transparent)"}}/>}
+              {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
+              {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
+              {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
+            ].map(({t,d,status,live})=>(
+              <div key={t} style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,padding:"26px 24px"}}>
+                <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:14,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"#ece7de"}}>{status}</span>
+                <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
-
-          <div style={{borderRadius:16,overflow:"hidden",marginBottom:36}}>
-            <img src="/images/how-it-works-illustration.png" alt="How TBP works illustration" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
-          </div>
-
-          {emailSent ? (
-            <p style={{...KR,fontSize:"14px",color:"#a07832",fontWeight:600}}>✓ 감사합니다. 곧 연락드릴게요.</p>
-          ) : (
-            <form onSubmit={e=>{
-              e.preventDefault();
-              if (!brandEmail.trim()) return;
-              window.location.href = `mailto:hello@thebeautypause.com?subject=${encodeURIComponent("브랜드 프로그램 문의")}&body=${encodeURIComponent(`문의 이메일: ${brandEmail}`)}`;
-              setEmailSent(true);
-            }} style={{display:"flex",gap:8,maxWidth:420,margin:"0 auto",flexWrap:"wrap",justifyContent:"center"}}>
-              <input type="email" required placeholder="이메일을 남겨주시면 먼저 안내드릴게요"
-                value={brandEmail} onChange={e=>setBrandEmail(e.target.value)}
-                style={{flex:"1 1 240px",padding:"13px 16px",border:"1px solid #ede8e2",borderRadius:10,...SS,fontSize:"13px",color:"#1a1a1a",outline:"none"}}/>
-              <button type="submit"
-                style={{padding:"13px 22px",background:"#1a1a1a",color:"#f5f0eb",border:"none",borderRadius:10,cursor:"pointer",...KR,fontSize:"13px",fontWeight:700,whiteSpace:"nowrap"}}>
-                문의받기 →
-              </button>
-            </form>
-          )}
         </div>
       </section>
 
-      {/* 2. HOW TBP WORKS */}
+      {/* 03. HOW TO JOIN */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:900,margin:"0 auto"}}>
-          <Badge>✦ How TBP Works</Badge>
+          <Badge>✦ Ways to Join</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,2.5vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>브랜드가 파리에 진출하는 과정</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>참여 방식</h2>
 
-          {/* step bar */}
-          <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:6,marginBottom:44}}>
-            {["Application","Selection","Discovery","Analysis","Signature","Expansion"].map((s,i,arr)=>{
-              const isGate = s==="Analysis";
-              return (
-                <Fragment key={s}>
-                  <span style={{...SS,fontSize:12,fontWeight:700,color:isGate?"#fff":"#1a1a1a",background:isGate?"#1a1a1a":"#fff",border:`1.5px solid ${isGate?"#1a1a1a":"#e8d9b8"}`,padding:"8px 14px",borderRadius:20,whiteSpace:"nowrap"}}>{s}</span>
-                  {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:13}}>→</span>}
-                </Fragment>
-              );
-            })}
-          </div>
-
-          <div style={{display:"flex",flexDirection:"column",gap:0}}>
-            {[
-              {n:"01",t:"Application — 브랜드 신청",d:"브랜드가 TBP 프로그램에 참여를 신청합니다."},
-              {n:"02",t:"Selection — 제품 및 카테고리 검토",d:"TBP가 제품과 카테고리의 적합성을 검토합니다.",gate:true},
-              {n:"03",t:"Discovery — 브랜드 소개 및 현장 운영",d:"파트너 살롱에서 브랜드를 소개하는 첫 오프라인 활동을 운영합니다."},
-              {n:"04",t:"Analysis — 운영 결과 정리 및 확장 가능성 검토",d:"운영 결과를 정리하고, 다음 단계로 이어질 가능성을 검토합니다.",gate:true},
-              {n:"05",t:"Signature — 서비스 프로그램 운영",d:"제품을 실제 살롱 서비스 안에 통합해 운영합니다."},
-              {n:"06",t:"Expansion — 살롱 네트워크 확장",d:"운영 결과에 따라 참여 살롱과 프로그램 범위를 확장합니다."},
-            ].map(({n,t,d,gate},i)=>(
-              <div key={n} style={{display:"grid",gridTemplateColumns:"60px 1fr",gap:"0 20px",padding:"22px 0",borderTop:`2px solid ${gate?"#c9a96e":(i===0?"#c9a96e":"#ede8e2")}`}}>
-                <p style={{...CG,fontSize:"28px",color:gate?"#c9a96e":"rgba(201,169,110,0.3)",fontWeight:gate?600:300,lineHeight:1,paddingTop:2}}>{n}</p>
-                <div>
-                  <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}>{t}{gate&&<span style={{...SS,fontSize:10,color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"2px 9px",borderRadius:12,marginLeft:8,verticalAlign:"middle"}}>검토 관문</span>}</p>
-                  <p style={{...KR,fontSize:"13px",color:"#666",lineHeight:1.8,margin:0}}>{d}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3. DISCOVERY */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px) 24px"}}>
-        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Two Ways to Start</Badge>
-          <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:520,margin:"0 auto"}}>
-            TBP는 두 가지 방식으로 브랜드를 파리에 소개합니다.<br/>대부분의 브랜드는 <strong style={{color:"#a07832"}}>Discovery</strong>로 시작하고, 이후 <strong style={{color:"#a07832"}}>Signature</strong>로 확장합니다.
-          </p>
-        </div>
-      </section>
-
-      <section style={{background:"#fff",padding:"24px clamp(24px,6vw,80px) 80px"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <span style={{...SS,fontSize:11,color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>프로그램 1</span>
-          <p style={{...KR,fontSize:"clamp(24px,3.5vw,32px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>Discovery</p>
-          <p style={{...KR,fontSize:"15px",color:"#a07832",fontWeight:600,margin:"0 0 28px"}}>브랜드의 첫 번째 파리 오프라인 활동</p>
-
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:36}}>
-            <div style={{borderRadius:14,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
-              <img src="/images/aurabeaute04.jpeg" alt="Discovery Program in a partner salon" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:8}}>
-              {["/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
-                <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
-                  <img src={src} alt="Discovery Program detail" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>운영 규모</p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:14}}>
-            {[
-              {v:"최대 10곳",l:"참여 살롱"},
-              {v:"2주",l:"운영 기간"},
-              {v:"20개",l:"제품 수 기준"},
-            ].map(({v,l})=>(
-              <div key={l} style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14,padding:"20px 14px",textAlign:"center"}}>
-                <p style={{...CG,fontSize:"26px",fontWeight:700,color:"#1a1a1a",margin:"0 0 4px"}}>{v}</p>
-                <p style={{...SS,fontSize:"10px",color:"#999",letterSpacing:"0.5px",textTransform:"uppercase"}}>{l}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{display:"flex",gap:8,marginBottom:40}}>
-            {["QR 운영","콘텐츠 제작"].map(tg=>(
-              <span key={tg} style={{...SS,fontSize:"12px",fontWeight:600,color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"7px 14px",borderRadius:20}}>{tg}</span>
-            ))}
-          </div>
-
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:32,marginBottom:36}}>
-            <div>
-              <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>운영 내용</p>
-              {["파트너 살롱 선정","제품 소개","QR 운영","콘텐츠 제작","이벤트 운영"].map(i=>(
-                <CheckItem key={i}>{i}</CheckItem>
-              ))}
-            </div>
-            <div>
-              <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 14px"}}>결과</p>
-              <CheckItem>참여 살롱 수</CheckItem>
-              <CheckItem>현장 사진 및 영상</CheckItem>
-              <CheckItem>QR 참여 데이터</CheckItem>
-              <CheckItem>콘텐츠 제작물</CheckItem>
-              <CheckItem>프로그램 리포트 (고객/살롱 반응 신호 포함)</CheckItem>
-            </div>
-          </div>
-
-          <div style={{background:"#faf7f4",border:"1px solid #e8d9b8",borderRadius:12,padding:"16px 20px",marginBottom:24}}>
-            <p style={{...KR,fontSize:"13px",color:"#5c4a2a",lineHeight:1.7,margin:0}}>
-              <strong style={{color:"#a07832"}}>참가 조건</strong> — 신청 후 TBP의 제품·카테고리 적합성 검토를 거쳐 진행됩니다.
-            </p>
-          </div>
-          <p style={{...KR,fontSize:"13px",color:"#aaa",fontStyle:"italic",margin:0}}>Introduced in selected Paris beauty salons.</p>
-        </div>
-      </section>
-
-      {/* 4. SIGNATURE */}
-      <section style={{background:"#1a1a1a",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <span style={{...SS,fontSize:11,color:"#0d0d0d",background:"#c9a96e",padding:"5px 12px",borderRadius:20,fontWeight:700,letterSpacing:"0.5px",display:"inline-block",marginBottom:16}}>프로그램 2</span>
-          <p style={{...KR,fontSize:"clamp(24px,3.5vw,32px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 8px"}}>Signature</p>
-          <p style={{...KR,fontSize:"15px",color:"#c9a96e",fontWeight:600,margin:"0 0 28px"}}>제품을 실제 서비스 안에 통합합니다.</p>
-
-          <div style={{border:"1.5px dashed rgba(201,169,110,0.35)",borderRadius:16,padding:"48px 24px",textAlign:"center",marginBottom:36}}>
-            <p style={{...SS,fontSize:"12px",color:"rgba(255,255,255,0.35)",letterSpacing:"2px",textTransform:"uppercase",fontWeight:700,margin:0}}>Coming Soon</p>
-            <p style={{...KR,fontSize:"12px",color:"rgba(255,255,255,0.25)",margin:"6px 0 0"}}>실제 시술 현장 사진으로 교체 예정</p>
-          </div>
-
-          <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>운영 내용</p>
-          <div style={{marginBottom:36}}>
-            {["서비스 프로그램 설계","제품 적용","현장 운영","콘텐츠 제작","장기 프로그램 운영"].map(i=>(
-              <ProgramItem key={i}>{i}</ProgramItem>
-            ))}
-          </div>
-
-          <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>적용 분야</p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(90px,1fr))",gap:12,marginBottom:36}}>
-            {[
-              {ic:"💇",l:"헤어"},{ic:"🧖",l:"헤드 스파"},{ic:"💆",l:"마사지"},{ic:"🧴",l:"페이셜"},{ic:"👁️",l:"속눈썹"},
-            ].map(({ic,l})=>(
-              <div key={l} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(201,169,110,0.25)",borderRadius:14,padding:"18px 10px",textAlign:"center"}}>
-                <p style={{fontSize:22,margin:"0 0 6px"}}>{ic}</p>
-                <p style={{...KR,fontSize:"12px",color:"#f5f0eb",fontWeight:600,margin:0}}>{l}</p>
-              </div>
-            ))}
-          </div>
-
-          <p style={{...KR,fontSize:"11px",color:"#c9a96e",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,margin:"0 0 16px"}}>목표</p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10,marginBottom:32}}>
-            {["서비스 경험 확대","브랜드 노출 확대","살롱 네트워크 확대","구매 기회 확대"].map(i=>(
-              <div key={i} style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{color:"#c9a96e",fontSize:13}}>✦</span>
-                <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.65)",margin:0}}>{i}</p>
-              </div>
-            ))}
-          </div>
-          <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.35)",fontStyle:"italic",margin:0}}>Integrated into real Paris salon services.</p>
-        </div>
-      </section>
-
-      {/* 5. PARIS SALON NETWORK */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Paris Salon Network</Badge>
-          <Divider/>
-          <p style={{...CG,fontSize:"clamp(28px,4vw,38px)",fontWeight:600,color:"#1a1a1a",margin:"0 0 16px"}}>25+ Paris salon partners</p>
-          <p style={{...KR,fontSize:"14px",color:"#888",letterSpacing:"0.3px",margin:"0 0 40px"}}>Nail · Hair · Head spa · Massage · Facial · Lash</p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-            {["/images/aurabeaute04.jpeg","/images/IMG_0189.jpeg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
-              <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
-                <img src={src} alt="Paris partner salon" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none"}}/>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. WHO IS THIS FOR */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto"}}>
-          <Badge>✦ Who is this for?</Badge>
-          <Divider/>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:24}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1.15fr",gap:20,marginBottom:8,alignItems:"stretch"}}>
+            {/* Discovery Partner */}
             <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 26px"}}>
-              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:"0 0 18px"}}>이런 브랜드에 적합합니다</p>
-              {["파리 시장에 처음 진출하는 브랜드","적은 물량으로 시작하려는 브랜드","현지 네트워크가 없는 브랜드","오프라인 경험을 만들고 싶은 브랜드"].map(i=>(
-                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
-                  <span style={{color:"#c9a96e",flexShrink:0,marginTop:2}}>✓</span>
-                  <p style={{...KR,fontSize:"14px",color:"#444",margin:0,lineHeight:1.6}}>{i}</p>
+              <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:16}}>제품 활용 · 진열 및 체험</span>
+              <p style={{...KR,fontSize:"20px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px"}}>Discovery Partner</p>
+              <p style={{...KR,fontSize:"13px",color:"#666",lineHeight:1.8,margin:"0 0 22px"}}>브랜드 소개와 노출이 목적입니다. 여러 살롱에서 동시에 운영합니다.</p>
+              {[
+                ["살롱 수","약 10곳"],["운영 기간","1~6개월"],["콘텐츠","기본 사진 및 영상"],["구매 연결","온라인 구매"],["참가비","200만 원 · 월 운영비 50만 원부터"],
+              ].map(([k,v])=>(
+                <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"9px 0",borderTop:"1px solid #f5f0f0"}}>
+                  <span style={{...SS,fontSize:12,color:"#999"}}>{k}</span>
+                  <span style={{...KR,fontSize:12,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>{v}</span>
                 </div>
               ))}
             </div>
-            <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 26px"}}>
-              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:"0 0 18px"}}>이런 브랜드에는 적합하지 않습니다</p>
-              {["단순 광고만 원하는 브랜드","즉각적인 대규모 판매를 기대하는 브랜드","대형 유통 채널 진입만 목표로 하는 브랜드"].map(i=>(
-                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
-                  <span style={{color:"#bbb",flexShrink:0,marginTop:2}}>✕</span>
-                  <p style={{...KR,fontSize:"14px",color:"#999",margin:0,lineHeight:1.6}}>{i}</p>
+
+            {/* Service Partner — emphasized */}
+            <div style={{background:"#1a1a1a",borderRadius:16,padding:"32px 30px",border:"1.5px solid #c9a96e"}}>
+              <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#0d0d0d",background:"#c9a96e",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:16}}>제품 활용 · 실제 서비스에 사용</span>
+              <p style={{...KR,fontSize:"22px",fontWeight:700,color:"#f5f0eb",margin:"0 0 10px"}}>Service Partner</p>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",lineHeight:1.8,margin:"0 0 22px"}}>고객 경험과 구매 연결이 목적입니다. 한 개 살롱에 집중 운영합니다.</p>
+              {[
+                ["살롱 수","1곳"],["운영 기간","1~6개월"],["콘텐츠","심층 콘텐츠 제작"],["구매 연결","온라인 + 살롱 구매"],["참가비","200만 원부터 · 월 운영비 70~100만 원"],
+              ].map(([k,v])=>(
+                <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+                  <span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.4)"}}>{k}</span>
+                  <span style={{...KR,fontSize:12,color:"#f5f0eb",fontWeight:600,textAlign:"right"}}>{v}</span>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* 7. FINAL CTA */}
-      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 110px"}}>
-        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
-          <h2 style={{...KR,fontSize:"clamp(24px,4vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
-            당신의 브랜드를<br/>파리의 실제 살롱에 소개하세요.
-          </h2>
-          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.45)",fontStyle:"italic",lineHeight:1.9,margin:"0 0 36px"}}>
-            모든 브랜드가 프로그램에 참여하는 것은 아닙니다.<br/>TBP는 제품과 살롱의 적합성을 검토한 뒤 프로그램을 운영합니다.
+          <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"20px 0 4px"}}>모든 참여는 신청 후 TBP의 제품·살롱 적합성 검토를 거쳐 진행됩니다.</p>
+          <p style={{margin:"0 0 28px"}}>
+            <a href="mailto:hello@thebeautypause.com?subject=예산 문의" style={{...KR,fontSize:"12px",color:"#a07832",textDecoration:"underline"}}>예산이 부담되신다면, 문의해주세요.</a>
           </p>
-          <a href="mailto:hello@thebeautypause.com?subject=브랜드 신청"
-            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"16px 40px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.35)"}}>
-            브랜드 신청하기
+          <a href="mailto:hello@thebeautypause.com?subject=참여 방식 문의"
+            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"#1a1a1a",color:"#f5f0eb",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+            어떤 방식이 맞을까요? →
           </a>
         </div>
       </section>
+
+      {/* 04. BRAND PROCESS */}
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px) 40px"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Brand Journey</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>프로그램은 이렇게 진행됩니다</h2>
+          <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:6}}>
+            {["브랜드 신청","브랜드 및 제품 검토","살롱 선정","제품 발송","프로그램 운영","콘텐츠 및 데이터 공유"].map((s,i,arr)=>(
+              <Fragment key={s}>
+                <span style={{...SS,fontSize:12,fontWeight:700,color:"#1a1a1a",background:"#faf7f4",border:"1.5px solid #e8d9b8",padding:"9px 15px",borderRadius:20,whiteSpace:"nowrap"}}>{s}</span>
+                {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:14}}>→</span>}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 05. CUSTOMER PROCESS */}
+      <section style={{background:"#1a1a1a",padding:"40px clamp(24px,6vw,80px) 64px"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Customer Journey</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 28px"}}>고객 경험 과정</h2>
+          <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:6}}>
+            {["살롱 방문","서비스 이용","제품 체험","QR 참여","브랜드 발견","제품 구매"].map((s,i,arr)=>(
+              <Fragment key={s}>
+                <span style={{...SS,fontSize:12,fontWeight:700,color:"#0d0d0d",background:"#c9a96e",padding:"9px 15px",borderRadius:20,whiteSpace:"nowrap"}}>{s}</span>
+                {i<arr.length-1&&<span style={{color:"rgba(255,255,255,0.3)",fontSize:14}}>→</span>}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 06. PARIS SALON NETWORK */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Paris Salon Network</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:1.9,margin:"0 0 20px"}}>
+            TBP는 파리 <CountUp target={25} suffix="+"/> 살롱과 협업하고 있습니다.
+          </p>
+          <p style={{...KR,fontSize:"14px",color:"#999",letterSpacing:"0.3px"}}>네일 · 헤어 · 속눈썹 · 헤드 스파 · 에스테틱</p>
+        </div>
+      </section>
+
+      {/* 07. ON THE GROUND */}
+      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:500,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Program in Action</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"13px",color:"#999",margin:"0 0 20px"}}>제품 진열</p>
+          <div style={{borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",maxWidth:320,margin:"0 auto"}}>
+            <img src="/images/aurabeaute04.jpeg" alt="제품 진열" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+          </div>
+        </div>
+      </section>
+
+      {/* 08. WHO CAN JOIN */}
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px) 40px"}}>
+        <div style={{maxWidth:680,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Selection</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:0}}>
+            모든 브랜드가 참여할 수 있는 것은 아닙니다.<br/>브랜드의 방향성과 제품의 특성, 프로그램과의 적합성을 검토한 후 최종 참여 여부를 결정합니다.
+          </p>
+        </div>
+      </section>
+
+      {/* 09. WHO WE'RE LOOKING FOR */}
+      <section style={{background:"#fff",padding:"40px clamp(24px,6vw,80px) 80px"}}>
+        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Who We're Looking For</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>어떤 브랜드를 찾고 있나요?</h2>
+          <div>
+            {["헤어케어","두피케어","네일 및 래시","스킨케어(페이셜/헤드스파 서비스와 맞는 제품)","라이프스타일 뷰티"].map(i=>(
+              <Tag key={i}>{i}</Tag>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 10. WHAT BRANDS GET */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ What You Get</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>참여 브랜드가 얻을 수 있는 것</h2>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:16}}>
+            {["파리 살롱 네트워크 노출","실제 고객 경험 데이터","현지 콘텐츠 확보","살롱 및 고객 판매 연결"].map(i=>(
+              <div key={i} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:14,padding:"20px 16px"}}>
+                <p style={{...KR,fontSize:"13px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1.6}}>{i}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 11. FAQ */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
+          <Badge>✦ FAQ</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>자주 묻는 질문</h2>
+          <div style={{display:"flex",flexDirection:"column"}}>
+            {[
+              {q:"유럽 법인이 필요한가요?",a:"필수는 아닙니다."},
+              {q:"제품 수량 제한이 있나요?",a:"Discovery Partner는 20개 기준입니다. Service Partner는 프로그램에 따라 다릅니다."},
+              {q:"제품 판매도 가능한가요?",a:"가능합니다. 살롱 판매와 온라인 구매 연결이 모두 가능합니다."},
+              {q:"참가 비용이 있나요?",a:"Discovery Partner는 200만 원부터 시작합니다. Service Partner는 맞춤 견적입니다."},
+            ].map(({q,a},i)=>(
+              <div key={q} style={{padding:"22px 0",borderTop:i===0?"1px solid #ede8e2":"1px solid #ede8e2"}}>
+                <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{q}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{a}</p>
+              </div>
+            ))}
+            <div style={{borderTop:"1px solid #ede8e2"}}/>
+          </div>
+        </div>
+      </section>
+
+      {/* 12. FINAL CTA */}
+      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 110px"}}>
+        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+          <h2 style={{...KR,fontSize:"clamp(24px,4vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
+            당신의 브랜드를<br/>파리의 살롱 프로그램에 초대합니다.
+          </h2>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.45)",fontStyle:"italic",lineHeight:1.9,margin:"0 0 40px"}}>
+            모든 브랜드가 프로그램에 참여하는 것은 아닙니다.<br/>TBP는 제품과 살롱의 적합성을 검토한 뒤 프로그램을 운영합니다.
+          </p>
+          <a href="mailto:hello@thebeautypause.com?subject=프로그램 신청"
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"20px 52px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"17px",fontWeight:700,borderRadius:14,textDecoration:"none",boxShadow:"0 8px 30px rgba(201,169,110,0.4)"}}>
+            프로그램 신청하기 →
+          </a>
+        </div>
+      </section>
+
 
 
       {/* SCROLL TO TOP */}
