@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, Component, Fragment } from "react";
-import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPA_URL = (process.env.REACT_APP_SUPABASE_URL||"").trim();
@@ -3096,146 +3096,197 @@ function LegalPage({ lang, setLang }) {
 
 
 // ── FOR BRANDS PAGE ───────────────────────────────────────────────────────────
-function ForBrandsPage() {
-  const navigate = useNavigate();
-  const KR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif"};
-  const SS = {fontFamily:"'DM Sans',sans-serif"};
-  const CG = {fontFamily:"'Cormorant Garamond',serif"};
-  const [showTop, setShowTop] = useState(false);
-  const [brandEmail, setBrandEmail] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
+// ── shared brand-page helpers (used across Home/About/Program/Contact tabs) ──
+const BKR = {fontFamily:"'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif"};
+const BSS = {fontFamily:"'DM Sans',sans-serif"};
+const BCG = {fontFamily:"'Cormorant Garamond',serif"};
 
+function Badge({children}) {
+  return <span style={{...BSS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:16}}>{children}</span>;
+}
+function Divider() { return <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>; }
+function Tag({children}) {
+  return <span style={{...BKR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>;
+}
+function CheckItem({children, light}) {
+  return (
+    <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
+      <span style={{color:"#c9a96e",flexShrink:0,marginTop:2}}>✓</span>
+      <p style={{...BKR,fontSize:"14px",color:light?"rgba(255,255,255,0.6)":"#555",margin:0,lineHeight:1.6}}>{children}</p>
+    </div>
+  );
+}
+function ProgramItem({children, accent}) {
+  return (
+    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:10}}>
+      <span style={{color:accent||"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
+      <p style={{...BKR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{children}</p>
+    </div>
+  );
+}
+function CityRotator() {
+  const cities = ["런던","피렌체","마드리드","파리"];
+  const [idx, setIdx] = useState(0);
+  const [done, setDone] = useState(false);
+  const ref = useRef(null);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !started) {
+        setStarted(true);
+        let i = 0;
+        const interval = setInterval(() => {
+          i++;
+          if (i >= cities.length) {
+            clearInterval(interval);
+            setIdx(cities.length - 1);
+            setDone(true);
+          } else {
+            setIdx(i);
+          }
+        }, 220);
+      }
+    }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [started]);
+  return <span ref={ref} style={{animation:done?"flicker 2.4s ease-in-out infinite":"none"}}>{cities[idx]}</span>;
+}
+function CountUp({ target, suffix="", duration=1400 }) {
+  const [val, setVal] = useState(0);
+  const [done, setDone] = useState(false);
+  const ref = useRef(null);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !started) {
+        setStarted(true);
+        const startTime = Date.now();
+        const tick = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setVal(Math.round(target * eased));
+          if (progress < 1) requestAnimationFrame(tick);
+          else setDone(true);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [started]);
+  return <span ref={ref} style={{animation:done?"flicker 2.4s ease-in-out infinite":"none"}}>{val}{suffix}</span>;
+}
+function StaticFlicker({ children }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) setVisible(true);
+    }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return <span ref={ref} style={{animation:visible?"flicker 2.4s ease-in-out infinite":"none"}}>{children}</span>;
+}
+function BrandsTabNav({active}) {
+  const navigate = useNavigate();
+  const tabs = [
+    {key:"home",label:"Home",path:"/brands/home"},
+    {key:"about",label:"About",path:"/brands/about"},
+    {key:"program",label:"Program",path:"/brands/program"},
+    {key:"contact",label:"Contact",path:"/brands/contact"},
+  ];
+  return (
+    <nav style={{background:"#0d0d0d",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",height:60,padding:"0 clamp(20px,5vw,64px)"}}>
+        <button onClick={()=>{navigate("/brands/home");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+          <span style={{...BCG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+          <span style={{...BCG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+        </button>
+        <a href="mailto:hello@thebeautypause.com"
+          style={{...BSS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600,flexShrink:0}}>
+          브랜드 등록하기
+        </a>
+      </div>
+      <div style={{display:"flex",gap:4,padding:"0 clamp(20px,5vw,64px)",overflowX:"auto"}}>
+        {tabs.map(t=>(
+          <button key={t.key} onClick={()=>{navigate(t.path);window.scrollTo(0,0);}}
+            style={{...BSS,fontSize:"13px",fontWeight:600,padding:"12px 16px",background:"none",border:"none",borderBottom:`2px solid ${active===t.key?"#c9a96e":"transparent"}`,color:active===t.key?"#f5f0eb":"rgba(255,255,255,0.45)",cursor:"pointer",whiteSpace:"nowrap"}}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+function ScrollTopBtn({showTop}) {
+  return showTop ? (
+    <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+      style={{position:"fixed",bottom:24,right:24,width:44,height:44,borderRadius:"50%",background:"#1a1a1a",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",zIndex:400,fontSize:16,boxShadow:"0 4px 16px rgba(0,0,0,0.3)"}}>
+      ↑
+    </button>
+  ) : null;
+}
+function useScrollTop() {
+  const [showTop, setShowTop] = useState(false);
   useEffect(()=>{
     const onScroll = () => setShowTop(window.scrollY > 600);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  return showTop;
+}
 
-  const CityRotator = () => {
-    const cities = ["런던","피렌체","마드리드","파리"];
-    const [idx, setIdx] = useState(0);
-    const [done, setDone] = useState(false);
-    const ref = useRef(null);
-    const [started, setStarted] = useState(false);
-    useEffect(() => {
-      const obs = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !started) {
-          setStarted(true);
-          let i = 0;
-          const interval = setInterval(() => {
-            i++;
-            if (i >= cities.length) {
-              clearInterval(interval);
-              setIdx(cities.length - 1);
-              setDone(true);
-            } else {
-              setIdx(i);
-            }
-          }, 220);
-        }
-      }, { threshold: 0.3 });
-      if (ref.current) obs.observe(ref.current);
-      return () => obs.disconnect();
-    }, [started]);
-    return <span ref={ref} style={{animation:done?"flicker 2.4s ease-in-out infinite":"none"}}>{cities[idx]}</span>;
-  };
-
-  const CountUp = ({ target, suffix="", duration=1400 }) => {
-    const [val, setVal] = useState(0);
-    const [done, setDone] = useState(false);
-    const ref = useRef(null);
-    const [started, setStarted] = useState(false);
-    useEffect(() => {
-      const obs = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !started) {
-          setStarted(true);
-          const startTime = Date.now();
-          const tick = () => {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setVal(Math.round(target * eased));
-            if (progress < 1) requestAnimationFrame(tick);
-            else setDone(true);
-          };
-          requestAnimationFrame(tick);
-        }
-      }, { threshold: 0.3 });
-      if (ref.current) obs.observe(ref.current);
-      return () => obs.disconnect();
-    }, [started]);
-    return <span ref={ref} style={{animation:done?"flicker 2.4s ease-in-out infinite":"none"}}>{val}{suffix}</span>;
-  };
-
-  const StaticFlicker = ({ children }) => {
-    const ref = useRef(null);
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
-      const obs = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) setVisible(true);
-      }, { threshold: 0.3 });
-      if (ref.current) obs.observe(ref.current);
-      return () => obs.disconnect();
-    }, []);
-    return <span ref={ref} style={{animation:visible?"flicker 2.4s ease-in-out infinite":"none"}}>{children}</span>;
-  };
-
-  const BrandsNav = () => (
-    <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
-      <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
-        <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-        <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
-      </button>
-      <div style={{display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>{navigate("/newsletter");window.scrollTo(0,0);}}
-          style={{...SS,fontSize:"13px",color:"rgba(255,255,255,0.6)",background:"none",border:"1px solid rgba(255,255,255,0.15)",padding:"8px 18px",borderRadius:24,cursor:"pointer",fontWeight:600}}>
-          운영현황
-        </button>
+function BrandsFooter() {
+  return (
+    <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,marginBottom:20}}>
+        <div>
+          <div style={{marginBottom:4}}>
+            <span style={{...BCG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+            <span style={{...BCG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+          </div>
+          <p style={{...BSS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
+        </div>
         <a href="mailto:hello@thebeautypause.com"
-          style={{...SS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600}}>
-          브랜드 등록하기
+          style={{...BSS,fontSize:"11px",color:"#444",textDecoration:"none"}}
+          onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"}
+          onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+          Contact
         </a>
       </div>
-    </nav>
+      <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:16}}>
+        <p style={{...BSS,fontSize:"10px",color:"#444",lineHeight:1.8,margin:0}}>
+          주식회사 쏜다 · 대표자 박슬아 · 서울 강남구 테헤란로82길 15 (대치동, 디아이타워)<br/>
+          사업자등록번호 426-88-02305 · 통신판매업신고번호 2025-서울강남-00594<br/>
+          hello@thebeautypause.com
+        </p>
+      </div>
+    </footer>
   );
+}
 
-  const Badge = ({children}) => (
-    <span style={{...SS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:16}}>{children}</span>
-  );
-  const Divider = () => <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>;
-  const Tag = ({children}) => (
-    <span style={{...KR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>
-  );
-  const CheckItem = ({children, light}) => (
-    <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
-      <span style={{color:"#c9a96e",flexShrink:0,marginTop:2}}>✓</span>
-      <p style={{...KR,fontSize:"14px",color:light?"rgba(255,255,255,0.6)":"#555",margin:0,lineHeight:1.6}}>{children}</p>
-    </div>
-  );
-  const ProgramItem = ({children, accent}) => (
-    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:10}}>
-      <span style={{color:accent||"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
-      <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{children}</p>
-    </div>
-  );
+// ── BRANDS: HOME TAB ─────────────────────────────────────────────────────────
+function BrandsHomePage() {
+  const navigate = useNavigate();
+  const KR = BKR, SS = BSS, CG = BCG;
+  const showTop = useScrollTop();
 
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}`}</style>
-      <BrandsNav/>
+      <BrandsTabNav active="home"/>
 
-      {/* 01. HERO */}
+      {/* HERO */}
       <section style={{background:"#0d0d0d",padding:"110px clamp(24px,6vw,80px) 96px",animation:"fadeUp 0.5s ease both"}}>
-        <div style={{maxWidth:760,margin:"0 auto",textAlign:"center"}}>
-          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>✦ K뷰티 유럽 오프라인 진출</p>
-          <h1 style={{...KR,fontSize:"clamp(26px,4.6vw,44px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 28px"}}>
-            파리 살롱에서 한국 제품을 활용한<br/>뷰티 프로그램을 운영합니다.
+        <div style={{maxWidth:720,margin:"0 auto",textAlign:"center"}}>
+          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>The Beauty Pause</p>
+          <h1 style={{...KR,fontSize:"clamp(26px,4.6vw,44px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
+            파리 살롱에서 운영하는<br/>K뷰티 프로그램
           </h1>
-          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:580,margin:"0 auto 12px"}}>
-            TBP는 프로그램을 기획하고, 파리 살롱에서 직접 운영합니다.<br/>
-            고객은 살롱 서비스 안에서 제품을 경험하고, QR로 브랜드를 발견하고, 살롱이나 온라인에서 구매까지 이어갑니다.
-          </p>
-          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.35)",lineHeight:1.9,margin:"0 0 44px"}}>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,maxWidth:480,margin:"0 auto 44px"}}>
             지금 운영 중이거나 곧 시작하는 프로그램에 브랜드가 참여할 수 있습니다.
           </p>
           <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
@@ -3243,7 +3294,7 @@ function ForBrandsPage() {
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
               프로그램 신청하기 →
             </a>
-            <button onClick={()=>{navigate("/programs");window.scrollTo(0,0);}}
+            <button onClick={()=>{navigate("/brands/program");window.scrollTo(0,0);}}
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.25)",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,cursor:"pointer"}}>
               진행 중인 프로그램 보기
             </button>
@@ -3251,201 +3302,47 @@ function ForBrandsPage() {
         </div>
       </section>
 
-      {/* 02. PROGRAM LINEUP */}
+      {/* WHO WE'RE LOOKING FOR */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:640,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Who We're Looking For</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,26px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>TBP는 이런 브랜드를 찾습니다.</h2>
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            {["오랜 시간 제품을 개발한 브랜드","고객 경험을 중요하게 생각하는 브랜드","광고보다 제품의 힘을 믿는 브랜드","아직 경험될 기회를 얻지 못한 브랜드"].map(i=>(
+              <p key={i} style={{...KR,fontSize:"15px",color:"#444",lineHeight:1.7,margin:0}}>{i}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROGRAM LINEUP PREVIEW */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:900,margin:"0 auto"}}>
           <Badge>✦ Program Lineup</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>프로그램 라인업</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>지금 운영 중인 프로그램</h2>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20,marginBottom:32}}>
             {[
               {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
               {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
               {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
             ].map(({t,d,status,live})=>(
-              <div key={t} style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,padding:"26px 24px"}}>
+              <div key={t} onClick={()=>{navigate("/brands/program");window.scrollTo(0,0);}} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"26px 24px",cursor:"pointer"}}>
                 <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:14,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"#ece7de"}}>{status}</span>
                 <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
                 <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
+          <button onClick={()=>{navigate("/brands/program");window.scrollTo(0,0);}}
+            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"13px 26px",background:"transparent",color:"#a07832",border:"1px solid #e8d9b8",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,cursor:"pointer"}}>
+            모든 프로그램 보기 →
+          </button>
         </div>
       </section>
 
-      {/* 03. HOW TO JOIN */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
-          <Badge>✦ Ways to Join</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>참여 방식</h2>
-
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1.15fr",gap:20,marginBottom:8,alignItems:"stretch"}}>
-            {/* Discovery Partner */}
-            <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 26px"}}>
-              <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:16}}>제품 활용 · 진열 및 체험</span>
-              <p style={{...KR,fontSize:"20px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px"}}>Discovery Partner</p>
-              <p style={{...KR,fontSize:"13px",color:"#666",lineHeight:1.8,margin:"0 0 22px"}}>브랜드 소개와 노출이 목적입니다. 여러 살롱에서 동시에 운영합니다.</p>
-              {[
-                ["살롱 수","약 10곳"],["운영 기간","1~6개월"],["콘텐츠","기본 사진 및 영상"],["구매 연결","온라인 구매"],["참가비","200만 원 · 월 운영비 50만 원부터"],
-              ].map(([k,v])=>(
-                <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"9px 0",borderTop:"1px solid #f5f0f0"}}>
-                  <span style={{...SS,fontSize:12,color:"#999"}}>{k}</span>
-                  <span style={{...KR,fontSize:12,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>{v}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Service Partner — emphasized */}
-            <div style={{background:"#1a1a1a",borderRadius:16,padding:"32px 30px",border:"1.5px solid #c9a96e"}}>
-              <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#0d0d0d",background:"#c9a96e",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:16}}>제품 활용 · 실제 서비스에 사용</span>
-              <p style={{...KR,fontSize:"22px",fontWeight:700,color:"#f5f0eb",margin:"0 0 10px"}}>Service Partner</p>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.55)",lineHeight:1.8,margin:"0 0 22px"}}>고객 경험과 구매 연결이 목적입니다. 한 개 살롱에 집중 운영합니다.</p>
-              {[
-                ["살롱 수","1곳"],["운영 기간","1~6개월"],["콘텐츠","심층 콘텐츠 제작"],["구매 연결","온라인 + 살롱 구매"],["참가비","200만 원부터 · 월 운영비 70~100만 원"],
-              ].map(([k,v])=>(
-                <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
-                  <span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.4)"}}>{k}</span>
-                  <span style={{...KR,fontSize:12,color:"#f5f0eb",fontWeight:600,textAlign:"right"}}>{v}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"20px 0 4px"}}>모든 참여는 신청 후 TBP의 제품·살롱 적합성 검토를 거쳐 진행됩니다.</p>
-          <p style={{margin:"0 0 28px"}}>
-            <a href="mailto:hello@thebeautypause.com?subject=예산 문의" style={{...KR,fontSize:"12px",color:"#a07832",textDecoration:"underline"}}>예산이 부담되신다면, 문의해주세요.</a>
-          </p>
-          <a href="mailto:hello@thebeautypause.com?subject=참여 방식 문의"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"#1a1a1a",color:"#f5f0eb",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-            어떤 방식이 맞을까요? →
-          </a>
-        </div>
-      </section>
-
-      {/* 04. BRAND PROCESS */}
-      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px) 40px"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
-          <Badge>✦ Brand Journey</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>프로그램은 이렇게 진행됩니다</h2>
-          <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:6}}>
-            {["브랜드 신청","브랜드 및 제품 검토","살롱 선정","제품 발송","프로그램 운영","콘텐츠 및 데이터 공유"].map((s,i,arr)=>(
-              <Fragment key={s}>
-                <span style={{...SS,fontSize:12,fontWeight:700,color:"#1a1a1a",background:"#faf7f4",border:"1.5px solid #e8d9b8",padding:"9px 15px",borderRadius:20,whiteSpace:"nowrap"}}>{s}</span>
-                {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:14}}>→</span>}
-              </Fragment>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 05. CUSTOMER PROCESS */}
-      <section style={{background:"#1a1a1a",padding:"40px clamp(24px,6vw,80px) 64px"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
-          <Badge>✦ Customer Journey</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 28px"}}>고객 경험 과정</h2>
-          <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:6}}>
-            {["살롱 방문","서비스 이용","제품 체험","QR 참여","브랜드 발견","제품 구매"].map((s,i,arr)=>(
-              <Fragment key={s}>
-                <span style={{...SS,fontSize:12,fontWeight:700,color:"#0d0d0d",background:"#c9a96e",padding:"9px 15px",borderRadius:20,whiteSpace:"nowrap"}}>{s}</span>
-                {i<arr.length-1&&<span style={{color:"rgba(255,255,255,0.3)",fontSize:14}}>→</span>}
-              </Fragment>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 06. PARIS SALON NETWORK */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Paris Salon Network</Badge>
-          <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:1.9,margin:"0 0 20px"}}>
-            TBP는 파리 <CountUp target={25} suffix="+"/> 살롱과 협업하고 있습니다.
-          </p>
-          <p style={{...KR,fontSize:"14px",color:"#999",letterSpacing:"0.3px"}}>네일 · 헤어 · 속눈썹 · 헤드 스파 · 에스테틱</p>
-        </div>
-      </section>
-
-      {/* 07. ON THE GROUND */}
-      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:500,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Program in Action</Badge>
-          <Divider/>
-          <p style={{...KR,fontSize:"13px",color:"#999",margin:"0 0 20px"}}>제품 진열</p>
-          <div style={{borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",maxWidth:320,margin:"0 auto"}}>
-            <img src="/images/aurabeaute04.jpeg" alt="제품 진열" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
-          </div>
-        </div>
-      </section>
-
-      {/* 08. WHO CAN JOIN */}
-      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px) 40px"}}>
-        <div style={{maxWidth:680,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Selection</Badge>
-          <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:0}}>
-            모든 브랜드가 참여할 수 있는 것은 아닙니다.<br/>브랜드의 방향성과 제품의 특성, 프로그램과의 적합성을 검토한 후 최종 참여 여부를 결정합니다.
-          </p>
-        </div>
-      </section>
-
-      {/* 09. WHO WE'RE LOOKING FOR */}
-      <section style={{background:"#fff",padding:"40px clamp(24px,6vw,80px) 80px"}}>
-        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ Who We're Looking For</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>어떤 브랜드를 찾고 있나요?</h2>
-          <div>
-            {["헤어케어","두피케어","네일 및 래시","스킨케어(페이셜/헤드스파 서비스와 맞는 제품)","라이프스타일 뷰티"].map(i=>(
-              <Tag key={i}>{i}</Tag>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 10. WHAT BRANDS GET */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:800,margin:"0 auto",textAlign:"center"}}>
-          <Badge>✦ What You Get</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,24px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 28px"}}>참여 브랜드가 얻을 수 있는 것</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:16}}>
-            {["파리 살롱 네트워크 노출","실제 고객 경험 데이터","현지 콘텐츠 확보","살롱 및 고객 판매 연결"].map(i=>(
-              <div key={i} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:14,padding:"20px 16px"}}>
-                <p style={{...KR,fontSize:"13px",fontWeight:600,color:"#1a1a1a",margin:0,lineHeight:1.6}}>{i}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 11. FAQ */}
-      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:700,margin:"0 auto"}}>
-          <Badge>✦ FAQ</Badge>
-          <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>자주 묻는 질문</h2>
-          <div style={{display:"flex",flexDirection:"column"}}>
-            {[
-              {q:"유럽 법인이 필요한가요?",a:"필수는 아닙니다."},
-              {q:"제품 수량 제한이 있나요?",a:"Discovery Partner는 20개 기준입니다. Service Partner는 프로그램에 따라 다릅니다."},
-              {q:"제품 판매도 가능한가요?",a:"가능합니다. 살롱 판매와 온라인 구매 연결이 모두 가능합니다."},
-              {q:"참가 비용이 있나요?",a:"Discovery Partner는 200만 원부터 시작합니다. Service Partner는 맞춤 견적입니다."},
-            ].map(({q,a},i)=>(
-              <div key={q} style={{padding:"22px 0",borderTop:i===0?"1px solid #ede8e2":"1px solid #ede8e2"}}>
-                <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{q}</p>
-                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{a}</p>
-              </div>
-            ))}
-            <div style={{borderTop:"1px solid #ede8e2"}}/>
-          </div>
-        </div>
-      </section>
-
-      {/* 12. FINAL CTA */}
+      {/* FINAL CTA */}
       <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 110px"}}>
         <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
           <h2 style={{...KR,fontSize:"clamp(24px,4vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
@@ -3461,41 +3358,369 @@ function ForBrandsPage() {
         </div>
       </section>
 
+      {showTop&&<button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+        style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>↑</button>}
+      <BrandsFooter/>
+    </>
+  );
+}
 
+// ── BRANDS: ABOUT TAB ────────────────────────────────────────────────────────
+function BrandsAboutPage() {
+  const navigate = useNavigate();
+  const KR = BKR, SS = BSS, CG = BCG;
+  const showTop = useScrollTop();
 
-      {/* SCROLL TO TOP */}
-      {showTop&&(
-        <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
-          style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>
-          ↑
-        </button>
-      )}
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}`}</style>
+      <BrandsTabNav active="about"/>
 
-      {/* FOOTER */}
-      <footer style={{background:"#0d0d0d",padding:"32px clamp(20px,5vw,64px)",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16,marginBottom:20}}>
-          <div>
-            <div style={{marginBottom:4}}>
-              <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
-              <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
-            </div>
-            <p style={{...SS,fontSize:"10px",color:"#333",margin:0}}>© 2025 The Beauty Pause</p>
-          </div>
-          <a href="mailto:hello@thebeautypause.com"
-            style={{...SS,fontSize:"11px",color:"#444",textDecoration:"none"}}
-            onMouseEnter={e=>e.currentTarget.style.color="#c9a96e"}
-            onMouseLeave={e=>e.currentTarget.style.color="#444"}>
-            Contact
-          </a>
-        </div>
-        <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:16}}>
-          <p style={{...SS,fontSize:"10px",color:"#444",lineHeight:1.8,margin:0}}>
-            주식회사 쏜다 · 대표자 박슬아 · 서울 강남구 테헤란로82길 15 (대치동, 디아이타워)<br/>
-            사업자등록번호 426-88-02305 · 통신판매업신고번호 2025-서울강남-00594<br/>
-            hello@thebeautypause.com
+      {/* OPENING */}
+      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 80px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ About TBP</Badge>
+          <h1 style={{...KR,fontSize:"clamp(24px,4vw,34px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.5,margin:"8px 0 24px"}}>
+            K-뷰티가 파리의 살롱에서<br/>경험되는 방식
+          </h1>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,maxWidth:560,margin:"0 auto"}}>
+            우리는 제품을 파는 것보다, 먼저 경험을 만드는 일을 합니다. TBP(The Beauty Pause)는 파리의 살롱에서 한국 뷰티 프로그램을 기획하고 운영합니다. 고객은 서비스를 경험하고, 살롱은 새로운 프로그램을 운영하며, 브랜드는 실제 고객과 만나게 됩니다.
           </p>
         </div>
-      </footer>
+      </section>
+
+      {/* WHY SMALL BRANDS */}
+      <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:640,margin:"0 auto"}}>
+          <Badge>✦ Why Small Brands?</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
+            파리의 세포라와 백화점에는 이미 몇몇 한국 브랜드가 있습니다. 스킨1004, 닥터자르트, Amuse — 이미 크고, 이미 알려진 이름들입니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
+            하지만 그 뒤에는, 그만큼 좋은 제품을 만들고도 경험될 기회조차 갖지 못한 브랜드들이 훨씬 많습니다. 유통 계약이 없어서, 팝업을 열 자본이 없어서, 프랑스에 아는 사람이 없어서.
+          </p>
+          <p style={{...KR,fontSize:"16px",color:"#1a1a1a",fontWeight:600,lineHeight:2,margin:0}}>
+            우리는 그 브랜드들을 위해 존재합니다. 작다는 건 부족하다는 뜻이 아닙니다. 아직 경험될 기회가 없었다는 뜻입니다.
+          </p>
+        </div>
+      </section>
+
+      {/* WHY SALONS */}
+      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Why Salons?</Badge>
+          <Divider/>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:36,alignItems:"center"}}>
+            <div>
+              <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
+                뷰티는 진열대 위에서 기억되지 않습니다. 사람들은 누군가의 추천을 듣고, 직접 사용해 보고, 변화를 경험한 뒤에야 브랜드를 기억합니다. 특히 헤어, 네일, 속눈썹, 피부 관리에서는 제품보다 경험이 먼저입니다.
+              </p>
+              <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:0}}>
+                큰 브랜드는 광고로 이 경험을 대신할 자본이 있습니다. 작은 브랜드에게는, 살롱이 그 자리를 대신합니다.
+              </p>
+            </div>
+            <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #ede8e2"}}>
+              <img src="/images/aurabeaute04.jpeg" alt="파리 살롱 공간" draggable="false" style={{width:"100%",height:"auto",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY DID WE START */}
+      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:640,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Why Did We Start?</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 20px"}}>
+            우리는 좋은 제품을 만들고도 해외 진출 앞에서 멈추는 브랜드를 가까이에서 봤습니다. 광고비도, 전시회 참가비도 쓸 만큼 썼지만, 정작 고객이 제품을 직접 경험할 기회는 없었습니다.
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",lineHeight:2,margin:"0 0 20px"}}>그래서 질문을 바꿔봤습니다.</p>
+          <p style={{...CG,fontSize:"clamp(19px,2.6vw,24px)",color:"#f5f0eb",fontStyle:"italic",lineHeight:1.7,margin:"0 0 28px"}}>
+            "큰 자본 없이도, 고객이 먼저 경험할 수 있다면 어떨까?<br/>그 경험이 세포라가 아니라, 파리의 작은 살롱에서 시작된다면 어떨까?"
+          </p>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:0}}>TBP는 그 질문에서 시작되었습니다.</p>
+        </div>
+      </section>
+
+      {/* WHAT WE BELIEVE */}
+      <section style={{background:"#faf7f4",padding:"88px clamp(24px,6vw,80px) 100px"}}>
+        <div style={{maxWidth:640,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ What We Believe</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 28px"}}>
+            우리는 뷰티가 소비되는 게 아니라 경험되어야 한다고 믿습니다.<br/>
+            우리는 아직 기회가 없었던 브랜드에게 그 기회가 필요하다고 믿습니다.<br/>
+            그리고 우리는 그 시작점이 파리의 작은 살롱이라고 믿습니다.
+          </p>
+          <p style={{...CG,fontSize:"22px",color:"#a07832",fontStyle:"italic",fontWeight:600}}>Discover beauty differently.</p>
+        </div>
+      </section>
+
+      {showTop&&<button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+        style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>↑</button>}
+      <BrandsFooter/>
+    </>
+  );
+}
+
+// ── BRANDS: PROGRAM TAB ──────────────────────────────────────────────────────
+function BrandsProgramPage() {
+  const navigate = useNavigate();
+  const KR = BKR, SS = BSS, CG = BCG;
+  const showTop = useScrollTop();
+
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}`}</style>
+      <BrandsTabNav active="program"/>
+
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px) 56px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Program Lineup</Badge>
+          <h1 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#f5f0eb",margin:"8px 0 8px"}}>프로그램 라인업</h1>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)"}}>지금 운영 중이거나 곧 시작하는 프로그램입니다.</p>
+        </div>
+      </section>
+
+      {/* (1) PROGRAM LINEUP + WHAT IS A PROGRAM */}
+      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20,marginBottom:56}}>
+            {[
+              {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
+              {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
+              {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
+            ].map(({t,d,status,live})=>(
+              <div key={t} style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,padding:"26px 24px"}}>
+                <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:14,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"#ece7de"}}>{status}</span>
+                <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+              </div>
+            ))}
+          </div>
+
+          <Badge>✦ Signature Program</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:600,margin:"0 0 24px"}}>
+            <strong style={{color:"#1a1a1a"}}>프로그램이란?</strong> 브랜드 제품이 실제 살롱 서비스 안에 통합됩니다. 전문가가 직접 사용하고 고객에게 추천합니다. 광고가 아니라, 살롱의 추천입니다.
+          </p>
+          <div style={{background:"#1a1a1a",borderRadius:16,padding:"28px 30px",marginBottom:24}}>
+            {[
+              ["살롱 수","1곳부터, 맞춤 운영"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","200만 원부터 · 월 운영비 70~100만 원"],
+            ].map(([k,v])=>(
+              <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+                <span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.4)"}}>{k}</span>
+                <span style={{...KR,fontSize:12,color:"#f5f0eb",fontWeight:600,textAlign:"right"}}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <a href="mailto:hello@thebeautypause.com?subject=프로그램 참여 문의"
+            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"#1a1a1a",color:"#f5f0eb",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+            프로그램 참여하기 →
+          </a>
+        </div>
+      </section>
+
+      {/* (2) DISCOVERY LINEUP — lower tone */}
+      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:32,maxWidth:500}}>
+            <div style={{borderRadius:14,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
+              <img src="/images/aurabeaute04.jpeg" alt="Discovery salon display" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:8}}>
+              {["/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
+                <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
+                  <img src={src} alt="Discovery salon display detail" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p style={{...SS,fontSize:10,color:"#a07832",letterSpacing:2.5,textTransform:"uppercase",fontWeight:600,marginBottom:16}}>✦ Discovery Program</p>
+          <div style={{width:36,height:2,background:"#e8d9b8",margin:"0 0 24px"}}/>
+          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,maxWidth:600,margin:"0 0 24px"}}>
+            <strong style={{color:"#a07832"}}>디스커버리란?</strong> 여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다. 진열과 QR, 고객 이벤트로 브랜드를 알립니다.
+          </p>
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"24px 26px",marginBottom:22}}>
+            {[
+              ["살롱 수","약 10곳"],["운영 기간","기본 2주"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],["참가비","200만 원 · 월 운영비 50만 원부터"],
+            ].map(([k,v])=>(
+              <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"9px 0",borderTop:"1px solid #f5f0f0"}}>
+                <span style={{...SS,fontSize:12,color:"#999"}}>{k}</span>
+                <span style={{...KR,fontSize:12,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <a href="mailto:hello@thebeautypause.com?subject=디스커버리 참여 문의"
+            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"transparent",color:"#a07832",border:"1px solid #e8d9b8",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+            디스커버리 참여하기 →
+          </a>
+        </div>
+      </section>
+
+      {/* (3) WHICH FITS — compact comparison table */}
+      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
+          <Badge>✦ Which Fits Your Brand?</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>어떤 방식이 맞을까요?</h2>
+          <div style={{border:"1px solid #ede8e2",borderRadius:14,overflow:"hidden",marginBottom:20}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",background:"#faf7f4"}}>
+              <div style={{padding:"12px 16px"}}/>
+              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#1a1a1a"}}>프로그램 파트너</div>
+              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#a07832"}}>디스커버리 파트너</div>
+            </div>
+            {[
+              ["제품 활용","실제 서비스에 사용","진열 및 체험"],
+              ["살롱 수","1곳부터","약 10곳"],
+              ["목적","고객 경험 및 구매 연결","브랜드 소개 및 노출"],
+            ].map(([label,a,b],i)=>(
+              <div key={label} style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",borderTop:"1px solid #ede8e2"}}>
+                <div style={{padding:"14px 16px",...SS,fontSize:12,color:"#999"}}>{label}</div>
+                <div style={{padding:"14px 16px",...KR,fontSize:13,color:"#1a1a1a"}}>{a}</div>
+                <div style={{padding:"14px 16px",...KR,fontSize:13,color:"#1a1a1a"}}>{b}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"0 0 4px"}}>모든 참여는 신청 후 TBP의 제품·살롱 적합성 검토를 거쳐 진행됩니다.</p>
+          <a href="mailto:hello@thebeautypause.com?subject=예산 문의" style={{...KR,fontSize:"12px",color:"#a07832",textDecoration:"underline"}}>예산이 부담되신다면, 문의해주세요.</a>
+        </div>
+      </section>
+
+      {/* (4) PROCESS + FAQ */}
+      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:900,margin:"0 auto"}}>
+          <Badge>✦ Process</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>진행 순서</h2>
+          <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:6}}>
+            {["브랜드 신청","브랜드 및 제품 검토","살롱 선정","제품 발송","프로그램 운영","콘텐츠 및 데이터 공유"].map((s,i,arr)=>(
+              <Fragment key={s}>
+                <span style={{...SS,fontSize:12,fontWeight:700,color:"#1a1a1a",background:"#fff",border:"1.5px solid #e8d9b8",padding:"9px 15px",borderRadius:20,whiteSpace:"nowrap"}}>{s}</span>
+                {i<arr.length-1&&<span style={{color:"#c9a96e",fontSize:14}}>→</span>}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px) 90px"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
+          <Badge>✦ FAQ</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>자주 묻는 질문</h2>
+          <div style={{display:"flex",flexDirection:"column"}}>
+            {[
+              {q:"유럽 법인이 필요한가요?",a:"필수는 아닙니다."},
+              {q:"제품 수량 제한이 있나요?",a:"디스커버리 파트너는 20개 기준입니다. 프로그램 파트너는 프로그램에 따라 다릅니다."},
+              {q:"제품 판매도 가능한가요?",a:"가능합니다. 살롱 판매와 온라인 구매 연결이 모두 가능합니다."},
+              {q:"참가 비용이 있나요?",a:"디스커버리 파트너는 200만 원부터 시작합니다. 프로그램 파트너는 맞춤 견적입니다."},
+            ].map(({q,a})=>(
+              <div key={q} style={{padding:"20px 0",borderTop:"1px solid #ede8e2"}}>
+                <p style={{...KR,fontSize:"14px",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}>{q}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{a}</p>
+              </div>
+            ))}
+            <div style={{borderTop:"1px solid #ede8e2"}}/>
+          </div>
+        </div>
+      </section>
+
+      {showTop&&<button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+        style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>↑</button>}
+      <BrandsFooter/>
+    </>
+  );
+}
+
+// ── BRANDS: CONTACT TAB ──────────────────────────────────────────────────────
+function BrandsContactPage() {
+  const KR = BKR, SS = BSS, CG = BCG;
+  const showTop = useScrollTop();
+  const [form, setForm] = useState({name:"",title:"",brand:"",phone:"",email:"",source:"",interest:"",category:""});
+  const [sent, setSent] = useState(false);
+  const set = (k) => (e) => setForm(f=>({...f, [k]: e.target.value}));
+
+  const submit = (e) => {
+    e.preventDefault();
+    const body = [
+      `이름: ${form.name}`,
+      `소속팀 및 직함: ${form.title}`,
+      `브랜드명: ${form.brand}`,
+      `연락처: ${form.phone}`,
+      `메일주소: ${form.email}`,
+      `TBP를 알게 된 경로: ${form.source}`,
+      `관심 있는 참여 방식: ${form.interest}`,
+      `제품 카테고리: ${form.category}`,
+    ].join("\n");
+    window.location.href = `mailto:hello@thebeautypause.com?subject=${encodeURIComponent("프로그램 신청 — " + (form.brand||form.name))}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+  };
+
+  const inputStyle = {width:"100%",padding:"12px 14px",border:"1px solid #ede8e2",borderRadius:10,...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",background:"#fff"};
+  const labelStyle = {...SS,fontSize:"10px",color:"#aaa",letterSpacing:"1.2px",textTransform:"uppercase",fontWeight:700,display:"block",marginBottom:6};
+
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+      <BrandsTabNav active="contact"/>
+
+      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 80px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+          <h1 style={{...KR,fontSize:"clamp(24px,4vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
+            당신의 브랜드를<br/>파리의 살롱 프로그램에 초대합니다.
+          </h1>
+          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
+            모든 브랜드가 프로그램에 참여하는 것은 아닙니다.<br/>TBP는 제품과 살롱의 적합성을 검토한 뒤 프로그램을 운영합니다.
+          </p>
+          <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"14px",color:"#c9a96e",textDecoration:"none",fontWeight:600}}>hello@thebeautypause.com</a>
+        </div>
+      </section>
+
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px) 90px"}}>
+        <div style={{maxWidth:560,margin:"0 auto"}}>
+          {sent ? (
+            <div style={{textAlign:"center",padding:"40px 0"}}>
+              <p style={{fontSize:32,marginBottom:12}}>✓</p>
+              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",marginBottom:8}}>감사합니다.</p>
+              <p style={{...KR,fontSize:"13px",color:"#888"}}>메일 앱에서 내용을 확인하고 전송해주세요. 검토 후 연락드릴게요.</p>
+            </div>
+          ) : (
+            <form onSubmit={submit}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:14}}>
+                <div><label style={labelStyle}>이름 *</label><input required value={form.name} onChange={set("name")} style={inputStyle}/></div>
+                <div><label style={labelStyle}>소속팀 및 직함</label><input value={form.title} onChange={set("title")} style={inputStyle}/></div>
+              </div>
+              <div style={{marginBottom:14}}><label style={labelStyle}>브랜드명 *</label><input required value={form.brand} onChange={set("brand")} style={inputStyle}/></div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:14}}>
+                <div><label style={labelStyle}>연락처 *</label><input required value={form.phone} onChange={set("phone")} style={inputStyle}/></div>
+                <div><label style={labelStyle}>메일주소 *</label><input required type="email" value={form.email} onChange={set("email")} style={inputStyle}/></div>
+              </div>
+              <div style={{marginBottom:14}}><label style={labelStyle}>TBP를 알게 된 경로</label><input value={form.source} onChange={set("source")} style={inputStyle}/></div>
+              <div style={{marginBottom:14}}>
+                <label style={labelStyle}>관심 있는 참여 방식</label>
+                <select value={form.interest} onChange={set("interest")} style={{...inputStyle,cursor:"pointer"}}>
+                  <option value="">선택해주세요</option>
+                  <option value="Discovery Partner">Discovery Partner</option>
+                  <option value="Service Partner">Service Partner</option>
+                  <option value="아직 잘 모르겠어요">아직 잘 모르겠어요</option>
+                </select>
+              </div>
+              <div style={{marginBottom:28}}><label style={labelStyle}>제품 카테고리</label><input value={form.category} onChange={set("category")} style={inputStyle}/></div>
+              <button type="submit"
+                style={{width:"100%",padding:"17px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:"15px",fontWeight:700,boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
+                프로그램 신청하기 →
+              </button>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {showTop&&<button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+        style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>↑</button>}
+      <BrandsFooter/>
     </>
   );
 }
@@ -5515,7 +5740,11 @@ export default function App() {
         <Route path="/spot/:spotId" element={<SpotPage lang={lang} setLang={setLang} />} />
         <Route path="/privacy" element={<PrivacyPage lang={lang} setLang={setLang} />} />
         <Route path="/legal" element={<LegalPage lang={lang} setLang={setLang} />} />
-        <Route path="/brands" element={<ForBrandsPage />} />
+        <Route path="/brands" element={<Navigate to="/brands/home" replace />} />
+        <Route path="/brands/home" element={<BrandsHomePage />} />
+        <Route path="/brands/about" element={<BrandsAboutPage />} />
+        <Route path="/brands/program" element={<BrandsProgramPage />} />
+        <Route path="/brands/contact" element={<BrandsContactPage />} />
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
