@@ -3280,11 +3280,17 @@ function BrandsHomePage() {
     const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);
   },[]);
 
+  const matchProgram = (name) => {
+    const norm = (s) => (s||"").trim().toLowerCase();
+    return programs.find(p => norm(p.name) === norm(name))
+      || programs.find(p => norm(p.name).includes(norm(name)) || norm(name).includes(norm(p.name)));
+  };
+
   const lineup = [
     {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
     {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
     {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
-  ].map(item=>({...item, image: programs.find(p=>p.name===item.t)?.image || null}));
+  ].map(item=>({...item, image: matchProgram(item.t)?.image || null}));
 
   const salonStyles = [
     {...KR, fontWeight:700}, {...SS, fontWeight:400}, {...CG, fontWeight:600, fontStyle:"italic"},
@@ -3545,11 +3551,17 @@ function BrandsProgramPage() {
   const showTop = useScrollTop();
   const { programs } = useProgramsData();
 
+  const matchProgram = (name) => {
+    const norm = (s) => (s||"").trim().toLowerCase();
+    return programs.find(p => norm(p.name) === norm(name))
+      || programs.find(p => norm(p.name).includes(norm(name)) || norm(name).includes(norm(p.name)));
+  };
+
   const programLineup = [
     {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
     {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
   ].map(item=>{
-    const match = programs.find(p=>p.name===item.t);
+    const match = matchProgram(item.t);
     return {...item, image: match?.imagePortrait || match?.image || null};
   });
 
