@@ -2459,6 +2459,7 @@ function AccountPage({lang,setLang,salons,allProducts,onAuthClick}) {
 
 
 const TBL_LUCKY_DRAW = "tbloBydPZIIzx321q";
+const TBL_BRAND_APPLICATIONS = "tblHCD0gT94LDCJu4";
 
 // ── SPOT PAGE (QR scan landing) ───────────────────────────────────────────────
 function SpotPage({ lang, setLang }) {
@@ -3544,9 +3545,8 @@ function BrandsProgramPage() {
   const showTop = useScrollTop();
   const { programs } = useProgramsData();
 
-  const lineup = [
+  const programLineup = [
     {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
-    {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
     {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
   ].map(item=>{
     const match = programs.find(p=>p.name===item.t);
@@ -3566,7 +3566,7 @@ function BrandsProgramPage() {
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 40px"}}>브랜드 제품이 실제 살롱 서비스 안에 통합되는 프로그램입니다.</p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:20,marginBottom:56}}>
-            {lineup.map(({t,d,status,live,image})=>(
+            {programLineup.map(({t,d,status,live,image})=>(
               <div key={t} style={{background:"#171717",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,overflow:"hidden"}}>
                 <div style={{aspectRatio:"3/5",background:"#222",position:"relative"}}>
                   {image&&<img src={image} alt={t} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>}
@@ -3582,12 +3582,16 @@ function BrandsProgramPage() {
 
           <div style={{borderTop:"1px solid rgba(255,255,255,0.1)",paddingTop:40}}>
             <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#c9a96e",margin:"0 0 16px"}}>참여 방식</p>
-            <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,maxWidth:600,margin:"0 0 24px"}}>
-              전문가가 직접 사용하고 고객에게 추천합니다. 광고가 아니라, 살롱의 추천입니다.
+            <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,maxWidth:600,margin:"0 0 20px"}}>
+              살롱의 실제 서비스 안에서 제품이 사용되고, 그 서비스로 홍보됩니다.
+            </p>
+            <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#c9a96e",margin:"0 0 12px"}}>얻는 것</p>
+            <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,maxWidth:600,margin:"0 0 28px"}}>
+              TBP 웹사이트 및 소셜미디어 홍보 · 실제 서비스 사용 콘텐츠 · 실제 서비스 경험 데이터 · 살롱 및 고객 구매 연결
             </p>
             <div style={{maxWidth:500,marginBottom:28}}>
               {[
-                ["살롱 수","1곳부터, 맞춤 운영"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","200만 원부터 · 월 운영비 70~100만 원"],
+                ["살롱 수","1곳부터, 맞춤 운영"],["운영 기간","1~2개월"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","290만 원부터 · 추가 살롱 운영비 190만 원부터"],
               ].map(([k,v])=>(
                 <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"11px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
                   <span style={{...SS,fontSize:13,color:"rgba(255,255,255,0.4)"}}>{k}</span>
@@ -3608,10 +3612,19 @@ function BrandsProgramPage() {
         <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ 디스커버리 참여하기</Badge>
           <h2 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#1a1a1a",margin:"8px 0 8px"}}>Discovery</h2>
-          <p style={{...KR,fontSize:"15px",color:"#999",margin:"0 0 40px"}}>여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다.</p>
+          <p style={{...KR,fontSize:"15px",color:"#999",margin:"0 0 32px"}}>여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다.</p>
 
-          <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8,marginBottom:56}}>
-            {["/images/aurabeaute04.jpeg","/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,overflow:"hidden",marginBottom:16,display:"grid",gridTemplateColumns:"140px 1fr"}}>
+            <div style={{aspectRatio:"1",background:"#ddd"}}>
+              <img src="/images/aurabeaute04.jpeg" alt="Korean Rosé Nail — 살롱 진열" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
+            </div>
+            <div style={{padding:"18px 20px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}>Korean Rosé Nail</p>
+              <p style={{...KR,fontSize:"13px",color:"#888",lineHeight:1.6,margin:0}}>네일 서비스와 함께 한국 제품을 체험하는 프로그램</p>
+            </div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:56}}>
+            {["/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
               <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
                 <img src={src} alt="Discovery salon display" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
               </div>
@@ -3620,53 +3633,73 @@ function BrandsProgramPage() {
 
           <div style={{borderTop:"1px solid #ede8e2",paddingTop:40}}>
             <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#a07832",margin:"0 0 16px"}}>참여 방식</p>
-            <p style={{...KR,fontSize:"15px",color:"#777",lineHeight:1.9,maxWidth:600,margin:"0 0 24px"}}>
+            <p style={{...KR,fontSize:"15px",color:"#777",lineHeight:1.9,maxWidth:600,margin:"0 0 20px"}}>
               진열과 QR, 고객 이벤트로 브랜드를 알립니다.
             </p>
-            <div style={{maxWidth:500,marginBottom:28}}>
+            <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#a07832",margin:"0 0 12px"}}>얻는 것</p>
+            <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,maxWidth:600,margin:"0 0 28px"}}>
+              다수 살롱 오프라인 노출 · 테스트 환경 제공 및 이벤트 참여 · 콘텐츠 확보
+            </p>
+            <div style={{maxWidth:500,marginBottom:14}}>
               {[
-                ["살롱 수","10곳부터"],["운영 기간","기본 2주"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],["참가비","200만 원 · 월 운영비 50만 원부터"],
+                ["살롱 수","10곳부터"],["운영 기간","2~3주"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],
               ].map(([k,v])=>(
                 <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"11px 0",borderTop:"1px solid #f0e9dc"}}>
                   <span style={{...SS,fontSize:13,color:"#999"}}>{k}</span>
                   <span style={{...KR,fontSize:13,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>{v}</span>
                 </div>
               ))}
+              <div style={{display:"flex",justifyContent:"space-between",padding:"11px 0",borderTop:"1px solid #f0e9dc"}}>
+                <span style={{...SS,fontSize:13,color:"#999"}}>참가비</span>
+                <span style={{...KR,fontSize:13,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>
+                  <span style={{textDecoration:"line-through",color:"#bbb",marginRight:6}}>190만 원</span>115만 원 · 추가 살롱 운영비 90만 원부터
+                </span>
+              </div>
             </div>
-            <a href="mailto:hello@thebeautypause.com?subject=디스커버리 참여 문의"
+            <p style={{...SS,fontSize:11,color:"#c0392b",margin:"0 0 24px"}}>* 40% 할인가는 8월 신청 한정입니다.</p>
+            <a href="mailto:hello@thebeautypause.com?subject=디스커버리 파트너 신청"
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"transparent",color:"#a07832",border:"1.5px solid #e8d9b8",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-              디스커버리 참여하기 →
+              디스커버리 파트너 신청 →
             </a>
           </div>
         </div>
       </section>
 
-      {/* (3) WHICH FITS — compact comparison table */}
-      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)"}}>
+      {/* (3) WHICH FITS — purpose-based either/or, not a comparison table */}
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:880,margin:"0 auto"}}>
-          <Badge>✦ Which Fits Your Brand?</Badge>
+          <Badge>✦ 어떤 참여 방식이 적합할까요?</Badge>
           <Divider align="left"/>
-          <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>어떤 방식이 맞을까요?</h2>
-          <div style={{border:"1px solid #ede8e2",borderRadius:14,overflow:"hidden",marginBottom:20}}>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",background:"#faf7f4"}}>
-              <div style={{padding:"12px 16px"}}/>
-              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#1a1a1a"}}>프로그램</div>
-              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#a07832"}}>디스커버리</div>
+          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:600,margin:"0 0 32px"}}>
+            두 방식은 살롱 수, 검토, 참가비까지 구조가 비슷합니다. 진짜 다른 건 목적입니다.
+          </p>
+
+          <div style={{display:"flex",flexDirection:"column",gap:14,marginBottom:28,maxWidth:640}}>
+            <div style={{display:"flex",alignItems:"center",gap:16,padding:"20px 22px",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14}}>
+              <p style={{...KR,fontSize:"14px",color:"#444",lineHeight:1.6,margin:0,flex:1}}>고객이 제품을 직접 써보고 구매까지 이어지길 원한다면</p>
+              <span style={{color:"#c9a96e",fontSize:16,flexShrink:0}}>→</span>
+              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:0,flexShrink:0}}>프로그램</p>
             </div>
-            {[
-              ["제품 활용","실제 서비스에 사용","진열 및 체험"],
-              ["살롱 수","1곳부터","10곳부터"],
-              ["목적","고객 경험 및 구매 연결","브랜드 소개 및 노출"],
-            ].map(([label,a,b],i)=>(
-              <div key={label} style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",borderTop:"1px solid #ede8e2"}}>
-                <div style={{padding:"14px 16px",...SS,fontSize:12,color:"#999"}}>{label}</div>
-                <div style={{padding:"14px 16px",...KR,fontSize:13,color:"#1a1a1a"}}>{a}</div>
-                <div style={{padding:"14px 16px",...KR,fontSize:13,color:"#1a1a1a"}}>{b}</div>
-              </div>
-            ))}
+            <div style={{display:"flex",alignItems:"center",gap:16,padding:"20px 22px",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14}}>
+              <p style={{...KR,fontSize:"14px",color:"#444",lineHeight:1.6,margin:0,flex:1}}>여러 살롱에서 브랜드를 알리고 노출을 만들고 싶다면</p>
+              <span style={{color:"#a07832",fontSize:16,flexShrink:0}}>→</span>
+              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#a07832",margin:0,flexShrink:0}}>디스커버리</p>
+            </div>
           </div>
-          <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"0 0 4px"}}>모든 참여는 신청 후 TBP의 제품·살롱 적합성 검토를 거쳐 진행됩니다.</p>
+
+          <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"0 0 4px"}}>각 프로그램은 브랜드와 살롱의 적합성을 검토한 뒤 시작됩니다.</p>
           <a href="mailto:hello@thebeautypause.com?subject=예산 문의" style={{...KR,fontSize:"12px",color:"#a07832",textDecoration:"underline"}}>예산이 부담되신다면, 문의해주세요.</a>
+
+          <div style={{borderTop:"1px solid #ede8e2",marginTop:32,paddingTop:24,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:24}}>
+            <div>
+              <p style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",color:"#bbb",margin:"0 0 8px"}}>TBP가 하는 일</p>
+              <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:0}}>프로그램 기획 · 살롱 모집 및 관리 · 제품 배치 및 운영 · QR 및 이벤트 운영 · 콘텐츠 제작 · 데이터 수집 및 분석</p>
+            </div>
+            <div>
+              <p style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",color:"#bbb",margin:"0 0 8px"}}>브랜드가 하는 일</p>
+              <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:0}}>제품 제공 · 제품 정보 제공 · 배송 지원 · 프로그램 참여</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -3724,22 +3757,49 @@ function BrandsContactPage() {
   const showTop = useScrollTop();
   const [form, setForm] = useState({name:"",title:"",brand:"",phone:"",email:"",source:"",interest:"",category:""});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const set = (k) => (e) => setForm(f=>({...f, [k]: e.target.value}));
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    const body = [
-      `이름: ${form.name}`,
-      `소속팀 및 직함: ${form.title}`,
-      `브랜드명: ${form.brand}`,
-      `연락처: ${form.phone}`,
-      `메일주소: ${form.email}`,
-      `TBP를 알게 된 경로: ${form.source}`,
-      `관심 있는 참여 방식: ${form.interest}`,
-      `제품 카테고리: ${form.category}`,
-    ].join("\n");
-    window.location.href = `mailto:hello@thebeautypause.com?subject=${encodeURIComponent("프로그램 신청 — " + (form.brand||form.name))}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setSubmitting(true); setError("");
+    const fields = {
+      name: form.name,
+      title: form.title,
+      brand: form.brand,
+      phone: form.phone,
+      email: form.email,
+      source: form.source,
+      interest: form.interest,
+      category: form.category,
+      status: "new",
+    };
+    try {
+      const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${TBL_BRAND_APPLICATIONS}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${AT_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ records: [{ fields }] })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSent(true);
+      } else {
+        console.error("Brand application save error:", data);
+        // fall back to mailto so the submission isn't lost
+        const body = [
+          `이름: ${form.name}`, `소속팀 및 직함: ${form.title}`, `브랜드명: ${form.brand}`,
+          `연락처: ${form.phone}`, `메일주소: ${form.email}`, `TBP를 알게 된 경로: ${form.source}`,
+          `관심 있는 참여 방식: ${form.interest}`, `제품 카테고리: ${form.category}`,
+        ].join("\n");
+        window.location.href = `mailto:hello@thebeautypause.com?subject=${encodeURIComponent("프로그램 신청 — " + (form.brand||form.name))}&body=${encodeURIComponent(body)}`;
+        setSent(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("저장 중 문제가 발생했어요. 다시 시도해주세요.");
+    }
+    setSubmitting(false);
   };
 
   const inputStyle = {width:"100%",padding:"12px 14px",border:"1px solid #ede8e2",borderRadius:10,...SS,fontSize:"13px",color:"#1a1a1a",outline:"none",background:"#fff"};
@@ -3769,7 +3829,7 @@ function BrandsContactPage() {
             <div style={{textAlign:"center",padding:"40px 0"}}>
               <p style={{fontSize:32,marginBottom:12}}>✓</p>
               <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",marginBottom:8}}>감사합니다.</p>
-              <p style={{...KR,fontSize:"13px",color:"#888"}}>메일 앱에서 내용을 확인하고 전송해주세요. 검토 후 연락드릴게요.</p>
+              <p style={{...KR,fontSize:"13px",color:"#888"}}>신청 내용이 접수되었어요. 검토 후 연락드릴게요.</p>
             </div>
           ) : (
             <form onSubmit={submit}>
@@ -3793,9 +3853,10 @@ function BrandsContactPage() {
                 </select>
               </div>
               <div style={{marginBottom:28}}><label style={labelStyle}>제품 카테고리</label><input value={form.category} onChange={set("category")} style={inputStyle}/></div>
-              <button type="submit"
-                style={{width:"100%",padding:"17px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:"pointer",...KR,fontSize:"15px",fontWeight:700,boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
-                프로그램 신청하기 →
+              {error&&<p style={{...SS,fontSize:12,color:"#c0392b",marginBottom:14}}>{error}</p>}
+              <button type="submit" disabled={submitting}
+                style={{width:"100%",padding:"17px",background:submitting?"#ccc":"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",borderRadius:12,cursor:submitting?"not-allowed":"pointer",...KR,fontSize:"15px",fontWeight:700,boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
+                {submitting?"제출 중…":"프로그램 신청하기 →"}
               </button>
             </form>
           )}
