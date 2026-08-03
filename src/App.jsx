@@ -3285,7 +3285,10 @@ function BrandsHomePage() {
     {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
   ].map(item=>({...item, image: programs.find(p=>p.name===item.t)?.image || null}));
 
-  const salonFonts = [KR, SS, CG];
+  const salonStyles = [
+    {...KR, fontWeight:700}, {...SS, fontWeight:400}, {...CG, fontWeight:600, fontStyle:"italic"},
+    {...KR, fontWeight:300}, {...SS, fontWeight:700}, {...CG, fontWeight:400},
+  ];
 
   return (
     <>
@@ -3325,10 +3328,10 @@ function BrandsHomePage() {
           <Badge>✦ Who We're Looking For</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,26px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>TBP는 이런 브랜드를 찾습니다.</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16,textAlign:"left"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16}}>
             {["오랜 시간 제품을 개발한 브랜드","고객 경험을 중요하게 생각하는 브랜드","광고보다 제품의 힘을 믿는 브랜드","아직 경험될 기회를 얻지 못한 브랜드"].map(i=>(
-              <div key={i} style={{background:"#fcfaf8",border:"1px solid #f1ece5",borderRadius:14,padding:"22px 20px"}}>
-                <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.6,margin:0}}>{i}</p>
+              <div key={i} style={{background:"#fcfaf8",border:"1px solid #f1ece5",borderRadius:14,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",padding:16,textAlign:"center"}}>
+                <p style={{...KR,fontSize:"15px",color:"#555",lineHeight:1.5,margin:0}}>{i}</p>
               </div>
             ))}
           </div>
@@ -3340,7 +3343,7 @@ function BrandsHomePage() {
         <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Program Lineup</Badge>
           <Divider/>
-          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>지금 운영 중인 프로그램</h2>
+          <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>TBP의 살롱 프로그램</h2>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20,marginBottom:32,textAlign:"left"}}>
             {lineup.map(({t,d,status,live,image})=>(
               <div key={t} onClick={()=>{navigate("/brands/program");window.scrollTo(0,0);}} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,overflow:"hidden",cursor:"pointer"}}>
@@ -3370,17 +3373,19 @@ function BrandsHomePage() {
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>TBP와 함께하는 파리 살롱들</h2>
         </div>
         <div style={{maxWidth:880,margin:"0 auto 32px",padding:"0 clamp(24px,6vw,80px)"}}>
-          <div style={{borderRadius:16,overflow:"hidden",border:"1px solid #ede8e2",height:340}}>
-            {lr
-              ? <SalonMap salons={salons} fitToSalons={salons} compact={true} />
-              : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,fontSize:13,color:"#bbb"}}>지도 불러오는 중…</div>}
+          <div style={{borderRadius:18,padding:3,background:"linear-gradient(135deg,#f0e2c0,#c9a96e 45%,#8a6a30,#c9a96e 80%,#f0e2c0)",boxShadow:"0 10px 40px rgba(201,169,110,0.25)"}}>
+            <div style={{borderRadius:15,overflow:"hidden",height:340,background:"#fff"}}>
+              {lr
+                ? <SalonMap salons={salons} fitToSalons={salons} compact={true} />
+                : <div style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",...SS,fontSize:13,color:"#bbb"}}>지도 불러오는 중…</div>}
+            </div>
           </div>
         </div>
         {salons.length>0&&(
           <div style={{overflow:"hidden",whiteSpace:"nowrap"}}>
-            <div style={{display:"inline-flex",alignItems:"center",animation:"slideLeft 40s linear infinite"}}>
+            <div style={{display:"inline-flex",alignItems:"center",animation:"slideLeft 110s linear infinite"}}>
               {[...salons,...salons].map((s,i)=>(
-                <span key={i} style={{...salonFonts[i%salonFonts.length],fontSize:22,color:"#ccc",padding:"0 28px",flexShrink:0}}>{s.name}</span>
+                <span key={i} style={{...salonStyles[i%salonStyles.length],fontSize:22,color:"#ccc",padding:"0 28px",flexShrink:0}}>{s.name}</span>
               ))}
             </div>
           </div>
@@ -3451,13 +3456,13 @@ function BrandsAboutPage() {
               우리는 그 브랜드들을 위해 존재합니다. 작다는 건 부족하다는 뜻이 아닙니다. 아직 경험될 기회가 없었다는 뜻입니다.
             </p>
           </div>
-          <div style={{width:200,aspectRatio:"3/5",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
+          <div style={{width:200,aspectRatio:"1",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
             <img src="/images/IMG_0175.jpeg" alt="" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
           </div>
         </div>
       </section>
 
-      <div style={{maxWidth:880,margin:"0 auto",borderTop:"1px solid #ede8e2"}}/>
+      <div style={{background:"#fff"}}><div style={{maxWidth:880,margin:"0 auto",borderTop:"1px solid #ede8e2"}}/></div>
 
       {/* WHY SALONS */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
@@ -3473,13 +3478,13 @@ function BrandsAboutPage() {
               큰 브랜드는 광고로 이 경험을 대신할 자본이 있습니다. 작은 브랜드에게는, 살롱이 그 자리를 대신합니다.
             </p>
           </div>
-          <div style={{width:200,aspectRatio:"3/5",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
+          <div style={{width:200,aspectRatio:"1",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
             <img src="/images/aurabeaute04.jpeg" alt="파리 살롱 공간" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
           </div>
         </div>
       </section>
 
-      <div style={{maxWidth:880,margin:"0 auto",borderTop:"1px solid #ede8e2"}}/>
+      <div style={{background:"#fff"}}><div style={{maxWidth:880,margin:"0 auto",borderTop:"1px solid #ede8e2"}}/></div>
 
       {/* WHY DID WE START */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
@@ -3492,18 +3497,18 @@ function BrandsAboutPage() {
               우리는 좋은 제품을 만들고도 해외 진출 앞에서 멈추는 브랜드를 가까이에서 봤습니다. 광고비도, 전시회 참가비도 쓸 만큼 썼지만, 정작 고객이 제품을 직접 경험할 기회는 없었습니다.
             </p>
             <p style={{...KR,fontSize:"15px",color:"#999",lineHeight:1.75,margin:"0 0 16px"}}>그래서 질문을 바꿔봤습니다.</p>
-            <p style={{...CG,fontSize:"clamp(19px,2.6vw,24px)",color:"#1a1a1a",fontStyle:"italic",lineHeight:1.6,margin:"0 0 20px"}}>
+            <p style={{...CG,fontSize:"clamp(16px,2vw,19px)",color:"#1a1a1a",fontStyle:"italic",lineHeight:1.7,margin:"0 0 20px"}}>
               "큰 자본 없이도, 고객이 먼저 경험할 수 있다면 어떨까?<br/>그 경험이 세포라가 아니라, 파리의 작은 살롱에서 시작된다면 어떨까?"
             </p>
             <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:1.75,margin:0}}>TBP는 그 질문에서 시작되었습니다.</p>
           </div>
-          <div style={{width:200,aspectRatio:"3/5",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
+          <div style={{width:200,aspectRatio:"1",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
             <img src="/images/IMG_0183.jpeg" alt="" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
           </div>
         </div>
       </section>
 
-      <div style={{maxWidth:880,margin:"0 auto",borderTop:"1px solid #ede8e2"}}/>
+      <div style={{background:"#fff"}}><div style={{maxWidth:880,margin:"0 auto",borderTop:"1px solid #ede8e2"}}/></div>
 
       {/* WHAT WE BELIEVE */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,90px)"}}>
@@ -3519,7 +3524,7 @@ function BrandsAboutPage() {
             </p>
             <p style={{...CG,fontSize:"22px",color:"#a07832",fontStyle:"italic",fontWeight:600,margin:0}}>Discover beauty differently.</p>
           </div>
-          <div style={{width:200,aspectRatio:"3/5",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
+          <div style={{width:200,aspectRatio:"1",borderRadius:14,overflow:"hidden",border:"1px solid #ede8e2",flexShrink:0}}>
             <img src="/images/IMG20260529105931.jpg" alt="" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
           </div>
         </div>
