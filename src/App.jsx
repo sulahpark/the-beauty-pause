@@ -3102,25 +3102,25 @@ const BSS = {fontFamily:"'DM Sans',sans-serif"};
 const BCG = {fontFamily:"'Cormorant Garamond',serif"};
 
 function Badge({children}) {
-  return <span style={{...BSS,fontSize:"10px",color:"#c9a96e",letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,display:"inline-block",marginBottom:16}}>{children}</span>;
+  return <span style={{...BSS,fontSize:"12px",color:"#a07832",letterSpacing:"1.5px",textTransform:"uppercase",fontWeight:700,display:"inline-block",marginBottom:14}}>{children}</span>;
 }
-function Divider() { return <div style={{width:36,height:2,background:"#c9a96e",margin:"12px 0 28px"}}/>; }
+function Divider() { return <div style={{width:40,height:3,background:"#c9a96e",borderRadius:2,margin:"14px auto 30px"}}/>; }
 function Tag({children}) {
   return <span style={{...BKR,fontSize:"13px",color:"#c9a96e",background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.25)",padding:"6px 16px",borderRadius:20,display:"inline-block",margin:"4px"}}>{children}</span>;
 }
 function CheckItem({children, light}) {
   return (
-    <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
+    <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:12}}>
       <span style={{color:"#c9a96e",flexShrink:0,marginTop:2}}>✓</span>
-      <p style={{...BKR,fontSize:"14px",color:light?"rgba(255,255,255,0.6)":"#555",margin:0,lineHeight:1.6}}>{children}</p>
+      <p style={{...BKR,fontSize:"15px",color:light?"rgba(255,255,255,0.65)":"#444",margin:0,lineHeight:1.6}}>{children}</p>
     </div>
   );
 }
 function ProgramItem({children, accent}) {
   return (
-    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:10}}>
-      <span style={{color:accent||"#c9a96e",fontSize:"12px",flexShrink:0}}>✓</span>
-      <p style={{...BKR,fontSize:"14px",color:"rgba(255,255,255,0.55)",margin:0}}>{children}</p>
+    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:12}}>
+      <span style={{color:accent||"#c9a96e",fontSize:"13px",flexShrink:0}}>✓</span>
+      <p style={{...BKR,fontSize:"15px",color:"rgba(255,255,255,0.6)",margin:0}}>{children}</p>
     </div>
   );
 }
@@ -3205,10 +3205,6 @@ function BrandsTabNav({active}) {
           <span style={{...BCG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
           <span style={{...BCG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
         </button>
-        <a href="mailto:hello@thebeautypause.com"
-          style={{...BSS,fontSize:"13px",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.5)",padding:"8px 20px",borderRadius:24,textDecoration:"none",fontWeight:600,flexShrink:0}}>
-          브랜드 등록하기
-        </a>
       </div>
       <div style={{display:"flex",gap:4,padding:"0 clamp(20px,5vw,64px)",overflowX:"auto"}}>
         {tabs.map(t=>(
@@ -3281,12 +3277,12 @@ function BrandsHomePage() {
 
       {/* HERO */}
       <section style={{background:"#0d0d0d",padding:"110px clamp(24px,6vw,80px) 96px",animation:"fadeUp 0.5s ease both"}}>
-        <div style={{maxWidth:720,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>The Beauty Pause</p>
           <h1 style={{...KR,fontSize:"clamp(26px,4.6vw,44px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
             파리 살롱에서 운영하는<br/>K뷰티 프로그램
           </h1>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,maxWidth:480,margin:"0 auto 44px"}}>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,maxWidth:500,margin:"0 auto 44px"}}>
             지금 운영 중이거나 곧 시작하는 프로그램에 브랜드가 참여할 수 있습니다.
           </p>
           <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
@@ -3304,13 +3300,13 @@ function BrandsHomePage() {
 
       {/* WHO WE'RE LOOKING FOR */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:640,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Who We're Looking For</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,26px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 32px"}}>TBP는 이런 브랜드를 찾습니다.</h2>
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
             {["오랜 시간 제품을 개발한 브랜드","고객 경험을 중요하게 생각하는 브랜드","광고보다 제품의 힘을 믿는 브랜드","아직 경험될 기회를 얻지 못한 브랜드"].map(i=>(
-              <p key={i} style={{...KR,fontSize:"15px",color:"#444",lineHeight:1.7,margin:0}}>{i}</p>
+              <p key={i} style={{...KR,fontSize:"16px",color:"#444",lineHeight:1.7,margin:0}}>{i}</p>
             ))}
           </div>
         </div>
@@ -3318,7 +3314,7 @@ function BrandsHomePage() {
 
       {/* PROGRAM LINEUP PREVIEW */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ Program Lineup</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(20px,3vw,28px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 40px"}}>지금 운영 중인 프로그램</h2>
@@ -3331,7 +3327,7 @@ function BrandsHomePage() {
               <div key={t} onClick={()=>{navigate("/brands/program");window.scrollTo(0,0);}} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"26px 24px",cursor:"pointer"}}>
                 <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:14,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"#ece7de"}}>{status}</span>
                 <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
-                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+                <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
@@ -3344,11 +3340,11 @@ function BrandsHomePage() {
 
       {/* FINAL CTA */}
       <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 110px"}}>
-        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <h2 style={{...KR,fontSize:"clamp(24px,4vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
             당신의 브랜드를<br/>파리의 살롱 프로그램에 초대합니다.
           </h2>
-          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.45)",fontStyle:"italic",lineHeight:1.9,margin:"0 0 40px"}}>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 40px"}}>
             모든 브랜드가 프로그램에 참여하는 것은 아닙니다.<br/>TBP는 제품과 살롱의 적합성을 검토한 뒤 프로그램을 운영합니다.
           </p>
           <a href="mailto:hello@thebeautypause.com?subject=프로그램 신청"
@@ -3378,12 +3374,12 @@ function BrandsAboutPage() {
 
       {/* OPENING */}
       <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 80px",animation:"fadeUp 0.5s ease both"}}>
-        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ About TBP</Badge>
-          <h1 style={{...KR,fontSize:"clamp(24px,4vw,34px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.5,margin:"8px 0 24px"}}>
+          <h1 style={{...KR,fontSize:"clamp(26px,4.2vw,38px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.5,margin:"8px 0 24px"}}>
             K-뷰티가 파리의 살롱에서<br/>경험되는 방식
           </h1>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,maxWidth:560,margin:"0 auto"}}>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:2,maxWidth:600,margin:"0 auto"}}>
             우리는 제품을 파는 것보다, 먼저 경험을 만드는 일을 합니다. TBP(The Beauty Pause)는 파리의 살롱에서 한국 뷰티 프로그램을 기획하고 운영합니다. 고객은 서비스를 경험하고, 살롱은 새로운 프로그램을 운영하며, 브랜드는 실제 고객과 만나게 됩니다.
           </p>
         </div>
@@ -3391,16 +3387,17 @@ function BrandsAboutPage() {
 
       {/* WHY SMALL BRANDS */}
       <section style={{background:"#fff",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:640,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ Why Small Brands?</Badge>
           <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.6vw,26px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>왜 작은 브랜드인가</h2>
+          <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
             파리의 세포라와 백화점에는 이미 몇몇 한국 브랜드가 있습니다. 스킨1004, 닥터자르트, Amuse — 이미 크고, 이미 알려진 이름들입니다.
           </p>
-          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
+          <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
             하지만 그 뒤에는, 그만큼 좋은 제품을 만들고도 경험될 기회조차 갖지 못한 브랜드들이 훨씬 많습니다. 유통 계약이 없어서, 팝업을 열 자본이 없어서, 프랑스에 아는 사람이 없어서.
           </p>
-          <p style={{...KR,fontSize:"16px",color:"#1a1a1a",fontWeight:600,lineHeight:2,margin:0}}>
+          <p style={{...KR,fontSize:"17px",color:"#1a1a1a",fontWeight:600,lineHeight:2,margin:0}}>
             우리는 그 브랜드들을 위해 존재합니다. 작다는 건 부족하다는 뜻이 아닙니다. 아직 경험될 기회가 없었다는 뜻입니다.
           </p>
         </div>
@@ -3408,15 +3405,16 @@ function BrandsAboutPage() {
 
       {/* WHY SALONS */}
       <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ Why Salons?</Badge>
           <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.6vw,26px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>왜 살롱인가</h2>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:36,alignItems:"center"}}>
             <div>
-              <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
+              <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:2,margin:"0 0 20px"}}>
                 뷰티는 진열대 위에서 기억되지 않습니다. 사람들은 누군가의 추천을 듣고, 직접 사용해 보고, 변화를 경험한 뒤에야 브랜드를 기억합니다. 특히 헤어, 네일, 속눈썹, 피부 관리에서는 제품보다 경험이 먼저입니다.
               </p>
-              <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:0}}>
+              <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:2,margin:0}}>
                 큰 브랜드는 광고로 이 경험을 대신할 자본이 있습니다. 작은 브랜드에게는, 살롱이 그 자리를 대신합니다.
               </p>
             </div>
@@ -3429,26 +3427,28 @@ function BrandsAboutPage() {
 
       {/* WHY DID WE START */}
       <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:640,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ Why Did We Start?</Badge>
           <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 20px"}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.6vw,26px)",fontWeight:700,color:"#f5f0eb",margin:"0 0 24px"}}>우리는 왜 시작했나</h2>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:"0 0 20px"}}>
             우리는 좋은 제품을 만들고도 해외 진출 앞에서 멈추는 브랜드를 가까이에서 봤습니다. 광고비도, 전시회 참가비도 쓸 만큼 썼지만, 정작 고객이 제품을 직접 경험할 기회는 없었습니다.
           </p>
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.35)",lineHeight:2,margin:"0 0 20px"}}>그래서 질문을 바꿔봤습니다.</p>
           <p style={{...CG,fontSize:"clamp(19px,2.6vw,24px)",color:"#f5f0eb",fontStyle:"italic",lineHeight:1.7,margin:"0 0 28px"}}>
             "큰 자본 없이도, 고객이 먼저 경험할 수 있다면 어떨까?<br/>그 경험이 세포라가 아니라, 파리의 작은 살롱에서 시작된다면 어떨까?"
           </p>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:0}}>TBP는 그 질문에서 시작되었습니다.</p>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:2,margin:0}}>TBP는 그 질문에서 시작되었습니다.</p>
         </div>
       </section>
 
       {/* WHAT WE BELIEVE */}
       <section style={{background:"#faf7f4",padding:"88px clamp(24px,6vw,80px) 100px"}}>
-        <div style={{maxWidth:640,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ What We Believe</Badge>
           <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"#444",lineHeight:2,margin:"0 0 28px"}}>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.6vw,26px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>우리가 믿는 것</h2>
+          <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:2,margin:"0 0 28px"}}>
             우리는 뷰티가 소비되는 게 아니라 경험되어야 한다고 믿습니다.<br/>
             우리는 아직 기회가 없었던 브랜드에게 그 기회가 필요하다고 믿습니다.<br/>
             그리고 우리는 그 시작점이 파리의 작은 살롱이라고 믿습니다.
@@ -3476,56 +3476,88 @@ function BrandsProgramPage() {
       <BrandsTabNav active="program"/>
 
       <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px) 56px",animation:"fadeUp 0.5s ease both"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ Program Lineup</Badge>
           <h1 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#f5f0eb",margin:"8px 0 8px"}}>프로그램 라인업</h1>
           <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.4)"}}>지금 운영 중이거나 곧 시작하는 프로그램입니다.</p>
         </div>
       </section>
 
-      {/* (1) PROGRAM LINEUP + WHAT IS A PROGRAM */}
-      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20,marginBottom:56}}>
+      {/* (1) PROGRAM LINEUP */}
+      <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px) 24px"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:20}}>
             {[
               {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
               {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
               {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
             ].map(({t,d,status,live})=>(
               <div key={t} style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,padding:"26px 24px"}}>
-                <span style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:14,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"#ece7de"}}>{status}</span>
-                <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
-                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+                <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,display:"inline-block",marginBottom:14,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"#ece7de"}}>{status}</span>
+                <p style={{...KR,fontSize:"18px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
-
-          <Badge>✦ Signature Program</Badge>
-          <Divider/>
-          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:600,margin:"0 0 24px"}}>
-            <strong style={{color:"#1a1a1a"}}>프로그램이란?</strong> 브랜드 제품이 실제 살롱 서비스 안에 통합됩니다. 전문가가 직접 사용하고 고객에게 추천합니다. 광고가 아니라, 살롱의 추천입니다.
-          </p>
-          <div style={{background:"#1a1a1a",borderRadius:16,padding:"28px 30px",marginBottom:24}}>
-            {[
-              ["살롱 수","1곳부터, 맞춤 운영"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","200만 원부터 · 월 운영비 70~100만 원"],
-            ].map(([k,v])=>(
-              <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
-                <span style={{...SS,fontSize:12,color:"rgba(255,255,255,0.4)"}}>{k}</span>
-                <span style={{...KR,fontSize:12,color:"#f5f0eb",fontWeight:600,textAlign:"right"}}>{v}</span>
-              </div>
-            ))}
-          </div>
-          <a href="mailto:hello@thebeautypause.com?subject=프로그램 참여 문의"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"#1a1a1a",color:"#f5f0eb",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-            프로그램 참여하기 →
-          </a>
         </div>
       </section>
 
-      {/* (2) DISCOVERY LINEUP — lower tone */}
-      <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:32,maxWidth:500}}>
+      {/* (2) TWO WAYS TO PARTICIPATE — Program vs Discovery, same bg, clearly separated cards */}
+      <section style={{background:"#faf7f4",padding:"64px clamp(24px,6vw,80px) 80px"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ Two Ways to Participate</Badge>
+          <Divider/>
+          <h2 style={{...KR,fontSize:"clamp(20px,2.8vw,26px)",fontWeight:700,color:"#1a1a1a",textAlign:"center",margin:"0 0 44px"}}>두 가지 참여 방식</h2>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:24,alignItems:"stretch"}}>
+            {/* PROGRAM — emphasized, dark */}
+            <div style={{background:"#1a1a1a",borderRadius:20,padding:"32px 30px",display:"flex",flexDirection:"column"}}>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#0d0d0d",background:"#c9a96e",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:18,alignSelf:"flex-start"}}>제품 활용 · 실제 서비스에 사용</span>
+              <p style={{...KR,fontSize:"24px",fontWeight:700,color:"#f5f0eb",margin:"0 0 12px"}}>Program</p>
+              <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 24px"}}>
+                브랜드 제품이 실제 살롱 서비스 안에 통합됩니다. 전문가가 직접 사용하고 고객에게 추천합니다. 광고가 아니라, 살롱의 추천입니다.
+              </p>
+              <div style={{marginBottom:24}}>
+                {[
+                  ["살롱 수","1곳부터, 맞춤 운영"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","200만 원부터 · 월 운영비 70~100만 원"],
+                ].map(([k,v])=>(
+                  <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"11px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+                    <span style={{...SS,fontSize:13,color:"rgba(255,255,255,0.4)"}}>{k}</span>
+                    <span style={{...KR,fontSize:13,color:"#f5f0eb",fontWeight:600,textAlign:"right"}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <a href="mailto:hello@thebeautypause.com?subject=프로그램 참여 문의"
+                style={{marginTop:"auto",display:"inline-flex",alignItems:"center",justifyContent:"center",gap:8,padding:"14px 24px",background:"#c9a96e",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+                프로그램 참여하기 →
+              </a>
+            </div>
+
+            {/* DISCOVERY — lighter, outlined */}
+            <div style={{background:"#fff",border:"1.5px solid #e8d9b8",borderRadius:20,padding:"32px 30px",display:"flex",flexDirection:"column"}}>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"#fdf8ee",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:18,alignSelf:"flex-start"}}>제품 활용 · 진열 및 체험</span>
+              <p style={{...KR,fontSize:"24px",fontWeight:700,color:"#1a1a1a",margin:"0 0 12px"}}>Discovery</p>
+              <p style={{...KR,fontSize:"15px",color:"#777",lineHeight:1.9,margin:"0 0 24px"}}>
+                여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다. 진열과 QR, 고객 이벤트로 브랜드를 알립니다.
+              </p>
+              <div style={{marginBottom:24}}>
+                {[
+                  ["살롱 수","10곳부터"],["운영 기간","기본 2주"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],["참가비","200만 원 · 월 운영비 50만 원부터"],
+                ].map(([k,v])=>(
+                  <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"11px 0",borderTop:"1px solid #f5f0f0"}}>
+                    <span style={{...SS,fontSize:13,color:"#999"}}>{k}</span>
+                    <span style={{...KR,fontSize:13,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <a href="mailto:hello@thebeautypause.com?subject=디스커버리 참여 문의"
+                style={{marginTop:"auto",display:"inline-flex",alignItems:"center",justifyContent:"center",gap:8,padding:"14px 24px",background:"transparent",color:"#a07832",border:"1.5px solid #e8d9b8",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+                디스커버리 참여하기 →
+              </a>
+            </div>
+          </div>
+
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:32,maxWidth:500}}>
             <div style={{borderRadius:14,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
               <img src="/images/aurabeaute04.jpeg" alt="Discovery salon display" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
             </div>
@@ -3537,44 +3569,24 @@ function BrandsProgramPage() {
               ))}
             </div>
           </div>
-
-          <p style={{...SS,fontSize:10,color:"#a07832",letterSpacing:2.5,textTransform:"uppercase",fontWeight:600,marginBottom:16}}>✦ Discovery Program</p>
-          <div style={{width:36,height:2,background:"#e8d9b8",margin:"0 0 24px"}}/>
-          <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,maxWidth:600,margin:"0 0 24px"}}>
-            <strong style={{color:"#a07832"}}>디스커버리란?</strong> 여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다. 진열과 QR, 고객 이벤트로 브랜드를 알립니다.
-          </p>
-          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"24px 26px",marginBottom:22}}>
-            {[
-              ["살롱 수","약 10곳"],["운영 기간","기본 2주"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],["참가비","200만 원 · 월 운영비 50만 원부터"],
-            ].map(([k,v])=>(
-              <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"9px 0",borderTop:"1px solid #f5f0f0"}}>
-                <span style={{...SS,fontSize:12,color:"#999"}}>{k}</span>
-                <span style={{...KR,fontSize:12,color:"#1a1a1a",fontWeight:600,textAlign:"right"}}>{v}</span>
-              </div>
-            ))}
-          </div>
-          <a href="mailto:hello@thebeautypause.com?subject=디스커버리 참여 문의"
-            style={{display:"inline-flex",alignItems:"center",gap:8,padding:"12px 24px",background:"transparent",color:"#a07832",border:"1px solid #e8d9b8",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-            디스커버리 참여하기 →
-          </a>
         </div>
       </section>
 
       {/* (3) WHICH FITS — compact comparison table */}
       <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ Which Fits Your Brand?</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>어떤 방식이 맞을까요?</h2>
           <div style={{border:"1px solid #ede8e2",borderRadius:14,overflow:"hidden",marginBottom:20}}>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",background:"#faf7f4"}}>
               <div style={{padding:"12px 16px"}}/>
-              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#1a1a1a"}}>프로그램 파트너</div>
-              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#a07832"}}>디스커버리 파트너</div>
+              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#1a1a1a"}}>프로그램</div>
+              <div style={{padding:"12px 16px",...SS,fontSize:12,fontWeight:700,color:"#a07832"}}>디스커버리</div>
             </div>
             {[
               ["제품 활용","실제 서비스에 사용","진열 및 체험"],
-              ["살롱 수","1곳부터","약 10곳"],
+              ["살롱 수","1곳부터","10곳부터"],
               ["목적","고객 경험 및 구매 연결","브랜드 소개 및 노출"],
             ].map(([label,a,b],i)=>(
               <div key={label} style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",borderTop:"1px solid #ede8e2"}}>
@@ -3591,7 +3603,7 @@ function BrandsProgramPage() {
 
       {/* (4) PROCESS + FAQ */}
       <section style={{background:"#faf7f4",padding:"56px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ Process</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>진행 순서</h2>
@@ -3607,20 +3619,22 @@ function BrandsProgramPage() {
       </section>
 
       <section style={{background:"#fff",padding:"56px clamp(24px,6vw,80px) 90px"}}>
-        <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ FAQ</Badge>
           <Divider/>
           <h2 style={{...KR,fontSize:"clamp(18px,2.5vw,22px)",fontWeight:700,color:"#1a1a1a",margin:"0 0 24px"}}>자주 묻는 질문</h2>
           <div style={{display:"flex",flexDirection:"column"}}>
             {[
-              {q:"유럽 법인이 필요한가요?",a:"필수는 아닙니다."},
-              {q:"제품 수량 제한이 있나요?",a:"디스커버리 파트너는 20개 기준입니다. 프로그램 파트너는 프로그램에 따라 다릅니다."},
-              {q:"제품 판매도 가능한가요?",a:"가능합니다. 살롱 판매와 온라인 구매 연결이 모두 가능합니다."},
-              {q:"참가 비용이 있나요?",a:"디스커버리 파트너는 200만 원부터 시작합니다. 프로그램 파트너는 맞춤 견적입니다."},
+              {q:"유럽 법인이 필요한가요?",a:"아니요. 대부분의 브랜드가 한국 법인 상태로 참여하고 있으며, 제품 발송과 정산도 한국 기준으로 진행할 수 있습니다."},
+              {q:"제품 수량 제한이 있나요?",a:"디스커버리는 20개 기준으로 운영됩니다. 프로그램은 살롱 운영 기간과 서비스 횟수에 따라 필요 수량이 달라지므로, 검토 단계에서 함께 정합니다."},
+              {q:"제품 판매도 가능한가요?",a:"네, 가능합니다. QR을 통한 온라인 구매 연결뿐 아니라, 프로그램의 경우 살롱 현장 판매도 함께 진행할 수 있습니다."},
+              {q:"참가 비용이 있나요?",a:"디스커버리는 200만 원부터 시작하며, 살롱 수와 운영 기간에 따라 달라질 수 있습니다. 프로그램은 서비스 통합 방식과 살롱 규모에 따라 맞춤 견적으로 안내드립니다."},
+              {q:"CPNP 등록이 안 되어 있어도 참여할 수 있나요?",a:"프로그램은 유럽 내 사용 규정상 CPNP 등록이 필요합니다. 등록이 안 되어 있다면 TBP가 등록을 지원해드리며, 이 경우 별도 비용이 발생합니다."},
+              {q:"신청하면 무조건 참여할 수 있나요?",a:"아니요. 브랜드 방향성과 제품 특성, 살롱과의 적합성을 검토한 후 참여 여부를 결정합니다. 모든 브랜드가 참여할 수 있는 건 아닙니다."},
             ].map(({q,a})=>(
-              <div key={q} style={{padding:"20px 0",borderTop:"1px solid #ede8e2"}}>
-                <p style={{...KR,fontSize:"14px",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}>{q}</p>
-                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{a}</p>
+              <div key={q} style={{padding:"22px 0",borderTop:"1px solid #ede8e2"}}>
+                <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{q}</p>
+                <p style={{...KR,fontSize:"14px",color:"#666",lineHeight:1.8,margin:0}}>{a}</p>
               </div>
             ))}
             <div style={{borderTop:"1px solid #ede8e2"}}/>
@@ -3668,18 +3682,19 @@ function BrandsContactPage() {
       <BrandsTabNav active="contact"/>
 
       <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 80px",animation:"fadeUp 0.5s ease both"}}>
-        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <h1 style={{...KR,fontSize:"clamp(24px,4vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>
             당신의 브랜드를<br/>파리의 살롱 프로그램에 초대합니다.
           </h1>
-          <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 24px"}}>
             모든 브랜드가 프로그램에 참여하는 것은 아닙니다.<br/>TBP는 제품과 살롱의 적합성을 검토한 뒤 프로그램을 운영합니다.
           </p>
-          <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"14px",color:"#c9a96e",textDecoration:"none",fontWeight:600}}>hello@thebeautypause.com</a>
+          <a href="mailto:hello@thebeautypause.com" style={{...SS,fontSize:"15px",color:"#c9a96e",textDecoration:"none",fontWeight:600}}>hello@thebeautypause.com</a>
         </div>
       </section>
 
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px) 90px"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
         <div style={{maxWidth:560,margin:"0 auto"}}>
           {sent ? (
             <div style={{textAlign:"center",padding:"40px 0"}}>
@@ -3715,6 +3730,7 @@ function BrandsContactPage() {
               </button>
             </form>
           )}
+        </div>
         </div>
       </section>
 
@@ -4042,7 +4058,7 @@ function ForManufacturersPage() {
               <div key={t} style={{background:"#faf7f4",border:"1px solid #e8e0d8",borderRadius:16,padding:"24px 22px"}}>
                 <div style={{width:24,height:2,background:"#c9a96e",marginBottom:14}}/>
                 <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 10px",lineHeight:1.4}}>{t}</p>
-                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+                <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
               </div>
             ))}
           </div>
