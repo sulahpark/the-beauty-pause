@@ -3688,31 +3688,30 @@ function BrandsProgramPage() {
             두 방식은 살롱 수, 검토, 참가비까지 구조가 비슷합니다. 진짜 다른 건 목적입니다.
           </p>
 
-          <div style={{display:"flex",flexDirection:"column",gap:14,marginBottom:28,maxWidth:640}}>
-            <div style={{display:"flex",alignItems:"center",gap:16,padding:"20px 22px",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14}}>
-              <p style={{...KR,fontSize:"14px",color:"#444",lineHeight:1.6,margin:0,flex:1}}>고객이 제품을 직접 써보고 구매까지 이어지길 원한다면</p>
-              <span style={{color:"#c9a96e",fontSize:16,flexShrink:0}}>→</span>
-              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:0,flexShrink:0}}>프로그램</p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16,marginBottom:24}}>
+            <div style={{padding:"28px 24px",background:"#171717",borderRadius:14}}>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.6,margin:"0 0 16px"}}>고객이 제품을 직접 써보고 구매까지 이어지길 원한다면</p>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <span style={{color:"#c9a96e",fontSize:16}}>→</span>
+                <p style={{...KR,fontSize:"18px",fontWeight:700,color:"#f5f0eb",margin:0}}>프로그램</p>
+              </div>
             </div>
-            <div style={{display:"flex",alignItems:"center",gap:16,padding:"20px 22px",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14}}>
-              <p style={{...KR,fontSize:"14px",color:"#444",lineHeight:1.6,margin:0,flex:1}}>여러 살롱에서 브랜드를 알리고 노출을 만들고 싶다면</p>
-              <span style={{color:"#a07832",fontSize:16,flexShrink:0}}>→</span>
-              <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#a07832",margin:0,flexShrink:0}}>디스커버리</p>
+            <div style={{padding:"28px 24px",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14}}>
+              <p style={{...KR,fontSize:"14px",color:"#666",lineHeight:1.6,margin:"0 0 16px"}}>여러 살롱에서 브랜드를 알리고 노출을 만들고 싶다면</p>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <span style={{color:"#a07832",fontSize:16}}>→</span>
+                <p style={{...KR,fontSize:"18px",fontWeight:700,color:"#a07832",margin:0}}>디스커버리</p>
+              </div>
             </div>
           </div>
 
           <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"0 0 4px"}}>각 프로그램은 브랜드와 살롱의 적합성을 검토한 뒤 시작됩니다.</p>
           <a href="mailto:hello@thebeautypause.com?subject=예산 문의" style={{...KR,fontSize:"12px",color:"#a07832",textDecoration:"underline"}}>예산이 부담되신다면, 문의해주세요.</a>
 
-          <div style={{borderTop:"1px solid #ede8e2",marginTop:32,paddingTop:24,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:24}}>
-            <div>
-              <p style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",color:"#bbb",margin:"0 0 8px"}}>TBP가 하는 일</p>
-              <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:0}}>프로그램 기획 · 살롱 모집 및 관리 · 제품 배치 및 운영 · QR 및 이벤트 운영 · 콘텐츠 제작 · 데이터 수집 및 분석</p>
-            </div>
-            <div>
-              <p style={{...SS,fontSize:10,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",color:"#bbb",margin:"0 0 8px"}}>브랜드가 하는 일</p>
-              <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:0}}>제품 제공 · 제품 정보 제공 · 배송 지원 · 프로그램 참여</p>
-            </div>
+          <div style={{borderTop:"1px solid #ede8e2",marginTop:28,paddingTop:18}}>
+            <p style={{...SS,fontSize:11,color:"#bbb",lineHeight:1.8,margin:0}}>
+              <span style={{color:"#ccc"}}>TBP가 하는 일 (프로그램·디스커버리 공통)</span> — 프로그램 기획 · 살롱 모집 및 관리 · 제품 배치 및 운영 · QR 및 이벤트 운영 · 콘텐츠 제작 · 데이터 수집 및 분석
+            </p>
           </div>
         </div>
       </section>
