@@ -1274,6 +1274,8 @@ function useProgramsData() {
             id: r.id,
             name: r.name || r.Name || r.program_name || "",
             subtitle: r.subtitle || r.Subtitle || "",
+            statusLabel: r.status_label || r.Status_label || "",
+            detailsKr: r.details_kr || r.Details_kr || "",
             salonIds: Array.isArray(salonsField) ? salonsField : [],
             image: getAttachmentUrl(r.image || r.Image),
             imagePortrait: getAttachmentUrl(r.image_portrait || r.Image_portrait || r.image_vertical),
@@ -3280,14 +3282,14 @@ function BrandsHomePage() {
     const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);
   },[]);
 
-  // pull real program data straight from Airtable — no hardcoded names to keep in sync
-  const lineup = (programs||[]).slice(0,3).map(p => ({
-    t: p.name,
-    d: p.subtitle || p.description || "",
-    status: p.tag || p.periodLabel || "",
-    live: !!p.tag,
-    image: p.image || null,
-  }));
+  // only show programs Airtable has flagged as recruiting brands
+  const lineup = (programs||[])
+    .filter(p => (p.statusLabel||"").trim() === "브랜드 모집중")
+    .slice(0,3)
+    .map(p => {
+      const [line1="", line2=""] = (p.detailsKr||"").split("\n").map(s=>s.trim());
+      return { t: line1 || p.name, d: line2, status: p.tag || "", live: !!p.tag, image: p.image || null };
+    });
 
   useEffect(()=>{
     console.log("[BrandsHomePage] fetched programs:", programs);
@@ -3314,10 +3316,10 @@ function BrandsHomePage() {
             지금 운영 중이거나 곧 시작하는 프로그램에 브랜드가 참여할 수 있습니다.
           </p>
           <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",marginBottom:64}}>
-            <a href="mailto:hello@thebeautypause.com?subject=프로그램 신청"
-              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none",boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
+            <button onClick={()=>{navigate("/brands/contact");window.scrollTo(0,0);}}
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,boxShadow:"0 6px 24px rgba(201,169,110,0.3)"}}>
               프로그램 신청하기 →
-            </a>
+            </button>
             <button onClick={()=>{navigate("/brands/program");window.scrollTo(0,0);}}
               style={{display:"inline-flex",alignItems:"center",gap:8,padding:"15px 30px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.25)",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,cursor:"pointer"}}>
               진행 중인 프로그램 보기
@@ -3410,10 +3412,10 @@ function BrandsHomePage() {
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,margin:"0 0 40px"}}>
             TBP는 브랜드 제품과 살롱의 적합성을 검토한 뒤 운영됩니다.
           </p>
-          <a href="mailto:hello@thebeautypause.com?subject=프로그램 신청"
-            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"20px 52px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"17px",fontWeight:700,borderRadius:14,textDecoration:"none",boxShadow:"0 8px 30px rgba(201,169,110,0.4)"}}>
+          <button onClick={()=>{navigate("/brands/contact");window.scrollTo(0,0);}}
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"20px 52px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",border:"none",cursor:"pointer",...KR,fontSize:"17px",fontWeight:700,borderRadius:14,boxShadow:"0 8px 30px rgba(201,169,110,0.4)"}}>
             프로그램 신청하기 →
-          </a>
+          </button>
         </div>
       </section>
 
@@ -3450,7 +3452,7 @@ function BrandsAboutPage() {
 
       {/* WHY SMALL BRANDS */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"start"}}>
+        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"center"}}>
           <div>
             <Badge>✦ Why Small Brands?</Badge>
             <Divider align="left"/>
@@ -3475,7 +3477,7 @@ function BrandsAboutPage() {
 
       {/* WHY SALONS */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"start"}}>
+        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"center"}}>
           <div>
             <Badge>✦ Why Salons?</Badge>
             <Divider align="left"/>
@@ -3497,7 +3499,7 @@ function BrandsAboutPage() {
 
       {/* WHY DID WE START */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
-        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"start"}}>
+        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"center"}}>
           <div>
             <Badge>✦ Why Did We Start?</Badge>
             <Divider align="left"/>
@@ -3505,9 +3507,9 @@ function BrandsAboutPage() {
             <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:1.75,margin:"0 0 16px"}}>
               우리는 좋은 제품을 만들고도 해외 진출 앞에서 멈추는 브랜드를 가까이에서 봤습니다. 광고비도, 전시회 참가비도 쓸 만큼 썼지만, 정작 고객이 제품을 직접 경험할 기회는 없었습니다.
             </p>
-            <p style={{...KR,fontSize:"15px",color:"#999",lineHeight:1.75,margin:"0 0 16px"}}>그래서 질문을 바꿔봤습니다.</p>
-            <p style={{...CG,fontSize:"clamp(16px,2vw,19px)",color:"#1a1a1a",fontStyle:"italic",lineHeight:1.7,margin:"0 0 20px"}}>
-              "큰 자본 없이도, 고객이 먼저 경험할 수 있다면 어떨까?<br/>그 경험이 세포라가 아니라, 파리의 작은 살롱에서 시작된다면 어떨까?"
+            <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:1.75,margin:"0 0 16px"}}>그래서 질문을 바꿔봤습니다.</p>
+            <p style={{...KR,fontSize:"16px",color:"#a07832",fontStyle:"italic",lineHeight:1.75,margin:"0 0 20px"}}>
+              "유통 계약 전에, 고객이 먼저 경험할 수 있다면 어떨까?<br/>그 경험이 잠깐의 이벤트가 아니라 파리의 로컬 살롱에서 계속된다면 어떨까?"
             </p>
             <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:1.75,margin:0}}>TBP는 그 질문에서 시작되었습니다.</p>
           </div>
@@ -3521,7 +3523,7 @@ function BrandsAboutPage() {
 
       {/* WHAT WE BELIEVE */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,90px)"}}>
-        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"start"}}>
+        <div style={{maxWidth:880,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 200px",gap:48,alignItems:"center"}}>
           <div>
             <Badge>✦ What We Believe</Badge>
             <Divider align="left"/>
@@ -3553,14 +3555,14 @@ function BrandsProgramPage() {
   const showTop = useScrollTop();
   const { programs } = useProgramsData();
 
-  // pull real program data straight from Airtable — no hardcoded names to keep in sync
-  const programLineup = (programs||[]).slice(0,3).map(p => ({
-    t: p.name,
-    d: p.subtitle || p.description || "",
-    status: p.tag || p.periodLabel || "",
-    live: !!p.tag,
-    image: p.imagePortrait || p.image || null,
-  }));
+  // only show programs Airtable has flagged as recruiting brands
+  const programLineup = (programs||[])
+    .filter(p => (p.statusLabel||"").trim() === "브랜드 모집중")
+    .slice(0,3)
+    .map(p => {
+      const [line1="", line2=""] = (p.detailsKr||"").split("\n").map(s=>s.trim());
+      return { t: line1 || p.name, d: line2, status: p.tag || "", live: !!p.tag, image: p.imagePortrait || p.image || null };
+    });
 
   return (
     <>
@@ -3643,9 +3645,8 @@ function BrandsProgramPage() {
               <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 20px"}}>
                 다수 살롱 오프라인 노출 · 테스트 환경 제공 및 이벤트 참여 · 콘텐츠 확보
               </p>
-              <p style={{...SS,fontSize:11,color:"#c0392b",margin:"0 0 20px"}}>* 40% 할인가는 8월 신청 한정입니다.</p>
               <a href="mailto:hello@thebeautypause.com?subject=디스커버리 파트너 신청"
-                style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"transparent",color:"#a07832",border:"1.5px solid #e8d9b8",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+                style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none",boxShadow:"0 4px 16px rgba(201,169,110,0.3)"}}>
                 디스커버리 파트너 신청 →
               </a>
             </div>
@@ -3660,9 +3661,10 @@ function BrandsProgramPage() {
               ))}
               <div style={{padding:"12px 0",borderTop:"1px solid #f0e9dc"}}>
                 <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>참가비</p>
-                <p style={{...KR,fontSize:14,color:"#1a1a1a",fontWeight:600,margin:0}}>
+                <p style={{...KR,fontSize:14,color:"#1a1a1a",fontWeight:600,margin:"0 0 6px"}}>
                   <span style={{textDecoration:"line-through",color:"#bbb",marginRight:6}}>190만 원</span>115만 원 · 추가 살롱 운영비 90만 원부터
                 </p>
+                <p style={{...SS,fontSize:11,color:"#c0392b",margin:0}}>* 40% 할인가는 8월 신청 한정입니다.</p>
               </div>
             </div>
           </div>
