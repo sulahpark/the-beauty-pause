@@ -3280,21 +3280,17 @@ function BrandsHomePage() {
     const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);
   },[]);
 
-  const matchProgram = (name) => {
-    const norm = (s) => (s||"").trim().toLowerCase();
-    return programs.find(p => norm(p.name) === norm(name))
-      || programs.find(p => norm(p.name).includes(norm(name)) || norm(name).includes(norm(p.name)));
-  };
-
-  const lineup = [
-    {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
-    {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
-    {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
-  ].map(item=>({...item, image: matchProgram(item.t)?.image || null}));
+  // pull real program data straight from Airtable — no hardcoded names to keep in sync
+  const lineup = (programs||[]).slice(0,3).map(p => ({
+    t: p.name,
+    d: p.subtitle || p.description || "",
+    status: p.tag || p.periodLabel || "",
+    live: !!p.tag,
+    image: p.image || null,
+  }));
 
   useEffect(()=>{
     console.log("[BrandsHomePage] fetched programs:", programs);
-    console.log("[BrandsHomePage] lineup with matched images:", lineup);
   },[programs]);
 
   const salonStyles = [
@@ -3557,20 +3553,14 @@ function BrandsProgramPage() {
   const showTop = useScrollTop();
   const { programs } = useProgramsData();
 
-  const matchProgram = (name) => {
-    const norm = (s) => (s||"").trim().toLowerCase();
-    return programs.find(p => norm(p.name) === norm(name))
-      || programs.find(p => norm(p.name).includes(norm(name)) || norm(name).includes(norm(p.name)));
-  };
-
-  const programLineup = [
-    {t:"Rainbow Lash Experience",d:"속눈썹 서비스와 함께 한국 제품을 체험하는 프로그램",status:"8월 운영",live:true},
-    {t:"Korean Rosé Nail",d:"네일 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
-    {t:"Matcha Head Spa",d:"헤드 스파 서비스와 함께 한국 제품을 체험하는 프로그램",status:"준비 중",live:false},
-  ].map(item=>{
-    const match = matchProgram(item.t);
-    return {...item, image: match?.imagePortrait || match?.image || null};
-  });
+  // pull real program data straight from Airtable — no hardcoded names to keep in sync
+  const programLineup = (programs||[]).slice(0,3).map(p => ({
+    t: p.name,
+    d: p.subtitle || p.description || "",
+    status: p.tag || p.periodLabel || "",
+    live: !!p.tag,
+    image: p.imagePortrait || p.image || null,
+  }));
 
   return (
     <>
