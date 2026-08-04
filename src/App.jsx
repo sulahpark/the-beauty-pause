@@ -1241,14 +1241,15 @@ function useData() {
 }
 
 // ── PROGRAMS DATA (from Airtable Program table) ──────────────────────────────
-function useProgramsData() {
+function useProgramsData(filterFormula = "{status}='launch'") {
   const [programs, setPrograms] = useState([]);
   const [loadingPrograms, setLoadingPrograms] = useState(true);
   useEffect(() => {
     (async () => {
       setLoadingPrograms(true);
       try {
-        const records = await fetchAll(TBL_PROGRAMS, "{status}='launch'");
+        const records = await fetchAll(TBL_PROGRAMS, filterFormula);
+        if (records[0]) console.log("[useProgramsData] raw field keys on first record:", Object.keys(records[0]));
         const getAttachmentUrl = (val) => {
           if (!val) return null;
           if (Array.isArray(val)) {
@@ -1275,10 +1276,10 @@ function useProgramsData() {
             name: r.name || r.Name || r.program_name || "",
             subtitle: r.subtitle || r.Subtitle || "",
             statusLabel: r.status_label || r.Status_label || "",
-            detailsKr: r.details_kr || r.Details_kr || "",
+            detailsKr: r.details_kr || r.Details_kr || r.datails_kr || r.Datails_kr || "",
             salonIds: Array.isArray(salonsField) ? salonsField : [],
             image: getAttachmentUrl(r.image || r.Image),
-            imagePortrait: getAttachmentUrl(r.image_portrait || r.Image_portrait || r.image_vertical),
+            imagePortrait: getAttachmentUrl(r.image_portrait || r.Image_portrait || r.image_portait || r.Image_portait || r["Image Portrait"] || r["Image portrait"] || r.image_vertical),
             duration: r.duration || "",
             priceOriginal: r.price_original || null,
             priceMin: r.price_min || null,
@@ -3273,7 +3274,7 @@ function BrandsHomePage() {
   const navigate = useNavigate();
   const KR = BKR, SS = BSS, CG = BCG;
   const showTop = useScrollTop();
-  const { programs } = useProgramsData();
+  const { programs } = useProgramsData("{status_label}='브랜드 모집중'");
   const { salons } = useData();
   const [lr,setLr] = useState(!!window.L);
   useEffect(()=>{
@@ -3282,9 +3283,8 @@ function BrandsHomePage() {
     const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>setLr(true);document.head.appendChild(s);
   },[]);
 
-  // only show programs Airtable has flagged as recruiting brands
+  // programs are already filtered server-side to status_label='브랜드 모집중'
   const lineup = (programs||[])
-    .filter(p => (p.statusLabel||"").trim() === "브랜드 모집중")
     .slice(0,3)
     .map(p => {
       const [line1="", line2=""] = (p.detailsKr||"").split("\n").map(s=>s.trim());
@@ -3553,11 +3553,10 @@ function BrandsProgramPage() {
   const navigate = useNavigate();
   const KR = BKR, SS = BSS, CG = BCG;
   const showTop = useScrollTop();
-  const { programs } = useProgramsData();
+  const { programs } = useProgramsData("{status_label}='브랜드 모집중'");
 
-  // only show programs Airtable has flagged as recruiting brands
+  // programs are already filtered server-side to status_label='브랜드 모집중'
   const programLineup = (programs||[])
-    .filter(p => (p.statusLabel||"").trim() === "브랜드 모집중")
     .slice(0,3)
     .map(p => {
       const [line1="", line2=""] = (p.detailsKr||"").split("\n").map(s=>s.trim());
