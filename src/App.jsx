@@ -3601,11 +3601,11 @@ function BrandsProgramPage() {
 
           <div style={{borderTop:"1px solid rgba(255,255,255,0.1)",paddingTop:40,display:"grid",gridTemplateColumns:"1fr 1fr",gap:40}}>
             <div>
-              <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#c9a96e",margin:"0 0 16px"}}>참여 방식</p>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#c9a96e",background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.3)",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:16}}>참여 방식</span>
               <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 24px"}}>
                 살롱의 실제 서비스 안에서 제품이 사용되고, 그 서비스로 홍보됩니다.
               </p>
-              <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#c9a96e",margin:"0 0 12px"}}>얻는 것</p>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#c9a96e",background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.3)",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:14}}>얻는 것</span>
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 28px"}}>
                 TBP 웹사이트 및 소셜미디어 홍보 · 실제 서비스 사용 콘텐츠 · 실제 서비스 경험 데이터 · 살롱 및 고객 구매 연결
               </p>
@@ -3617,8 +3617,8 @@ function BrandsProgramPage() {
             <div>
               {[
                 ["살롱 수","1곳부터, 맞춤 운영"],["운영 기간","1~2개월"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","290만 원부터 · 추가 살롱 운영비 190만 원부터"],
-              ].map(([k,v])=>(
-                <div key={k} style={{padding:"12px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+              ].map(([k,v],i)=>(
+                <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid rgba(255,255,255,0.08)"}}>
                   <p style={{...SS,fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
                   <p style={{...KR,fontSize:14,color:"#f5f0eb",fontWeight:600,margin:0}}>{v}</p>
                 </div>
@@ -3645,11 +3645,11 @@ function BrandsProgramPage() {
 
           <div style={{borderTop:"1px solid #ede8e2",paddingTop:40,display:"grid",gridTemplateColumns:"1fr 1fr",gap:40}}>
             <div>
-              <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#a07832",margin:"0 0 16px"}}>참여 방식</p>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"rgba(160,120,50,0.08)",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:16}}>참여 방식</span>
               <p style={{...KR,fontSize:"15px",color:"#777",lineHeight:1.9,margin:"0 0 24px"}}>
                 진열과 QR, 고객 이벤트로 브랜드를 알립니다.
               </p>
-              <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#a07832",margin:"0 0 12px"}}>얻는 것</p>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"rgba(160,120,50,0.08)",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:14}}>얻는 것</span>
               <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 20px"}}>
                 다수 살롱 오프라인 노출 · 테스트 환경 제공 및 이벤트 참여 · 콘텐츠 확보
               </p>
@@ -3662,8 +3662,8 @@ function BrandsProgramPage() {
             <div>
               {[
                 ["살롱 수","10곳부터"],["운영 기간","2~3주"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],
-              ].map(([k,v])=>(
-                <div key={k} style={{padding:"12px 0",borderTop:"1px solid #f0e9dc"}}>
+              ].map(([k,v],i)=>(
+                <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid #f0e9dc"}}>
                   <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
                   <p style={{...KR,fontSize:14,color:"#1a1a1a",fontWeight:600,margin:0}}>{v}</p>
                 </div>
@@ -3684,9 +3684,6 @@ function BrandsProgramPage() {
         <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ 어떤 참여 방식이 적합할까요?</Badge>
           <Divider align="left"/>
-          <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,maxWidth:600,margin:"0 0 32px"}}>
-            두 방식은 살롱 수, 검토, 참가비까지 구조가 비슷합니다. 진짜 다른 건 목적입니다.
-          </p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16,marginBottom:24}}>
             <div style={{padding:"28px 24px",background:"#171717",borderRadius:14}}>
@@ -3743,7 +3740,6 @@ function BrandsProgramPage() {
               {q:"유럽 법인이 필요한가요?",a:"아니요. 대부분의 브랜드가 한국 법인 상태로 참여하고 있으며, 제품 발송과 정산도 한국 기준으로 진행할 수 있습니다."},
               {q:"제품 수량 제한이 있나요?",a:"디스커버리는 20개 기준으로 운영됩니다. 프로그램은 살롱 운영 기간과 서비스 횟수에 따라 필요 수량이 달라지므로, 검토 단계에서 함께 정합니다."},
               {q:"제품 판매도 가능한가요?",a:"네, 가능합니다. QR을 통한 온라인 구매 연결뿐 아니라, 프로그램의 경우 살롱 현장 판매도 함께 진행할 수 있습니다."},
-              {q:"참가 비용이 있나요?",a:"디스커버리는 200만 원부터 시작하며, 살롱 수와 운영 기간에 따라 달라질 수 있습니다. 프로그램은 서비스 통합 방식과 살롱 규모에 따라 맞춤 견적으로 안내드립니다."},
               {q:"CPNP 등록이 안 되어 있어도 참여할 수 있나요?",a:"프로그램은 유럽 내 사용 규정상 CPNP 등록이 필요합니다. 등록이 안 되어 있다면 TBP가 등록을 지원해드리며, 이 경우 별도 비용이 발생합니다."},
               {q:"신청하면 무조건 참여할 수 있나요?",a:"아니요. 브랜드 방향성과 제품 특성, 살롱과의 적합성을 검토한 후 참여 여부를 결정합니다. 모든 브랜드가 참여할 수 있는 건 아닙니다."},
             ].map(({q,a})=>(
