@@ -3871,6 +3871,168 @@ function BrandsContactPage() {
   );
 }
 
+// ── SALON PROGRAM INFO PAGE (for salon partners, in French) ─────────────────
+function SalonProgramPage() {
+  const navigate = useNavigate();
+  const KR = BKR, SS = BSS, CG = BCG;
+  const showTop = useScrollTop();
+
+  return (
+    <>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}`}</style>
+
+      {/* simple top bar */}
+      <nav style={{background:"#0d0d0d",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
+        <div style={{display:"flex",alignItems:"center",height:60,padding:"0 clamp(20px,5vw,64px)"}}>
+          <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+            <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
+            <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section style={{background:"#0d0d0d",padding:"96px clamp(24px,6vw,80px) 80px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
+          <p style={{...SS,fontSize:11,color:"#c9a96e",letterSpacing:3,textTransform:"uppercase",fontWeight:700,margin:"0 0 20px"}}>Programme Salon</p>
+          <h1 style={{...KR,fontSize:"clamp(26px,4.4vw,42px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"0 0 20px"}}>The Beauty Pause</h1>
+          <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:560,margin:"0 auto"}}>
+            conçoit et fait connaître des expériences beauté dans les salons parisiens.
+          </p>
+        </div>
+      </section>
+
+      {/* EN QUOI ÇA CONSISTE */}
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ En quoi ça consiste</Badge>
+          <Divider/>
+          <p style={{...KR,fontSize:"16px",color:"#444",lineHeight:1.9,maxWidth:640,margin:"0 auto"}}>
+            TBP et le salon préparent ensemble un programme en édition limitée. Un produit K-Beauty s'ajoute à un service existant du salon, pour offrir à la clientèle une nouvelle expérience.
+          </p>
+        </div>
+      </section>
+
+      {/* CE QUE LE SALON OBTIENT */}
+      <section style={{background:"#faf7f4",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ Ce que le salon obtient</Badge>
+          <Divider align="left"/>
+          <div style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:16,padding:"28px 30px",maxWidth:640}}>
+            {[
+              "Une nouvelle expérience beauté à proposer à sa clientèle",
+              "Un chiffre d'affaires supplémentaire (intégralement pour le salon)",
+              "Une mise en avant grâce à du contenu créé pour le salon",
+              "De nouveaux clients via le site et les réseaux sociaux de TBP",
+            ].map(i => <CheckItem key={i}>{i}</CheckItem>)}
+          </div>
+        </div>
+      </section>
+
+      {/* CE QUE TBP PRÉPARE */}
+      <section style={{background:"#0d0d0d",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ Ce que TBP prépare</Badge>
+          <Divider align="left"/>
+          <div style={{maxWidth:640}}>
+            {[
+              "Le produit, offert (l'opération se termine à épuisement du stock, ou peut être prolongée sur demande d'achat)",
+              "Une affiche à installer dans le salon",
+              "Une affiche pour la vitrine (en option)",
+              "Une mise en avant sur le site et les réseaux sociaux de TBP",
+              "La création et le partage de contenu",
+            ].map(i => <ProgramItem key={i}>{i}</ProgramItem>)}
+          </div>
+        </div>
+      </section>
+
+      {/* CE QUE FAIT LE SALON */}
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ Ce que fait le salon</Badge>
+          <Divider align="left"/>
+          <div style={{maxWidth:640}}>
+            {[
+              "Propose l'opération pendant la période convenue",
+              "La propose aux clients intéressés",
+              "Applique le produit à l'étape du service concernée",
+              "Installe l'affiche",
+            ].map(i => <CheckItem key={i}>{i}</CheckItem>)}
+          </div>
+        </div>
+      </section>
+
+      {/* CE QU'ON DÉCIDE ENSEMBLE */}
+      <section style={{background:"#faf7f4",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ Ce qu'on décide ensemble</Badge>
+          <Divider align="left"/>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
+            {[
+              {t:"Période",d:"à partir de quand ?"},
+              {t:"Format",d:"à quel service ajouter le produit, ou en service à part ?"},
+              {t:"Tarif",d:"combien le salon facture à sa clientèle (le salon garde 100% du montant — pour l'instant, TBP ne prend aucune commission)"},
+            ].map(({t,d}) => (
+              <div key={t} style={{background:"#fff",border:"1px solid #ede8e2",borderRadius:14,padding:"20px 22px"}}>
+                <p style={{...KR,fontSize:"15px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                <p style={{...KR,fontSize:"13px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ÉTAPES */}
+      <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ Étapes</Badge>
+          <Divider align="left"/>
+          <div style={{display:"flex",flexDirection:"column",gap:0}}>
+            {[
+              {n:"01",t:"Confirmation de la participation du salon"},
+              {n:"02",t:"Livraison du produit + installation de l'affiche + brève présentation (5 min)"},
+              {n:"03",t:"Lancement de la communication et démarrage de l'opération"},
+            ].map(({n,t},i) => (
+              <div key={n} style={{display:"grid",gridTemplateColumns:"60px 1fr",gap:"0 20px",padding:"22px 0",borderTop:`2px solid ${i===0?"#c9a96e":"#ede8e2"}`}}>
+                <p style={{...CG,fontSize:"28px",color:"rgba(201,169,110,0.3)",fontWeight:300,lineHeight:1,paddingTop:2}}>{n}</p>
+                <p style={{...KR,fontSize:"15px",fontWeight:600,color:"#1a1a1a",lineHeight:1.6,margin:0,alignSelf:"center"}}>{t}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px) 100px"}}>
+        <div style={{maxWidth:700,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ Contact</Badge>
+          <h2 style={{...KR,fontSize:"clamp(22px,3.5vw,30px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.5,margin:"8px 0 32px"}}>
+            The Beauty Pause
+          </h2>
+          <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",marginBottom:36}}>
+            <a href="mailto:hello@thebeautypause.com"
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 26px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.25)",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none"}}>
+              ✉ hello@thebeautypause.com
+            </a>
+            <a href="https://wa.me/33768998808" target="_blank" rel="noopener noreferrer"
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 26px",background:"transparent",color:"#f5f0eb",border:"1px solid rgba(255,255,255,0.25)",...KR,fontSize:"14px",fontWeight:700,borderRadius:12,textDecoration:"none"}}>
+              WhatsApp
+            </a>
+          </div>
+          <a href="mailto:hello@thebeautypause.com?subject=Confirmation de participation au programme salon"
+            style={{display:"inline-flex",alignItems:"center",gap:10,padding:"18px 44px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"15px",fontWeight:700,borderRadius:14,textDecoration:"none",boxShadow:"0 8px 30px rgba(201,169,110,0.4)"}}>
+            Confirmer ma participation →
+          </a>
+        </div>
+      </section>
+
+      {showTop&&<button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+        style={{position:"fixed",bottom:28,right:20,width:44,height:44,borderRadius:"50%",background:"#c9a96e",color:"#0d0d0d",border:"none",cursor:"pointer",fontSize:"18px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.3)",zIndex:999}}>↑</button>}
+      <BrandsFooter/>
+    </>
+  );
+}
+
 // ── FOR PARTNERS PAGE (institutional / agencies) ─────────────────────────────
 function ForPartnersPage() {
   const navigate = useNavigate();
@@ -5891,6 +6053,7 @@ export default function App() {
         <Route path="/brands/about" element={<BrandsAboutPage />} />
         <Route path="/brands/program" element={<BrandsProgramPage />} />
         <Route path="/brands/contact" element={<BrandsContactPage />} />
+        <Route path="/salon-partners" element={<SalonProgramPage />} />
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
