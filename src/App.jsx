@@ -3362,8 +3362,19 @@ function BrandsHomePage() {
                   {image&&<img src={image} alt={t} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>}
                   <span style={{position:"absolute",top:12,left:12,...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,color:live?"#0d0d0d":"#999",background:live?"#c9a96e":"rgba(255,255,255,0.85)"}}>{status}</span>
                 </div>
-                <div style={{padding:"20px 22px"}}>
-                  <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                <div style={{padding:"20px 22px",textAlign:"center"}}>
+                  {t.includes("×") ? (
+                    <div style={{margin:"0 0 8px"}}>
+                      {t.split("×").map(s=>s.trim()).map((part,i,arr)=>(
+                        <Fragment key={i}>
+                          <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.4}}>{part}</p>
+                          {i<arr.length-1&&<Star size={13}/>}
+                        </Fragment>
+                      ))}
+                    </div>
+                  ) : (
+                    <p style={{...KR,fontSize:"17px",fontWeight:700,color:"#1a1a1a",margin:"0 0 8px"}}>{t}</p>
+                  )}
                   <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.7,margin:0}}>{d}</p>
                 </div>
               </div>
@@ -3573,32 +3584,89 @@ function BrandsProgramPage() {
         <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
           <Badge>✦ 두 가지 방법</Badge>
           <h1 style={{...KR,fontSize:"clamp(24px,3.8vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"8px 0 20px"}}>
-            파리에서 K-Beauty를 경험하게 하는<br/>두 가지 방법
+            오프라인 뷰티 경험 플랫폼<br/>파리 살롱에서 사용하는 브랜드가 되세요.
           </h1>
           <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:620,margin:"0 auto"}}>
-            TBP는 브랜드 제품을 파리 살롱과 연결해 실제 경험으로 만듭니다. 살롱 서비스에 깊게 통합되는 <strong style={{color:"#c9a96e"}}>시그니처</strong>, 여러 살롱에서 가볍게 알리는 <strong style={{color:"#c9a96e"}}>디스커버리</strong> — 브랜드에 맞는 방식을 선택하세요.
+            TBP는 브랜드 제품을 파리 살롱과 연결해 실제 경험으로 만듭니다.<br/>
+            살롱 서비스에 깊게 통합되는 <strong style={{color:"#c9a96e"}}>시그니처</strong>, 여러 살롱에서 가볍게 알리는 <strong style={{color:"#c9a96e"}}>디스커버리</strong><br/>
+            —브랜드에 맞는 방식을 선택하세요.
           </p>
         </div>
       </section>
 
-      {/* (1) SIGNATURE — everything in one black section */}
-      <section style={{background:"#0d0d0d",padding:"40px clamp(24px,6vw,80px) 90px"}}>
+      {/* (1) SIGNATURE — everything in one light section */}
+      <section style={{background:"#fff",padding:"40px clamp(24px,6vw,80px) 90px"}}>
         <div style={{maxWidth:880,margin:"0 auto"}}>
           <Badge>✦ 시그니처</Badge>
-          <h1 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#f5f0eb",margin:"8px 0 8px"}}>Signature</h1>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 40px"}}>브랜드 제품이 실제 살롱 서비스 안에 통합되는 프로그램입니다. 광고가 아니라, 살롱의 실제 사용입니다.</p>
+          <h1 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#1a1a1a",margin:"8px 0 8px"}}>Signature</h1>
+          <p style={{...KR,fontSize:"15px",color:"#999",margin:"0 0 40px"}}>브랜드 제품이 실제 살롱 서비스 안에 통합되는 프로그램입니다. 광고가 아니라, 살롱의 실제 사용입니다.</p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20,marginBottom:56}}>
             {programLineup.map(({t,d,status,live,image})=>(
-              <div key={t} style={{background:"#171717",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,overflow:"hidden"}}>
-                <div style={{aspectRatio:"3/5",background:"#222",position:"relative"}}>
+              <div key={t} style={{background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:16,overflow:"hidden"}}>
+                <div style={{aspectRatio:"3/5",background:"#e8e3da",position:"relative"}}>
                   {image&&<img src={image} alt={t} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>}
-                  <span style={{position:"absolute",top:12,left:12,...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,color:live?"#0d0d0d":"#ccc",background:live?"#c9a96e":"rgba(0,0,0,0.55)"}}>{status}</span>
+                  <span style={{position:"absolute",top:12,left:12,...SS,fontSize:10,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",padding:"4px 10px",borderRadius:20,color:live?"#0d0d0d":"#666",background:live?"#c9a96e":"rgba(255,255,255,0.85)"}}>{status}</span>
                 </div>
-                <div style={{padding:"18px 18px 20px"}}>
-                  <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#f5f0eb",margin:"0 0 6px"}}>{t}</p>
-                  <p style={{...KR,fontSize:"13px",color:"rgba(255,255,255,0.45)",lineHeight:1.6,margin:0}}>{d}</p>
+                <div style={{padding:"20px 18px 20px",textAlign:"center"}}>
+                  {t.includes("×") ? (
+                    <div style={{margin:"0 0 8px"}}>
+                      {t.split("×").map(s=>s.trim()).map((part,i,arr)=>(
+                        <Fragment key={i}>
+                          <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:0,lineHeight:1.4}}>{part}</p>
+                          {i<arr.length-1&&<Star size={13}/>}
+                        </Fragment>
+                      ))}
+                    </div>
+                  ) : (
+                    <p style={{...KR,fontSize:"16px",fontWeight:700,color:"#1a1a1a",margin:"0 0 6px"}}>{t}</p>
+                  )}
+                  <p style={{...KR,fontSize:"13px",color:"#888",lineHeight:1.6,margin:0}}>{d}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{borderTop:"1px solid #ede8e2",paddingTop:40,display:"grid",gridTemplateColumns:"1fr 1fr",gap:40}}>
+            <div>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"rgba(160,120,50,0.08)",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:16}}>참여 방식</span>
+              <p style={{...KR,fontSize:"15px",color:"#666",lineHeight:1.9,margin:"0 0 24px"}}>
+                살롱의 실제 서비스 안에서 제품이 사용되고, 그 서비스로 홍보됩니다.
+              </p>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"rgba(160,120,50,0.08)",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:14}}>얻는 것</span>
+              <p style={{...KR,fontSize:"14px",color:"#666",lineHeight:1.9,margin:"0 0 28px"}}>
+                TBP 웹사이트 및 소셜미디어 홍보 · 실제 서비스 사용 콘텐츠 · 실제 서비스 경험 데이터 · 살롱 및 고객 구매 연결
+              </p>
+              <a href="mailto:hello@thebeautypause.com?subject=시그니처 참여 문의"
+                style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none",boxShadow:"0 4px 16px rgba(201,169,110,0.3)"}}>
+                시그니처로 시작하기 →
+              </a>
+            </div>
+            <div>
+              {[
+                ["살롱 수","1곳부터, 맞춤 운영"],["운영 기간","1~2개월"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","290만 원부터 · 추가 살롱 운영비 190만 원부터"],
+              ].map(([k,v],i)=>(
+                <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid #f0e9dc"}}>
+                  <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
+                  <p style={{...KR,fontSize:14,color:"#1a1a1a",fontWeight:600,margin:0}}>{v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* (2) DISCOVERY — everything in one dark section */}
+      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px) 90px"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ 디스커버리 참여하기</Badge>
+          <h2 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#f5f0eb",margin:"8px 0 8px"}}>Discovery</h2>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 32px"}}>여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다.</p>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8,marginBottom:56}}>
+            {["/images/aurabeaute04.jpeg","/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
+              <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#222"}}>
+                <img src={src} alt="Discovery salon display" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
               </div>
             ))}
           </div>
@@ -3607,54 +3675,10 @@ function BrandsProgramPage() {
             <div>
               <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#c9a96e",background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.3)",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:16}}>참여 방식</span>
               <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 24px"}}>
-                살롱의 실제 서비스 안에서 제품이 사용되고, 그 서비스로 홍보됩니다.
-              </p>
-              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#c9a96e",background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.3)",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:14}}>얻는 것</span>
-              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 28px"}}>
-                TBP 웹사이트 및 소셜미디어 홍보 · 실제 서비스 사용 콘텐츠 · 실제 서비스 경험 데이터 · 살롱 및 고객 구매 연결
-              </p>
-              <a href="mailto:hello@thebeautypause.com?subject=시그니처 참여 문의"
-                style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"#c9a96e",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-                시그니처로 시작하기 →
-              </a>
-            </div>
-            <div>
-              {[
-                ["살롱 수","1곳부터, 맞춤 운영"],["운영 기간","1~2개월"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["참가비","290만 원부터 · 추가 살롱 운영비 190만 원부터"],
-              ].map(([k,v],i)=>(
-                <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid rgba(255,255,255,0.08)"}}>
-                  <p style={{...SS,fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
-                  <p style={{...KR,fontSize:14,color:"#f5f0eb",fontWeight:600,margin:0}}>{v}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* (2) DISCOVERY — everything in one light section */}
-      <section style={{background:"#faf7f4",padding:"80px clamp(24px,6vw,80px) 90px"}}>
-        <div style={{maxWidth:880,margin:"0 auto"}}>
-          <Badge>✦ 디스커버리 참여하기</Badge>
-          <h2 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#1a1a1a",margin:"8px 0 8px"}}>Discovery</h2>
-          <p style={{...KR,fontSize:"15px",color:"#999",margin:"0 0 32px"}}>여러 살롱에서 브랜드와 제품을 소개하는 가벼운 시작입니다.</p>
-
-          <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8,marginBottom:56}}>
-            {["/images/aurabeaute04.jpeg","/images/IMG_0189.jpeg","/images/IMG20260529105931.jpg","/images/IMG_0175.jpeg","/images/IMG_0183.jpeg"].map((src,i)=>(
-              <div key={i} style={{borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#ddd"}}>
-                <img src={src} alt="Discovery salon display" draggable="false" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",pointerEvents:"none",userSelect:"none"}}/>
-              </div>
-            ))}
-          </div>
-
-          <div style={{borderTop:"1px solid #ede8e2",paddingTop:40,display:"grid",gridTemplateColumns:"1fr 1fr",gap:40}}>
-            <div>
-              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"rgba(160,120,50,0.08)",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:16}}>참여 방식</span>
-              <p style={{...KR,fontSize:"15px",color:"#777",lineHeight:1.9,margin:"0 0 24px"}}>
                 진열과 QR, 고객 이벤트로 브랜드를 알립니다.
               </p>
-              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#a07832",background:"rgba(160,120,50,0.08)",border:"1px solid #e8d9b8",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:14}}>얻는 것</span>
-              <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 20px"}}>
+              <span style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",color:"#c9a96e",background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.3)",padding:"5px 12px",borderRadius:20,display:"inline-block",marginBottom:14}}>얻는 것</span>
+              <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 20px"}}>
                 다수 살롱 오프라인 노출 · 테스트 환경 제공 및 이벤트 참여 · 콘텐츠 확보
               </p>
               <a href="mailto:hello@thebeautypause.com?subject=디스커버리 참여 문의"
@@ -3666,17 +3690,17 @@ function BrandsProgramPage() {
               {[
                 ["살롱 수","10곳부터"],["운영 기간","2~3주"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],
               ].map(([k,v],i)=>(
-                <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid #f0e9dc"}}>
-                  <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
-                  <p style={{...KR,fontSize:14,color:"#1a1a1a",fontWeight:600,margin:0}}>{v}</p>
+                <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid rgba(255,255,255,0.08)"}}>
+                  <p style={{...SS,fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
+                  <p style={{...KR,fontSize:14,color:"#f5f0eb",fontWeight:600,margin:0}}>{v}</p>
                 </div>
               ))}
-              <div style={{padding:"12px 0",borderTop:"1px solid #f0e9dc"}}>
-                <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>참가비</p>
-                <p style={{...KR,fontSize:14,color:"#1a1a1a",fontWeight:600,margin:"0 0 6px"}}>
-                  <span style={{textDecoration:"line-through",color:"#bbb",marginRight:6}}>190만 원</span>115만 원 · 추가 살롱 운영비 90만 원부터
+              <div style={{padding:"12px 0",borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+                <p style={{...SS,fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>참가비</p>
+                <p style={{...KR,fontSize:14,color:"#f5f0eb",fontWeight:600,margin:"0 0 6px"}}>
+                  <span style={{textDecoration:"line-through",color:"rgba(255,255,255,0.3)",marginRight:6}}>190만 원</span>115만 원 · 추가 살롱 운영비 90만 원부터
                 </p>
-                <p style={{...SS,fontSize:11,color:"#c0392b",margin:0}}>* 40% 할인가는 8월 신청 한정입니다.</p>
+                <p style={{...SS,fontSize:11,color:"#e07a5f",margin:0}}>* 40% 할인가는 8월 신청 한정입니다.</p>
               </div>
             </div>
           </div>
