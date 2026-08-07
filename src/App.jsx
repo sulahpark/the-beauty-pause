@@ -3568,12 +3568,25 @@ function BrandsProgramPage() {
       <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#0d0d0d}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}`}</style>
       <BrandsTabNav active="program"/>
 
-      {/* (1) PROGRAM — everything in one black section */}
-      <section style={{background:"#0d0d0d",padding:"80px clamp(24px,6vw,80px) 90px",animation:"fadeUp 0.5s ease both"}}>
+      {/* (0) TOP INTRO */}
+      <section style={{background:"#0d0d0d",padding:"88px clamp(24px,6vw,80px) 40px",animation:"fadeUp 0.5s ease both"}}>
+        <div style={{maxWidth:880,margin:"0 auto",textAlign:"center"}}>
+          <Badge>✦ 두 가지 방법</Badge>
+          <h1 style={{...KR,fontSize:"clamp(24px,3.8vw,36px)",fontWeight:700,color:"#f5f0eb",lineHeight:1.4,margin:"8px 0 20px"}}>
+            파리에서 K-Beauty를 경험하게 하는<br/>두 가지 방법
+          </h1>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.5)",lineHeight:1.9,maxWidth:620,margin:"0 auto"}}>
+            TBP는 브랜드 제품을 파리 살롱과 연결해 실제 경험으로 만듭니다. 살롱 서비스에 깊게 통합되는 <strong style={{color:"#c9a96e"}}>시그니처</strong>, 여러 살롱에서 가볍게 알리는 <strong style={{color:"#c9a96e"}}>디스커버리</strong> — 브랜드에 맞는 방식을 선택하세요.
+          </p>
+        </div>
+      </section>
+
+      {/* (1) SIGNATURE — everything in one black section */}
+      <section style={{background:"#0d0d0d",padding:"40px clamp(24px,6vw,80px) 90px"}}>
         <div style={{maxWidth:880,margin:"0 auto"}}>
-          <Badge>✦ 프로그램 참여하기</Badge>
-          <h1 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#f5f0eb",margin:"8px 0 8px"}}>Program</h1>
-          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 40px"}}>브랜드 제품이 실제 살롱 서비스 안에 통합되는 프로그램입니다.</p>
+          <Badge>✦ 시그니처</Badge>
+          <h1 style={{...KR,fontSize:"clamp(24px,3.6vw,34px)",fontWeight:700,color:"#f5f0eb",margin:"8px 0 8px"}}>Signature</h1>
+          <p style={{...KR,fontSize:"15px",color:"rgba(255,255,255,0.4)",margin:"0 0 40px"}}>브랜드 제품이 실제 살롱 서비스 안에 통합되는 프로그램입니다. 광고가 아니라, 살롱의 실제 사용입니다.</p>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20,marginBottom:56}}>
             {programLineup.map(({t,d,status,live,image})=>(
@@ -3600,9 +3613,9 @@ function BrandsProgramPage() {
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.9,margin:"0 0 28px"}}>
                 TBP 웹사이트 및 소셜미디어 홍보 · 실제 서비스 사용 콘텐츠 · 실제 서비스 경험 데이터 · 살롱 및 고객 구매 연결
               </p>
-              <a href="mailto:hello@thebeautypause.com?subject=프로그램 참여 문의"
+              <a href="mailto:hello@thebeautypause.com?subject=시그니처 참여 문의"
                 style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"#c9a96e",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
-                프로그램 참여하기 →
+                시그니처로 시작하기 →
               </a>
             </div>
             <div>
@@ -3644,9 +3657,9 @@ function BrandsProgramPage() {
               <p style={{...KR,fontSize:"14px",color:"#777",lineHeight:1.9,margin:"0 0 20px"}}>
                 다수 살롱 오프라인 노출 · 테스트 환경 제공 및 이벤트 참여 · 콘텐츠 확보
               </p>
-              <a href="mailto:hello@thebeautypause.com?subject=디스커버리 파트너 신청"
+              <a href="mailto:hello@thebeautypause.com?subject=디스커버리 참여 문의"
                 style={{display:"inline-flex",alignItems:"center",gap:8,padding:"14px 28px",background:"linear-gradient(135deg,#c9a96e,#b8944d)",color:"#0d0d0d",...KR,fontSize:"14px",fontWeight:700,borderRadius:10,textDecoration:"none",boxShadow:"0 4px 16px rgba(201,169,110,0.3)"}}>
-                디스커버리 파트너 신청 →
+                디스커버리로 시작하기 →
               </a>
             </div>
             <div>
@@ -3670,6 +3683,52 @@ function BrandsProgramPage() {
         </div>
       </section>
 
+      {/* (2.5) COMPARISON TABLE — Launch / Discovery / Signature, progressive emphasis */}
+      <section style={{background:"#faf7f4",padding:"64px clamp(24px,6vw,80px)"}}>
+        <div style={{maxWidth:880,margin:"0 auto"}}>
+          <Badge>✦ 참여 방식 비교</Badge>
+          <Divider align="left"/>
+          <div style={{overflowX:"auto"}}>
+            <div style={{minWidth:640,border:"1px solid #ede8e2",borderRadius:14,overflow:"hidden"}}>
+              <div style={{display:"grid",gridTemplateColumns:"120px 1fr 1fr 1fr"}}>
+                <div style={{padding:"14px 16px",background:"#faf7f4"}}/>
+                <div style={{padding:"14px 16px",background:"#fff"}}>
+                  <p style={{...SS,fontSize:13,fontWeight:700,color:"#999",margin:0}}>Launch</p>
+                </div>
+                <div style={{padding:"14px 16px",background:"#fdf8ee"}}>
+                  <p style={{...SS,fontSize:13,fontWeight:700,color:"#a07832",margin:0}}>Discovery</p>
+                </div>
+                <div style={{padding:"14px 16px",background:"#1a1a1a"}}>
+                  <p style={{...SS,fontSize:13,fontWeight:700,color:"#c9a96e",margin:0}}>Signature</p>
+                </div>
+              </div>
+              {[
+                ["대상","CPNP 미등록 브랜드만","CPNP 완료 브랜드","CPNP 완료 브랜드"],
+                ["서비스 내용","CPNP 등록 + RP 역할 + Discovery급 살롱 테스트","여러 살롱 진열·소개, QR·이벤트 노출","살롱 서비스에 실제 통합"],
+                ["목적","프랑스 시장 진입","브랜드 노출","프로그램 운영"],
+                ["참가비","약 300만원대~ (CPNP는 전성분에 따라 변동)","190만원","290만원부터"],
+                ["브랜드가 얻는 것","CPNP 등록 · RP 역할 · 살롱 노출 · SNS 콘텐츠 · 구매 링크 · 현지 레퍼런스 · 해외 수출 실적","살롱 노출 · SNS 콘텐츠 · 구매 링크 · 현지 레퍼런스 · 해외 수출 실적","맞춤 기획 · 실제 서비스 경험 · 심층 콘텐츠 · 재주문 기회 · 해외 수출 실적"],
+              ].map(([label,launch,disc,sig])=>(
+                <div key={label} style={{display:"grid",gridTemplateColumns:"120px 1fr 1fr 1fr",borderTop:"1px solid #ede8e2"}}>
+                  <div style={{padding:"14px 16px",background:"#faf7f4"}}>
+                    <p style={{...SS,fontSize:11,color:"#999",lineHeight:1.5,margin:0}}>{label}</p>
+                  </div>
+                  <div style={{padding:"14px 16px",background:"#fff"}}>
+                    <p style={{...KR,fontSize:12,color:"#888",lineHeight:1.6,margin:0}}>{launch}</p>
+                  </div>
+                  <div style={{padding:"14px 16px",background:"#fdf8ee"}}>
+                    <p style={{...KR,fontSize:13,color:"#5c4a2a",fontWeight:500,lineHeight:1.6,margin:0}}>{disc}</p>
+                  </div>
+                  <div style={{padding:"14px 16px",background:"#1a1a1a"}}>
+                    <p style={{...KR,fontSize:13,color:"#f5f0eb",fontWeight:600,lineHeight:1.6,margin:0}}>{sig}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* (3) WHICH FITS — purpose-based either/or, not a comparison table */}
       <section style={{background:"#fff",padding:"64px clamp(24px,6vw,80px)"}}>
         <div style={{maxWidth:880,margin:"0 auto"}}>
@@ -3681,7 +3740,7 @@ function BrandsProgramPage() {
               <p style={{...KR,fontSize:"14px",color:"rgba(255,255,255,0.6)",lineHeight:1.6,margin:"0 0 16px"}}>고객이 제품을 직접 써보고 구매까지 이어지길 원한다면</p>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
                 <span style={{color:"#c9a96e",fontSize:16}}>→</span>
-                <p style={{...KR,fontSize:"18px",fontWeight:700,color:"#f5f0eb",margin:0}}>프로그램</p>
+                <p style={{...KR,fontSize:"18px",fontWeight:700,color:"#f5f0eb",margin:0}}>시그니처</p>
               </div>
             </div>
             <div style={{padding:"28px 24px",background:"#faf7f4",border:"1px solid #ede8e2",borderRadius:14}}>
@@ -3695,6 +3754,13 @@ function BrandsProgramPage() {
 
           <p style={{...KR,fontSize:"12px",color:"#999",lineHeight:1.8,margin:"0 0 4px"}}>각 프로그램은 브랜드와 살롱의 적합성을 검토한 뒤 시작됩니다.</p>
           <a href="mailto:hello@thebeautypause.com?subject=예산 문의" style={{...KR,fontSize:"12px",color:"#a07832",textDecoration:"underline"}}>예산이 부담되신다면, 문의해주세요.</a>
+
+          <div style={{marginTop:24}}>
+            <a href="mailto:hello@thebeautypause.com?subject=Launch 프로그램 문의"
+              style={{display:"inline-flex",alignItems:"center",gap:8,padding:"13px 24px",background:"#faf7f4",color:"#1a1a1a",border:"1px solid #ede8e2",...KR,fontSize:"13px",fontWeight:700,borderRadius:10,textDecoration:"none"}}>
+              CPNP가 아직 없으신가요? Launch로 먼저 시작하세요 →
+            </a>
+          </div>
 
           <div style={{borderTop:"1px solid #ede8e2",marginTop:28,paddingTop:18}}>
             <p style={{...SS,fontSize:11,color:"#bbb",lineHeight:1.8,margin:0}}>
