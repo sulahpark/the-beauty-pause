@@ -3313,7 +3313,7 @@ function BrandsHomePage() {
             파리 살롱에서 운영하는<br/>K뷰티 프로그램
           </h1>
           <p style={{...KR,fontSize:"16px",color:"rgba(255,255,255,0.45)",lineHeight:1.9,maxWidth:500,margin:"0 auto 44px"}}>
-            지금 운영 중이거나 곧 시작하는 프로그램에 브랜드가 참여할 수 있습니다.
+            더뷰티퍼즈가 운영하는 프로그램에 브랜드가 참여할 수 있습니다.
           </p>
           <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",marginBottom:64}}>
             <button onClick={()=>{navigate("/brands/contact");window.scrollTo(0,0);}}
