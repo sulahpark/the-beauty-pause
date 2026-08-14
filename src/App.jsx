@@ -3679,14 +3679,8 @@ function BrandsProgramPage() {
               ))}
               <div style={{padding:"12px 0",borderTop:"1px solid #f0e9dc"}}>
                 <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 8px"}}>참가비</p>
-                <div style={{marginBottom:14}}>
-                  <p style={{...KR,fontSize:18,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px"}}>신청비 19만 원</p>
-                  <p style={{...KR,fontSize:13,color:"#888",lineHeight:1.7,margin:0}}>프로그램 기획 + 샘플 발송 + 살롱 매칭 시도에 대한 비용 (물류·세금 등 모두 포함)</p>
-                </div>
-                <div>
-                  <p style={{...KR,fontSize:18,fontWeight:700,color:"#1a1a1a",margin:"0 0 4px"}}>실참가비 150만 원</p>
-                  <p style={{...KR,fontSize:13,color:"#888",lineHeight:1.7,margin:0}}>매칭된 브랜드만 해당 · 살롱 1곳, 1개월 기준 (물류·세금 등 모두 포함)</p>
-                </div>
+                <p style={{...KR,fontSize:13,color:"#1a1a1a",lineHeight:1.7,margin:"0 0 8px"}}><strong style={{color:"#a07832"}}>신청비 19만 원</strong> · 프로그램 기획 + 샘플 발송 + 살롱 매칭 시도에 대한 비용 (물류·세금 등 모두 포함)</p>
+                <p style={{...KR,fontSize:13,color:"#1a1a1a",lineHeight:1.7,margin:0}}><strong style={{color:"#a07832"}}>실참가비 150만 원</strong> · 매칭된 브랜드만 해당 · 살롱 1곳, 1개월 기준 (물류·세금 등 모두 포함)</p>
               </div>
             </div>
           </div>
