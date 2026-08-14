@@ -3629,7 +3629,7 @@ function BrandsProgramPage() {
             <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#a07832",margin:"0 0 20px"}}>어떻게 진행되나요</p>
             <div style={{display:"flex",flexDirection:"column",gap:0}}>
               {[
-                {n:"1단계",t:"신청",d:"프로그램 기획 + 살롱 매칭 시도. 신청 시 제품 샘플 5개를 보내주세요."},
+                {n:"1단계",t:"신청",d:"프로그램 기획 + 살롱 매칭 시도. 제품·살롱 적합성 검토 후 진행되며, 신청 시 제품 샘플 5개를 보내주세요."},
                 {n:"2단계",t:"매칭",d:"TBP가 제품에 맞는 프로그램 기획 및 파리 살롱 매칭 시도"},
               ].map(({n,t,d},i)=>(
                 <div key={n} style={{display:"grid",gridTemplateColumns:"70px 1fr",gap:"0 16px",padding:"18px 0",borderTop:i===0?"none":"1px solid #f0e9dc"}}>
@@ -3670,7 +3670,7 @@ function BrandsProgramPage() {
             </div>
             <div>
               {[
-                ["살롱 수","1곳 (확장 가능)"],["운영 기간","1개월 (연장 가능)"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","심층 콘텐츠 제작 + 온라인·살롱 구매 연결"],["제품 수량","10~20개 (용량, 사용량에 따라 사전에 안내드립니다)"],
+                ["살롱 수","1곳 (확장 가능)"],["운영 기간","1개월 (연장 가능)"],["제품 수량","10~20개 (용량, 사용량에 따라 사전에 안내드립니다)"],
               ].map(([k,v],i)=>(
                 <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid #f0e9dc"}}>
                   <p style={{...SS,fontSize:11,color:"#999",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
@@ -3706,7 +3706,7 @@ function BrandsProgramPage() {
             <p style={{...SS,fontSize:11,fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#c9a96e",margin:"0 0 20px"}}>어떻게 진행되나요</p>
             <div style={{display:"flex",flexDirection:"column",gap:0}}>
               {[
-                {n:"1단계",t:"신청",d:"참가비 결제 + 제품 발송"},
+                {n:"1단계",t:"신청",d:"참가비 결제 + 제품 발송. 제품·살롱 적합성 검토 후 진행됩니다."},
                 {n:"2단계",t:"배치",d:"TBP의 25개+ 살롱 네트워크 중 10곳에 진열 및 QR·이벤트 세팅"},
                 {n:"3단계",t:"결과",d:"2~3주 운영 후, 현장 콘텐츠와 QR 참여 데이터를 전달해드립니다."},
               ].map(({n,t,d},i)=>(
@@ -3740,7 +3740,7 @@ function BrandsProgramPage() {
             </div>
             <div>
               {[
-                ["살롱 수","10곳부터"],["운영 기간","2~3주"],["검토","제품·살롱 적합성 검토 후 진행"],["콘텐츠","기본 사진 및 영상 콘텐츠 + 온라인 구매 연결"],["제품 수량","20개 기준"],
+                ["살롱 수","10곳"],["운영 기간","2~3주"],["제품 수량","20개"],
               ].map(([k,v],i)=>(
                 <div key={k} style={{padding:i===0?"0 0 12px":"12px 0",borderTop:i===0?"none":"1px solid rgba(255,255,255,0.08)"}}>
                   <p style={{...SS,fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:"0.5px",textTransform:"uppercase",margin:"0 0 4px"}}>{k}</p>
@@ -3752,6 +3752,7 @@ function BrandsProgramPage() {
                 <p style={{...KR,fontSize:14,color:"#f5f0eb",fontWeight:600,margin:"0 0 6px"}}>
                   <span style={{textDecoration:"line-through",color:"rgba(255,255,255,0.3)",marginRight:6}}>90만 원</span>80만 원
                 </p>
+                <p style={{...KR,fontSize:13,color:"rgba(255,255,255,0.6)",margin:"0 0 6px"}}>물류대행비 30만 원 (20개 기준)</p>
                 <p style={{...SS,fontSize:11,color:"#c9a96e",margin:0}}>* 첫 시즌 한정 10% 할인</p>
               </div>
             </div>
