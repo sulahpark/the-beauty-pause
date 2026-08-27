@@ -4121,7 +4121,7 @@ function EuropeEntryPage() {
   const scrollerRef = useRef(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const sectionIds = ["eu-s1","eu-s2","eu-s3","eu-s4","eu-s5","eu-s6","eu-s7","eu-s8"];
-  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","WHAT WE DO","PRICE","PARTNER","PROCESS"];
+  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","WHAT WE DO","PRICE","PROCESS","PARTNER"];
 
   useEffect(() => {
     const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
@@ -4167,9 +4167,9 @@ function EuropeEntryPage() {
           color:var(--gold); font-weight:600; margin-bottom:18px; display:flex; align-items:center; gap:10px;
         }
         .eu-page .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); display:inline-block; }
-        .eu-page h1,.eu-page h2{ font-family:var(--serif); font-weight:400; color:var(--ink); line-height:1.22; margin:0 0 22px 0; }
-        .eu-page h1{ font-size:clamp(34px,5vw,60px); max-width:16ch; }
-        .eu-page h2{ font-size:clamp(28px,3.6vw,42px); max-width:16ch; }
+        .eu-page h1,.eu-page h2{ font-family:var(--serif); font-weight:400; color:var(--ink); line-height:1.35; margin:0 0 22px 0; }
+        .eu-page h1{ font-size:clamp(30px,5vw,56px); max-width:640px; }
+        .eu-page h2{ font-size:clamp(26px,3.6vw,38px); max-width:640px; }
         .eu-page .lede{ font-size:clamp(16px,1.6vw,19px); color:var(--ink-soft); max-width:52ch; line-height:1.7; margin:0 0 8px 0; }
         .eu-page .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:34px; margin-top:48px; max-width:980px; }
         .eu-page .card{ border-top:1px solid var(--rule); padding-top:22px; }
@@ -4269,23 +4269,23 @@ function EuropeEntryPage() {
         {/* SECTION 2: SERVICE OVERVIEW */}
         <section id="eu-s2" style={{background:"var(--white)"}}>
           <div className="eyebrow">Service Overview</div>
-          <h2>유럽 시장 진입의 필수 관문,<br/>하나의 패키지로 완성합니다</h2>
+          <h2>왜 가장 빠른<br/>유럽 진출 방법인가요</h2>
           <p className="lede">CPNP 인증과 브랜드 자산이 되는 파리 현지 뷰티 소비자 시딩을 하나로 묶은 패스트트랙 패키지입니다.</p>
           <div className="grid">
             <div className="card">
               <span className="num">01</span>
-              <h3>CPNP 올인원 인증</h3>
-              <p>유럽 전역 판매를 위한 CPNP 정식 등록 및 RP(책임자) 1년 지정</p>
+              <h3>인증과 시딩을 동시에</h3>
+              <p>따로 진행하면 몇 달이 걸리는 CPNP 등록과 현지 시딩을 하나의 패키지로 병행 처리합니다.</p>
             </div>
             <div className="card">
               <span className="num">02</span>
-              <h3>파리 현지 살롱 타겟 샘플링</h3>
-              <p>파리 뷰티 살롱과 연계하여 실제 뷰티 고관여 타겟 대상 1:1 시딩 (수량 10~20개 한정)</p>
+              <h3>이미 검증된 살롱 네트워크</h3>
+              <p>처음부터 현지 채널을 찾을 필요 없이, 더뷰티퍼즈가 확보해둔 파리 살롱 네트워크를 바로 활용합니다.</p>
             </div>
             <div className="card">
               <span className="num">03</span>
-              <h3>글로벌 굿즈&물류 풀필먼트</h3>
-              <p>한국 물류센터 입고부터 파리 현지 살롱 배송까지 전 과정 포함</p>
+              <h3>단일 창구, 단일 가격</h3>
+              <p>인증 대행사, 물류사, 현지 에이전시를 각각 조율할 필요 없이 하나의 창구, 하나의 견적으로 끝납니다.</p>
             </div>
           </div>
         </section>
@@ -4312,6 +4312,15 @@ function EuropeEntryPage() {
                 <ul>
                   <li>무차별 길거리 배포가 아닌, 파리 현지 네일·속눈썹·헤어 살롱 방문 고객 대상 핀포인트 타겟팅</li>
                   <li>실제로 뷰티와 케어에 돈을 쓰는 고관여 진성 소비자에게 전달되어 높은 브랜드 각인 효과 창출</li>
+                </ul>
+              </div>
+            </div>
+            <div className="detail-item">
+              <div className="detail-idx">03</div>
+              <div>
+                <h3>글로벌 굿즈&물류 풀필먼트</h3>
+                <ul>
+                  <li>한국 물류센터 입고부터 파리 현지 살롱 배송까지 전 과정 포함</li>
                 </ul>
               </div>
             </div>
@@ -4365,20 +4374,8 @@ function EuropeEntryPage() {
           </div>
         </section>
 
-        {/* SECTION 7: PARTNER TERMS */}
+        {/* SECTION 7: PROCESS */}
         <section id="eu-s7" style={{background:"var(--cream)"}}>
-          <div className="eyebrow">Partner Program</div>
-          <h2>파트너사 안내</h2>
-          <p className="lede">별도의 승인 절차 없이 자유롭게 영업 활동을 진행하시면 됩니다.<br/>계약이 최종 성사되면 더뷰티퍼즈가 파트너사와 수익을 공유합니다.</p>
-          <div className="partner-seal">
-            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>계약 성사 시 쉐어</div>
-            <div className="partner-share">30만 원 <span>/ 건당</span></div>
-            <div className="price-note">패키지 전체 금액(220만 원) 중 파트너사가 가져가는 몫이며, 별도 정산 절차는 계약 성사 후 안내드립니다.</div>
-          </div>
-        </section>
-
-        {/* SECTION 8: PROCESS */}
-        <section id="eu-s8" style={{background:"var(--white)"}}>
           <div className="eyebrow">Process</div>
           <h2>진행 절차</h2>
           <div className="process-track" style={{marginTop:44}}>
@@ -4387,6 +4384,18 @@ function EuropeEntryPage() {
             <div className="process-step"><div className="dot">3</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고</p></div></div>
             <div className="process-step"><div className="dot">4</div><div><h4>CPNP 완료 & 현지 시딩</h4><p>CPNP 등록 완료 즉시 파리 현지 살롱 배송 및 시딩 이벤트 진행</p></div></div>
             <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>결과 리포트 전달</h4><p>현지 인증샷 원본 및 CPNP 등록 완료 문서 제공</p></div></div>
+          </div>
+        </section>
+
+        {/* SECTION 8: PARTNER TERMS */}
+        <section id="eu-s8" style={{background:"var(--white)"}}>
+          <div className="eyebrow">Partner Program</div>
+          <h2>파트너사 안내</h2>
+          <p className="lede">별도의 승인 절차 없이 자유롭게 영업 활동을 진행하시면 됩니다.<br/>계약이 최종 성사되면 더뷰티퍼즈가 파트너사와 수익을 공유합니다.</p>
+          <div className="partner-seal">
+            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>계약 성사 시 쉐어</div>
+            <div className="partner-share">30만 원 <span>/ 건당</span></div>
+            <div className="price-note">패키지 전체 금액(220만 원) 중 파트너사가 가져가는 몫이며, 별도 정산 절차는 계약 성사 후 안내드립니다.</div>
           </div>
           <div className="footer-mark">The Beauty Pause · Paris</div>
         </section>
