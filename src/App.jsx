@@ -4115,6 +4115,287 @@ function SalonProgramPage() {
   );
 }
 
+// ── EUROPE ENTRY ALL-IN-ONE PACKAGE (partner-facing explainer) ──────────────
+function EuropeEntryPage() {
+  const navigate = useNavigate();
+  const scrollerRef = useRef(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const sectionIds = ["eu-s1","eu-s2","eu-s3","eu-s4","eu-s5","eu-s6","eu-s7","eu-s8"];
+  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","WHAT WE DO","PRICE","PARTNER","PROCESS"];
+
+  useEffect(() => {
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+    const scroller = scrollerRef.current;
+    if (!scroller || sections.length === 0) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = sections.indexOf(entry.target);
+          if (idx !== -1) setActiveIdx(idx);
+        }
+      });
+    }, { root: scroller, threshold: 0.5 });
+    sections.forEach(s => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div className="eu-page">
+      <style>{`
+        .eu-page{
+          --cream:#F6F1E7; --cream-deep:#EFE7D6; --white:#FFFFFF;
+          --ink:#2B241C; --ink-soft:#5A5045; --gold:#A9793F; --gold-soft:#D8B98A;
+          --rule:rgba(43,36,28,0.14);
+          --serif: Georgia, 'Times New Roman', 'Noto Serif KR', serif;
+          --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+          background:var(--cream); color:var(--ink); font-family:var(--sans);
+        }
+        .eu-page *{ box-sizing:border-box; }
+        .eu-scroller{ height:100vh; overflow-y:scroll; scroll-snap-type:y proximity; }
+        .eu-page section{
+          min-height:100vh; scroll-snap-align:start; display:flex; flex-direction:column;
+          justify-content:center; padding:8vh 9vw 8vh 12vw; position:relative;
+          border-bottom:1px solid var(--rule);
+        }
+        .eu-page section:last-child{ border-bottom:none; }
+        .eu-page .eyebrow{
+          font-family:var(--sans); letter-spacing:.22em; text-transform:uppercase; font-size:12px;
+          color:var(--gold); font-weight:600; margin-bottom:18px; display:flex; align-items:center; gap:10px;
+        }
+        .eu-page .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); display:inline-block; }
+        .eu-page h1,.eu-page h2{ font-family:var(--serif); font-weight:400; color:var(--ink); line-height:1.22; margin:0 0 22px 0; }
+        .eu-page h1{ font-size:clamp(34px,5vw,60px); max-width:16ch; }
+        .eu-page h2{ font-size:clamp(28px,3.6vw,42px); max-width:16ch; }
+        .eu-page .lede{ font-size:clamp(16px,1.6vw,19px); color:var(--ink-soft); max-width:52ch; line-height:1.7; margin:0 0 8px 0; }
+        .eu-page .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:34px; margin-top:48px; max-width:980px; }
+        .eu-page .card{ border-top:1px solid var(--rule); padding-top:22px; }
+        .eu-page .card .num{ font-family:var(--serif); font-size:14px; color:var(--gold); letter-spacing:.08em; margin-bottom:10px; display:block; }
+        .eu-page .card h3{ font-family:var(--serif); font-weight:400; font-size:20px; margin:0 0 10px 0; color:var(--ink); }
+        .eu-page .card p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0; }
+        .eu-page .detail-block{ max-width:760px; margin-top:10px; }
+        .eu-page .detail-item{ display:grid; grid-template-columns:64px 1fr; gap:26px; padding:30px 0; border-top:1px solid var(--rule); }
+        .eu-page .detail-item:last-child{ border-bottom:1px solid var(--rule); }
+        .eu-page .detail-idx{ font-family:var(--serif); font-size:32px; color:var(--gold-soft); line-height:1; }
+        .eu-page .detail-item h3{ font-family:var(--serif); font-weight:400; font-size:21px; margin:0 0 12px 0; }
+        .eu-page .detail-item ul{ margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.75; font-size:15px; }
+        .eu-page .detail-item li{ margin-bottom:6px; }
+        .eu-page .benefit-list{ max-width:700px; margin-top:36px; display:flex; flex-direction:column; gap:0; }
+        .eu-page .benefit-row{ display:grid; grid-template-columns:1fr 2fr; gap:28px; padding:24px 0; border-top:1px solid var(--rule); align-items:baseline; }
+        .eu-page .benefit-row:last-child{ border-bottom:1px solid var(--rule); }
+        .eu-page .benefit-title{ font-family:var(--serif); font-size:18px; color:var(--gold); }
+        .eu-page .benefit-desc{ font-size:14.5px; line-height:1.7; color:var(--ink-soft); }
+        .eu-page .process-track{ max-width:820px; margin-top:40px; position:relative; }
+        .eu-page .process-track::before{ content:""; position:absolute; left:23px; top:10px; bottom:10px; width:1px; background:var(--rule); }
+        .eu-page .process-step{ display:grid; grid-template-columns:48px 1fr; gap:24px; padding-bottom:34px; position:relative; }
+        .eu-page .process-step .dot{
+          width:47px; height:47px; border-radius:50%; border:1px solid var(--gold-soft); background:var(--cream);
+          display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:16px; color:var(--gold); z-index:1;
+        }
+        .eu-page .process-step h4{ font-family:var(--serif); font-weight:400; font-size:18px; margin:6px 0 4px 0; }
+        .eu-page .process-step p{ font-size:14.5px; color:var(--ink-soft); margin:0; line-height:1.6; }
+        .eu-page .price-seal{
+          margin-top:44px; border:1px solid var(--gold-soft); padding:44px 48px; max-width:640px;
+          background:var(--cream-deep); position:relative;
+        }
+        .eu-page .price-seal::before{
+          content:"ALL-IN-ONE"; position:absolute; top:-11px; left:44px; background:var(--white);
+          padding:0 12px; font-size:11px; letter-spacing:.2em; color:var(--gold); font-weight:600;
+        }
+        .eu-page .price-num{ font-family:var(--serif); font-size:clamp(38px,5vw,54px); color:var(--ink); margin:6px 0 4px 0; }
+        .eu-page .price-num span{ font-size:16px; color:var(--ink-soft); font-family:var(--sans); }
+        .eu-page .price-incl{ margin:22px 0 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:10px 0; }
+        .eu-page .price-incl li{ font-size:13.5px; color:var(--ink-soft); padding-right:18px; position:relative; }
+        .eu-page .price-incl li::after{ content:"·"; position:absolute; right:6px; color:var(--gold-soft); }
+        .eu-page .price-incl li:last-child::after{ content:""; }
+        .eu-page .price-note{ margin-top:24px; font-size:13px; color:var(--ink-soft); border-top:1px solid var(--rule); padding-top:16px; }
+        .eu-page .partner-seal{
+          margin-top:44px; border:1px solid var(--gold-soft); padding:40px 44px; max-width:640px; position:relative;
+        }
+        .eu-page .partner-share{ font-family:var(--serif); font-size:clamp(30px,4vw,42px); color:var(--gold); margin:10px 0 6px 0; }
+        .eu-page .partner-share span{ font-size:15px; color:var(--ink-soft); font-family:var(--sans); }
+        .eu-page .footer-mark{
+          position:absolute; bottom:6vh; left:12vw; font-family:var(--serif); font-size:12px;
+          letter-spacing:.18em; color:var(--gold-soft); text-transform:uppercase;
+        }
+        .eu-page .sidenav{
+          position:fixed; right:34px; top:50%; transform:translateY(-50%);
+          display:flex; flex-direction:column; gap:16px; z-index:20;
+        }
+        .eu-page .sidenav button{
+          width:9px; height:9px; border-radius:50%; background:transparent; border:1px solid var(--ink-soft);
+          cursor:pointer; padding:0; opacity:.55; transition:all .25s ease; position:relative;
+        }
+        .eu-page .sidenav button.active{ background:var(--gold); border-color:var(--gold); opacity:1; transform:scale(1.3); }
+        .eu-page .sidenav .label{
+          position:absolute; right:22px; top:-3px; font-size:11px; color:var(--ink-soft); white-space:nowrap;
+          opacity:0; transition:opacity .2s; font-family:var(--serif);
+        }
+        .eu-page .sidenav button:hover .label{ opacity:1; }
+        .eu-page .hero-mark{ font-family:var(--serif); letter-spacing:.3em; font-size:13px; color:var(--gold); text-transform:uppercase; margin-bottom:30px; }
+        .eu-page .back-mark{
+          font-family:var(--sans); font-size:12px; color:var(--ink-soft); letter-spacing:.05em;
+          text-decoration:none; display:inline-flex; align-items:center; gap:6px; margin-bottom:26px; cursor:pointer; background:none; border:none; padding:0;
+        }
+        @media (max-width:860px){
+          .eu-page section{ padding:9vh 8vw; }
+          .eu-page .grid{ grid-template-columns:1fr; }
+          .eu-page .benefit-row, .eu-page .detail-item{ grid-template-columns:1fr; gap:10px; }
+          .eu-page .sidenav{ display:none; }
+        }
+      `}</style>
+
+      <nav className="sidenav">
+        {navLabels.map((label, i) => (
+          <button key={label} className={activeIdx===i?"active":""} onClick={()=>scrollTo(sectionIds[i])}>
+            <span className="label">{label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="eu-scroller" ref={scrollerRef}>
+
+        {/* SECTION 1: HERO */}
+        <section id="eu-s1" style={{background:"var(--cream)"}}>
+          <button className="back-mark" onClick={()=>navigate("/")}>← thebeautypause.com</button>
+          <div className="hero-mark">The Beauty Pause</div>
+          <h1>가장 빠르고 쉽게<br/>유럽 시장에 진출하는 방법</h1>
+          <p className="lede">복잡한 서류 절차부터 파리 현지 타겟 시딩까지, 단 1회 패키지로 끝내는<br/>더뷰티퍼즈(The Beauty Pause)의 유럽 진출 올인원 솔루션입니다.</p>
+        </section>
+
+        {/* SECTION 2: SERVICE OVERVIEW */}
+        <section id="eu-s2" style={{background:"var(--white)"}}>
+          <div className="eyebrow">Service Overview</div>
+          <h2>유럽 시장 진입의 필수 관문,<br/>하나의 패키지로 완성합니다</h2>
+          <p className="lede">CPNP 인증과 브랜드 자산이 되는 파리 현지 뷰티 소비자 시딩을 하나로 묶은 패스트트랙 패키지입니다.</p>
+          <div className="grid">
+            <div className="card">
+              <span className="num">01</span>
+              <h3>CPNP 올인원 인증</h3>
+              <p>유럽 전역 판매를 위한 CPNP 정식 등록 및 RP(책임자) 1년 지정</p>
+            </div>
+            <div className="card">
+              <span className="num">02</span>
+              <h3>파리 현지 살롱 타겟 샘플링</h3>
+              <p>파리 뷰티 살롱과 연계하여 실제 뷰티 고관여 타겟 대상 1:1 시딩 (수량 10~20개 한정)</p>
+            </div>
+            <div className="card">
+              <span className="num">03</span>
+              <h3>글로벌 굿즈&물류 풀필먼트</h3>
+              <p>한국 물류센터 입고부터 파리 현지 살롱 배송까지 전 과정 포함</p>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: DETAILS */}
+        <section id="eu-s3" style={{background:"var(--cream)"}}>
+          <div className="eyebrow">Details</div>
+          <h2>서비스 상세</h2>
+          <div className="detail-block">
+            <div className="detail-item">
+              <div className="detail-idx">01</div>
+              <div>
+                <h3>CPNP 등록 및 RP 1년 제공</h3>
+                <ul>
+                  <li>유럽 EU 27개국 및 영국(별도 협의) 판매를 위한 필수 인허가 절차 완벽 대행</li>
+                  <li>유럽 현지 법적 책임자(RP, Responsible Person) 1년 유지 서비스 기본 포함</li>
+                </ul>
+              </div>
+            </div>
+            <div className="detail-item">
+              <div className="detail-idx">02</div>
+              <div>
+                <h3>파리 현지 뷰티 살롱 연계 시딩 <span style={{fontSize:14,color:"var(--ink-soft)",fontFamily:"var(--sans)"}}>(10~20개 한정)</span></h3>
+                <ul>
+                  <li>무차별 길거리 배포가 아닌, 파리 현지 네일·속눈썹·헤어 살롱 방문 고객 대상 핀포인트 타겟팅</li>
+                  <li>실제로 뷰티와 케어에 돈을 쓰는 고관여 진성 소비자에게 전달되어 높은 브랜드 각인 효과 창출</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4: BENEFITS */}
+        <section id="eu-s4" style={{background:"var(--white)"}}>
+          <div className="eyebrow">Benefits</div>
+          <h2>브랜드가 얻는 것</h2>
+          <div className="benefit-list">
+            <div className="benefit-row">
+              <div className="benefit-title">유럽 전역<br/>유통 자격 획득</div>
+              <div className="benefit-desc">CPNP 등록 완료로 유럽 진출 및 온·오프라인 입점 기본 요건 즉시 충족</div>
+            </div>
+            <div className="benefit-row">
+              <div className="benefit-title">리얼 현지<br/>UGC 자산 확보</div>
+              <div className="benefit-desc">프랑스 현지 소비자가 제품을 들고 찍은 고화질 인증 사진 수급</div>
+            </div>
+            <div className="benefit-row">
+              <div className="benefit-title">상세페이지 &<br/>마케팅 활용</div>
+              <div className="benefit-desc">"파리 현지 살롱 입점/이벤트 진행" 타이틀 및 해외 시딩 실적 레퍼런스 확보</div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 5: WHAT WE DO */}
+        <section id="eu-s5" style={{background:"var(--cream)"}}>
+          <div className="eyebrow">What We Do</div>
+          <h2>더뷰티퍼즈가 해주는 것</h2>
+          <div className="process-track" style={{marginTop:44}}>
+            <div className="process-step"><div className="dot">1</div><div><h4>제품 적격성 검토</h4><p>CPNP 등록 가능 여부 및 성분 사전 심사</p></div></div>
+            <div className="process-step"><div className="dot">2</div><div><h4>CPNP 정식 등록</h4><p>행정 서류 세팅 및 유럽 시스템 최종 등록</p></div></div>
+            <div className="process-step"><div className="dot">3</div><div><h4>해외 발송 전담</h4><p>한국 물류센터 입고 후 파리 현지까지의 국제 특송 및 관부가세 처리 (비용 포함)</p></div></div>
+            <div className="process-step"><div className="dot">4</div><div><h4>현지 살롱 협업 시딩</h4><p>파리 뷰티 살롱 매칭 및 현지 샘플링 이벤트 실행</p></div></div>
+            <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>현지 소비자 인증샷 수급</h4><p>현지 고객이 제품을 들고 찍은 실물 사진 원본 수집 및 리포트 전달</p></div></div>
+          </div>
+        </section>
+
+        {/* SECTION 6: PRICE */}
+        <section id="eu-s6" style={{background:"var(--white)"}}>
+          <div className="eyebrow">Price</div>
+          <h2>비용 안내</h2>
+          <div className="price-seal">
+            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>기본 올인원 패키지</div>
+            <div className="price-num">220만 원 <span>(VAT 별도)</span></div>
+            <ul className="price-incl">
+              <li>CPNP 등록</li><li>RP 1년</li><li>해외 물류비</li><li>현지 살롱 시딩 (10~20개)</li><li>사진 자산</li>
+            </ul>
+            <div className="price-note">추가 옵션 — 제품 수량 추가 진행 가능 (별도 견적 문의)</div>
+          </div>
+        </section>
+
+        {/* SECTION 7: PARTNER TERMS */}
+        <section id="eu-s7" style={{background:"var(--cream)"}}>
+          <div className="eyebrow">Partner Program</div>
+          <h2>파트너사 안내</h2>
+          <p className="lede">별도의 승인 절차 없이 자유롭게 영업 활동을 진행하시면 됩니다.<br/>계약이 최종 성사되면 더뷰티퍼즈가 파트너사와 수익을 공유합니다.</p>
+          <div className="partner-seal">
+            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>계약 성사 시 쉐어</div>
+            <div className="partner-share">30만 원 <span>/ 건당</span></div>
+            <div className="price-note">패키지 전체 금액(220만 원) 중 파트너사가 가져가는 몫이며, 별도 정산 절차는 계약 성사 후 안내드립니다.</div>
+          </div>
+        </section>
+
+        {/* SECTION 8: PROCESS */}
+        <section id="eu-s8" style={{background:"var(--white)"}}>
+          <div className="eyebrow">Process</div>
+          <h2>진행 절차</h2>
+          <div className="process-track" style={{marginTop:44}}>
+            <div className="process-step"><div className="dot">1</div><div><h4>제품 선택 & 상담</h4><p>진출 희망 제품 선별 및 기본 사양 확인</p></div></div>
+            <div className="process-step"><div className="dot">2</div><div><h4>서류 제출</h4><p>CPNP 구비 서류(성분표, MSDS 등) 제출 및 등록 시작</p></div></div>
+            <div className="process-step"><div className="dot">3</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고</p></div></div>
+            <div className="process-step"><div className="dot">4</div><div><h4>CPNP 완료 & 현지 시딩</h4><p>CPNP 등록 완료 즉시 파리 현지 살롱 배송 및 시딩 이벤트 진행</p></div></div>
+            <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>결과 리포트 전달</h4><p>현지 인증샷 원본 및 CPNP 등록 완료 문서 제공</p></div></div>
+          </div>
+          <div className="footer-mark">The Beauty Pause · Paris</div>
+        </section>
+
+      </div>
+    </div>
+  );
+}
+
 // ── FOR PARTNERS PAGE (institutional / agencies) ─────────────────────────────
 function ForPartnersPage() {
   const navigate = useNavigate();
@@ -6136,6 +6417,7 @@ export default function App() {
         <Route path="/brands/program" element={<BrandsProgramPage />} />
         <Route path="/brands/contact" element={<BrandsContactPage />} />
         <Route path="/salon-partners" element={<SalonProgramPage />} />
+        <Route path="/europe-entry" element={<EuropeEntryPage />} />
         <Route path="/partners" element={<ForPartnersPage />} />
         <Route path="/manufacturers" element={<ForManufacturersPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />
