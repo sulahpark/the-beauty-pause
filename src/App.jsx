@@ -4152,7 +4152,7 @@ function EuropeEntryPage() {
           --rule:rgba(43,36,28,0.14);
           --serif: Georgia, 'Times New Roman', 'Noto Serif KR', serif;
           --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-          background:var(--cream); color:var(--ink); font-family:var(--sans);
+          background:var(--cream); color:var(--ink); font-family:var(--sans); word-break:keep-all;
         }
         .eu-page *{ box-sizing:border-box; }
         .eu-scroller{ height:100vh; overflow-y:scroll; scroll-snap-type:y proximity; }
@@ -4167,7 +4167,7 @@ function EuropeEntryPage() {
           color:var(--gold); font-weight:600; margin-bottom:18px; display:flex; align-items:center; gap:10px;
         }
         .eu-page .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); display:inline-block; }
-        .eu-page h1,.eu-page h2{ font-family:var(--serif); font-weight:400; color:var(--ink); line-height:1.35; margin:0 0 22px 0; }
+        .eu-page h1,.eu-page h2{ font-family:var(--serif); font-weight:400; color:var(--ink); line-height:1.35; margin:0 0 22px 0; word-break:keep-all; }
         .eu-page h1{ font-size:clamp(30px,5vw,56px); max-width:640px; }
         .eu-page h2{ font-size:clamp(26px,3.6vw,38px); max-width:640px; }
         .eu-page .lede{ font-size:clamp(16px,1.6vw,19px); color:var(--ink-soft); max-width:52ch; line-height:1.7; margin:0 0 8px 0; }
