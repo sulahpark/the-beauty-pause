@@ -4120,8 +4120,8 @@ function EuropeEntryPage() {
   const navigate = useNavigate();
   const scrollerRef = useRef(null);
   const [activeIdx, setActiveIdx] = useState(0);
-  const sectionIds = ["eu-s1","eu-s2","eu-s3","eu-s4","eu-s5","eu-s6","eu-s7","eu-s8"];
-  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","WHAT WE DO","PRICE","PROCESS","PARTNER"];
+  const sectionIds = ["eu-s1","eu-s2","eu-s3","eu-s4","eu-s5","eu-s6","eu-s7"];
+  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","WHAT WE DO","PRICE","PROCESS"];
 
   useEffect(() => {
     const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
@@ -4262,7 +4262,10 @@ function EuropeEntryPage() {
         <section id="eu-s1" style={{background:"var(--cream)"}}>
           <button className="back-mark" onClick={()=>navigate("/")}>← thebeautypause.com</button>
           <div className="hero-mark">The Beauty Pause</div>
-          <h1>가장 빠르고 쉽게<br/>유럽 시장에 진출하는 방법</h1>
+          <p style={{fontFamily:"var(--serif)",fontStyle:"italic",fontSize:"clamp(17px,2vw,21px)",color:"var(--ink-soft)",lineHeight:1.5,margin:"0 0 14px",wordBreak:"keep-all"}}>
+            가장 빠르고 쉽게<br/>유럽 시장에 진출하는 방법
+          </p>
+          <h1>더뷰티퍼즈 솔루션</h1>
           <p className="lede">복잡한 서류 절차부터 파리 현지 타겟 시딩까지, 단 1회 패키지로 끝내는<br/>더뷰티퍼즈(The Beauty Pause)의 유럽 진출 올인원 솔루션입니다.</p>
         </section>
 
@@ -4302,6 +4305,7 @@ function EuropeEntryPage() {
                 <ul>
                   <li>유럽 EU 27개국 및 영국(별도 협의) 판매를 위한 필수 인허가 절차 완벽 대행</li>
                   <li>유럽 현지 법적 책임자(RP, Responsible Person) 1년 유지 서비스 기본 포함</li>
+                  <li>필요한 제품 관련 서류 구비가 완료되어 있다면 1~1.5개월 소요</li>
                 </ul>
               </div>
             </div>
@@ -4384,18 +4388,6 @@ function EuropeEntryPage() {
             <div className="process-step"><div className="dot">3</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고</p></div></div>
             <div className="process-step"><div className="dot">4</div><div><h4>CPNP 완료 & 현지 시딩</h4><p>CPNP 등록 완료 즉시 파리 현지 살롱 배송 및 시딩 이벤트 진행</p></div></div>
             <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>결과 리포트 전달</h4><p>현지 인증샷 원본 및 CPNP 등록 완료 문서 제공</p></div></div>
-          </div>
-        </section>
-
-        {/* SECTION 8: PARTNER TERMS */}
-        <section id="eu-s8" style={{background:"var(--white)"}}>
-          <div className="eyebrow">Partner Program</div>
-          <h2>파트너사 안내</h2>
-          <p className="lede">별도의 승인 절차 없이 자유롭게 영업 활동을 진행하시면 됩니다.<br/>계약이 최종 성사되면 더뷰티퍼즈가 파트너사와 수익을 공유합니다.</p>
-          <div className="partner-seal">
-            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>계약 성사 시 쉐어</div>
-            <div className="partner-share">30만 원 <span>/ 건당</span></div>
-            <div className="price-note">패키지 전체 금액(220만 원) 중 파트너사가 가져가는 몫이며, 별도 정산 절차는 계약 성사 후 안내드립니다.</div>
           </div>
           <div className="footer-mark">The Beauty Pause · Paris</div>
         </section>
