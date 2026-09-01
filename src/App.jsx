@@ -4387,7 +4387,7 @@ function EuropeEntryPage() {
             <div className="process-step"><div className="dot">2</div><div><h4>서류 제출</h4><p>CPNP 구비 서류(성분표, MSDS 등) 제출 및 등록 시작</p></div></div>
             <div className="process-step"><div className="dot">3</div><div><h4>CPNP 완료 & 문서 전달</h4><p>CPNP 등록 완료 문서 제공</p></div></div>
             <div className="process-step"><div className="dot">4</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고</p></div></div>
-            <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>프랑스 현지 시딩 진행</h4><p>시딩 진행 및 현지 인증샷</p></div></div>
+            <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>프랑스 현지 시딩 진행</h4><p>현지 살롱에서 시딩을 진행하고, 소비자가 제품을 사용하는 모습을 담은 사진을 수집합니다.</p></div></div>
           </div>
           <div className="footer-mark">The Beauty Pause · Paris</div>
         </section>
