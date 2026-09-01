@@ -4375,7 +4375,7 @@ function EuropeEntryPage() {
             <div className="process-step"><div className="dot">3</div><div><h4>CPNP 완료 & 문서 전달</h4><p>CPNP 등록 완료 문서를 제공합니다.</p></div></div>
             <div className="process-step"><div className="dot">4</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고. 파리 현지까지의 국제 특송 및 관부가세 처리까지 전담합니다 (비용 포함).</p></div></div>
             <div className="process-step"><div className="dot">5</div><div><h4>현지 살롱 협업 시딩</h4><p>파리 뷰티 살롱 매칭 및 현지 샘플링 이벤트를 실행합니다.</p></div></div>
-            <div className="process-step" style={{paddingBottom:0}}><div className="dot">6</div><div><h4>결과 수집 & 리포트 전달</h4><p>소비자가 제품을 사용하는 모습을 담은 사진 원본을 수집하고, 결과 리포트를 전달합니다.</p></div></div>
+            <div className="process-step" style={{paddingBottom:0}}><div className="dot">6</div><div><h4>결과 수집 & 리포트 전달</h4><p>소비자가 제품 받는 모습이나 들고 있는 모습을 사진으로 촬영해 원본을 전달하고, 결과 리포트를 함께 전달합니다.</p></div></div>
           </div>
           <div className="footer-mark">The Beauty Pause · Paris</div>
         </section>
