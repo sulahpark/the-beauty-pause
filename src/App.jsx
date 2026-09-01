@@ -4266,7 +4266,7 @@ function EuropeEntryPage() {
             가장 빠르고 쉽게<br/>유럽 시장에 진출하는 방법
           </p>
           <h1>더뷰티퍼즈 솔루션</h1>
-          <p className="lede">복잡한 서류 절차부터 파리 현지 타겟 시딩까지, 단 1회 패키지로 끝내는<br/>더뷰티퍼즈(The Beauty Pause)의 유럽 진출 올인원 솔루션입니다.</p>
+          <p className="lede">한국 뷰티 브랜드의 유럽 진출. 복잡한 절차부터 파리 현지 활동까지,<br/>단 1회 패키지로 완성하는 올인원 패키지입니다.</p>
         </section>
 
         {/* SECTION 2: SERVICE OVERVIEW */}
