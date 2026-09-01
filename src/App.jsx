@@ -4120,8 +4120,8 @@ function EuropeEntryPage() {
   const navigate = useNavigate();
   const scrollerRef = useRef(null);
   const [activeIdx, setActiveIdx] = useState(0);
-  const sectionIds = ["eu-s1","eu-s2","eu-s3","eu-s4","eu-s5","eu-s6","eu-s7"];
-  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","WHAT WE DO","PRICE","PROCESS"];
+  const sectionIds = ["eu-s1","eu-s2","eu-s3","eu-s4","eu-s5","eu-s6"];
+  const navLabels = ["HERO","SERVICE","DETAILS","BENEFITS","PRICE","PROCESS"];
 
   useEffect(() => {
     const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
@@ -4351,21 +4351,8 @@ function EuropeEntryPage() {
           </div>
         </section>
 
-        {/* SECTION 5: WHAT WE DO */}
-        <section id="eu-s5" style={{background:"var(--cream)"}}>
-          <div className="eyebrow">What We Do</div>
-          <h2>더뷰티퍼즈가 해주는 것</h2>
-          <div className="process-track" style={{marginTop:44}}>
-            <div className="process-step"><div className="dot">1</div><div><h4>제품 적격성 검토</h4><p>CPNP 등록 가능 여부 및 성분 사전 심사</p></div></div>
-            <div className="process-step"><div className="dot">2</div><div><h4>CPNP 정식 등록</h4><p>행정 서류 세팅 및 유럽 시스템 최종 등록</p></div></div>
-            <div className="process-step"><div className="dot">3</div><div><h4>해외 발송 전담</h4><p>한국 물류센터 입고 후 파리 현지까지의 국제 특송 및 관부가세 처리 (비용 포함)</p></div></div>
-            <div className="process-step"><div className="dot">4</div><div><h4>현지 살롱 협업 시딩</h4><p>파리 뷰티 살롱 매칭 및 현지 샘플링 이벤트 실행</p></div></div>
-            <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>현지 소비자 인증샷 수급</h4><p>현지 고객이 제품을 들고 찍은 실물 사진 원본 수집 및 리포트 전달</p></div></div>
-          </div>
-        </section>
-
-        {/* SECTION 6: PRICE */}
-        <section id="eu-s6" style={{background:"var(--white)"}}>
+        {/* SECTION 5: PRICE */}
+        <section id="eu-s5" style={{background:"var(--white)"}}>
           <div className="eyebrow">Price</div>
           <h2>비용 안내</h2>
           <div className="price-seal">
@@ -4378,16 +4365,17 @@ function EuropeEntryPage() {
           </div>
         </section>
 
-        {/* SECTION 7: PROCESS */}
-        <section id="eu-s7" style={{background:"var(--cream)"}}>
+        {/* SECTION 6: PROCESS */}
+        <section id="eu-s6" style={{background:"var(--cream)"}}>
           <div className="eyebrow">Process</div>
           <h2>진행 절차</h2>
           <div className="process-track" style={{marginTop:44}}>
-            <div className="process-step"><div className="dot">1</div><div><h4>제품 선택 & 상담</h4><p>진출 희망 제품 선별 및 기본 사양 확인</p></div></div>
-            <div className="process-step"><div className="dot">2</div><div><h4>서류 제출</h4><p>CPNP 구비 서류(성분표, MSDS 등) 제출 및 등록 시작</p></div></div>
-            <div className="process-step"><div className="dot">3</div><div><h4>CPNP 완료 & 문서 전달</h4><p>CPNP 등록 완료 문서 제공</p></div></div>
-            <div className="process-step"><div className="dot">4</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고</p></div></div>
-            <div className="process-step" style={{paddingBottom:0}}><div className="dot">5</div><div><h4>프랑스 현지 시딩 진행</h4><p>현지 살롱에서 시딩을 진행하고, 소비자가 제품을 사용하는 모습을 담은 사진을 수집합니다.</p></div></div>
+            <div className="process-step"><div className="dot">1</div><div><h4>제품 선택 & 상담</h4><p>진출 희망 제품 선별 및 기본 사양 확인. 더뷰티퍼즈가 CPNP 등록 가능 여부와 성분을 사전 심사합니다.</p></div></div>
+            <div className="process-step"><div className="dot">2</div><div><h4>서류 제출 & CPNP 등록</h4><p>CPNP 구비 서류(성분표, MSDS 등) 제출. 더뷰티퍼즈가 행정 서류를 세팅하고 유럽 시스템에 정식 등록합니다.</p></div></div>
+            <div className="process-step"><div className="dot">3</div><div><h4>CPNP 완료 & 문서 전달</h4><p>CPNP 등록 완료 문서를 제공합니다.</p></div></div>
+            <div className="process-step"><div className="dot">4</div><div><h4>제품 발송</h4><p>지정된 더뷰티퍼즈 한국 물류센터로 시딩용 제품 입고. 파리 현지까지의 국제 특송 및 관부가세 처리까지 전담합니다 (비용 포함).</p></div></div>
+            <div className="process-step"><div className="dot">5</div><div><h4>현지 살롱 협업 시딩</h4><p>파리 뷰티 살롱 매칭 및 현지 샘플링 이벤트를 실행합니다.</p></div></div>
+            <div className="process-step" style={{paddingBottom:0}}><div className="dot">6</div><div><h4>결과 수집 & 리포트 전달</h4><p>소비자가 제품을 사용하는 모습을 담은 사진 원본을 수집하고, 결과 리포트를 전달합니다.</p></div></div>
           </div>
           <div className="footer-mark">The Beauty Pause · Paris</div>
         </section>
