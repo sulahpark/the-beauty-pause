@@ -1318,8 +1318,8 @@ function Nav({lang,setLang,onJoin,user,onAuthClick}) {
     <>
       <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 16px",position:"sticky",top:0,zIndex:500}}>
         <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
-          <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",lineHeight:1,padding:"4px 6px"}} >←</button>
-          <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+          <button onClick={()=>navigate("/salon-program")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",lineHeight:1,padding:"4px 6px"}} >←</button>
+          <div onClick={()=>navigate("/salon-program")} style={{cursor:"pointer"}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
           </div>
@@ -2277,7 +2277,7 @@ function AccountPage({lang,setLang,salons,allProducts,onAuthClick}) {
   useEffect(()=>{
     if (!supabase) return;
     supabase.auth.getUser().then(({data:{user}})=>{
-      if (!user){navigate("/");onAuthClick?.("login");return;}
+      if (!user){navigate("/salon-program");onAuthClick?.("login");return;}
       setUserId(user.id);
       // load profile
       supabase.from("profiles").select("*").eq("id",user.id).single()
@@ -2319,7 +2319,7 @@ function AccountPage({lang,setLang,salons,allProducts,onAuthClick}) {
     setSaving(false); setSaved(true); setTimeout(()=>setSaved(false),2000);
   };
   const removeFav=async(fav)=>{ await supabase.from("favourites").delete().eq("id",fav.id); setFavs(f=>f.filter(x=>x.id!==fav.id)); };
-  const signOut=async()=>{ await supabase.auth.signOut(); navigate("/"); };
+  const signOut=async()=>{ await supabase.auth.signOut(); navigate("/salon-program"); };
 
   const favSalons=favs.filter(f=>f.type==="salon");
   const favProds=favs.filter(f=>f.type==="product");
@@ -2329,7 +2329,7 @@ function AccountPage({lang,setLang,salons,allProducts,onAuthClick}) {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}html,body{background:#ffffff}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}`}</style>
       {isMobile ? (
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 20px 4px"}}>
-          <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+          <div onClick={()=>navigate("/salon-program")} style={{cursor:"pointer"}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
           </div>
@@ -2537,7 +2537,7 @@ function SpotPage({ lang, setLang }) {
     <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
       <div style={{display:"flex",alignItems:"center",gap:8}}>
         {screen!=="landing"&&<button onClick={()=>setScreen("landing")} style={{background:"none",border:"none",cursor:"pointer",color:"#777",fontSize:"18px",padding:"4px 6px"}}>←</button>}
-        <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+        <div onClick={()=>navigate("/salon-program")} style={{cursor:"pointer"}}>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
         </div>
@@ -2556,7 +2556,7 @@ function SpotPage({ lang, setLang }) {
       <p style={{...SS,fontSize:"11px",color:"#c9a96e",letterSpacing:"3px",textTransform:"uppercase",marginBottom:12}}>✦ Discovery Spot</p>
       <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",fontWeight:300,color:"#1a1a1a",marginBottom:12}}>Spot not found</h1>
       <p style={{...SS,fontSize:"14px",color:"#aaa",marginBottom:28}}>This QR code may be outdated.</p>
-      <button onClick={()=>navigate("/")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Go to homepage</button>
+      <button onClick={()=>navigate("/salon-program")} style={{padding:"12px 28px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"2px",textTransform:"uppercase",borderRadius:8}}>Go to homepage</button>
     </div></>
   );
 
@@ -2660,7 +2660,7 @@ function SpotPage({ lang, setLang }) {
           <span style={{color:"#ddd"}}>·</span>
           <button onClick={()=>navigate("/products")} style={{...SS,fontSize:"11px",color:"#bbb",background:"none",border:"none",cursor:"pointer"}}>Products</button>
           <span style={{color:"#ddd"}}>·</span>
-          <button onClick={()=>navigate("/")} style={{...SS,fontSize:"11px",color:"#bbb",background:"none",border:"none",cursor:"pointer"}}>Home</button>
+          <button onClick={()=>navigate("/salon-program")} style={{...SS,fontSize:"11px",color:"#bbb",background:"none",border:"none",cursor:"pointer"}}>Home</button>
         </div>
       </div>
     </>
@@ -2858,7 +2858,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
             : "You're entered in the draw. Winners will be picked and notified by email at the end of the month."}
         </p>
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
-          <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
+          <button onClick={()=>navigate("/salon-program")} style={{padding:"12px 24px",background:"#f5f0eb",color:"#0d0d0d",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
             {lang==="fr"?"Accueil":"Homepage"}
           </button>
           <button onClick={()=>navigate("/products")} style={{padding:"12px 24px",background:"transparent",color:"#c9a96e",border:"1px solid rgba(201,169,110,0.4)",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
@@ -2959,7 +2959,7 @@ function LuckyDrawScreen({ spot, salon, product, lang, setLang, spotId, onBack, 
                 ? "Une seule participation est possible par personne. Merci de votre visite !"
                 : "Only one entry is allowed per person. Thanks for visiting!"}
             </p>
-            <button onClick={()=>navigate("/")} style={{padding:"12px 24px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
+            <button onClick={()=>navigate("/salon-program")} style={{padding:"12px 24px",background:"#1a1a1a",color:"#f5f0eb",border:"none",cursor:"pointer",...SS,fontSize:"12px",fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",borderRadius:10}}>
               {lang==="fr"?"Accueil":"Homepage"}
             </button>
           </div>
@@ -3025,7 +3025,7 @@ function PrivacyPage({ lang, setLang }) {
     <>
       <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}`}</style>
       <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
-        <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer"}}>
+        <button onClick={()=>navigate("/salon-program")} style={{background:"none",border:"none",cursor:"pointer"}}>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE </span>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600}}>BEAUTY PAUSE</span>
         </button>
@@ -3047,7 +3047,7 @@ function PrivacyPage({ lang, setLang }) {
             <p style={{...SS,fontSize:"13px",color:"#555",lineHeight:1.8,whiteSpace:"pre-line"}}>{body}</p>
           </div>
         ))}
-        <button onClick={()=>navigate("/")} style={{...SS,fontSize:"12px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",padding:"10px 20px",borderRadius:20,marginTop:8}}>
+        <button onClick={()=>navigate("/salon-program")} style={{...SS,fontSize:"12px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",padding:"10px 20px",borderRadius:20,marginTop:8}}>
           ← {lang==="fr"?"Retour à l'accueil":"Back to home"}
         </button>
       </main>
@@ -3063,7 +3063,7 @@ function LegalPage({ lang, setLang }) {
     <>
       <style>{`*{box-sizing:border-box;margin:0;padding:0}html,body{background:#faf7f4}`}</style>
       <nav style={{background:"#0d0d0d",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",position:"sticky",top:0,zIndex:500}}>
-        <button onClick={()=>navigate("/")} style={{background:"none",border:"none",cursor:"pointer"}}>
+        <button onClick={()=>navigate("/salon-program")} style={{background:"none",border:"none",cursor:"pointer"}}>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE </span>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600}}>BEAUTY PAUSE</span>
         </button>
@@ -3090,7 +3090,7 @@ function LegalPage({ lang, setLang }) {
             <p style={{...SS,fontSize:"13px",color:"#555",lineHeight:1.8,whiteSpace:"pre-line"}}>{body}</p>
           </div>
         ))}
-        <button onClick={()=>navigate("/")} style={{...SS,fontSize:"12px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",padding:"10px 20px",borderRadius:20,marginTop:8}}>
+        <button onClick={()=>navigate("/salon-program")} style={{...SS,fontSize:"12px",color:"#c9a96e",background:"none",border:"1px solid #e8d9b8",cursor:"pointer",padding:"10px 20px",borderRadius:20,marginTop:8}}>
           ← {lang==="fr"?"Retour à l'accueil":"Back to home"}
         </button>
       </main>
@@ -3966,7 +3966,7 @@ function SalonProgramPage() {
       {/* simple top bar */}
       <nav style={{background:"#0d0d0d",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
         <div style={{display:"flex",alignItems:"center",height:60,padding:"0 clamp(20px,5vw,64px)"}}>
-          <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+          <button onClick={()=>{navigate("/salon-program");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
             <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
             <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
           </button>
@@ -4182,6 +4182,14 @@ function EuropeEntryPage() {
         .eu-page .detail-idx{ font-family:var(--serif); font-size:32px; color:var(--gold-soft); line-height:1; }
         .eu-page .detail-item h3{ font-family:var(--serif); font-weight:400; font-size:21px; margin:0 0 12px 0; }
         .eu-page .detail-item ul{ margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.75; font-size:15px; }
+        .eu-page .service-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px; max-width:900px; }
+        .eu-page .service-card{ background:var(--ink); border:1px solid #3a332a; border-radius:2px; padding:32px 34px; }
+        .eu-page .service-card h3{ font-family:var(--serif); font-weight:400; font-size:20px; margin:0 0 16px; color:#F6F1E7; }
+        .eu-page .service-card ul{ margin:0; padding-left:18px; color:rgba(255,255,255,0.65); line-height:1.75; font-size:13.5px; }
+        .eu-page .service-card li{ margin-bottom:8px; }
+        .eu-page .bundle-note{ margin-top:20px; font-size:15px; color:var(--ink-soft); }
+        .eu-page .bundle-note strong{ color:var(--gold); font-family:var(--serif); font-size:18px; }
+        .eu-page .price-split{ display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:640px; margin-top:34px; }
         .eu-page .detail-item li{ margin-bottom:6px; }
         .eu-page .benefit-list{ max-width:700px; margin-top:36px; display:flex; flex-direction:column; gap:0; }
         .eu-page .benefit-row{ display:grid; grid-template-columns:1fr 2fr; gap:28px; padding:24px 0; border-top:1px solid var(--rule); align-items:baseline; }
@@ -4260,7 +4268,6 @@ function EuropeEntryPage() {
 
         {/* SECTION 1: HERO */}
         <section id="eu-s1" style={{background:"var(--cream)"}}>
-          <button className="back-mark" onClick={()=>navigate("/")}>← thebeautypause.com</button>
           <div className="hero-mark">The Beauty Pause</div>
           <p style={{fontFamily:"var(--serif)",fontStyle:"italic",fontSize:"clamp(17px,2vw,21px)",color:"var(--ink-soft)",lineHeight:1.5,margin:"0 0 14px",wordBreak:"keep-all"}}>
             가장 빠르고 쉽게<br/>유럽 시장에 진출하는 방법
@@ -4297,36 +4304,23 @@ function EuropeEntryPage() {
         <section id="eu-s3" style={{background:"var(--cream)"}}>
           <div className="eyebrow">Details</div>
           <h2>서비스 상세</h2>
-          <div className="detail-block">
-            <div className="detail-item">
-              <div className="detail-idx">01</div>
-              <div>
-                <h3>CPNP 등록 및 RP 1년 제공</h3>
-                <ul>
-                  <li>유럽 EU 27개국 및 영국(별도 협의) 판매를 위한 필수 인허가 절차 완벽 대행</li>
-                  <li>유럽 현지 법적 책임자(RP, Responsible Person) 1년 유지 서비스 기본 포함</li>
-                  <li>필요한 제품 관련 서류 구비가 완료되어 있다면 1~1.5개월 소요</li>
-                </ul>
-              </div>
+          <p className="lede" style={{marginBottom:8}}>두 서비스는 각각 신청 가능합니다.</p>
+          <div className="service-grid">
+            <div className="service-card">
+              <h3>CPNP 등록대행</h3>
+              <ul>
+                <li>유럽 EU 27개국 및 영국(별도 협의) 판매를 위한 필수 인허가 절차 완벽 대행</li>
+                <li>유럽 현지 법적 책임자(RP, Responsible Person) 1년 유지 서비스 기본 포함</li>
+                <li>필요한 제품 관련 서류 구비가 완료되어 있다면 1~1.5개월 소요</li>
+              </ul>
             </div>
-            <div className="detail-item">
-              <div className="detail-idx">02</div>
-              <div>
-                <h3>파리 현지 뷰티 살롱 연계 시딩 <span style={{fontSize:14,color:"var(--ink-soft)",fontFamily:"var(--sans)"}}>(10~20개 한정)</span></h3>
-                <ul>
-                  <li>무차별 길거리 배포가 아닌, 파리 현지 네일·속눈썹·헤어 살롱 방문 고객 대상 핀포인트 타겟팅</li>
-                  <li>실제로 뷰티와 케어에 돈을 쓰는 고관여 진성 소비자에게 전달되어 높은 브랜드 각인 효과 창출</li>
-                </ul>
-              </div>
-            </div>
-            <div className="detail-item">
-              <div className="detail-idx">03</div>
-              <div>
-                <h3>글로벌 굿즈&물류 풀필먼트</h3>
-                <ul>
-                  <li>한국 물류센터 입고부터 파리 현지 살롱 배송까지 전 과정 포함</li>
-                </ul>
-              </div>
+            <div className="service-card">
+              <h3>소비자 시딩 <span style={{fontSize:14,color:"rgba(255,255,255,0.5)",fontFamily:"var(--sans)"}}>(10~20개 한정)</span></h3>
+              <ul>
+                <li>무차별 길거리 배포가 아닌, 파리 현지 네일·속눈썹·헤어 살롱 방문 고객 대상 핀포인트 타겟팅</li>
+                <li>실제로 뷰티와 케어에 돈을 쓰는 고관여 진성 소비자에게 전달되어 높은 브랜드 각인 효과 창출</li>
+                <li>한국 물류센터 입고부터 파리 현지 살롱 배송까지 전 과정 포함 (글로벌 굿즈&물류 풀필먼트)</li>
+              </ul>
             </div>
           </div>
         </section>
@@ -4352,17 +4346,23 @@ function EuropeEntryPage() {
         </section>
 
         {/* SECTION 5: PRICE */}
-        <section id="eu-s5" style={{background:"var(--white)"}}>
+        <section id="eu-s5" style={{background:"var(--ink)"}}>
           <div className="eyebrow">Price</div>
-          <h2>비용 안내</h2>
-          <div className="price-seal">
-            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>기본 올인원 패키지</div>
-            <div className="price-num">220만 원 <span>(VAT 별도)</span></div>
-            <ul className="price-incl">
-              <li>CPNP 등록</li><li>RP 1년</li><li>해외 물류비</li><li>현지 살롱 시딩 (10~20개)</li><li>사진 자산</li>
-            </ul>
-            <div className="price-note">추가 옵션 — 제품 수량 추가 진행 가능 (별도 견적 문의)</div>
+          <h2 style={{color:"#F6F1E7"}}>비용 안내</h2>
+          <div className="price-split">
+            <div className="price-seal" style={{marginTop:0}}>
+              <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>CPNP 등록대행</div>
+              <div className="price-num">150만 원 <span>(VAT 별도)</span></div>
+              <div className="price-note">CPNP 등록 · RP 1년</div>
+            </div>
+            <div className="price-seal" style={{marginTop:0}}>
+              <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>소비자 시딩</div>
+              <div className="price-num">80만 원 <span>(VAT 별도)</span></div>
+              <div className="price-note">현지 살롱 시딩 (10~20개) · 해외 물류비 · 사진 자산</div>
+            </div>
           </div>
+          <div className="bundle-note" style={{marginTop:28,color:"rgba(255,255,255,0.65)"}}>함께 진행하는 경우 <strong>220만 원</strong> (10만 원 할인, VAT 별도)</div>
+          <div className="price-note" style={{maxWidth:"none",marginTop:16,color:"rgba(255,255,255,0.4)",borderTop:"1px solid rgba(255,255,255,0.14)"}}>추가 옵션 — 제품 수량 추가 진행 가능 (별도 견적 문의)</div>
         </section>
 
         {/* SECTION 6: PROCESS */}
@@ -4414,7 +4414,7 @@ function ForPartnersPage() {
 
       {/* NAV */}
       <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
-        <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+        <button onClick={()=>{navigate("/salon-program");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
           <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
           <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
         </button>
@@ -4664,7 +4664,7 @@ function ForManufacturersPage() {
 
       {/* NAV */}
       <nav style={{background:"#0d0d0d",height:60,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(20px,5vw,64px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.07)"}}>
-        <button onClick={()=>{navigate("/");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+        <button onClick={()=>{navigate("/salon-program");window.scrollTo(0,0);}} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
           <span style={{...CG,fontSize:"15px",color:"#f5f0eb",letterSpacing:"2px",fontWeight:300}}>THE</span>
           <span style={{...CG,fontSize:"15px",color:"#c9a96e",letterSpacing:"2px",fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
         </button>
@@ -5184,7 +5184,7 @@ function ProgramMobileHeader({ lang, setLang }) {
   const SS = {fontFamily:"'DM Sans',sans-serif"};
   return (
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
-      <div onClick={()=>navigate("/")} style={{cursor:"pointer"}}>
+      <div onClick={()=>navigate("/salon-program")} style={{cursor:"pointer"}}>
         <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#1a1a1a",letterSpacing:2,fontWeight:300}}>THE</span>
         <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:5}}>BEAUTY PAUSE</span>
       </div>
@@ -5230,7 +5230,7 @@ function ProgramDesktopNav({ user, onAuthClick, lang, setLang }) {
   ];
   return (
     <nav style={{background:"#0d0d0d",height:64,display:"flex",alignItems:"center",gap:28,padding:"0 clamp(24px,4vw,56px)",position:"sticky",top:0,zIndex:500,borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
-      <div onClick={()=>navigate("/")} style={{cursor:"pointer",flexShrink:0}}>
+      <div onClick={()=>navigate("/salon-program")} style={{cursor:"pointer",flexShrink:0}}>
         <span style={{...CG,fontSize:17,color:"#f5f0eb",letterSpacing:2,fontWeight:300}}>THE</span>
         <span style={{...CG,fontSize:17,color:"#c9a96e",letterSpacing:2,fontWeight:600,marginLeft:6}}>BEAUTY PAUSE</span>
       </div>
@@ -6393,7 +6393,8 @@ export default function App() {
   return (
     <LocationAwareErrorBoundary>
       <Routes>
-        <Route path="/" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
+        <Route path="/" element={<EuropeEntryPage />} />
+        <Route path="/salon-program" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/salons" element={<SalonsPage lang={lang} setLang={setLang} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/products" element={<ProductsPage lang={lang} setLang={setLang} allProducts={allProducts} salons={salons} loading={loading} user={user} favourites={favourites} onToggleFav={toggleFavourite} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/account" element={<AccountPage lang={lang} setLang={setLang} salons={salons} allProducts={allProducts} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
@@ -6414,7 +6415,7 @@ export default function App() {
         <Route path="/programs" element={<ProgramsListPage salons={salons} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
         <Route path="/search" element={<SearchPage salons={salons} allProducts={allProducts} programs={programs} />} />
         <Route path="/program/:programId" element={<ProgramDetailPage salons={salons} allProducts={allProducts} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} programs={programs} loadingPrograms={loadingPrograms} favourites={favourites} onToggleFav={toggleFavourite} />} />
-        <Route path="*" element={<ProgramHomePage salons={salons} allProducts={allProducts} loading={loading} programs={programs} loadingPrograms={loadingPrograms} user={user} onAuthClick={(m)=>{setAuthMode(m);setShowAuth(true);}} />} />
+        <Route path="*" element={<EuropeEntryPage />} />
       </Routes>
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} lang={lang} initialMode={authMode} />}
       <CookieBanner/>
