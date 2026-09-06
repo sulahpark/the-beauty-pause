@@ -4303,9 +4303,8 @@ function EuropeEntryPage() {
         {/* SECTION 3: DETAILS */}
         <section id="eu-s3" style={{background:"var(--cream)"}}>
           <div className="eyebrow">Details</div>
-          <h2>서비스 상세</h2>
-          <p className="lede" style={{marginBottom:8}}>두 서비스는 각각 신청 가능합니다.</p>
-          <div className="service-grid">
+          <h2>솔루션 구성</h2>
+          <div className="service-grid" style={{marginTop:34}}>
             <div className="service-card">
               <h3>CPNP 등록대행</h3>
               <ul>
@@ -4349,20 +4348,27 @@ function EuropeEntryPage() {
         <section id="eu-s5" style={{background:"var(--ink)"}}>
           <div className="eyebrow">Price</div>
           <h2 style={{color:"#F6F1E7"}}>비용 안내</h2>
-          <div className="price-split">
-            <div className="price-seal" style={{marginTop:0}}>
-              <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>CPNP 등록대행</div>
-              <div className="price-num">150만 원 <span>(VAT 별도)</span></div>
-              <div className="price-note">CPNP 등록 · RP 1년</div>
-            </div>
-            <div className="price-seal" style={{marginTop:0}}>
-              <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>소비자 시딩</div>
-              <div className="price-num">80만 원 <span>(VAT 별도)</span></div>
-              <div className="price-note">현지 살롱 시딩 (10~20개) · 해외 물류비 · 사진 자산</div>
+          <div className="price-seal" style={{marginTop:24}}>
+            <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>CPNP 등록대행 + 소비자 시딩 (함께 진행)</div>
+            <div className="price-num">220만 원 <span>(VAT 별도)</span></div>
+            <div className="price-note">10만 원 할인 적용가 · CPNP 등록 · RP 1년 · 현지 살롱 시딩 (10~20개) · 해외 물류비 · 사진 자산</div>
+          </div>
+          <div style={{marginTop:36}}>
+            <p style={{fontSize:13,color:"rgba(255,255,255,0.45)",letterSpacing:".05em",marginBottom:16}}>각각 신청하시는 경우</p>
+            <div className="price-split">
+              <div className="price-seal" style={{marginTop:0,background:"transparent",border:"1px solid rgba(216,185,138,0.3)"}}>
+                <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>CPNP 등록대행</div>
+                <div className="price-num" style={{fontSize:30}}>150만 원 <span>(VAT 별도)</span></div>
+                <div className="price-note">CPNP 등록 · RP 1년</div>
+              </div>
+              <div className="price-seal" style={{marginTop:0,background:"transparent",border:"1px solid rgba(216,185,138,0.3)"}}>
+                <div style={{fontSize:13,color:"var(--ink-soft)",letterSpacing:".05em"}}>소비자 시딩</div>
+                <div className="price-num" style={{fontSize:30}}>80만 원 <span>(VAT 별도)</span></div>
+                <div className="price-note">현지 살롱 시딩 (10~20개) · 해외 물류비 · 사진 자산</div>
+              </div>
             </div>
           </div>
-          <div className="bundle-note" style={{marginTop:28,color:"rgba(255,255,255,0.65)"}}>함께 진행하는 경우 <strong>220만 원</strong> (10만 원 할인, VAT 별도)</div>
-          <div className="price-note" style={{maxWidth:"none",marginTop:16,color:"rgba(255,255,255,0.4)",borderTop:"1px solid rgba(255,255,255,0.14)"}}>추가 옵션 — 제품 수량 추가 진행 가능 (별도 견적 문의)</div>
+          <div className="price-note" style={{maxWidth:"none",marginTop:24,color:"rgba(255,255,255,0.4)",borderTop:"1px solid rgba(255,255,255,0.14)"}}>추가 옵션 — 제품 수량 추가 진행 가능 (별도 견적 문의)</div>
         </section>
 
         {/* SECTION 6: PROCESS */}
