@@ -4252,6 +4252,7 @@ function EuropeEntryPage() {
           .eu-page section{ padding:9vh 8vw; }
           .eu-page .grid{ grid-template-columns:1fr; }
           .eu-page .benefit-row, .eu-page .detail-item{ grid-template-columns:1fr; gap:10px; }
+          .eu-page .service-grid, .eu-page .price-split{ grid-template-columns:1fr; gap:20px; }
           .eu-page .sidenav{ display:none; }
         }
       `}</style>
@@ -4280,7 +4281,7 @@ function EuropeEntryPage() {
         <section id="eu-s2" style={{background:"var(--white)"}}>
           <div className="eyebrow">Service Overview</div>
           <h2>왜 가장 빠른<br/>유럽 진출 방법인가요</h2>
-          <p className="lede">CPNP 인증과 브랜드 자산이 되는 파리 현지 뷰티 소비자 시딩을 하나로 묶은 패스트트랙 패키지입니다.</p>
+          <p className="lede">유럽 제품 등록 인증(CPNP)과 브랜드 자산이 되는 파리 현지 뷰티 소비자 시딩을 하나로 묶은 패스트트랙 패키지입니다.</p>
           <div className="grid">
             <div className="card">
               <span className="num">01</span>
