@@ -4357,12 +4357,12 @@ function EuropeEntryPage() {
           <div style={{marginTop:36}}>
             <p style={{fontSize:13,color:"rgba(255,255,255,0.45)",letterSpacing:".05em",marginBottom:20}}>각각 신청하시는 경우</p>
             <div className="price-split">
-              <div>
+              <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:4,padding:"24px 26px"}}>
                 <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",letterSpacing:".05em"}}>CPNP 등록대행</div>
                 <div style={{fontFamily:"var(--serif)",fontSize:28,color:"#F6F1E7",margin:"6px 0 4px"}}>150만 원 <span style={{fontSize:13,color:"rgba(255,255,255,0.4)",fontFamily:"var(--sans)"}}>(VAT 별도)</span></div>
                 <div style={{fontSize:13,color:"rgba(255,255,255,0.4)"}}>CPNP 등록 · RP 1년</div>
               </div>
-              <div>
+              <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:4,padding:"24px 26px"}}>
                 <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",letterSpacing:".05em"}}>소비자 시딩</div>
                 <div style={{fontFamily:"var(--serif)",fontSize:28,color:"#F6F1E7",margin:"6px 0 4px"}}>80만 원 <span style={{fontSize:13,color:"rgba(255,255,255,0.4)",fontFamily:"var(--sans)"}}>(VAT 별도)</span></div>
                 <div style={{fontSize:13,color:"rgba(255,255,255,0.4)"}}>현지 살롱 시딩 (10~20개) · 해외 물류비 · 사진 자산</div>
